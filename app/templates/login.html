@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RNP IMSS — Iniciar Sesión</title>
+<link href="/static/css/rnp_redesign.css" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#004d26 0%,#006b3f 30%,#008f52 60%,#00573c 100%);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  position:relative;overflow:hidden}
+body::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,0.06) 0%,transparent 50%),
+  radial-gradient(ellipse at 70% 80%,rgba(255,255,255,0.04) 0%,transparent 50%);
+  animation:drift 20s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(-2%,2%)}}
+.login-container{position:relative;z-index:2;width:100%;max-width:440px;padding:20px}
+.login-card{background:rgba(255,255,255,0.96);border-radius:20px;padding:48px 40px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);backdrop-filter:blur(20px)}
+.logo-section{text-align:center;margin-bottom:32px}
+.logo-icon{width:72px;height:72px;background:linear-gradient(135deg,#006b3f,#00a86b);
+  border-radius:16px;display:inline-flex;align-items:center;justify-content:center;
+  margin-bottom:16px;box-shadow:0 6px 20px rgba(0,107,63,0.3)}
+.logo-icon svg{width:40px;height:40px;fill:white}
+h1{font-size:1.5rem;color:#1a1a1a;margin-bottom:4px;font-weight:700}
+.subtitle{color:#666;font-size:0.85rem;margin-bottom:0}
+.imss-badge{display:inline-block;background:#006b3f;color:white;padding:4px 12px;
+  border-radius:20px;font-size:0.7rem;font-weight:600;margin-top:8px;letter-spacing:1px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:0.82rem;font-weight:600;color:#333;margin-bottom:6px}
+.input-wrapper{position:relative}
+.input-wrapper svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  width:18px;height:18px;fill:#999;pointer-events:none}
+.form-group input{width:100%;padding:14px 14px 14px 44px;border:2px solid #e0e0e0;
+  border-radius:12px;font-size:0.95rem;transition:all 0.2s;background:#fafafa;outline:none}
+.form-group input:focus{border-color:#006b3f;background:white;box-shadow:0 0 0 3px rgba(0,107,63,0.1)}
+.btn-login{width:100%;padding:15px;background:linear-gradient(135deg,#006b3f,#00a86b);
+  color:white;border:none;border-radius:12px;font-size:1rem;font-weight:600;
+  cursor:pointer;transition:all 0.3s;letter-spacing:0.3px;margin-top:8px}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(0,107,63,0.35)}
+.btn-login:active{transform:translateY(0)}
+.btn-login:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.error-msg{background:#fee;border:1px solid #fcc;color:#c33;padding:10px 14px;
+  border-radius:10px;font-size:0.82rem;margin-bottom:16px;display:none;text-align:center}
+.error-msg.show{display:block;animation:shake 0.4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.session-info{text-align:center;margin-top:20px;font-size:0.75rem;color:#999}
+.footer-text{text-align:center;color:rgba(255,255,255,0.5);font-size:0.7rem;
+  margin-top:24px;position:relative;z-index:2}
+.remember-row{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.remember-row input[type=checkbox]{accent-color:#006b3f;width:16px;height:16px}
+.remember-row label{font-size:0.82rem;color:#555;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="login-container">
+  <div class="login-card">
+    <div class="logo-section">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      </div>
+      <h1>Registro Nacional de Pacientes</h1>
+      <p class="subtitle">Sistema de Expediente Clínico Electrónico</p>
+      <span class="imss-badge">IMSS — CMN LA RAZA — UROLOGÍA</span>
+    </div>
+
+    <div id="errorMsg" class="error-msg"></div>
+
+    <form id="loginForm" onsubmit="doLogin(event)">
+      <div class="form-group">
+        <label for="username">Usuario</label>
+        <div class="input-wrapper">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <input type="text" id="username" name="username" placeholder="Nombre de usuario" required autofocus autocomplete="username">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="input-wrapper">
+          <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          <input type="password" id="password" name="password" placeholder="Contraseña" required autocomplete="current-password">
+        </div>
+      </div>
+
+      <div class="remember-row">
+        <input type="checkbox" id="remember" checked>
+        <label for="remember">Mantener sesión iniciada</label>
+      </div>
+
+      <button type="submit" class="btn-login" id="btnLogin">
+        Iniciar Sesión
+      </button>
+    </form>
+
+    <div class="session-info">
+      <p>Sesión segura · Expira en 12 horas</p>
+    </div>
+  </div>
+  <p class="footer-text">© 2024 IMSS · Instituto Mexicano del Seguro Social · v3.0</p>
+</div>
+
+<script>
+function cleanUrl(path){
+  try{
+    var u=new URL(path, window.location.origin);
+    u.username='';u.password='';
+    return u.href;
+  }catch(e){return path}
+}
+
+async function doLogin(e){
+  e.preventDefault();
+  const btn=document.getElementById('btnLogin');
+  const errEl=document.getElementById('errorMsg');
+  btn.disabled=true;btn.textContent='Verificando...';
+  errEl.classList.remove('show');
+
+  const username=document.getElementById('username').value.trim();
+  const password=document.getElementById('password').value;
+
+  if(!username||!password){
+    errEl.textContent='Ingrese usuario y contraseña';
+    errEl.classList.add('show');
+    btn.disabled=false;btn.textContent='Iniciar Sesión';
+    return;
+  }
+
+  try{
+    const res=await fetch(cleanUrl('/api/auth/login'),{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Basic '+btoa('admin:admin')
+      },
+      body:JSON.stringify({username:username,password:password})
+    });
+    const data=await res.json();
+    if(data.ok){
+      localStorage.setItem('rnp_user',JSON.stringify(data.user));
+      localStorage.setItem('rnp_token',data.token);
+      window.location.href=cleanUrl('/');
+    }else{
+      errEl.textContent=data.error||'Credenciales inválidas';
+      errEl.classList.add('show');
+    }
+  }catch(err){
+    errEl.textContent='Error de conexión. Intente de nuevo.';
+    errEl.classList.add('show');
+  }finally{
+    btn.disabled=false;btn.textContent='Iniciar Sesión';
+  }
+}
+</script>
+</body>
+</html>

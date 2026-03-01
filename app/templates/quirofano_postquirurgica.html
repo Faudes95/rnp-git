@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nota Postquirúrgica - IMSS Urología</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --fondo: #f4f6f9; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background: var(--fondo); padding: 20px; }
+        .container { max-width: 1160px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,0.1); padding: 24px; border-top: 6px solid var(--imss-verde); }
+        h1 { color: var(--imss-verde); margin: 0 0 12px 0; }
+        .msg { border-radius: 8px; padding: 12px; margin-bottom: 12px; font-weight: 600; }
+        .msg.ok { background: #ebf9ef; border: 1px solid #8bd5a0; color: #0a5a24; }
+        .msg.err { background: #fff3f3; border: 1px solid #f3b8b8; color: #7c1f1f; }
+        .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .span-2 { grid-column: span 2; }
+        .span-3 { grid-column: span 3; }
+        label { display: block; font-size: 12px; color: #2f3d42; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+        input, select, textarea { width: 100%; border: 1px solid #cfd8de; border-radius: 6px; padding: 10px; font-family: 'Montserrat', sans-serif; }
+        textarea { min-height: 90px; resize: vertical; }
+        .info { margin-top: 16px; padding: 14px; border: 1px solid #e8edf1; border-radius: 8px; background: #fafbfc; }
+        .actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { display: inline-block; text-decoration: none; border: none; border-radius: 7px; padding: 11px 16px; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: var(--imss-verde); color: #fff; }
+        .btn-gold { background: var(--imss-dorado); color: #fff; }
+        .small { font-size: 13px; color: #4f5b60; }
+        @media (max-width: 960px) {
+            .grid { grid-template-columns: 1fr; }
+            .span-2, .span-3 { grid-column: span 1; }
+        }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ titulo or "🩺 Nota Postquirúrgica" }}</h1>
+        <p class="small">Al guardar, la cirugía pasa a estatus <strong>REALIZADA</strong> y se refleja en Reporte Estadístico.</p>
+
+        {% if message %}
+        <div class="msg ok">{{ message }}</div>
+        {% endif %}
+        {% if error %}
+        <div class="msg err">{{ error }}</div>
+        {% endif %}
+        {% if next_links %}
+        <div class="actions" style="margin-top:4px; margin-bottom:10px;">
+            {% if next_links.hospitalizacion_ingreso %}
+            <a class="btn btn-gold" href="{{ next_links.hospitalizacion_ingreso }}">🏥 Ingresar a Hospitalización</a>
+            {% endif %}
+            {% if next_links.alta %}
+            <a class="btn btn-gold" href="{{ next_links.alta }}">📄 Continuar a Egreso Hospitalario</a>
+            {% endif %}
+            {% if next_links.expediente %}
+            <a class="btn btn-gold" href="{{ next_links.expediente }}">📁 Ver Expediente Clínico</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{{ form_action or '/quirofano/programada/postquirurgica' }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <div class="grid">
+                <div class="span-3">
+                    <label>Cirugía programada</label>
+                    <select name="surgical_programacion_id" required>
+                        <option value="">Seleccionar...</option>
+                        {% for row in programadas %}
+                        <option
+                            value="{{ row.id }}"
+                            data-patologia="{{ (row.patologia or row.diagnostico_principal or '')|upper }}"
+                            data-grupo="{{ (row.grupo_patologia or '')|upper }}"
+                            {% if selected and selected.id == row.id %}selected{% endif %}
+                        >
+                            #{{ row.id }} | {{ row.paciente_nombre or "NO_REGISTRADO" }} | NSS {{ row.nss or "NO_REGISTRADO" }} | {{ row.patologia or "NO_REGISTRADO" }} | {{ row.procedimiento_programado or row.procedimiento or "NO_REGISTRADO" }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label>Fecha de realización</label>
+                    <input type="date" name="fecha_realizacion" value="{{ selected.fecha_programada if selected and selected.fecha_programada else '' }}" required>
+                </div>
+                <div>
+                    <label>Cirujano</label>
+                    <input type="text" name="cirujano" value="{{ selected.cirujano if selected and selected.cirujano else '' }}" required>
+                </div>
+                <div>
+                    <label>Sangrado (mL)</label>
+                    <input type="number" min="0" step="0.1" name="sangrado_ml" placeholder="Ej. 120">
+                </div>
+
+                <div class="span-2">
+                    <label>Diagnóstico postquirúrgico</label>
+                    <input type="text" name="diagnostico_postop" value="{{ selected.patologia if selected and selected.patologia else '' }}">
+                </div>
+                <div>
+                    <label>Procedimiento realizado</label>
+                    <input type="text" name="procedimiento_realizado" value="{{ selected.procedimiento_programado if selected and selected.procedimiento_programado else '' }}">
+                </div>
+
+                <div class="span-3">
+                    <label>Complicaciones</label>
+                    <textarea name="complicaciones" placeholder="Sin complicaciones / describir..."></textarea>
+                </div>
+                <div class="span-3">
+                    <label>Nota postquirúrgica</label>
+                    <textarea name="nota_postquirurgica" placeholder="Resumen clínico de evolución postquirúrgica..."></textarea>
+                </div>
+
+                <div>
+                    <label>Tiempo quirúrgico real (min)</label>
+                    <input type="number" min="0" step="0.1" name="tiempo_quirurgico_min" placeholder="Ej. 180">
+                </div>
+                <div>
+                    <label>Transfusión</label>
+                    <select name="transfusion">
+                        <option value="NO">NO</option>
+                        <option value="SI">SI</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Uso de hemoderivados</label>
+                    <select id="uso_hemoderivados" name="uso_hemoderivados">
+                        <option value="NO">NO</option>
+                        <option value="SI">SI</option>
+                    </select>
+                </div>
+                <div id="hemoderivados_uso_block" class="span-3" style="display:none;">
+                    <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+                        <div>
+                            <label>Paquete globular (unidades)</label>
+                            <input type="number" min="0" step="1" id="hemoderivados_pg_utilizados" name="hemoderivados_pg_utilizados" value="0">
+                        </div>
+                        <div>
+                            <label>Plasma fresco congelado (unidades)</label>
+                            <input type="number" min="0" step="1" id="hemoderivados_pfc_utilizados" name="hemoderivados_pfc_utilizados" value="0">
+                        </div>
+                        <div>
+                            <label>Concentrado plaquetario (unidades)</label>
+                            <input type="number" min="0" step="1" id="hemoderivados_cp_utilizados" name="hemoderivados_cp_utilizados" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label>Antibiótico</label>
+                    <input type="text" name="antibiotico" placeholder="Ej. Ceftriaxona + Metronidazol">
+                </div>
+                <div>
+                    <label>Clavien-Dindo</label>
+                    <select name="clavien_dindo">
+                        <option value="">NO REGISTRADO</option>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="IIIA">IIIA</option>
+                        <option value="IIIB">IIIB</option>
+                        <option value="IVA">IVA</option>
+                        <option value="IVB">IVB</option>
+                        <option value="V">V</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Reingreso 30 días</label>
+                    <select name="reingreso_30d"><option value="NO">NO</option><option value="SI">SI</option></select>
+                </div>
+                <div>
+                    <label>Reintervención 30 días</label>
+                    <select name="reintervencion_30d"><option value="NO">NO</option><option value="SI">SI</option></select>
+                </div>
+                <div>
+                    <label>Mortalidad 30 días</label>
+                    <select name="mortalidad_30d"><option value="NO">NO</option><option value="SI">SI</option></select>
+                </div>
+                <div>
+                    <label>Reingreso 90 días</label>
+                    <select name="reingreso_90d"><option value="NO">NO</option><option value="SI">SI</option></select>
+                </div>
+                <div>
+                    <label>Reintervención 90 días</label>
+                    <select name="reintervencion_90d"><option value="NO">NO</option><option value="SI">SI</option></select>
+                </div>
+                <div>
+                    <label>Mortalidad 90 días</label>
+                    <select name="mortalidad_90d"><option value="NO">NO</option><option value="SI">SI</option></select>
+                </div>
+
+                <div id="onco_fields" class="span-3" style="display:none;">
+                    <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+                        <div>
+                            <label>Margen quirúrgico (oncológico)</label>
+                            <select id="margen_quirurgico" name="margen_quirurgico">
+                                <option value="">Seleccionar</option>
+                                <option value="NEGATIVO">NEGATIVO</option>
+                                <option value="POSITIVO">POSITIVO</option>
+                                <option value="NO EVALUABLE">NO EVALUABLE</option>
+                            </select>
+                        </div>
+                        <div id="prostata_neuro_block" style="display:none;">
+                            <label>Neuropreservación (Ca próstata)</label>
+                            <select id="neuropreservacion" name="neuropreservacion">
+                                <option value="">Seleccionar</option>
+                                <option value="NO">NO</option>
+                                <option value="SI">SI</option>
+                                <option value="UNILATERAL">UNILATERAL</option>
+                                <option value="BILATERAL">BILATERAL</option>
+                            </select>
+                        </div>
+                        <div id="prostata_linf_block" style="display:none;">
+                            <label>Linfadenectomía (Ca próstata)</label>
+                            <select id="linfadenectomia" name="linfadenectomia">
+                                <option value="">Seleccionar</option>
+                                <option value="NO">NO</option>
+                                <option value="SI">SI</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="litiasis_fields" class="span-3" style="display:none;">
+                    <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+                        <div>
+                            <label>Stone-free</label>
+                            <select id="stone_free" name="stone_free">
+                                <option value="">Seleccionar</option>
+                                <option value="SI">SI</option>
+                                <option value="NO">NO</option>
+                                <option value="PARCIAL">PARCIAL</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Composición del lito</label>
+                            <input type="text" name="composicion_lito" placeholder="Ej. Oxalato de calcio">
+                        </div>
+                        <div>
+                            <label>Recurrencia litiasis</label>
+                            <select name="recurrencia_litiasis">
+                                <option value="NO">NO</option>
+                                <option value="SI">SI</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>¿Se colocó catéter JJ?</label>
+                            <select id="cateter_jj_colocado" name="cateter_jj_colocado">
+                                <option value="NO">NO</option>
+                                <option value="SI">SI</option>
+                            </select>
+                        </div>
+                        <div id="fecha_jj_wrap" style="display:none;">
+                            <label>Fecha colocación catéter JJ</label>
+                            <input type="date" id="fecha_colocacion_jj" name="fecha_colocacion_jj">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if selected %}
+            <div class="info">
+                <strong>Paciente:</strong> {{ selected.paciente_nombre or "NO_REGISTRADO" }}<br>
+                <strong>Edad/Sexo:</strong> {{ selected.edad if selected.edad is not none else "NO_REGISTRADO" }} / {{ selected.sexo or "NO_REGISTRADO" }}<br>
+                <strong>Diagnóstico:</strong> {{ selected.patologia or selected.diagnostico_principal or "NO_REGISTRADO" }}<br>
+                <strong>Procedimiento programado:</strong> {{ selected.procedimiento_programado or selected.procedimiento or "NO_REGISTRADO" }}
+            </div>
+            {% endif %}
+
+            <div class="actions">
+                <button class="btn btn-primary" type="submit">Guardar nota postquirúrgica</button>
+                <a class="btn btn-gold" href="{{ back_href or '/quirofano/programada' }}">← Volver</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        (function() {
+            const select = document.querySelector("select[name='surgical_programacion_id']");
+            const oncoFields = document.getElementById("onco_fields");
+            const litiasisFields = document.getElementById("litiasis_fields");
+            const margen = document.getElementById("margen_quirurgico");
+            const neuro = document.getElementById("neuropreservacion");
+            const linf = document.getElementById("linfadenectomia");
+            const stone = document.getElementById("stone_free");
+            const cateterJj = document.getElementById("cateter_jj_colocado");
+            const fechaJjWrap = document.getElementById("fecha_jj_wrap");
+            const fechaJj = document.getElementById("fecha_colocacion_jj");
+            const usoHemoderivados = document.getElementById("uso_hemoderivados");
+            const hemoderivadosUsoBlock = document.getElementById("hemoderivados_uso_block");
+            const hemoPg = document.getElementById("hemoderivados_pg_utilizados");
+            const hemoPfc = document.getElementById("hemoderivados_pfc_utilizados");
+            const hemoCp = document.getElementById("hemoderivados_cp_utilizados");
+            const prostaNeuro = document.getElementById("prostata_neuro_block");
+            const prostaLinf = document.getElementById("prostata_linf_block");
+
+            function updateConditionalBlocks() {
+                const opt = select && select.options ? select.options[select.selectedIndex] : null;
+                const patologia = ((opt && opt.dataset && opt.dataset.patologia) || "").toUpperCase();
+                const grupo = ((opt && opt.dataset && opt.dataset.grupo) || "").toUpperCase();
+                const isOnco = grupo === "ONCOLOGICO" || patologia.includes("CANCER") || patologia.includes("TUMOR SUPRARRENAL");
+                const isProstata = patologia === "CANCER DE PROSTATA";
+                const isLitiasis = grupo === "LITIASIS_URINARIA" || patologia.includes("CALCULO") || patologia.includes("LITIASIS");
+
+                oncoFields.style.display = isOnco ? "" : "none";
+                litiasisFields.style.display = isLitiasis ? "" : "none";
+
+                prostaNeuro.style.display = isProstata ? "" : "none";
+                prostaLinf.style.display = isProstata ? "" : "none";
+
+                if (margen) { margen.required = isOnco; }
+                if (neuro) { neuro.required = isProstata; }
+                if (linf) { linf.required = isProstata; }
+                if (stone) { stone.required = isLitiasis; }
+                const requiereFechaJj = isLitiasis && cateterJj && cateterJj.value === "SI";
+                if (fechaJjWrap) { fechaJjWrap.style.display = requiereFechaJj ? "" : "none"; }
+                if (fechaJj) { fechaJj.required = !!requiereFechaJj; }
+
+                const usaHemoderivados = usoHemoderivados && String(usoHemoderivados.value || "").toUpperCase() === "SI";
+                if (hemoderivadosUsoBlock) { hemoderivadosUsoBlock.style.display = usaHemoderivados ? "" : "none"; }
+                if (hemoPg) { hemoPg.required = !!usaHemoderivados; }
+                if (hemoPfc) { hemoPfc.required = !!usaHemoderivados; }
+                if (hemoCp) { hemoCp.required = !!usaHemoderivados; }
+            }
+
+            if (select) {
+                select.addEventListener("change", updateConditionalBlocks);
+            }
+            if (cateterJj) {
+                cateterJj.addEventListener("change", updateConditionalBlocks);
+            }
+            if (usoHemoderivados) {
+                usoHemoderivados.addEventListener("change", updateConditionalBlocks);
+            }
+            updateConditionalBlocks();
+        })();
+    </script>
+</body>
+</html>

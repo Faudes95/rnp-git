@@ -1,0 +1,128 @@
+[
+  {
+    "source": "EAU 2025",
+    "title": "EAU Urolithiasis - Evaluación inicial",
+    "area": "LITIASIS",
+    "tags": ["litiasis", "evaluacion", "urgencias"],
+    "content": "En cólico renal o litiasis obstructiva, priorizar control del dolor, evaluación de sepsis, función renal y grado de obstrucción. Si hay infección + obstrucción, descompresión urgente y antibiótico dirigido tras cultivos."
+  },
+  {
+    "source": "EAU 2025",
+    "title": "EAU Urolithiasis - Selección de tratamiento",
+    "area": "LITIASIS",
+    "tags": ["RIRS", "PCNL", "URS"],
+    "content": "La selección entre ureteroscopia flexible, nefrolitotomía percutánea o estrategias combinadas depende de tamaño, localización, carga litiásica y anatomía. Considerar densidad litiásica y complejidad anatómica para estimar éxito libre de lito."
+  },
+  {
+    "source": "EAU 2025",
+    "title": "EAU Cáncer de próstata - Estratificación de riesgo",
+    "area": "ONCOLOGIA",
+    "tags": ["prostata", "riesgo", "TNM"],
+    "content": "En cáncer de próstata, integrar PSA, Gleason/ISUP, estadio clínico y comorbilidad funcional para definir riesgo oncológico y plan terapéutico. ECOG y Charlson modifican candidaturas quirúrgicas y necesidades de seguimiento intensivo."
+  },
+  {
+    "source": "EAU 2025",
+    "title": "EAU Cáncer de próstata - Manejo perioperatorio",
+    "area": "ONCOLOGIA",
+    "tags": ["prostatectomia", "linfadenectomia"],
+    "content": "La indicación de linfadenectomía pélvica y neuropreservación debe individualizarse por riesgo oncológico, anatomía y objetivos funcionales. Documentar márgenes, complicaciones y desenlaces tempranos para auditoría clínica."
+  },
+  {
+    "source": "EAU 2025",
+    "title": "EAU Cáncer renal - Abordaje quirúrgico",
+    "area": "ONCOLOGIA",
+    "tags": ["renal", "nefrectomia"],
+    "content": "La elección entre nefrectomía parcial y radical depende de complejidad tumoral, función renal basal y contexto clínico. El control de sangrado, isquemia y complicaciones postoperatorias debe monitorizarse sistemáticamente."
+  },
+  {
+    "source": "EAU 2025",
+    "title": "EAU Cáncer de vejiga - RTU y cistectomía",
+    "area": "ONCOLOGIA",
+    "tags": ["vejiga", "RTU", "cistectomia"],
+    "content": "La calidad de resección transuretral y el reporte histopatológico son determinantes para estadificación. En enfermedad avanzada, el manejo multidisciplinario y la optimización preoperatoria impactan complicaciones y estancia hospitalaria."
+  },
+  {
+    "source": "AUA 2024",
+    "title": "AUA Hematuria - Evaluación basada en riesgo",
+    "area": "DIAGNOSTICO",
+    "tags": ["hematuria", "riesgo"],
+    "content": "La evaluación de hematuria debe estratificarse por riesgo oncológico y factores clínicos. En pacientes de mayor riesgo, priorizar imagen y cistoscopia; en bajo riesgo, definir seguimiento estructurado para evitar sobreutilización."
+  },
+  {
+    "source": "AUA 2024",
+    "title": "AUA BPH/LUTS - Control sintomático",
+    "area": "FUNCIONAL",
+    "tags": ["IPSS", "LUTS", "BPH"],
+    "content": "La gravedad de síntomas LUTS se debe cuantificar con escalas validadas e integrar en decisiones terapéuticas. La evolución longitudinal del puntaje facilita medir respuesta y necesidad de escalamiento terapéutico."
+  },
+  {
+    "source": "AUA 2024",
+    "title": "AUA Infecciones urinarias complicadas",
+    "area": "INFECCIOSO",
+    "tags": ["UTI", "sepsis"],
+    "content": "En infección complicada, considerar estado hemodinámico, obstrucción urinaria, dispositivos y riesgo de bacterias resistentes. En compromiso sistémico, priorizar estabilización, cultivos y control del foco."
+  },
+  {
+    "source": "NCCN 2025",
+    "title": "NCCN Prostate Cancer - Integración clínico-patológica",
+    "area": "ONCOLOGIA",
+    "tags": ["NCCN", "prostate"],
+    "content": "La toma de decisiones debe integrar estadio, biomarcadores clínicos, comorbilidad y expectativas de vida. El seguimiento con desenlaces a 30 y 90 días fortalece la mejora continua y la comparación entre equipos quirúrgicos."
+  },
+  {
+    "source": "NCCN 2025",
+    "title": "NCCN Bladder Cancer - Ruta perioperatoria",
+    "area": "ONCOLOGIA",
+    "tags": ["bladder", "perioperatorio"],
+    "content": "Para cistectomía y tratamientos mayores, la optimización preoperatoria y el control de complicaciones tempranas impactan mortalidad, reingresos y duración de estancia."
+  },
+  {
+    "source": "NCCN 2025",
+    "title": "NCCN Kidney Cancer - Riesgo y seguimiento",
+    "area": "ONCOLOGIA",
+    "tags": ["kidney", "seguimiento"],
+    "content": "El seguimiento oncológico debe ajustarse al riesgo patológico y clínico. Se recomienda capturar recurrencia, progresión, reintervención y desenlaces funcionales renales para análisis longitudinal."
+  },
+  {
+    "source": "Seguridad del paciente",
+    "title": "Checklist perioperatorio y eventos adversos",
+    "area": "CALIDAD",
+    "tags": ["checklist", "complicaciones"],
+    "content": "La estandarización de checklist pre/intra/postoperatorio reduce eventos prevenibles. Registrar sangrado, transfusión, tiempos quirúrgicos y clasificación de complicaciones mejora trazabilidad y aprendizaje."
+  },
+  {
+    "source": "Epidemiología hospitalaria",
+    "title": "Vigilancia de AKI y disfunción hematológica",
+    "area": "EPIDEMIOLOGIA",
+    "tags": ["AKI", "laboratorios"],
+    "content": "El monitoreo serial de creatinina, hemoglobina, leucocitos, plaquetas, sodio y potasio permite identificar cohortes de riesgo y anticipar deterioro clínico durante hospitalización."
+  },
+  {
+    "source": "Gestión clínica",
+    "title": "Estancias prolongadas y flujo asistencial",
+    "area": "OPERATIVO",
+    "tags": ["estancia", "ocupacion", "camas"],
+    "content": "Relacionar diagnóstico, procedimiento, complicaciones y tiempos de alta permite identificar cuellos de botella en hospitalización y diseñar estrategias para reducción de estancia prolongada."
+  },
+  {
+    "source": "Oncología urológica",
+    "title": "Variables mínimas para auditoría oncológica",
+    "area": "ONCOLOGIA",
+    "tags": ["margen", "recurrencia", "supervivencia"],
+    "content": "Para análisis robusto se recomienda registrar estadio, comorbilidad, tratamiento, margen quirúrgico, reingreso, reintervención, recurrencia y estado vital por ventanas temporales estandarizadas."
+  },
+  {
+    "source": "Litiasis avanzada",
+    "title": "Indicadores de resultado en litiasis",
+    "area": "LITIASIS",
+    "tags": ["stone-free", "JJ"],
+    "content": "Los indicadores de impacto incluyen tasa libre de lito, necesidad de catéter JJ, retratamiento, complicaciones y recurrencia. Deben analizarse por tamaño, densidad y localización del cálculo."
+  },
+  {
+    "source": "Calidad y seguridad",
+    "title": "Gobernanza HITL en IA clínica",
+    "area": "GOBERNANZA",
+    "tags": ["HITL", "auditoria", "IA"],
+    "content": "Toda sugerencia clínica o técnica generada por IA debe pasar por revisión humana explícita, con auditoría de quién aprobó, cuándo y bajo qué evidencia se tomó la decisión."
+  }
+]

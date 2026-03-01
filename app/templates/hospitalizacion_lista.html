@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Hospitalización - IMSS Urología</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root {
+            --imss-verde: #13322B;
+            --imss-verde-2: #1c4c42;
+            --imss-dorado: #B38E5D;
+            --imss-fondo: #f4f6f9;
+        }
+        body { font-family: 'Montserrat', sans-serif; background: var(--imss-fondo); margin: 0; padding: 20px; }
+        .container { max-width: 1300px; margin: auto; background: white; border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,0.10); padding: 26px; }
+        .global-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+        .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:var(--imss-verde); background:#fff; }
+        .nav-chip.active { background:var(--imss-dorado); border-color:#9e7a4c; color:#13322B; }
+        .breadcrumbs { font-size:12px; color:#5f6d68; margin-bottom:10px; }
+        h1 { color: var(--imss-verde); border-bottom: 3px solid var(--imss-dorado); padding-bottom: 10px; margin: 0 0 12px 0; }
+        .icon-grid { display: grid; grid-template-columns: repeat(6, minmax(160px, 1fr)); gap: 14px; margin: 16px 0 20px; }
+        .icon-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 118px;
+            border-radius: 10px;
+            border: 1px solid #d5ddd8;
+            text-decoration: none;
+            color: var(--imss-verde);
+            background: #fbfcfc;
+            transition: .18s ease;
+            text-align: center;
+            padding: 12px;
+        }
+        .icon-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(19,50,43,0.18); border-color: var(--imss-dorado); }
+        .icon { width: 52px; height: 52px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: var(--imss-verde); color: #fff; font-size: 24px; }
+        .title { font-weight: 700; }
+        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 8px 0 16px; }
+        .card { border: 1px solid #e2e7e5; border-left: 5px solid var(--imss-dorado); border-radius: 8px; background: #fafcfb; padding: 10px 12px; }
+        .card .v { font-weight: 800; color: var(--imss-verde); font-size: 22px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+        th { background: var(--imss-verde); color: #fff; padding: 10px; text-align: left; font-size: 13px; }
+        td { padding: 9px; border-bottom: 1px solid #e3e7e6; font-size: 13px; }
+        .btn { background: var(--imss-verde); color: #fff; text-decoration: none; border-radius: 6px; padding: 10px 14px; display: inline-block; margin-top: 16px; }
+        .btn-dorado { background: var(--imss-dorado); color: #fff; }
+        @media (max-width: 1180px) {
+            .icon-grid { grid-template-columns: repeat(3, minmax(170px, 1fr)); }
+        }
+        @media (max-width: 760px) {
+            .icon-grid { grid-template-columns: repeat(2, minmax(145px, 1fr)); }
+        }
+
+        /* ========== ADDITIVE ENHANCEMENTS ========== */
+
+        /* Top gradient border effect on container */
+        .container {
+            position: relative;
+            border-top: 4px solid transparent;
+            border-image: linear-gradient(90deg, var(--imss-verde), var(--imss-dorado)) 1;
+        }
+
+        /* Institutional header band below page title */
+        .institutional-band {
+            background: linear-gradient(90deg, var(--imss-verde), var(--imss-verde-2));
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.92;
+        }
+        .institutional-band span.band-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--imss-dorado);
+            display: inline-block;
+        }
+
+        /* Summary card enhancements */
+        .card {
+            transition: transform 0.22s ease, box-shadow 0.22s ease, border-left-color 0.22s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(19,50,43,0.13);
+            border-left-color: var(--imss-verde);
+        }
+        .card {
+            border-left: 5px solid;
+            border-image: linear-gradient(180deg, var(--imss-dorado), var(--imss-verde)) 1;
+        }
+
+        /* Table row hover and alternating colors */
+        table tbody tr:nth-child(even) {
+            background: #f8faf9;
+        }
+        table tbody tr:hover {
+            background: rgba(179,142,93,0.08);
+            transition: background 0.18s ease;
+        }
+
+        /* Sticky table headers */
+        thead th, table tr:first-child th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(19,50,43,0.10);
+        }
+
+        /* Icon card fadeInUp animation on load */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .icon-card {
+            animation: fadeInUp 0.5s ease both;
+        }
+        .icon-card:nth-child(1) { animation-delay: 0.04s; }
+        .icon-card:nth-child(2) { animation-delay: 0.10s; }
+        .icon-card:nth-child(3) { animation-delay: 0.16s; }
+        .icon-card:nth-child(4) { animation-delay: 0.22s; }
+        .icon-card:nth-child(5) { animation-delay: 0.28s; }
+        .icon-card:nth-child(6) { animation-delay: 0.34s; }
+        .icon-card:nth-child(7) { animation-delay: 0.40s; }
+        .icon-card:nth-child(8) { animation-delay: 0.46s; }
+
+        /* Command Center link styling in table */
+        .cc-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #13322B, #1a4a3f);
+            color: #fff;
+            font-weight: 700;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+        .cc-link:hover {
+            background: linear-gradient(135deg, var(--imss-dorado), #c9a46e);
+            transform: scale(1.06);
+        }
+
+        /* ========== END ADDITIVE ENHANCEMENTS ========== */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="global-nav">
+            <a class="nav-chip" href="/">Menu</a>
+            <a class="nav-chip" href="/consulta_externa">Consulta Externa</a>
+            <a class="nav-chip active" href="/hospitalizacion">Hospitalizacion</a>
+            <a class="nav-chip" href="/hospitalizacion/metadata">Hospitalizacion Metadata</a>
+            <a class="nav-chip" href="/quirofano">Quirofano</a>
+            <a class="nav-chip" href="/expediente">Expediente</a>
+            <a class="nav-chip" href="/reporte">Reporte</a>
+        </div>
+        <div class="breadcrumbs">Menu principal -> Hospitalizacion</div>
+        <h1>🏥 MODULO DE HOSPITALIZACION</h1>
+
+        <!-- ADDITIVE: Institutional header band -->
+        <div class="institutional-band">
+            <span class="band-dot"></span>
+            Instituto Mexicano del Seguro Social &mdash; Servicio de Urologia &mdash; Control Hospitalario
+            <span class="band-dot"></span>
+        </div>
+
+        <div class="icon-grid">
+            <a class="icon-card" href="/hospitalizacion/ingresar">
+                <span class="icon">➕</span>
+                <span class="title">1 INGRESAR PACIENTE</span>
+            </a>
+            <a class="icon-card" href="/hospitalizacion/censo">
+                <span class="icon">📋</span>
+                <span class="title">2 CENSO DIARIO</span>
+            </a>
+            <a class="icon-card" href="/hospitalizacion/guardia">
+                <span class="icon">🩺</span>
+                <span class="title">3 GUARDIA</span>
+            </a>
+            <a class="icon-card" href="/hospitalizacion/reporte">
+                <span class="icon">📊</span>
+                <span class="title">4 REPORTE ESTADISTICO</span>
+            </a>
+            <a class="icon-card" href="/hospitalizacion/incapacidades">
+                <span class="icon">📄</span>
+                <span class="title">5 INCAPACIDADES</span>
+            </a>
+            <a class="icon-card" href="/hospitalizacion/alta">
+                <span class="icon">✅</span>
+                <span class="title">6 ALTA HOSPITALARIA</span>
+            </a>
+            <a class="icon-card" href="/ward-round" style="border-color:#B38E5D;background:#fffaf3;">
+                <span class="icon" style="background:#B38E5D;">🏥</span>
+                <span class="title">PASE DE VISITA</span>
+            </a>
+            <!-- ADDITIVE: 8th card - Command Center -->
+            <a class="icon-card" href="/command-center?consulta_id=0" style="border-color:#0f3027;background:linear-gradient(135deg,#edf8f3,#fffaf3);">
+                <span class="icon" style="background:linear-gradient(135deg,#13322B,#1a4a3f);">🎯</span>
+                <span class="title">COMMAND CENTER</span>
+            </a>
+        </div>
+
+        <div class="summary">
+            <div class="card"><div>Total registros</div><div class="v">{{ resumen.total }}</div></div>
+            <div class="card"><div>Activos</div><div class="v">{{ resumen.activos }}</div></div>
+            <div class="card"><div>Programados</div><div class="v">{{ resumen.programados }}</div></div>
+            <div class="card"><div>Urgencias</div><div class="v">{{ resumen.urgencias }}</div></div>
+            <div class="card"><div>Pend. incapacidad</div><div class="v">{{ resumen.pendiente_incapacidad }}</div></div>
+        </div>
+
+        <h2 style="color:var(--imss-verde); margin-top: 8px;">Pacientes Hospitalizados (Activos)</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Paciente</th>
+                <th>Ingreso</th>
+                <th>Motivo</th>
+                <th>Servicio</th>
+                <th>Cama</th>
+                <th>Tipo ingreso</th>
+                <th>Estatus</th>
+                <th>Expediente</th>
+                <th>Smart</th>
+                <!-- ADDITIVE: Command Center column header -->
+                <th>CC</th>
+                <th>Captura IA</th>
+                <th>Alta</th>
+            </tr>
+            {% for hosp in hospitalizaciones %}
+            <tr>
+                <td>{{ hosp.id }}</td>
+                <td>{{ hosp.paciente_nombre }}</td>
+                <td>{{ hosp.fecha_ingreso }}</td>
+                <td>{{ hosp.motivo }}</td>
+                <td>{{ hosp.servicio }}</td>
+                <td>{{ hosp.cama }}</td>
+                <td>{{ hosp.ingreso_tipo }}</td>
+                <td>{{ hosp.estatus }}</td>
+                <td><a href="/expediente?consulta_id={{ hosp.consulta_id }}">Ver</a></td>
+                <td>{% if hosp.consulta_id %}<a href="/expediente-smart?consulta_id={{ hosp.consulta_id }}" style="color:#B38E5D;font-weight:700;">Smart</a>{% else %}---{% endif %}</td>
+                <!-- ADDITIVE: Command Center column link -->
+                <td>{% if hosp.consulta_id %}<a class="cc-link" href="/command-center?consulta_id={{ hosp.consulta_id }}">🎯 CC</a>{% else %}---{% endif %}</td>
+                <td>
+                    {% if hosp.consulta_id %}
+                    <a href="/expediente/inpatient-captura?consulta_id={{ hosp.consulta_id }}&hospitalizacion_id={{ hosp.id }}#nota-diaria">Abrir</a>
+                    {% else %}
+                    <a href="/expediente/inpatient-captura?nss={{ hosp.nss }}&nombre={{ hosp.paciente_nombre|replace(' ', '%20') }}&hospitalizacion_id={{ hosp.id }}#nota-diaria">Abrir</a>
+                    {% endif %}
+                </td>
+                <td><a href="/hospitalizacion/alta?hospitalizacion_id={{ hosp.id }}">Egresar</a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="13" style="text-align:center;">No hay hospitalizaciones activas</td></tr>
+            {% endfor %}
+        </table>
+
+        <a href="/hospitalizacion/ingresar" class="btn">➕ NUEVO INGRESO</a>
+        <a href="/" class="btn btn-dorado">← VOLVER AL MENU</a>
+    </div>
+</body>
+</html>

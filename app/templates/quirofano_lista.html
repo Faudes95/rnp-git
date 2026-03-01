@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Quirófano - IMSS Urología</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); padding: 30px; }
+        h1 { color: #13322B; border-bottom: 3px solid #B38E5D; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #13322B; color: white; padding: 12px; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; }
+        .btn { background: #13322B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px; }
+        .btn:hover { background: #0e2621; }
+        .btn-dorado { background: #B38E5D; }
+        .filters { margin-top: 18px; display: grid; grid-template-columns: 220px 1fr 170px; gap: 10px; }
+        .filters select, .filters input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .filters button { background: #13322B; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; }
+        .small { color: #5c6670; font-size: 13px; }
+        .row-actions a { display: inline-block; margin-bottom: 4px; }
+        .cancel-box { margin-top: 6px; border: 1px dashed #b38e5d; border-radius: 6px; padding: 6px; background: #faf7f1; }
+        .cancel-box summary { cursor: pointer; font-weight: 700; color: #13322B; }
+        .cancel-form { display: grid; gap: 6px; margin-top: 8px; }
+        .cancel-form select, .cancel-form input, .cancel-form textarea { width: 100%; padding: 7px; border: 1px solid #c8c8c8; border-radius: 4px; font-size: 12px; }
+        .cancel-form button { background: #7f2d2d; color: #fff; border: none; border-radius: 4px; padding: 8px; cursor: pointer; font-weight: 700; }
+        .status-cancelada { color: #7f2d2d; font-weight: 700; }
+        .cancel-note { font-size: 12px; color: #7f2d2d; margin-top: 4px; line-height: 1.25; }
+        /* ADITIVO: Enhanced visual styling */
+        .container { position: relative; overflow: hidden; border-top: 4px solid #13322B; }
+        .container::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, #13322B, #B38E5D, #13322B); }
+        h1 { border-image: linear-gradient(90deg, #13322B, #B38E5D) 1; }
+        table { border-radius: 8px; overflow: hidden; }
+        th { background: linear-gradient(180deg, #13322B, #0f3027) !important; font-size: 11px; letter-spacing: 0.4px; text-transform: uppercase; }
+        td { transition: background 0.15s; }
+        tr:hover td { background: #fffaf3; }
+        .btn { transition: all 0.2s; box-shadow: 0 2px 8px rgba(19,50,43,0.2); }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(19,50,43,0.3); }
+        .filters { border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px; background: #fafcfb; }
+        .filters select, .filters input { border-radius: 6px; border: 1.5px solid #cdd5db; transition: border-color 0.2s; }
+        .filters select:focus, .filters input:focus { border-color: #2a7a6c; outline: none; box-shadow: 0 0 0 3px rgba(19,50,43,0.08); }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔪 MÓDULO DE QUIRÓFANO</h1>
+        <h2>Lista de Pacientes Programados</h2>
+        <p class="small">Listado interconectado desde la base quirúrgica dedicada.</p>
+
+        <form method="get" action="/quirofano/programada/lista" class="filters">
+            <select name="campo">
+                <option value="">Campo de búsqueda</option>
+                <option value="nss" {% if campo == "nss" %}selected{% endif %}>NSS</option>
+                <option value="paciente_nombre" {% if campo == "paciente_nombre" %}selected{% endif %}>Nombre</option>
+                <option value="sexo" {% if campo == "sexo" %}selected{% endif %}>Sexo</option>
+                <option value="patologia" {% if campo == "patologia" %}selected{% endif %}>Patología</option>
+                <option value="procedimiento_programado" {% if campo == "procedimiento_programado" %}selected{% endif %}>Procedimiento</option>
+                <option value="hgz" {% if campo == "hgz" %}selected{% endif %}>HGZ</option>
+                <option value="estatus" {% if campo == "estatus" %}selected{% endif %}>Estatus</option>
+            </select>
+            <input type="text" name="q" value="{{ q or '' }}" placeholder="Valor a buscar...">
+            <button type="submit">Buscar</button>
+        </form>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>NSS</th>
+                <th>Paciente</th>
+                <th>Edad</th>
+                <th>Sexo</th>
+                <th>Patología</th>
+                <th>Procedimiento</th>
+                <th>Insumos</th>
+                <th>HGZ</th>
+                <th>Fecha Programada</th>
+                <th>Estatus</th>
+                <th>Acciones</th>
+            </tr>
+            {% for q in quirofanos %}
+            <tr>
+                <td>{{ q.id }}</td>
+                <td>{{ q.nss or "-" }}</td>
+                <td>{{ q.paciente_nombre }}</td>
+                <td>{{ q.edad or "-" }}</td>
+                <td>{{ q.sexo or "-" }}</td>
+                <td>{{ q.patologia or "-" }}</td>
+                <td>{{ q.procedimiento_programado or q.procedimiento }}</td>
+                <td>{{ q.insumos_solicitados or "-" }}</td>
+                <td>{{ q.hgz or "-" }}</td>
+                <td>{{ q.fecha_programada }}</td>
+                <td>
+                    {% if (q.estatus or "") == "CANCELADA" %}
+                    <span class="status-cancelada">CANCELADA</span>
+                    {% else %}
+                    {{ q.estatus }}
+                    {% endif %}
+                </td>
+                <td class="row-actions">
+                    {% if q.surgical_programacion_id %}
+                    <a href="/quirofano/programada/{{ q.surgical_programacion_id }}/postquirurgica">Nota postquirúrgica</a><br>
+                    {% endif %}
+                    <a href="/expediente?consulta_id={{ q.consulta_id }}">Ver expediente</a>
+                    {% if q.surgical_programacion_id and (q.estatus or "") != "REALIZADA" %}
+                    <details class="cancel-box">
+                        <summary>Marcar cancelada</summary>
+                        <form method="post" action="/quirofano/programada/cancelar" class="cancel-form">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="surgical_programacion_id" value="{{ q.surgical_programacion_id }}">
+                            <select name="cancelacion_codigo" required>
+                                <option value="">Seleccionar concepto...</option>
+                                {% for item in cancelacion_conceptos %}
+                                <option value="{{ item.codigo }}">{{ item.codigo }} · {{ item.concepto }} ({{ item.categoria }})</option>
+                                {% endfor %}
+                            </select>
+                            <textarea name="cancelacion_detalle" rows="2" placeholder="Detalle adicional (opcional)"></textarea>
+                            <button type="submit">Confirmar cancelación</button>
+                        </form>
+                    </details>
+                    {% endif %}
+                    {% if q.cancelacion_concepto %}
+                    <div class="cancel-note">
+                        {{ q.cancelacion_codigo }} · {{ q.cancelacion_concepto }}<br>
+                        {{ q.cancelacion_categoria }}{% if q.cancelacion_fecha %} · {{ q.cancelacion_fecha }}{% endif %}
+                        {% if q.cancelacion_detalle %}<br>Detalle: {{ q.cancelacion_detalle }}{% endif %}
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="12" style="text-align:center;">No hay cirugías programadas</td></tr>
+            {% endfor %}
+        </table>
+        <a href="/quirofano/nuevo" class="btn">➕ PROGRAMAR CIRUGÍA</a>
+        <br><br>
+        <a href="/quirofano/programada" class="btn btn-dorado">← VOLVER</a>
+    </div>
+</body>
+</html>

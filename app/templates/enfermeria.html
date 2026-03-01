@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RNP IMSS — Hoja de Enfermería</title>
+<link href="/static/css/rnp_redesign.css" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f3;min-height:100vh}
+.top-bar{background:linear-gradient(135deg,#006b3f,#00a86b);color:white;padding:16px 24px;
+  display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.top-bar h1{font-size:1.2rem;font-weight:600}
+.top-bar a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.85rem;
+  padding:6px 14px;border:1px solid rgba(255,255,255,0.3);border-radius:8px}
+.container{max-width:1100px;margin:24px auto;padding:0 20px}
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#f5f5f5;border-radius:12px;padding:4px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:120px;padding:10px;border:none;background:none;border-radius:10px;
+  cursor:pointer;font-size:0.82rem;font-weight:500;color:#666;transition:all 0.2s}
+.tab-btn.active{background:white;color:#006b3f;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.tab-content{display:none}.tab-content.active{display:block}
+.card{background:white;border-radius:16px;padding:24px;margin-bottom:16px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+.card h2{font-size:1rem;color:#1a5e3a;margin-bottom:14px;padding-bottom:8px;
+  border-bottom:2px solid #e8f5e9;display:flex;align-items:center;gap:8px}
+.card h2 svg{width:20px;height:20px;fill:#006b3f}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.form-group{margin-bottom:10px}
+.form-group label{display:block;font-size:0.75rem;font-weight:600;color:#555;margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;
+  border:1.5px solid #ddd;border-radius:8px;font-size:0.88rem;outline:none;transition:border 0.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#006b3f}
+.btn{padding:10px 24px;border:none;border-radius:10px;font-weight:600;cursor:pointer;
+  font-size:0.88rem;transition:all 0.2s}
+.btn-primary{background:linear-gradient(135deg,#006b3f,#00a86b);color:white}
+.btn-primary:hover{box-shadow:0 4px 12px rgba(0,107,63,0.3)}
+.btn-secondary{background:#f5f5f5;color:#333}
+.balance-card{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:12px}
+.balance-item{text-align:center;padding:16px;border-radius:12px;background:#f8faf9;border:1px solid #e8e8e8}
+.balance-item .value{font-size:1.8rem;font-weight:700}
+.balance-item .label{font-size:0.75rem;color:#666;margin-top:4px}
+.balance-item.positive .value{color:#2e7d32}
+.balance-item.negative .value{color:#c62828}
+.balance-item.neutral .value{color:#1565c0}
+/* Historial table */
+.data-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.data-table th{background:#f5f5f5;padding:10px;text-align:left;font-weight:600;color:#444;
+  border-bottom:2px solid #e0e0e0;position:sticky;top:0}
+.data-table td{padding:10px;border-bottom:1px solid #f0f0f0}
+.data-table tr:hover{background:#f8faf9}
+.turno-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600}
+.turno-mat{background:#e3f2fd;color:#1565c0}
+.turno-ves{background:#fff3e0;color:#e65100}
+.turno-noc{background:#ede7f6;color:#4527a0}
+.turno-ja{background:#e8f5e9;color:#2e7d32}
+.estado-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600}
+.estado-estable{background:#e8f5e9;color:#2e7d32}
+.estado-delicado{background:#fff3e0;color:#e65100}
+.estado-grave{background:#ffebee;color:#c62828}
+.estado-critico{background:#f44336;color:white;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.med-list{font-size:0.78rem;color:#555}
+.med-list span{display:block;padding:2px 0;border-bottom:1px dotted #eee}
+.empty-state{text-align:center;padding:40px;color:#aaa}
+@media(max-width:768px){.form-grid{grid-template-columns:1fr 1fr}.balance-card{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="/">← Menú</a>
+  <h1>👩‍⚕️ Hoja de Enfermería</h1>
+</div>
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('registro',this)">📝 Nuevo Registro</button>
+    <button class="tab-btn" onclick="showTab('balance',this)">💧 Balance Hídrico</button>
+    <button class="tab-btn" onclick="showTab('historial',this)">📋 Historial</button>
+  </div>
+
+  <!-- TAB: Nuevo Registro -->
+  <div id="tab-registro" class="tab-content active">
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Identificación</h2>
+      <div class="form-grid">
+        <div class="form-group"><label>NSS *</label><input type="text" id="enfNss" maxlength="10" placeholder="0000000000"></div>
+        <div class="form-group"><label>Cama</label><input type="text" id="enfCama" placeholder="Ej: 301-A"></div>
+        <div class="form-group"><label>Turno *</label>
+          <select id="enfTurno"><option value="MATUTINO">Matutino</option><option value="VESPERTINO">Vespertino</option>
+            <option value="NOCTURNO">Nocturno</option><option value="JORNADA_ACUMULADA">Jornada Acumulada</option></select>
+        </div>
+        <div class="form-group"><label>Estado General</label>
+          <select id="enfEstado"><option value="ESTABLE">Estable</option><option value="DELICADO">Delicado</option>
+            <option value="GRAVE">Grave</option><option value="CRITICO">Crítico</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3z"/></svg> Signos Vitales</h2>
+      <div class="form-grid">
+        <div class="form-group"><label>TA Sistólica (mmHg)</label><input type="number" id="enfTAS" placeholder="120"></div>
+        <div class="form-group"><label>TA Diastólica (mmHg)</label><input type="number" id="enfTAD" placeholder="80"></div>
+        <div class="form-group"><label>FC (lpm)</label><input type="number" id="enfFC" placeholder="72"></div>
+        <div class="form-group"><label>FR (rpm)</label><input type="number" id="enfFR" placeholder="18"></div>
+        <div class="form-group"><label>Temp (°C)</label><input type="number" id="enfTemp" step="0.1" placeholder="36.5"></div>
+        <div class="form-group"><label>SpO₂ (%)</label><input type="number" id="enfSpO2" placeholder="96"></div>
+        <div class="form-group"><label>Dolor (EVA 0-10)</label><input type="number" id="enfDolor" min="0" max="10" placeholder="0"></div>
+        <div class="form-group"><label>Glasgow</label><input type="number" id="enfGlasgow" min="3" max="15" placeholder="15"></div>
+        <div class="form-group"><label>Peso (kg)</label><input type="number" id="enfPeso" step="0.1" placeholder="70"></div>
+        <div class="form-group"><label>Talla (m)</label><input type="number" id="enfTalla" step="0.01" placeholder="1.70"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24"><path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/></svg> Control de Líquidos</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <h3 style="font-size:0.85rem;color:#2e7d32;margin-bottom:10px">📥 Ingresos (mL)</h3>
+          <div class="form-group"><label>Líquidos IV</label><input type="number" id="enfLiqIV" placeholder="0"></div>
+          <div class="form-group"><label>Líquidos Oral</label><input type="number" id="enfLiqOral" placeholder="0"></div>
+          <div class="form-group"><label>Hemoderivados</label><input type="number" id="enfHemo" placeholder="0"></div>
+          <div class="form-group"><label>Medicamentos IV</label><input type="number" id="enfMedIV" placeholder="0"></div>
+          <div class="form-group"><label>Otros Ingresos</label><input type="number" id="enfOtrosIng" placeholder="0"></div>
+        </div>
+        <div>
+          <h3 style="font-size:0.85rem;color:#c62828;margin-bottom:10px">📤 Egresos (mL)</h3>
+          <div class="form-group"><label>Diuresis</label><input type="number" id="enfDiuresis" placeholder="0"></div>
+          <div class="form-group"><label>Evacuaciones</label><input type="number" id="enfEvac" placeholder="0"></div>
+          <div class="form-group"><label>Vómito</label><input type="number" id="enfVomito" placeholder="0"></div>
+          <div class="form-group"><label>Sangrado</label><input type="number" id="enfSangrado" placeholder="0"></div>
+          <div class="form-group"><label>Drenajes</label><input type="number" id="enfDrenaje" placeholder="0"></div>
+          <div class="form-group"><label>Otros Egresos</label><input type="number" id="enfOtrosEgr" placeholder="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6z"/></svg> Dispositivos y Catéteres</h2>
+      <div class="form-grid">
+        <div class="form-group"><label>Catéter Venoso</label><input type="text" id="enfCatVenoso" placeholder="Periférico/Central"></div>
+        <div class="form-group"><label>Sonda Foley</label><select id="enfFoley"><option value="">No</option><option value="true">Sí</option></select></div>
+        <div class="form-group"><label>SNG</label><select id="enfSNG"><option value="">No</option><option value="true">Sí</option></select></div>
+        <div class="form-group"><label>Tipo Drenaje</label><input type="text" id="enfDrenajeTipo" placeholder="Penrose/Blake"></div>
+        <div class="form-group"><label>Oxígeno</label><input type="text" id="enfO2Tipo" placeholder="Puntas nasales"></div>
+        <div class="form-group"><label>O₂ Litros/min</label><input type="number" id="enfO2Litros" step="0.5" placeholder="3"></div>
+        <div class="form-group"><label>Dieta</label><input type="text" id="enfDieta" placeholder="Blanda / Líquida"></div>
+        <div class="form-group"><label>Movilidad</label><select id="enfMovilidad"><option value="AMBULATORIO">Ambulatorio</option>
+          <option value="SILLA">Silla de ruedas</option><option value="CAMA">En cama</option></select></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg> Notas de Enfermería</h2>
+      <div class="form-group"><label>Nota de Enfermería</label>
+        <textarea id="enfNota" rows="3" placeholder="Descripción del estado del paciente, hallazgos, eventos..."></textarea></div>
+      <div class="form-group"><label>Intervenciones Realizadas</label>
+        <textarea id="enfIntervenciones" rows="2" placeholder="Intervenciones y procedimientos realizados..."></textarea></div>
+      <div class="form-group"><label>Plan de Cuidados</label>
+        <textarea id="enfPlan" rows="2" placeholder="Plan de cuidados para el siguiente turno..."></textarea></div>
+      <div class="form-grid" style="margin-top:10px">
+        <div class="form-group"><label>Enfermera</label><input type="text" id="enfEnfermera" placeholder="Nombre completo"></div>
+        <div class="form-group"><label>Matrícula</label><input type="text" id="enfMatricula" placeholder="000000"></div>
+      </div>
+      <div style="text-align:right;margin-top:14px">
+        <button class="btn btn-primary" onclick="submitRegistro()">💾 Guardar Registro</button>
+      </div>
+      <div id="registroResult" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <!-- TAB: Balance Hídrico -->
+  <div id="tab-balance" class="tab-content">
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24"><path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/></svg> Balance Hídrico 24h</h2>
+      <div class="form-group" style="max-width:300px">
+        <label>NSS del Paciente</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="balanceNss" maxlength="10" placeholder="0000000000">
+          <button class="btn btn-primary" onclick="loadBalance()">Calcular</button>
+        </div>
+      </div>
+      <div id="balanceResult">
+        <div class="empty-state">Ingrese un NSS para calcular el balance hídrico</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Historial -->
+  <div id="tab-historial" class="tab-content">
+    <div class="card">
+      <h2><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg> Historial de Registros</h2>
+      <div class="form-group" style="max-width:300px">
+        <label>NSS del Paciente</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="histEnfNss" maxlength="10" placeholder="0000000000">
+          <button class="btn btn-primary" onclick="loadHistorial()">Buscar</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;margin-top:14px">
+        <table class="data-table" id="historialTable">
+          <thead><tr><th>Fecha</th><th>Turno</th><th>TA</th><th>FC</th><th>Temp</th><th>SpO₂</th><th>Dolor</th><th>Balance</th><th>Estado</th><th>Enfermera</th></tr></thead>
+          <tbody id="historialBody"><tr><td colspan="10" class="empty-state">Ingrese un NSS</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function cleanUrl(p){try{return new URL(p,window.location.origin).href}catch(e){return p}}
+function showTab(name,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function v(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function n(id){const val=parseFloat(v(id));return isNaN(val)?null:val;}
+
+async function submitRegistro(){
+  const nss=v('enfNss');
+  if(!nss||nss.length!==10){alert('NSS debe tener 10 dígitos');return;}
+  const payload={
+    nss:nss,cama:v('enfCama'),turno:v('enfTurno'),estado_general:v('enfEstado'),
+    ta_sistolica:n('enfTAS'),ta_diastolica:n('enfTAD'),fc:n('enfFC'),fr:n('enfFR'),
+    temp:n('enfTemp'),spo2:n('enfSpO2'),dolor_eva:n('enfDolor'),glasgow:n('enfGlasgow'),
+    peso_kg:n('enfPeso'),talla_m:n('enfTalla'),
+    liquidos_iv_ml:n('enfLiqIV'),liquidos_oral_ml:n('enfLiqOral'),hemoderivados_ml:n('enfHemo'),
+    medicamentos_iv_ml:n('enfMedIV'),otros_ingresos_ml:n('enfOtrosIng'),
+    diuresis_ml:n('enfDiuresis'),evacuaciones_ml:n('enfEvac'),vomito_ml:n('enfVomito'),
+    sangrado_ml:n('enfSangrado'),drenajes_ml:n('enfDrenaje'),otros_egresos_ml:n('enfOtrosEgr'),
+    cateter_venoso:v('enfCatVenoso'),sonda_foley:v('enfFoley')==='true'||null,
+    sonda_nasogastrica:v('enfSNG')==='true'||null,drenaje_tipo:v('enfDrenajeTipo'),
+    oxigeno_tipo:v('enfO2Tipo'),oxigeno_litros:n('enfO2Litros'),tipo_dieta:v('enfDieta'),
+    movilidad:v('enfMovilidad'),nota_enfermeria:v('enfNota'),intervenciones:v('enfIntervenciones'),
+    plan_cuidados:v('enfPlan'),enfermera_nombre:v('enfEnfermera'),enfermera_matricula:v('enfMatricula'),
+    medicamentos:[]
+  };
+  try{
+    const res=await fetch(cleanUrl('/api/enfermeria/registro'),{method:'POST',
+      headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(payload)});
+    const data=await res.json();
+    const el=document.getElementById('registroResult');
+    if(data.ok){
+      el.innerHTML=`<div style="background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32;padding:14px;border-radius:10px">
+        ✅ <strong>Registro guardado</strong> · ID: ${data.registro_id} · Balance: ${data.balance_hidrico_ml} mL · Turno: ${data.turno}</div>`;
+    }else{
+      el.innerHTML=`<div style="background:#ffebee;border:1px solid #ef9a9a;color:#c62828;padding:14px;border-radius:10px">❌ ${data.error}</div>`;
+    }
+  }catch(err){
+    document.getElementById('registroResult').innerHTML='<div style="background:#fff3e0;padding:14px;border-radius:10px;color:#e65100">Error de conexión</div>';
+  }
+}
+
+async function loadBalance(){
+  const nss=v('balanceNss');if(!nss){alert('Ingrese NSS');return;}
+  try{
+    const res=await fetch(cleanUrl(`/api/enfermeria/balance/${nss}`),{credentials:'same-origin'});
+    const data=await res.json();
+    if(!data.ok){document.getElementById('balanceResult').innerHTML='<div class="empty-state">Sin datos</div>';return;}
+    const b=data.balance_total_ml;const cls=b>0?'positive':b<0?'negative':'neutral';
+    let html=`<div class="balance-card">
+      <div class="balance-item positive"><div class="value">${data.total_ingresos_ml}</div><div class="label">Total Ingresos (mL)</div></div>
+      <div class="balance-item negative"><div class="value">${data.total_egresos_ml}</div><div class="label">Total Egresos (mL)</div></div>
+      <div class="balance-item ${cls}"><div class="value">${b>0?'+':''}${b}</div><div class="label">Balance Hídrico (mL)</div></div>
+    </div>`;
+    if(data.turnos.length){
+      html+='<div style="margin-top:16px"><table class="data-table"><thead><tr><th>Turno</th><th>Fecha</th><th>Ingresos</th><th>Egresos</th><th>Balance</th></tr></thead><tbody>';
+      data.turnos.forEach(t=>{
+        html+=`<tr><td>${t.turno}</td><td>${t.fecha||''}</td><td style="color:#2e7d32">+${t.ingresos_ml}</td><td style="color:#c62828">-${t.egresos_ml}</td><td><strong>${t.balance_ml>0?'+':''}${t.balance_ml}</strong></td></tr>`;
+      });
+      html+='</tbody></table></div>';
+    }
+    document.getElementById('balanceResult').innerHTML=html;
+  }catch(err){document.getElementById('balanceResult').innerHTML='<div class="empty-state">Error de conexión</div>';}
+}
+
+async function loadHistorial(){
+  const nss=v('histEnfNss');if(!nss){alert('Ingrese NSS');return;}
+  try{
+    const res=await fetch(cleanUrl(`/api/enfermeria/patient/${nss}`),{credentials:'same-origin'});
+    const data=await res.json();
+    const tbody=document.getElementById('historialBody');
+    if(!data.ok||!data.registros.length){tbody.innerHTML='<tr><td colspan="10" class="empty-state">Sin registros</td></tr>';return;}
+    tbody.innerHTML=data.registros.map(r=>{
+      const tc={'MATUTINO':'turno-mat','VESPERTINO':'turno-ves','NOCTURNO':'turno-noc','JORNADA_ACUMULADA':'turno-ja'}[r.turno]||'';
+      const ec={'ESTABLE':'estado-estable','DELICADO':'estado-delicado','GRAVE':'estado-grave','CRITICO':'estado-critico'}[r.estado_general]||'';
+      return `<tr>
+        <td>${r.fecha?r.fecha.slice(0,16):''}</td>
+        <td><span class="turno-badge ${tc}">${r.turno}</span></td>
+        <td>${r.ta||'—'}</td><td>${r.fc||'—'}</td><td>${r.temp||'—'}</td><td>${r.spo2||'—'}%</td>
+        <td>${r.dolor_eva!=null?r.dolor_eva:'—'}</td>
+        <td><strong>${r.balance_hidrico_ml!=null?(r.balance_hidrico_ml>0?'+':'')+r.balance_hidrico_ml:'—'}</strong></td>
+        <td>${r.estado_general?`<span class="estado-badge ${ec}">${r.estado_general}</span>`:''}</td>
+        <td>${r.enfermera||'—'}</td></tr>`;
+    }).join('');
+  }catch(err){document.getElementById('historialBody').innerHTML='<tr><td colspan="10" class="empty-state">Error</td></tr>';}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captura Intrahospitalaria</title>
+    <style>
+        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; --fondo:#f4f6f9; }
+        body { margin:0; padding:20px; font-family:'Montserrat',sans-serif; background:var(--fondo); color:#13322B; }
+        .container { max-width:1380px; margin:auto; background:#fff; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.1); padding:22px; }
+        h1 { margin:0 0 8px; color:var(--imss-verde); }
+        h2 { margin:0 0 10px; color:var(--imss-verde); font-size:20px; }
+        h3 { margin:0 0 10px; color:var(--imss-verde); font-size:16px; }
+        .muted { color:#4b5563; font-size:13px; }
+        .toolbar { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 16px; }
+        .btn { text-decoration:none; border:0; border-radius:8px; background:var(--imss-verde); color:#fff; padding:9px 12px; font-weight:700; cursor:pointer; }
+        .btn.alt { background:var(--imss-dorado); color:#1d1d1d; }
+        .ok { margin:8px 0; background:#ecf8ef; border:1px solid #b6dfbf; color:#1f5f2f; border-radius:8px; padding:8px 10px; }
+        .err { margin:8px 0; background:#fdeaea; border:1px solid #efb9b9; color:#8d1b1b; border-radius:8px; padding:8px 10px; }
+        .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:10px; }
+        .grid-small { display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px; }
+        .block { border:1px solid #dce5e0; border-left:5px solid var(--imss-dorado); border-radius:8px; padding:12px; background:#fbfdfc; margin-top:14px; }
+        label { display:block; font-size:12px; color:#374151; margin-bottom:4px; }
+        input, select, textarea { width:100%; box-sizing:border-box; border:1px solid #d1d5db; border-radius:7px; padding:8px; font-family:'Montserrat',sans-serif; }
+        textarea { min-height:80px; }
+        table { width:100%; border-collapse:collapse; margin-top:8px; }
+        th { background:var(--imss-verde); color:#fff; text-align:left; padding:8px; font-size:12px; }
+        td { border-bottom:1px solid #eef2f7; padding:8px; font-size:12px; vertical-align:top; }
+        .tiny { font-size:11px; color:#6b7280; }
+
+        .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:8px; margin:10px 0; }
+        .kpi { border:1px solid #dbe4df; border-left:4px solid var(--imss-dorado); border-radius:8px; background:#fff; padding:8px; }
+        .kpi .label { font-size:11px; color:#52636e; }
+        .kpi .value { font-size:18px; font-weight:800; color:#13322B; }
+
+        .tabs { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+        .tab-btn { border:1px solid #d4dfd9; background:#fff; color:#13322B; font-weight:700; border-radius:999px; padding:8px 12px; cursor:pointer; font-size:12px; }
+        .tab-btn.active { background:#B38E5D; border-color:#9e7a4c; color:#13322B; }
+        .tab-pane { display:none; }
+        .tab-pane.active { display:block; }
+        .status-chip { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; margin-right:6px; }
+        .status-chip.ok { background:#e6f6ea; color:#1d6c39; border:1px solid #b7e2c2; }
+        .status-chip.warn { background:#fff4e5; color:#8b5a00; border:1px solid #f3d19c; }
+        .timeline { max-height:340px; overflow:auto; border:1px solid #e2e8e5; border-radius:8px; background:#fff; }
+        .timeline-item { padding:8px 10px; border-bottom:1px solid #f0f3f1; }
+        .timeline-item .when { font-weight:700; color:#13322B; }
+        .timeline-item .type { display:inline-block; margin-left:6px; background:#eaf3ef; border:1px solid #d5e5dc; border-radius:999px; padding:2px 7px; font-size:10px; font-weight:700; }
+
+        .form-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+        .form-actions button[name='mode'][value='validate'] { background:#B38E5D; color:#1d1d1d; }
+        .row-two { display:grid; grid-template-columns: 2fr 1fr; gap:10px; }
+        @media (max-width: 980px) { .row-two { grid-template-columns: 1fr; } }
+    </style>
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+<link href="/static/css/rnp_redesign.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Captura Intrahospitalaria Estructurada</h1>
+        <p class="muted">
+            Paciente: <strong>{{ target_nombre or consulta.nombre }}</strong> |
+            NSS: <strong>{{ target_nss or consulta.nss }}</strong> |
+            Consulta ID: <strong>{{ consulta.id }}</strong> |
+            Hospitalización ID: <strong>{{ hospitalizacion_id or "N/E" }}</strong>
+        </p>
+        {% if active_hospitalizacion and active_hospitalizacion.id %}
+        <p class="muted">Cama: <strong>{{ active_hospitalizacion.cama or "N/E" }}</strong> | Servicio: <strong>{{ active_hospitalizacion.servicio or "N/E" }}</strong> | Estado: <strong>{{ active_hospitalizacion.estatus or "N/E" }} / {{ active_hospitalizacion.estado_clinico or "N/E" }}</strong></p>
+        {% endif %}
+
+        <div class="toolbar">
+            <a class="btn alt" href="/expediente?consulta_id={{ consulta.id }}">Volver al Expediente</a>
+            <a class="btn alt" href="/expediente/nota-diaria?consulta_id={{ consulta.id }}{% if hospitalizacion_id %}&hospitalizacion_id={{ hospitalizacion_id }}{% endif %}">Cambiar modo</a>
+            <a class="btn alt" href="/expediente/nota-medica?consulta_id={{ consulta.id }}">Nota médica clásica</a>
+            <a class="btn alt" href="/hospitalizacion">Hospitalización</a>
+            <a class="btn" href="/expediente/inpatient-captura/export/xlsx?consulta_id={{ consulta.id }}{% if hospitalizacion_id %}&hospitalizacion_id={{ hospitalizacion_id }}{% endif %}">Exportar XLSX</a>
+            <a class="btn" href="/expediente/inpatient-captura/export/docx?consulta_id={{ consulta.id }}{% if hospitalizacion_id %}&hospitalizacion_id={{ hospitalizacion_id }}{% endif %}">Exportar DOCX</a>
+        </div>
+
+        {% if updated %}<div class="ok">Actualización aplicada: {{ updated }}</div>{% endif %}
+        {% if error %}<div class="err">Error: {{ error }}</div>{% endif %}
+
+        <div class="kpis">
+            <div class="kpi"><div class="label">Completitud estructurada (hoy)</div><div class="value">{{ completitud_pct }}%</div></div>
+            <div class="kpi"><div class="label">Siguiente paso sugerido</div><div class="value" style="font-size:13px;">{{ next_step }}</div></div>
+            <div class="kpi"><div class="label">Gasto drenaje diario (%)</div><div class="value">{{ drain_pct_today if drain_pct_today is not none else "N/E" }}{% if drain_pct_today is not none %}%{% endif %}</div></div>
+            <div class="kpi"><div class="label">Balance acumulado</div><div class="value">{{ io_summary.balance_ml if io_summary else 0 }} ml</div></div>
+            <div class="kpi"><div class="label">Diuresis acumulada</div><div class="value">{{ io_summary.diuresis_ml if io_summary else 0 }} ml</div></div>
+            <div class="kpi"><div class="label">Uresis Foley prom. diario</div><div class="value">{{ foley_avg_daily_ml if foley_avg_daily_ml is not none else "N/E" }}{% if foley_avg_daily_ml is not none %} ml{% endif %}</div></div>
+        </div>
+
+        {% set bs = block_status|default({}) %}
+        <div>
+            <span class="status-chip {{ 'ok' if bs.get('nota_diaria') else 'warn' }}">Nota diaria: {{ 'OK' if bs.get('nota_diaria') else 'Pendiente' }}</span>
+            <span class="status-chip {{ 'ok' if bs.get('vitales') else 'warn' }}">Signos vitales: {{ 'OK' if bs.get('vitales') else 'Pendiente' }}</span>
+            <span class="status-chip {{ 'ok' if bs.get('io') else 'warn' }}">Ingresos/Egresos: {{ 'OK' if bs.get('io') else 'Pendiente' }}</span>
+            <span class="status-chip {{ 'ok' if bs.get('labs') else 'warn' }}">Laboratorios: {{ 'OK' if bs.get('labs') else 'Pendiente' }}</span>
+            <span class="status-chip {{ 'ok' if bs.get('eventos') else 'warn' }}">Eventos: {{ 'OK' if bs.get('eventos') else 'Pendiente' }}</span>
+            <span class="status-chip {{ 'ok' if bs.get('dispositivos') else 'warn' }}">Dispositivos: {{ 'OK' if bs.get('dispositivos') else 'Pendiente' }}</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn" data-tab="resumen">Resumen</button>
+            <button class="tab-btn" data-tab="vitales">Signos vitales</button>
+            <button class="tab-btn" data-tab="io">INGRESOS Y EGRESOS</button>
+            <button class="tab-btn" data-tab="dispositivos">Inventario de dispositivos</button>
+            <button class="tab-btn" data-tab="eventos">Eventos clínicos</button>
+            <button class="tab-btn" data-tab="labs">Laboratorios</button>
+            <button class="tab-btn" data-tab="nota">Nota diaria</button>
+            <button class="tab-btn" data-tab="tags">Etiquetas / desenlaces</button>
+        </div>
+
+        <section class="tab-pane" data-pane="resumen">
+            <div class="block">
+                <h2>Resumen clínico del episodio</h2>
+                <div class="row-two">
+                    <div>
+                        <h3>Línea de tiempo</h3>
+                        <div class="timeline">
+                            {% for t in timeline_rows %}
+                            <div class="timeline-item">
+                                <span class="when">{{ t.when or 'N/E' }}</span>
+                                <span class="type">{{ t.tipo }}</span>
+                                <div class="tiny">{{ t.detalle or 'Sin detalle' }}</div>
+                            </div>
+                            {% else %}
+                            <div class="timeline-item">Sin eventos de temporalidad.</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Resumen automático</h3>
+                        <table>
+                            <tr><th>Bloque</th><th>Valor</th></tr>
+                            <tr><td>Última FC / TA sistólica / TA diastólica</td><td>{{ vitals_latest.heart_rate or 'N/E' }} / {{ vitals_latest.sbp or 'N/E' }} / {{ vitals_latest.dbp or 'N/E' }}</td></tr>
+                            <tr><td>Última Temp/SpO2</td><td>{{ vitals_latest.temperature or 'N/E' }} / {{ vitals_latest.spo2 or 'N/E' }}</td></tr>
+                            <tr><td>Último balance de ingresos/egresos</td><td>{{ io_latest.net_balance_ml or 'N/E' }} ml</td></tr>
+                            <tr><td>Dispositivos activos</td><td>{{ devices_snapshot.activos|length if devices_snapshot and devices_snapshot.activos else 0 }}</td></tr>
+                            <tr><td>Laboratorios recientes</td><td>Cr {{ labs_dia.creatinina if labs_dia and labs_dia.creatinina is defined else 'N/E' }} / Hb {{ labs_dia.hemoglobina if labs_dia and labs_dia.hemoglobina is defined else 'N/E' }}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tab-pane" data-pane="vitales">
+            <div class="block">
+                <h2>Signos vitales seriados</h2>
+                <form method="post" action="/expediente/inpatient-captura/vitals">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
+                    <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+                    <input type="hidden" name="nss" value="{{ target_nss or consulta.nss }}">
+                    <input type="hidden" name="nombre" value="{{ target_nombre or consulta.nombre }}">
+                    <div class="grid-small">
+                        <div><label>Fecha/Hora</label><input type="datetime-local" name="recorded_at" value="{{ ahora }}"></div>
+                        <div><label>Frecuencia cardiaca</label><input type="number" name="heart_rate" value="{{ vitals_latest.heart_rate if vitals_latest else '' }}"></div>
+                        <div><label>TA sistólica</label><input type="number" name="sbp" value="{{ vitals_latest.sbp if vitals_latest else '' }}"></div>
+                        <div><label>TA diastólica</label><input type="number" name="dbp" value="{{ vitals_latest.dbp if vitals_latest else '' }}"></div>
+                        <div><label>PAM</label><input type="number" step="0.1" name="map" value="{{ vitals_latest.map if vitals_latest else '' }}"></div>
+                        <div><label>Temp</label><input type="number" step="0.1" name="temperature" value="{{ vitals_latest.temperature if vitals_latest else '' }}"></div>
+                        <div><label>SpO2</label><input type="number" step="0.1" name="spo2" value="{{ vitals_latest.spo2 if vitals_latest else '' }}"></div>
+                        <div><label>FR</label><input type="number" name="resp_rate" value="{{ vitals_latest.resp_rate if vitals_latest else '' }}"></div>
+                        <div><label>AVPU</label><select name="mental_status_avpu"><option value="">N/E</option><option>A</option><option>V</option><option>P</option><option>U</option></select></div>
+                        <div><label>GCS</label><input type="number" name="gcs" value="{{ vitals_latest.gcs if vitals_latest else '' }}"></div>
+                        <div><label>Dispositivo O2</label><input type="text" name="o2_device" value="{{ vitals_latest.o2_device if vitals_latest else '' }}"></div>
+                        <div><label>Flujo O2 (L/min)</label><input type="number" step="0.1" min="0" name="o2_flow_lpm" value="{{ vitals_latest.o2_flow_lpm if vitals_latest else '' }}"></div>
+                        <div><label>Dolor (0-10)</label><input type="number" min="0" max="10" name="pain_score_0_10" value="{{ vitals_latest.pain_score_0_10 if vitals_latest else '' }}"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" type="submit" name="mode" value="validate">Validar bloque</button>
+                        <button class="btn" type="submit" name="mode" value="save">Guardar bloque</button>
+                    </div>
+                </form>
+                <table>
+                    <tr><th>FechaHora</th><th>Frecuencia cardiaca</th><th>TA</th><th>Temp</th><th>SpO2</th><th>FR</th><th>AVPU/GCS</th><th>O2</th><th>Dolor</th></tr>
+                    {% for r in vitals_items %}
+                    <tr>
+                        <td>{{ r.recorded_at }}</td>
+                        <td>{{ r.heart_rate or 'N/E' }}</td>
+                        <td>{{ r.sbp or 'N/E' }}/{{ r.dbp or 'N/E' }}</td>
+                        <td>{{ r.temperature or 'N/E' }}</td>
+                        <td>{{ r.spo2 or 'N/E' }}</td>
+                        <td>{{ r.resp_rate or 'N/E' }}</td>
+                        <td>{{ r.mental_status_avpu or 'N/E' }} / {{ r.gcs or 'N/E' }}</td>
+                        <td>{{ r.o2_device or 'N/E' }} {{ r.o2_flow_lpm or '' }}</td>
+                        <td>{{ r.pain_score_0_10 or 'N/E' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="9">Sin signos vitales estructurados.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
+
+        <section class="tab-pane" data-pane="io">
+            <div class="block">
+                <h2>INGRESOS Y EGRESOS</h2>
+                <div class="grid-small">
+                    <div>
+                        <label>Ventana dinámica</label>
+                        <select id="selector_soporte">
+                            <option value="DRENAJES">1.- DRENAJES</option>
+                            <option value="DISPOSITIVOS">2.- DISPOSITIVOS</option>
+                        </select>
+                    </div>
+                    <div class="tiny" style="align-self:end;">
+                        Esta captura se integra al panel de hospitalización en reporte estadístico.
+                    </div>
+                </div>
+
+                <div id="box_drenajes" style="margin-top:10px;">
+                    <form method="post" action="/expediente/inpatient-captura/soportes">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
+                        <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+                        <input type="hidden" name="nss" value="{{ target_nss or consulta.nss }}">
+                        <input type="hidden" name="nombre" value="{{ target_nombre or consulta.nombre }}">
+                        <input type="hidden" name="support_kind" value="DRENAJES">
+                        <input type="hidden" name="active_drain_id" value="{{ active_drain.id if active_drain else '' }}">
+                        <input type="hidden" name="mode" value="save">
+                        <div class="grid-small">
+                            <div>
+                                <label>¿Tiene drenajes?</label>
+                                <select name="drain_has" id="drain_has">
+                                    <option value="NO" {% if not active_drain %}selected{% endif %}>NO</option>
+                                    <option value="SI" {% if active_drain %}selected{% endif %}>SI</option>
+                                </select>
+                            </div>
+                            <div class="tiny" style="align-self:end;">
+                                Activo: {{ active_drain.device_type if active_drain else "SIN DRENAJE ACTIVO" }}
+                            </div>
+                        </div>
+                        <div id="drain_details" class="grid-small" style="margin-top:8px;">
+                            <div>
+                                <label>Tipo de drenaje</label>
+                                <select name="drain_type" id="drain_type">
+                                    {% for dt in drain_types %}
+                                    <option value="{{ dt }}" {% if active_drain and active_drain.device_type == dt %}selected{% endif %}>{{ dt }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="box_drain_side">
+                                <label>Lateralidad</label>
+                                <select name="drain_side" id="drain_side">
+                                    <option value="">N/E</option>
+                                    <option value="L" {% if active_drain and active_drain.side == 'L' %}selected{% endif %}>L</option>
+                                    <option value="R" {% if active_drain and active_drain.side == 'R' %}selected{% endif %}>R</option>
+                                    <option value="BILAT" {% if active_drain and active_drain.side == 'BILAT' %}selected{% endif %}>BILAT</option>
+                                    <option value="NA" {% if active_drain and active_drain.side == 'NA' %}selected{% endif %}>NA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Fecha de colocación</label>
+                                <input type="datetime-local" name="drain_inserted_at" value="{{ (active_drain.inserted_at or '').replace(' ', 'T')[:16] if active_drain and active_drain.inserted_at else '' }}">
+                            </div>
+                            <div>
+                                <label>Fecha de retiro (si aplica)</label>
+                                <input type="datetime-local" name="drain_removed_at" value="">
+                            </div>
+                            <div>
+                                <label>Gasto del drenaje (ml)</label>
+                                <input type="number" step="0.1" name="drain_output_ml" placeholder="Ej. 120">
+                            </div>
+                            <div style="grid-column:1 / -1;">
+                                <label>Notas drenaje</label>
+                                <input type="text" name="drain_notes" value="{{ active_drain.notes if active_drain else '' }}">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" type="submit">Guardar bloque</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="box_dispositivos" style="margin-top:10px;">
+                    <form method="post" action="/expediente/inpatient-captura/soportes">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
+                        <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+                        <input type="hidden" name="nss" value="{{ target_nss or consulta.nss }}">
+                        <input type="hidden" name="nombre" value="{{ target_nombre or consulta.nombre }}">
+                        <input type="hidden" name="support_kind" value="DISPOSITIVOS">
+                        <input type="hidden" name="active_support_device_id" value="{{ active_support_device.id if active_support_device else '' }}">
+                        <input type="hidden" name="mode" value="save">
+                        <div class="grid-small">
+                            <div>
+                                <label>¿Tiene dispositivos?</label>
+                                <select name="device_has" id="device_has">
+                                    <option value="NO" {% if not active_support_device %}selected{% endif %}>NO</option>
+                                    <option value="SI" {% if active_support_device %}selected{% endif %}>SI</option>
+                                </select>
+                            </div>
+                            <div class="tiny" style="align-self:end;">
+                                Activo: {{ active_support_device.device_type if active_support_device else "SIN DISPOSITIVO ACTIVO" }}
+                            </div>
+                        </div>
+                        <div id="device_details" class="grid-small" style="margin-top:8px;">
+                            <div>
+                                <label>Tipo de dispositivo</label>
+                                <select name="device_type_clinical" id="device_type_clinical">
+                                    {% for dt in device_types %}
+                                    <option value="{{ dt }}" {% if active_support_device and active_support_device.device_type == dt %}selected{% endif %}>{{ dt }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="box_device_side">
+                                <label>Lateralidad</label>
+                                <select name="device_side">
+                                    <option value="">N/E</option>
+                                    <option value="L" {% if active_support_device and active_support_device.side == 'L' %}selected{% endif %}>L</option>
+                                    <option value="R" {% if active_support_device and active_support_device.side == 'R' %}selected{% endif %}>R</option>
+                                    <option value="BILAT" {% if active_support_device and active_support_device.side == 'BILAT' %}selected{% endif %}>BILAT</option>
+                                    <option value="NA" {% if active_support_device and active_support_device.side == 'NA' %}selected{% endif %}>NA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Fecha de colocación</label>
+                                <input type="datetime-local" name="device_inserted_at" value="{{ (active_support_device.inserted_at or '').replace(' ', 'T')[:16] if active_support_device and active_support_device.inserted_at else '' }}">
+                            </div>
+                            <div>
+                                <label>Fecha de retiro (si aplica)</label>
+                                <input type="datetime-local" name="device_removed_at" value="">
+                            </div>
+                            <div id="box_foley_fr">
+                                <label>Calibre Foley (Fr)</label>
+                                <input type="text" name="foley_fr" value="{{ active_support_device.size_fr if active_support_device and active_support_device.size_fr else '' }}">
+                            </div>
+                            <div id="box_foley_uresis">
+                                <label>Uresis del día (ml)</label>
+                                <input type="number" step="0.1" name="foley_uresis_ml" placeholder="Ej. 1800">
+                            </div>
+                            <div id="box_foley_horas">
+                                <label>Horas evaluadas</label>
+                                <input type="number" step="0.1" name="foley_hours" value="24">
+                            </div>
+                            <div id="box_foley_peso">
+                                <label>Peso para índice urinario (kg)</label>
+                                <input type="number" step="0.1" name="weight_for_index" value="{{ io_latest.weight_kg if io_latest else '' }}">
+                            </div>
+                            <div style="grid-column:1 / -1;">
+                                <label>Notas de dispositivo</label>
+                                <input type="text" name="device_notes" value="{{ active_support_device.notes if active_support_device else '' }}">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" type="submit">Guardar bloque</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="grid" style="margin-top:10px;">
+                    <div>
+                        <h3>Gastos de drenaje (temporalidad)</h3>
+                        <table>
+                            <tr><th>Fecha</th><th>Tipo</th><th>Lateralidad</th><th>Gasto mL</th></tr>
+                            {% for r in support_outputs.drain_rows if support_outputs and support_outputs.drain_rows %}
+                            <tr>
+                                <td>{{ r.fecha }}</td>
+                                <td>{{ r.tipo or 'N/E' }}</td>
+                                <td>{{ r.lateralidad or 'N/E' }}</td>
+                                <td>{{ r.ml if r.ml is not none else 'N/E' }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="4">Sin registros de gasto de drenaje.</td></tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <div>
+                        <h3>Uresis Foley e índice urinario</h3>
+                        <table>
+                            <tr><th>Fecha</th><th>Uresis mL</th><th>Índice (mL/kg/h)</th></tr>
+                            {% for r in support_outputs.foley_rows if support_outputs and support_outputs.foley_rows %}
+                            <tr>
+                                <td>{{ r.fecha }}</td>
+                                <td>{{ r.ml if r.ml is not none else 'N/E' }}</td>
+                                <td>{{ r.indice_urinario if r.indice_urinario is not none else 'N/E' }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3">Sin registros de uresis Foley.</td></tr>
+                            {% endfor %}
+                        </table>
+                        <div class="tiny">Promedio índice urinario: {{ support_outputs.promedio_indice_urinario if support_outputs and support_outputs.promedio_indice_urinario is not none else 'N/E' }}</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top:10px;">Bloque de INGRESOS Y EGRESOS</h3>
+                <form method="post" action="/expediente/inpatient-captura/io">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
+                    <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+                    <input type="hidden" name="nss" value="{{ target_nss or consulta.nss }}">
+                    <input type="hidden" name="nombre" value="{{ target_nombre or consulta.nombre }}">
+                    <input type="hidden" name="mode" value="save">
+                    <div class="grid-small">
+                        <div><label>Inicio</label><input type="datetime-local" name="interval_start" value="{{ ahora }}"></div>
+                        <div><label>Fin</label><input type="datetime-local" name="interval_end" value="{{ ahora }}"></div>
+                        <div><label>Ingreso (ml)</label><input type="number" step="0.1" name="intake_ml"></div>
+                        <div><label>Diuresis (ml)</label><input type="number" step="0.1" name="urine_output_ml"></div>
+                        <div><label>Balance (ml, opcional)</label><input type="number" step="0.1" name="net_balance_ml"></div>
+                        <div><label>Peso (kg)</label><input type="number" step="0.1" name="weight_kg" value="{{ io_latest.weight_kg if io_latest else '' }}"></div>
+                        <div><label>Talla (cm)</label><input type="number" step="0.1" name="height_cm" value="{{ io_latest.height_cm if io_latest else '' }}"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" type="submit">Guardar bloque</button>
+                    </div>
+                </form>
+                <table>
+                    <tr><th>Inicio</th><th>Fin</th><th>Ingreso</th><th>Diuresis</th><th>Balance</th><th>Peso</th><th>Talla</th></tr>
+                    {% for r in io_items %}
+                    <tr>
+                        <td>{{ r.interval_start }}</td><td>{{ r.interval_end }}</td>
+                        <td>{{ r.intake_ml or 'N/E' }}</td><td>{{ r.urine_output_ml or 'N/E' }}</td>
+                        <td>{{ r.net_balance_ml or 'N/E' }}</td><td>{{ r.weight_kg or 'N/E' }}</td><td>{{ r.height_cm or 'N/E' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="7">Sin bloques I/O.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
+
+        <section class="tab-pane" data-pane="dispositivos">
+            <div class="block">
+                <h2>Inventario de dispositivos urológicos</h2>
+                <form method="post" action="/expediente/inpatient-captura/device">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
+                    <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+                    <input type="hidden" name="nss" value="{{ target_nss or consulta.nss }}">
+                    <input type="hidden" name="nombre" value="{{ target_nombre or consulta.nombre }}">
+                    <div class="grid-small">
+                        <div>
+                            <label>Tipo</label>
+                            <select name="device_type" required>
+                                <option value="FOLEY">SONDA FOLEY (LEGACY)</option>
+                                <option value="JJ_STENT">CATÉTER JJ (LEGACY)</option>
+                                <option value="NEPHROSTOMY">NEFROSTOMÍA (LEGACY)</option>
+                                <option value="SURGICAL_DRAIN">DRENAJE QUIRÚRGICO (LEGACY)</option>
+                            </select>
+                        </div>
+                        <div><label>Presente</label><select name="present"><option value="1">SI</option><option value="0">NO</option></select></div>
+                        <div><label>Inicio</label><input type="datetime-local" name="inserted_at"></div>
+                        <div><label>Retiro</label><input type="datetime-local" name="removed_at"></div>
+                        <div><label>Lateralidad</label><select name="side"><option value="">N/E</option><option value="L">L</option><option value="R">R</option><option value="BILAT">BILAT</option><option value="NA">NA</option></select></div>
+                        <div><label>Ubicación</label><input type="text" name="location"></div>
+                        <div><label>Calibre</label><input type="text" name="size_fr"></div>
+                        <div><label>Dificultad</label><select name="difficulty"><option value="">N/E</option><option value="EASY">FÁCIL</option><option value="MODERATE">MODERADA</option><option value="HARD">DIFÍCIL</option></select></div>
+                        <div><label>Irrigación</label><select name="irrigation"><option value="0">NO</option><option value="1">SI</option></select></div>
+                        <div><label>Plan retiro</label><input type="datetime-local" name="planned_removal_at"></div>
+                        <div><label>Plan recambio</label><input type="datetime-local" name="planned_change_at"></div>
+                        <div style="grid-column:1 / -1;"><label>Notas</label><textarea name="notes"></textarea></div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" type="submit" name="mode" value="validate">Validar bloque</button>
+                        <button class="btn" type="submit" name="mode" value="save">Guardar bloque</button>
+                    </div>
+                </form>
+                <table>
+                    <tr><th>Tipo</th><th>Presente</th><th>Inicio</th><th>Retiro</th><th>Lado</th><th>Ubicación</th><th>Calibre</th><th>Dificultad</th><th>Notas</th></tr>
+                    {% for r in devices_items %}
+                    <tr>
+                        <td>{{ r.device_type }}</td><td>{{ 'SI' if r.present else 'NO' }}</td>
+                        <td>{{ r.inserted_at or 'N/E' }}</td><td>{{ r.removed_at or 'N/E' }}</td>
+                        <td>{{ r.side or 'N/E' }}</td><td>{{ r.location or 'N/E' }}</td><td>{{ r.size_fr or 'N/E' }}</td><td>{{ r.difficulty or 'N/E' }}</td><td>{{ r.notes or 'N/E' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="9">Sin dispositivos registrados.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
+
+        <section class="tab-pane" data-pane="eventos">
+            <div class="block">
+                <h2>Eventos clínicos y procedimientos</h2>
+                <form method="post" action="/expediente/inpatient-captura/event">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
+                    <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+                    <input type="hidden" name="nss" value="{{ target_nss or consulta.nss }}">
+                    <input type="hidden" name="nombre" value="{{ target_nombre or consulta.nombre }}">
+                    <div class="grid-small">
+                        <div><label>Fecha/Hora</label><input type="datetime-local" name="event_time" value="{{ ahora }}"></div>
+                        <div>
+                            <label>Tipo de evento</label>
+                            <select name="event_type" required>
+                                {% for e in event_types %}
+                                <option value="{{ e.value }}">{{ e.label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div><label>Antibiótico (si aplica)</label><input type="text" name="abx_name"></div>
+                        <div><label>Indicación</label><input type="text" name="indication"></div>
+                        <div><label>Resultado breve</label><input type="text" name="brief_result"></div>
+                        <div><label>Estatus de egreso</label><select name="discharge_status"><option value="">N/E</option><option value="alta">alta</option><option value="defuncion">defuncion</option><option value="traslado">traslado</option></select></div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" type="submit" name="mode" value="validate">Validar bloque</button>
+                        <button class="btn" type="submit" name="mode" value="save">Guardar bloque</button>
+                    </div>
+                </form>
+                <table>
+                    <tr><th>FechaHora</th><th>Evento</th><th>Payload</th></tr>
+                    {% for r in events_items %}
+                    <tr>
+                        <td>{{ r.event_time }}</td>
+                        <td>{{ event_type_labels.get(r.event_type, r.event_type) if event_type_labels else r.event_type }}</td>
+                        <td>{{ r.payload }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3">Sin eventos clínicos.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
+
+        <section class="tab-pane" data-pane="labs">
+            <div class="block">
+                <h2>Laboratorios estructurados</h2>
+                <form method="post" action="/expediente/inpatient-captura/lab">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
+                    <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+                    <input type="hidden" name="nss" value="{{ target_nss or consulta.nss }}">
+                    <input type="hidden" name="nombre" value="{{ target_nombre or consulta.nombre }}">
+                    <div class="grid-small">
+                        <div><label>Fecha/hora toma</label><input type="datetime-local" name="collected_at" value="{{ ahora }}"></div>
+                        <div>
+                            <label>Analito</label>
+                            <select name="test_name" required>
+                                <option value="creatinine">Creatinina</option>
+                                <option value="bun">Nitrógeno ureico (BUN)</option>
+                                <option value="wbc">Leucocitos (WBC)</option>
+                                <option value="lactate">Lactato</option>
+                                <option value="hb">Hemoglobina (Hb)</option>
+                                <option value="platelets">Plaquetas</option>
+                                <option value="crp">Proteína C Reactiva (PCR)</option>
+                                <option value="pct">Procalcitonina (PCT)</option>
+                            </select>
+                        </div>
+                        <div><label>Valor numérico</label><input type="number" step="any" name="value_num"></div>
+                        <div><label>Valor texto</label><input type="text" name="value_text"></div>
+                        <div><label>Unidad</label><input type="text" name="unit" placeholder="mg/dL, g/dL"></div>
+                        <div><label>Fuente</label><input type="text" name="source" value="UI_INPATIENT_CAPTURE"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" type="submit" name="mode" value="validate">Validar bloque</button>
+                        <button class="btn" type="submit" name="mode" value="save">Guardar bloque</button>
+                    </div>
+                </form>
+                <table>
+                    <tr><th>Fecha</th><th>Analito</th><th>Valor</th><th>Unidad</th><th>Fuente</th></tr>
+                    {% set analito_labels = {
+                        'creatinine': 'Creatinina',
+                        'bun': 'Nitrógeno ureico (BUN)',
+                        'wbc': 'Leucocitos (WBC)',
+                        'lactate': 'Lactato',
+                        'hb': 'Hemoglobina (Hb)',
+                        'platelets': 'Plaquetas',
+                        'crp': 'Proteína C Reactiva (PCR)',
+                        'pct': 'Procalcitonina (PCT)'
+                    } %}
+                    {% for r in labs_items %}
+                    <tr>
+                        <td>{{ r.collected_at }}</td>
+                        <td>{{ analito_labels.get(r.test_name, r.test_name) }}</td>
+                        <td>{{ r.value_num if r.value_num is not none else r.value_text }}</td>
+                        <td>{{ r.unit or "N/E" }}</td>
+                        <td>{{ r.source or "N/E" }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5">Sin laboratorios estructurados.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
+
+        <section class="tab-pane" data-pane="nota" id="nota-diaria">
+            <div class="block">
+                <h2>Nota diaria intrahospitalaria</h2>
+                <form method="post" action="/expediente/inpatient-captura/daily-note">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
+                    <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+                    <input type="hidden" name="nss" value="{{ target_nss or consulta.nss }}">
+                    <input type="hidden" name="nombre" value="{{ target_nombre or consulta.nombre }}">
+                    <div class="grid-small">
+                        <div><label>Fecha de nota</label><input type="date" name="note_date" value="{{ fecha_hoy }}" required></div>
+                        <div><label>Autor</label><input type="text" name="author_user_id" placeholder="usuario"></div>
+                        <div><label>Cama</label><input type="text" name="cama" value="{{ active_hospitalizacion.cama if active_hospitalizacion else '' }}"></div>
+                        <div>
+                            <label>Servicio que realiza la nota</label>
+                            <select name="servicio_nota_select">
+                                {% for s in servicios_nota %}
+                                <option value="{{ s }}" {% if active_hospitalizacion and active_hospitalizacion.servicio == s %}selected{% endif %}>{{ s }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="servicio_nota" value="{{ active_hospitalizacion.servicio if active_hospitalizacion else '' }}">
+                        </div>
+                        <div><label>CIE10 código</label><input type="text" name="cie10_codigo" id="nota_cie10_codigo" placeholder="Se autocompleta al seleccionar diagnóstico"></div>
+                        <div>
+                            <label>Diagnóstico CIE10 (seleccionable)</label>
+                            <select name="diagnostico_cie10_select" id="nota_diagnostico_select">
+                                <option value="">SELECCIONAR</option>
+                                {% for c in cie10_catalog %}
+                                <option value="{{ c.label }}" data-codigo="{{ c.codigo }}">{{ c.label }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="diagnostico_cie10" value="">
+                        </div>
+                        <input type="hidden" name="is_final" value="0">
+                        <div><label>Modo de actualización</label><select name="upsert"><option value="0">No</option><option value="1">Sí</option></select></div>
+                        <div><label>Frecuencia cardiaca</label><input type="number" name="hr" value="{{ vitals_latest.heart_rate if vitals_latest else '' }}"></div>
+                        <div><label>TA sistólica</label><input type="number" name="sbp" value="{{ vitals_latest.sbp if vitals_latest else '' }}"></div>
+                        <div><label>TA diastólica</label><input type="number" name="dbp" value="{{ vitals_latest.dbp if vitals_latest else '' }}"></div>
+                        <div><label>Temp</label><input type="number" step="0.1" name="temp" value="{{ vitals_latest.temperature if vitals_latest else '' }}"></div>
+                        <div><label>Peso</label><input type="number" step="0.1" name="peso" value="{{ io_latest.weight_kg if io_latest else '' }}"></div>
+                        <div><label>Talla</label><input type="number" step="0.1" name="talla" value="{{ io_latest.height_cm if io_latest else '' }}"></div>
+                        <div><label>IMC</label><input type="number" step="0.1" name="imc"></div>
+                    </div>
+                    <div class="grid-small" style="margin-top:8px;">
+                        <div style="grid-column:1 / -1;" class="tiny">Autorrelleno por NSS y nombre desde laboratorio estructurado + resumen de laboratorios de guardia. Puedes sobrescribir valores y agregar analitos extra.</div>
+                        <div><label>Creatinina</label><input type="number" step="0.01" name="creatinina" value="{{ labs_dia.creatinina if labs_dia and labs_dia.creatinina is defined else (labs_dia.creatinine if labs_dia and labs_dia.creatinine is defined else '') }}"></div>
+                        <div><label>Hemoglobina</label><input type="number" step="0.01" name="hemoglobina" value="{{ labs_dia.hemoglobina if labs_dia and labs_dia.hemoglobina is defined else (labs_dia.hb if labs_dia and labs_dia.hb is defined else '') }}"></div>
+                        <div><label>Leucocitos</label><input type="number" step="0.01" name="leucocitos" value="{{ labs_dia.leucocitos if labs_dia and labs_dia.leucocitos is defined else (labs_dia.wbc if labs_dia and labs_dia.wbc is defined else '') }}"></div>
+                        <div><label>Plaquetas</label><input type="number" step="0.01" name="plaquetas" value="{{ labs_dia.plaquetas if labs_dia and labs_dia.plaquetas is defined else (labs_dia.platelets if labs_dia and labs_dia.platelets is defined else '') }}"></div>
+                        <div><label>Sodio</label><input type="number" step="0.01" name="sodio" value="{{ labs_dia.sodio if labs_dia and labs_dia.sodio is defined else (labs_dia.na if labs_dia and labs_dia.na is defined else '') }}"></div>
+                        <div><label>Potasio</label><input type="number" step="0.01" name="potasio" value="{{ labs_dia.potasio if labs_dia and labs_dia.potasio is defined else (labs_dia.k if labs_dia and labs_dia.k is defined else '') }}"></div>
+                    </div>
+                    <div class="grid-small" style="margin-top:8px;">
+                        <div><label>Balance del día (ml)</label><input type="text" readonly value="{{ io_summary_today.balance_ml if io_summary_today else 0 }}"></div>
+                        <div><label>Estado del balance</label><input type="text" readonly value="{{ io_summary_today.balance_estado if io_summary_today else 'NEUTRO' }}"></div>
+                        <div><label>Índice urinario (mL/kg/h)</label><input type="text" readonly value="{{ io_summary_today.indice_urinario_ml_kg_h if io_summary_today and io_summary_today.indice_urinario_ml_kg_h is not none else 'N/E' }}"></div>
+                        <div><label>Eventos clínicos del día</label><input type="text" readonly value="{{ events_summary_today.eventos_del_dia_n if events_summary_today else 0 }}"></div>
+                        <div><label>Drenaje activo (% gasto diario)</label><input type="text" readonly value="{{ drain_pct_today if drain_pct_today is not none else 'N/E' }}{% if drain_pct_today is not none %}%{% endif %}"></div>
+                        <div><label>Promedio diario uresis Foley (mL)</label><input type="text" readonly value="{{ foley_avg_daily_ml if foley_avg_daily_ml is not none else 'N/E' }}"></div>
+                    </div>
+                    <div class="grid" style="margin-top:8px;">
+                        <div><label>Drenaje activo (autorrelleno)</label><textarea readonly>{{ resumen_drenaje_activo }}</textarea></div>
+                        <div><label>Sonda Foley / Uresis (autorrelleno)</label><textarea readonly>{{ resumen_foley_activo }}</textarea></div>
+                    </div>
+                    <input type="hidden" name="problem_list_json" value="{}">
+                    <input type="hidden" name="plan_by_problem_json" value="{}">
+                    <input type="hidden" name="devices_snapshot_json" value='{{ devices_snapshot|tojson }}'>
+                    <input type="hidden" name="io_summary_json" value='{{ io_summary_today|tojson if io_summary_today else io_summary|tojson }}'>
+                    <input type="hidden" name="symptoms_json" value='{}'>
+                    <input type="hidden" name="events_pending_json" value='{{ events_summary_today|tojson if events_summary_today else "{}" }}'>
+                    <input type="hidden" name="resumen_drenaje_activo" value="{{ resumen_drenaje_activo }}">
+                    <input type="hidden" name="resumen_foley_activo" value="{{ resumen_foley_activo }}">
+                    <div style="margin-top:8px;"><label>Texto libre</label><textarea name="free_text" placeholder="Evolución clínica del día"></textarea></div>
+                    <div style="margin-top:8px;">
+                        <label>Laboratorios adicionales (manuales)</label>
+                        <textarea name="labs_adicionales" placeholder='JSON {"TP": 12.3, "INR": 1.1} o líneas tipo "TP: 12.3"'></textarea>
+                        <div class="tiny">Se pueden agregar más analitos aunque ya exista autorrelleno del día.</div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" type="submit" name="mode" value="validate">Validar bloque</button>
+                        <button class="btn" type="submit" name="mode" value="save">Guardar bloque</button>
+                    </div>
+                </form>
+                <table>
+                    <tr><th>Fecha</th><th>Cama</th><th>Servicio</th><th>CIE10</th><th>Signos vitales</th><th>Laboratorios del día</th><th>Texto libre</th></tr>
+                    {% for n in daily_notes_items %}
+                    <tr>
+                        <td>{{ n.note_date }}</td>
+                        <td>{{ n.location or "N/E" }}</td>
+                        <td>{{ n.service or "N/E" }}</td>
+                        <td>{{ n.cie10_codigo or "N/E" }} {{ n.diagnostico or "" }}</td>
+                        <td>
+                            FC {{ n.vitals_json.hr if n.vitals_json and n.vitals_json.hr is defined and n.vitals_json.hr is not none else "N/E" }},
+                            TA {{ n.vitals_json.sbp if n.vitals_json and n.vitals_json.sbp is defined and n.vitals_json.sbp is not none else "N/E" }}/{{ n.vitals_json.dbp if n.vitals_json and n.vitals_json.dbp is defined and n.vitals_json.dbp is not none else "N/E" }},
+                            T {{ n.vitals_json.temp if n.vitals_json and n.vitals_json.temp is defined and n.vitals_json.temp is not none else "N/E" }}
+                        </td>
+                        <td>
+                            Cr {{ n.labs_json.creatinina if n.labs_json and n.labs_json.creatinina is defined and n.labs_json.creatinina is not none else "N/E" }},
+                            Hb {{ n.labs_json.hemoglobina if n.labs_json and n.labs_json.hemoglobina is defined and n.labs_json.hemoglobina is not none else "N/E" }},
+                            Leu {{ n.labs_json.leucocitos if n.labs_json and n.labs_json.leucocitos is defined and n.labs_json.leucocitos is not none else "N/E" }},
+                            Plt {{ n.labs_json.plaquetas if n.labs_json and n.labs_json.plaquetas is defined and n.labs_json.plaquetas is not none else "N/E" }}
+                            {% if n.labs_json and n.labs_json.adicionales is defined and n.labs_json.adicionales %}
+                            <div class="tiny">Adicionales: {{ n.labs_json.adicionales }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ n.free_text or "N/E" }}
+                            <div class="tiny">
+                                Balance: {{ n.io_summary_json.balance_ml if n.io_summary_json and n.io_summary_json.balance_ml is defined else "N/E" }} ml
+                                ({{ n.io_summary_json.balance_estado if n.io_summary_json and n.io_summary_json.balance_estado is defined else "N/E" }})
+                                | Índice urinario: {{ n.io_summary_json.indice_urinario_ml_kg_h if n.io_summary_json and n.io_summary_json.indice_urinario_ml_kg_h is defined and n.io_summary_json.indice_urinario_ml_kg_h is not none else "N/E" }}
+                                | Eventos: {{ n.events_pending_json.eventos_del_dia_n if n.events_pending_json and n.events_pending_json.eventos_del_dia_n is defined else "N/E" }}
+                            </div>
+                            <div class="tiny">v{{ n.version }} | {{ "FINAL" if n.is_final else "BORRADOR" }}</div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="7">Sin notas diarias estructuradas.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
+
+        <section class="tab-pane" data-pane="tags">
+            <div class="block">
+                <h2>Etiquetas / desenlaces clínicos</h2>
+                <form method="post" action="/expediente/inpatient-captura/tag">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
+                    <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+                    <input type="hidden" name="nss" value="{{ target_nss or consulta.nss }}">
+                    <input type="hidden" name="nombre" value="{{ target_nombre or consulta.nombre }}">
+                    <div class="grid-small">
+                        <div>
+                            <label>Tipo de etiqueta</label>
+                            <select name="tag_type" required>
+                                <option value="DX">Diagnóstico</option>
+                                <option value="PROCEDURE">Procedimiento</option>
+                                <option value="OUTCOME">Desenlace</option>
+                                <option value="RISK">Riesgo</option>
+                            </select>
+                        </div>
+                        <div><label>Valor</label><input type="text" name="tag_value" required></div>
+                        <div><label>Lateralidad</label><select name="laterality"><option value="">N/E</option><option value="L">L</option><option value="R">R</option><option value="BILAT">BILAT</option><option value="NA">NA</option></select></div>
+                        <div><label>Severidad</label><input type="text" name="severity" placeholder="LEVE/MODERADA/SEVERA"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" type="submit" name="mode" value="validate">Validar bloque</button>
+                        <button class="btn" type="submit" name="mode" value="save">Guardar bloque</button>
+                    </div>
+                </form>
+                <table>
+                    <tr><th>Fecha</th><th>Tipo</th><th>Valor</th><th>Lateralidad</th><th>Severidad</th></tr>
+                    {% set tipo_tag_label = {'DX': 'Diagnóstico', 'PROCEDURE': 'Procedimiento', 'OUTCOME': 'Desenlace', 'RISK': 'Riesgo'} %}
+                    {% for t in tags_items %}
+                    <tr>
+                        <td>{{ t.created_at }}</td><td>{{ tipo_tag_label.get(t.tag_type, t.tag_type) }}</td><td>{{ t.tag_value }}</td><td>{{ t.laterality or "N/E" }}</td><td>{{ t.severity or "N/E" }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5">Sin etiquetas clínicas registradas.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
+
+        <p class="tiny">Captura aditiva: no reemplaza formularios previos y conserva compatibilidad con flujo clínico existente.</p>
+    </div>
+
+    <script>
+        (function(){
+            var defaultTab = '{{ default_tab or "resumen" }}';
+            var params = new URLSearchParams(window.location.search || '');
+            var qsTab = params.get('tab');
+            if (!qsTab && (window.location.hash || '').indexOf('nota-diaria') >= 0) qsTab = 'nota';
+            var saved = localStorage.getItem('inpatient_capture_tab');
+            var active = qsTab || saved || defaultTab || 'resumen';
+            var buttons = Array.from(document.querySelectorAll('.tab-btn'));
+            var panes = Array.from(document.querySelectorAll('.tab-pane'));
+            function show(tab){
+                active = tab;
+                buttons.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===tab); });
+                panes.forEach(function(p){ p.classList.toggle('active', p.getAttribute('data-pane')===tab); });
+                localStorage.setItem('inpatient_capture_tab', tab);
+                try {
+                    var u = new URL(window.location.href);
+                    u.searchParams.set('tab', tab);
+                    window.history.replaceState({}, '', u.toString());
+                } catch(e){}
+            }
+            buttons.forEach(function(b){ b.addEventListener('click', function(){ show(b.getAttribute('data-tab')); }); });
+            if (!buttons.some(function(b){ return b.getAttribute('data-tab')===active; })) active='resumen';
+            show(active);
+        })();
+
+        (function(){
+            var selectorSoporte = document.getElementById('selector_soporte');
+            var boxDrenajes = document.getElementById('box_drenajes');
+            var boxDispositivos = document.getElementById('box_dispositivos');
+            function setSupportView(v){
+                var val = (v || 'DRENAJES').toUpperCase();
+                if (boxDrenajes) boxDrenajes.style.display = (val === 'DRENAJES') ? '' : 'none';
+                if (boxDispositivos) boxDispositivos.style.display = (val === 'DISPOSITIVOS') ? '' : 'none';
+            }
+            if (selectorSoporte){
+                selectorSoporte.addEventListener('change', function(){ setSupportView(selectorSoporte.value); });
+                setSupportView(selectorSoporte.value);
+            }
+
+            var drainHas = document.getElementById('drain_has');
+            var drainDetails = document.getElementById('drain_details');
+            var drainType = document.getElementById('drain_type');
+            var boxDrainSide = document.getElementById('box_drain_side');
+            var noLateralityDrains = {{ drain_no_laterality | tojson }};
+            function refreshDrainVisibility(){
+                var hasDrain = drainHas && drainHas.value === 'SI';
+                if (drainDetails) drainDetails.style.display = hasDrain ? '' : 'none';
+                var typeVal = (drainType && drainType.value) ? drainType.value : '';
+                var hideSide = (noLateralityDrains || []).indexOf(typeVal) >= 0;
+                if (boxDrainSide) boxDrainSide.style.display = hideSide ? 'none' : '';
+            }
+            if (drainHas) drainHas.addEventListener('change', refreshDrainVisibility);
+            if (drainType) drainType.addEventListener('change', refreshDrainVisibility);
+            refreshDrainVisibility();
+
+            var deviceHas = document.getElementById('device_has');
+            var deviceDetails = document.getElementById('device_details');
+            var deviceType = document.getElementById('device_type_clinical');
+            var boxDeviceSide = document.getElementById('box_device_side');
+            var boxFoleyFr = document.getElementById('box_foley_fr');
+            var boxFoleyUresis = document.getElementById('box_foley_uresis');
+            var boxFoleyHoras = document.getElementById('box_foley_horas');
+            var boxFoleyPeso = document.getElementById('box_foley_peso');
+            function refreshDeviceVisibility(){
+                var hasDevice = deviceHas && deviceHas.value === 'SI';
+                if (deviceDetails) deviceDetails.style.display = hasDevice ? '' : 'none';
+                var isFoley = deviceType && deviceType.value === 'SONDA FOLEY';
+                if (boxDeviceSide) boxDeviceSide.style.display = isFoley ? 'none' : '';
+                if (boxFoleyFr) boxFoleyFr.style.display = isFoley ? '' : 'none';
+                if (boxFoleyUresis) boxFoleyUresis.style.display = isFoley ? '' : 'none';
+                if (boxFoleyHoras) boxFoleyHoras.style.display = isFoley ? '' : 'none';
+                if (boxFoleyPeso) boxFoleyPeso.style.display = isFoley ? '' : 'none';
+            }
+            if (deviceHas) deviceHas.addEventListener('change', refreshDeviceVisibility);
+            if (deviceType) deviceType.addEventListener('change', refreshDeviceVisibility);
+            refreshDeviceVisibility();
+
+            // Autocompletado CIE10 desde diagnóstico seleccionable.
+            var dxSelect = document.getElementById('nota_diagnostico_select');
+            var cieInput = document.getElementById('nota_cie10_codigo');
+            var dxHidden = document.querySelector('input[name=\"diagnostico_cie10\"]');
+            function applyDx(){
+                if (!dxSelect) return;
+                var opt = dxSelect.options[dxSelect.selectedIndex];
+                if (!opt) return;
+                var cod = (opt.getAttribute('data-codigo') || '').trim();
+                if (cieInput && cod) cieInput.value = cod;
+                if (dxHidden) dxHidden.value = (opt.value || '').trim();
+            }
+            if (dxSelect) dxSelect.addEventListener('change', applyDx);
+            applyDx();
+        })();
+    </script>
+<script src="/static/js/clinical_validation.js"></script>
+<script src="/static/js/patient_autofill.js"></script>
+</body>
+</html>

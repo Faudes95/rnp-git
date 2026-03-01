@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titulo }}</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: #f4f6f9; padding: 24px; }
+        .container { max-width: 860px; margin: 0 auto; background: #fff; border-radius: 12px; border-top: 5px solid var(--imss-verde); padding: 28px; box-shadow: 0 10px 22px rgba(0,0,0,0.12); }
+        h1 { color: var(--imss-verde); margin-top: 0; }
+        p { color: #35424a; line-height: 1.6; }
+        .btn { display: inline-block; margin-top: 16px; text-decoration: none; background: var(--imss-verde); color: #fff; padding: 10px 18px; border-radius: 8px; font-weight: 700; }
+        .btn-alt { background: var(--imss-dorado); margin-left: 10px; }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ titulo }}</h1>
+        <p>{{ descripcion }}</p>
+        <a class="btn" href="{{ return_url }}">← {{ return_label }}</a>
+        <a class="btn btn-alt" href="/">Menú principal</a>
+    </div>
+</body>
+</html>

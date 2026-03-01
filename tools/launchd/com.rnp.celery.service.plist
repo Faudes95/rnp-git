@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.rnp.celery.service</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/oscaralvarado/venv/bin/celery</string>
+    <string>-A</string>
+    <string>ai_queue.celery</string>
+    <string>worker</string>
+    <string>--loglevel=info</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/oscaralvarado/Documents/New project</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+    <key>AUTH_ENABLED</key>
+    <string>false</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/tmp/rnp_celery.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/rnp_celery.err.log</string>
+</dict>
+</plist>

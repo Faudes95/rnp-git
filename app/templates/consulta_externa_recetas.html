@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recetas - Consulta Externa</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --fondo: #f4f6f9; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--fondo); font-family: 'Montserrat', sans-serif; padding: 24px; }
+        .container { max-width: 960px; margin: 0 auto; background: #fff; border-radius: 10px; border-top: 6px solid var(--imss-verde); padding: 24px; box-shadow: 0 8px 28px rgba(0,0,0,.08); }
+        .global-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+        .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:var(--imss-verde); background:#fff; }
+        .nav-chip.active { background:var(--imss-dorado); border-color:#9e7a4c; color:#13322B; }
+        .breadcrumbs { font-size:12px; color:#5f6d68; margin-bottom:12px; }
+        h1 { color: var(--imss-verde); margin: 0 0 6px 0; }
+        p { color: #535353; line-height: 1.45; }
+        .box {
+            border: 1px solid #e2d1b4;
+            background: #fffaf2;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 16px;
+        }
+        .btns { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { text-decoration: none; background: var(--imss-verde); color: #fff; border-radius: 8px; padding: 10px 14px; font-weight: 700; }
+        .btn.secondary { background: #fff; color: var(--imss-verde); border: 1px solid var(--imss-verde); }
+        code { background: #f0f0f0; border-radius: 4px; padding: 1px 5px; }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="global-nav">
+            <a class="nav-chip" href="/">Menú</a>
+            <a class="nav-chip active" href="/consulta_externa">Consulta Externa</a>
+            <a class="nav-chip" href="/hospitalizacion">Hospitalización</a>
+            <a class="nav-chip" href="/quirofano">Quirófano</a>
+            <a class="nav-chip" href="/expediente">Expediente</a>
+            <a class="nav-chip" href="/reporte">Reporte</a>
+        </div>
+        <div class="breadcrumbs">Menú principal → Consulta Externa → Recetas</div>
+        <h1>Consulta Externa · Recetas</h1>
+        <p>Este módulo se mantiene intencionalmente vacío y preparado para acoplar un motor externo de prescripción sin alterar rutas ni lógica clínica actual.</p>
+
+        <div class="box">
+            <strong>Contrato de integración recomendado (aditivo)</strong>
+            <p>Endpoint sugerido de acoplamiento: <code>/consulta_externa/recetas</code> (GET interfaz) + endpoint POST/JSON del motor externo que devuelva folio, contenido de receta y estatus de validación.</p>
+            <p>Al integrar el módulo externo, se deberá registrar la atención en expediente clínico único como nota de servicio <code>RECETAS</code>.</p>
+        </div>
+
+        <div class="btns">
+            <a class="btn secondary" href="{{ return_to if return_to else '/consulta_externa' }}">← Volver</a>
+            <a class="btn secondary" href="/reporte">Ver Reporte Estadístico</a>
+        </div>
+    </div>
+</body>
+</html>

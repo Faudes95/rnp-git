@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Hospitalizacion / Guardia</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; }
+        body { font-family:'Montserrat',sans-serif; background:#f4f6f9; margin:0; padding:20px; }
+        .container { max-width:1360px; margin:auto; background:#fff; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.10); padding:24px; }
+        h1,h2 { color:var(--imss-verde); margin:0 0 12px; }
+        .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:end; margin-bottom:14px; }
+        .toolbar input[type=date] { border:1px solid #ced9d4; border-radius:6px; padding:8px; }
+        .btn { display:inline-block; text-decoration:none; background:var(--imss-verde); color:#fff; padding:10px 13px; border-radius:7px; border:0; font-weight:700; cursor:pointer; }
+        .btn-dorado { background:var(--imss-dorado); }
+        .summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin: 10px 0 18px; }
+        .card { border:1px solid #dce5e0; border-left:4px solid var(--imss-dorado); border-radius:8px; background:#fafcfa; padding:10px; }
+        .card .v { font-size:22px; color:var(--imss-verde); font-weight:800; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:10px; margin-top:8px; }
+        .module {
+            text-decoration:none;
+            border:1px solid #d4dfda;
+            border-radius:10px;
+            background:#fbfdfc;
+            color:var(--imss-verde);
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            min-height:110px;
+            gap:6px;
+            transition:.15s ease;
+            text-align:center;
+            padding:10px;
+        }
+        .module:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.1); border-color:var(--imss-dorado); }
+        .icon { width:46px; height:46px; border-radius:999px; background:var(--imss-verde); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; }
+        .module .t { font-weight:700; font-size:13px; }
+        .module .c { font-size:12px; color:#5a666c; }
+        .split { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:14px; margin-top:18px; }
+        table { width:100%; border-collapse:collapse; }
+        th { background:var(--imss-verde); color:#fff; text-align:left; padding:8px; font-size:12px; }
+        td { border-bottom:1px solid #e6ece9; padding:7px; font-size:12px; }
+        img { width:100%; border:1px solid #dce5e0; border-radius:8px; background:#fff; }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+
+    /* === Guardia-specific additive enhancements === */
+    .container { position:relative; overflow:hidden; }
+    .container::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, #13322B, #B38E5D, #13322B); z-index:5; }
+
+    /* Module cards animated entry */
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+    .module { animation:fadeInUp 0.45s ease both; }
+    .module:nth-child(1) { animation-delay:0.04s; }
+    .module:nth-child(2) { animation-delay:0.10s; }
+    .module:nth-child(3) { animation-delay:0.16s; }
+    .module:nth-child(4) { animation-delay:0.22s; }
+    .module:nth-child(5) { animation-delay:0.28s; }
+    .module:nth-child(6) { animation-delay:0.34s; }
+    .module:nth-child(7) { animation-delay:0.40s; }
+    .module:nth-child(8) { animation-delay:0.46s; }
+    .module::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, #B38E5D, #13322B); transform:scaleX(0); transition:transform 0.3s; }
+    .module { position:relative; overflow:hidden; }
+    .module:hover::after { transform:scaleX(1); }
+
+    /* Summary card animation */
+    .card { animation:fadeInUp 0.4s ease both; }
+    .card:nth-child(1) { animation-delay:0.03s; }
+    .card:nth-child(2) { animation-delay:0.07s; }
+    .card:nth-child(3) { animation-delay:0.11s; }
+    .card:nth-child(4) { animation-delay:0.15s; }
+    .card:nth-child(5) { animation-delay:0.19s; }
+    .card:nth-child(6) { animation-delay:0.23s; }
+    .card:nth-child(7) { animation-delay:0.27s; }
+    .card:nth-child(8) { animation-delay:0.31s; }
+    .card:nth-child(9) { animation-delay:0.35s; }
+    .card { transition:transform 0.22s ease, box-shadow 0.22s ease; border-left:4px solid; border-image:linear-gradient(180deg, #B38E5D, #13322B) 1; }
+    .card:hover { transform:translateY(-3px); box-shadow:0 6px 18px rgba(19,50,43,0.13); }
+
+    /* Toolbar enhanced */
+    .toolbar { padding:10px 14px; background:linear-gradient(135deg, #edf8f3, #fffaf3); border:1px solid #d8c4a2; border-radius:10px; }
+
+    /* Sticky headers */
+    thead th { position:sticky; top:0; z-index:5; box-shadow:0 2px 4px rgba(19,50,43,0.10); }
+
+    /* Header enhanced */
+    h1 { border-bottom:3px solid #B38E5D; padding-bottom:8px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>3. MODULO DE GUARDIA</h1>
+    <div class="toolbar">
+        <form action="/hospitalizacion/guardia" method="get" style="display:flex; gap:8px; align-items:end;">
+            <div>
+                <label>Fecha</label>
+                <input type="date" name="fecha" value="{{ fecha }}">
+            </div>
+            <button type="submit" class="btn">Ver fecha</button>
+        </form>
+        <a class="btn btn-dorado" href="/hospitalizacion/importar?fecha={{ fecha }}">Importar archivos</a>
+        <a class="btn btn-dorado" href="/hospitalizacion/exportar?fecha={{ fecha }}">Exportar entrega</a>
+        <a class="btn btn-dorado" href="/hospitalizacion/reporte/guardia?fecha_desde={{ fecha }}&fecha_hasta={{ fecha }}">Reporte guardia</a>
+        <a class="btn btn-dorado" href="/hospitalizacion">Volver hospitalizacion</a>
+    </div>
+
+    <div class="summary">
+        <div class="card"><div>Registros guardia</div><div class="v">{{ metrics.kpi.registros_guardia }}</div></div>
+        <div class="card"><div>Labs registrados</div><div class="v">{{ metrics.kpi.labs_registrados }}</div></div>
+        <div class="card"><div>Operados registrados</div><div class="v">{{ metrics.kpi.operados_registrados }}</div></div>
+        <div class="card"><div>Ingresos registrados</div><div class="v">{{ metrics.kpi.ingresos_registrados }}</div></div>
+        <div class="card"><div>Estancias prolongadas</div><div class="v">{{ metrics.kpi.estancias_prolongadas }}</div></div>
+        <div class="card"><div>Cr >= 2.0</div><div class="v">{{ metrics.lab_alerts.creatinina_alta }}</div></div>
+        <div class="card"><div>Hb &lt; 8</div><div class="v">{{ metrics.lab_alerts.hb_baja_8 }}</div></div>
+        <div class="card"><div>Leucos &gt; 10000</div><div class="v">{{ metrics.lab_alerts.leucos_altos_10000 }}</div></div>
+        <div class="card"><div>Ocupacion promedio</div><div class="v">{% if metrics.ocupacion_promedio is not none %}{{ metrics.ocupacion_promedio }}%{% else %}N/D{% endif %}</div></div>
+    </div>
+
+    <h2>Captura por archivo operativo</h2>
+    <div class="grid">
+        {% for item in datasets %}
+        <a class="module" href="{{ item.route }}?fecha={{ fecha }}">
+            <span class="icon">{{ item.icon }}</span>
+            <span class="t">{{ item.title }}</span>
+            <span class="c">Registros hoy: {{ item.count }}</span>
+        </a>
+        {% endfor %}
+    </div>
+
+    <div class="split">
+        <div>
+            <h2>Top procedimientos con estancia prolongada</h2>
+            <table>
+                <tr><th>Procedimiento</th><th>Total</th></tr>
+                {% for proc, total in metrics.top_procedimientos_estancia_prolongada %}
+                <tr><td>{{ proc }}</td><td>{{ total }}</td></tr>
+                {% else %}
+                <tr><td colspan="2" style="text-align:center;">Sin datos</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div>
+            {% if metrics.chart_labs %}
+            <h2>Alertas de laboratorio</h2>
+            <img src="data:image/png;base64,{{ metrics.chart_labs }}" alt="Alertas laboratorio">
+            {% endif %}
+            {% if metrics.chart_ingresos %}
+            <h2 style="margin-top:14px;">Ingresos del dia</h2>
+            <img src="data:image/png;base64,{{ metrics.chart_ingresos }}" alt="Ingresos por dia">
+            {% endif %}
+        </div>
+    </div>
+</div>
+</body>
+</html>

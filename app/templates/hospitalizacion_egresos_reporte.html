@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Egresos Hospitalarios</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; }
+        body { font-family:'Montserrat',sans-serif; background:#f4f6f9; margin:0; padding:20px; }
+        .container { max-width:1360px; margin:auto; background:#fff; border-radius:10px; padding:22px; box-shadow:0 8px 24px rgba(0,0,0,.1); }
+        h1,h2,h3 { color:var(--imss-verde); margin:0 0 10px; }
+        .meta { color:#5d6a70; font-size:13px; margin-bottom:12px; }
+        .summary { display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-bottom:12px; }
+        .card { border:1px solid #dbe4df; border-left:5px solid var(--imss-dorado); border-radius:8px; background:#fafcfb; padding:10px; }
+        .card .v { font-size:22px; font-weight:800; color:var(--imss-verde); }
+        .filter { display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin-bottom:10px; }
+        .filter div { min-width:180px; }
+        label { font-size:12px; font-weight:700; color:var(--imss-verde); display:block; margin-bottom:4px; }
+        input, select { width:100%; padding:8px; border:1px solid #cfd8d3; border-radius:6px; }
+        .btn { display:inline-block; text-decoration:none; border:none; border-radius:7px; background:var(--imss-verde); color:#fff; padding:10px 14px; cursor:pointer; font-weight:700; }
+        .btn-alt { background:var(--imss-dorado); }
+        .split { display:grid; grid-template-columns: repeat(auto-fit,minmax(380px,1fr)); gap:12px; margin-top:10px; }
+        img { width:100%; border:1px solid #dfe7e3; border-radius:8px; }
+        table { width:100%; border-collapse:collapse; margin-top:8px; }
+        th { background:var(--imss-verde); color:#fff; padding:8px; text-align:left; font-size:12px; }
+        td { border-bottom:1px solid #e5ece8; padding:7px; font-size:12px; }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Egresos Hospitalarios</h1>
+    <p class="meta">Generado: {{ fecha }} | Periodo: {{ periodo_actual }}</p>
+
+    <form method="get" action="/hospitalizacion/reporte/egresos" class="filter">
+        <div>
+            <label>Periodo (mes)</label>
+            <select name="periodo">
+                {% for p in meses_disponibles %}
+                <option value="{{ p }}" {% if p == periodo_actual %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+                {% if periodo_actual not in meses_disponibles %}
+                <option value="{{ periodo_actual }}" selected>{{ periodo_actual }}</option>
+                {% endif %}
+            </select>
+        </div>
+        <div>
+            <label>Buscar por NSS o nombre</label>
+            <input type="text" name="q" value="{{ q_actual }}" placeholder="NSS o nombre">
+        </div>
+        <div>
+            <label>Médico a cargo</label>
+            <input type="text" name="medico" value="{{ medico_actual }}" placeholder="Médico">
+        </div>
+        <div>
+            <label>Procedimiento</label>
+            <input type="text" name="procedimiento" value="{{ procedimiento_actual }}" placeholder="Procedimiento">
+        </div>
+        <div><button class="btn" type="submit">Aplicar</button></div>
+    </form>
+
+    <div class="summary">
+        <div class="card"><div>Altas hospitalarias del mes</div><div class="v">{{ total_altas }}</div></div>
+        <div class="card"><div>Con antibiótico</div><div class="v">{{ (by_antibiotico|selectattr(0,'equalto','SI')|list|first|default(['SI',0]))[1] }}</div></div>
+        <div class="card"><div>Con incapacidad</div><div class="v">{{ (by_incapacidad|selectattr(0,'equalto','SI')|list|first|default(['SI',0]))[1] }}</div></div>
+        <div class="card"><div>Con complicación</div><div class="v">{{ (by_complicacion|selectattr(0,'equalto','SI')|list|first|default(['SI',0]))[1] }}</div></div>
+    </div>
+
+    <div class="split">
+        {% if chart_day %}<div><h3>Altas por día</h3><img src="data:image/png;base64,{{ chart_day }}" alt="Altas por día"></div>{% endif %}
+        {% if chart_week %}<div><h3>Altas por semana</h3><img src="data:image/png;base64,{{ chart_week }}" alt="Altas por semana"></div>{% endif %}
+        {% if chart_medico %}<div><h3>Altas por médico</h3><img src="data:image/png;base64,{{ chart_medico }}" alt="Altas por médico"></div>{% endif %}
+        {% if chart_proc %}<div><h3>Altas por procedimiento</h3><img src="data:image/png;base64,{{ chart_proc }}" alt="Altas por procedimiento"></div>{% endif %}
+    </div>
+
+    <h2>Listado de altas hospitalarias</h2>
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>NSS</th>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th>Edad</th>
+            <th>Cama</th>
+            <th>Diagnóstico</th>
+            <th>Procedimiento</th>
+            <th>Días estancia</th>
+            <th>Médico a cargo</th>
+            <th>Antibiótico</th>
+            <th>Incapacidad</th>
+            <th>Complicación</th>
+            <th>Expediente</th>
+            <th>DOCX</th>
+        </tr>
+        {% for r in rows %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ r.fecha_egreso }}</td>
+            <td>{{ r.nss }}</td>
+            <td>{{ r.nombre_completo }}</td>
+            <td>{{ r.sexo }}</td>
+            <td>{{ r.edad }}</td>
+            <td>{{ r.cama }}</td>
+            <td>{{ r.diagnostico }}</td>
+            <td>{{ r.procedimiento_realizado or 'NO_REGISTRADO' }}</td>
+            <td>{{ r.dias_estancia }}</td>
+            <td>{{ r.medico_a_cargo }}</td>
+            <td>{{ r.antibiotico_otorgado }} {{ r.antibiotico_nombre or '' }}</td>
+            <td>{{ r.incapacidad_otorgada }}</td>
+            <td>{{ r.hubo_complicacion }} {{ r.complicacion_catalogo or '' }}</td>
+            <td><a href="/expediente?nss={{ r.nss }}&nombre={{ r.nombre_completo|replace(' ', '%20') }}">Ver</a></td>
+            <td><a href="/hospitalizacion/alta/{{ r.id }}/imprimir">Descargar</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="16">Sin egresos en el periodo seleccionado.</td></tr>
+        {% endfor %}
+    </table>
+
+    <h2>Desgloses</h2>
+    <div class="split">
+        <div>
+            <h3>Por sexo</h3>
+            <table><tr><th>Sexo</th><th>Cantidad</th></tr>{% for k,v in by_sex %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+        </div>
+        <div>
+            <h3>Por grupo de edad</h3>
+            <table><tr><th>Grupo</th><th>Cantidad</th></tr>{% for k,v in by_age_group %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+        </div>
+        <div>
+            <h3>Por médico a cargo</h3>
+            <table><tr><th>Médico</th><th>Cantidad</th></tr>{% for k,v in by_medico %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+        </div>
+        <div>
+            <h3>Por procedimiento</h3>
+            <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>{% for k,v in by_proc %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+        </div>
+    </div>
+
+    <div style="margin-top:14px;">
+        <a class="btn" href="/hospitalizacion/reporte">Volver a reporte hospitalización</a>
+        <a class="btn btn-alt" href="/hospitalizacion/alta">Realizar otra alta hospitalaria</a>
+    </div>
+</div>
+</body>
+</html>

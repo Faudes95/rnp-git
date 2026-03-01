@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cirugía de Urgencia - IMSS Urología</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --imss-fondo: #f3f6f5; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: linear-gradient(120deg, #0f3a34, #1f5c53); min-height: 100vh; padding: 24px; }
+        .container { max-width: 980px; margin: 0 auto; background: #fff; border-radius: 14px; border: 2px solid var(--imss-dorado); padding: 28px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
+        h1 { margin: 0 0 6px 0; text-align: center; color: var(--imss-verde); font-size: 34px; }
+        h2 { margin: 0 0 24px 0; text-align: center; color: var(--imss-dorado); font-size: 19px; letter-spacing: 1px; text-transform: uppercase; }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 210px; text-decoration: none; color: var(--imss-verde);
+            background: var(--imss-fondo); border: 2px solid var(--imss-dorado); border-radius: 14px;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(19, 50, 43, 0.24); }
+        .icon { font-size: 56px; line-height: 1; margin-bottom: 14px; }
+        .label { font-size: 19px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; text-align: center; padding: 0 8px; }
+        .actions { text-align: center; margin-top: 24px; }
+        .btn-back { display: inline-block; text-decoration: none; background: var(--imss-verde); color: #fff; padding: 11px 20px; border-radius: 8px; font-weight: 700; }
+        @media (max-width: 920px) {
+            .grid { grid-template-columns: 1fr; }
+            .card { min-height: 170px; }
+            .label { font-size: 17px; }
+            h1 { font-size: 28px; }
+        }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+<link href="/static/css/rnp_redesign.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>CIRUGÍA DE URGENCIA</h1>
+        <h2>Módulo Quirúrgico</h2>
+        <div class="grid">
+            <a class="card" href="/quirofano/urgencias/solicitud">
+                <div class="icon">📝</div>
+                <div class="label">Realizar solicitud de cirugía de urgencia</div>
+            </a>
+            <a class="card" href="/quirofano/urgencias/postquirurgica">
+                <div class="icon">📈</div>
+                <div class="label">Realizar nota postquirúrgica</div>
+            </a>
+        </div>
+        <div class="actions">
+            <a class="btn-back" href="/quirofano/urgencias/metadata" style="margin-right:8px; background: var(--imss-dorado); color:#17322d;">Pilot metadata</a>
+            <a class="btn-back" href="/quirofano">← Volver al módulo quirúrgico</a>
+        </div>
+    </div>
+<script src="/static/js/clinical_validation.js"></script>
+<script src="/static/js/patient_autofill.js"></script>
+</body>
+</html>

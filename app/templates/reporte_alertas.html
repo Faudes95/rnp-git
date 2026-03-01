@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Alertas FAU_BOT</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; }
+        body { font-family:'Montserrat',sans-serif; background:#f4f6f9; margin:0; padding:20px; }
+        .container { max-width:1300px; margin:auto; background:#fff; border-radius:10px; padding:24px; box-shadow:0 10px 28px rgba(0,0,0,.09); }
+        h1, h2, h3 { color:var(--imss-verde); margin:0 0 12px 0; }
+        h1 { border-bottom:3px solid var(--imss-dorado); padding-bottom:10px; }
+        .links { display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 18px; }
+        .btn { text-decoration:none; background:var(--imss-verde); color:#fff; padding:10px 14px; border-radius:8px; font-weight:700; }
+        .btn.alt { background:var(--imss-dorado); color:#1d1d1d; }
+        .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin-bottom:16px; }
+        .card { border:1px solid #e2e8e6; border-left:5px solid var(--imss-dorado); border-radius:8px; padding:12px; background:#fafcfb; }
+        .v { font-size:26px; font-weight:800; color:var(--imss-verde); }
+        table { width:100%; border-collapse:collapse; margin-top:8px; }
+        th { background:var(--imss-verde); color:#fff; text-align:left; padding:8px; font-size:12px; }
+        td { border-bottom:1px solid #e8ecea; padding:8px; font-size:12px; vertical-align:top; }
+        .block { margin-top:16px; border:1px solid #e2e8e6; border-radius:8px; padding:12px; background:#fff; }
+        .sev-ALTA { color:#9b1c1c; font-weight:800; }
+        .sev-MEDIA { color:#8b5e00; font-weight:700; }
+        .sev-BAJA, .sev-INFO { color:#0f5f83; font-weight:700; }
+        .badge { display:inline-block; border-radius:20px; padding:3px 8px; font-size:11px; font-weight:700; }
+        .st-PENDING_REVIEW { background:#fef3c7; color:#92400e; }
+        .st-APPROVED { background:#dcfce7; color:#166534; }
+        .st-REJECTED { background:#fee2e2; color:#991b1b; }
+        .st-EXECUTED { background:#dbeafe; color:#1e3a8a; }
+        .st-OPEN { background:#fef3c7; color:#92400e; }
+        .st-SPEC_READY { background:#ede9fe; color:#5b21b6; }
+        .st-READY_FOR_PATCH { background:#e0f2fe; color:#075985; }
+        .st-PATCH_READY { background:#cffafe; color:#0f766e; }
+        .st-READY_FOR_TEST { background:#f3f4f6; color:#374151; }
+        .st-TEST_PASSED { background:#dcfce7; color:#166534; }
+        .st-TEST_FAILED { background:#fee2e2; color:#991b1b; }
+        .st-MERGED { background:#dbeafe; color:#1e3a8a; }
+        .ops { display:flex; gap:6px; align-items:center; }
+        .ops form { display:inline; margin:0; }
+        .mini { border:0; border-radius:6px; font-size:11px; padding:5px 8px; cursor:pointer; }
+        .mini.ok { background:#065f46; color:#fff; }
+        .mini.no { background:#9b1c1c; color:#fff; }
+        .mini.alt { background:#1d4ed8; color:#fff; }
+        .mini.warn { background:#92400e; color:#fff; }
+        .patch-box { width:100%; min-height:64px; font-size:11px; border:1px solid #cad5d0; border-radius:6px; padding:6px; box-sizing:border-box; }
+        .test-summary { border-left:4px solid #9ca3af; background:#f9fafb; border-radius:6px; padding:6px 8px; }
+        .test-summary.crit { border-left-color:#991b1b; background:#fef2f2; }
+        .test-summary.ok { border-left-color:#166534; background:#f0fdf4; }
+        .test-summary.mid { border-left-color:#92400e; background:#fffbeb; }
+        .tsub { display:inline-block; border-radius:999px; padding:2px 7px; font-size:10px; font-weight:700; margin-right:4px; }
+        .tsub.ok { background:#dcfce7; color:#166534; }
+        .tsub.fail { background:#fee2e2; color:#991b1b; }
+        .tsub.skip { background:#fef3c7; color:#92400e; }
+        .tsub.na { background:#e5e7eb; color:#374151; }
+        .flash { margin:10px 0; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; border-radius:8px; padding:8px 10px; font-weight:700; }
+        .filters { display:flex; flex-wrap:wrap; gap:10px; align-items:end; margin-top:10px; }
+        .filters label { font-size:12px; color:#13322B; font-weight:700; display:block; margin-bottom:4px; }
+        .filters select, .filters input { border:1px solid #cad5d0; border-radius:8px; padding:8px 10px; font-size:12px; min-width:180px; }
+        .filters button { border:0; border-radius:8px; background:#13322B; color:#fff; padding:10px 14px; font-weight:700; cursor:pointer; }
+        .filters .clear { background:#B38E5D; color:#1d1d1d; text-decoration:none; padding:10px 14px; border-radius:8px; font-weight:700; }
+        .subtools { display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 10px; }
+        .subbtn { text-decoration:none; border-radius:8px; padding:7px 10px; font-size:12px; font-weight:700; }
+        .subbtn.main { background:#13322B; color:#fff; }
+        .subbtn.alt { background:#B38E5D; color:#1d1d1d; }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>ALERTAS - fau_BOT</h1>
+    <p>Actualizado: {{ fecha }}</p>
+    {% if updated %}
+    <div class="flash">
+        {% if updated == 'pr_spec' %}PR suggestion: SPEC_READY generado.
+        {% elif updated == 'pr_ready' %}PR suggestion: READY_FOR_PATCH actualizado.
+        {% elif updated == 'pr_patch' %}PR suggestion: patch guardado (PATCH_READY).
+        {% elif updated == 'pr_tests' %}PR suggestion: pruebas ejecutadas.
+        {% else %}Acción actualizada correctamente.
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="links">
+        <a class="btn" href="/reporte">Volver a Reporte Estadístico</a>
+        <a class="btn alt" href="/ai/fau-bot">Panel IA Central</a>
+        <a class="btn alt" href="/ai/fau-bot-core">Panel IA Central (Core)</a>
+        <a class="btn alt" href="/ai/quirofano">Panel IA Quirófano</a>
+        <a class="btn alt" href="/api/ai/fau-bot/alerts" target="_blank">JSON alertas centrales</a>
+        <a class="btn alt" href="/api/ai/fau-bot/actions" target="_blank">JSON acciones FAU</a>
+        <a class="btn alt" href="/api/ai/fau-bot-core/alerts" target="_blank">JSON alertas core</a>
+        <a class="btn alt" href="/api/v1/dev/telemetry/runtime-kpis" target="_blank">JSON runtime KPIs</a>
+        <a class="btn alt" href="/api/ai/quirofano/alertas" target="_blank">JSON alertas quirófano</a>
+    </div>
+
+    <div class="cards">
+        <div class="card"><div>Total alertas centrales</div><div class="v">{{ resumen.total_central }}</div></div>
+        <div class="card"><div>Action proposals (HITL)</div><div class="v">{{ resumen.total_actions }}</div></div>
+        <div class="card"><div>PR suggestions (Loop Local)</div><div class="v">{{ resumen.total_local_pr_suggestions }}</div></div>
+        <div class="card"><div>PR suggestions (DevOps)</div><div class="v">{{ resumen.total_core_pr_suggestions }}</div></div>
+        <div class="card"><div>Engineering issues (DevOps)</div><div class="v">{{ resumen.total_core_issues }}</div></div>
+        <div class="card"><div>Total alertas hospitalización (30d)</div><div class="v">{{ resumen.total_hospitalizacion }}</div></div>
+        <div class="card"><div>Total alertas quirófano (30d)</div><div class="v">{{ resumen.total_quirofano }}</div></div>
+        <div class="card"><div>Runtime profile</div><div class="v">{{ (resumen.runtime_kpis.profile if resumen.runtime_kpis else 'prod')|upper }}</div></div>
+        <div class="card"><div>Runtime eventos (60m)</div><div class="v">{{ resumen.runtime_kpis.events if resumen.runtime_kpis else 0 }}</div></div>
+        <div class="card"><div>Runtime P95 ms (60m)</div><div class="v">{{ '%.1f'|format(resumen.runtime_kpis.latency.p95_ms) if resumen.runtime_kpis and resumen.runtime_kpis.latency else 0 }}</div></div>
+        <div class="card"><div>Error rate 5xx % (60m)</div><div class="v">{{ '%.2f'|format(resumen.runtime_kpis.error_rate_pct) if resumen.runtime_kpis else 0 }}</div></div>
+        <div class="card"><div>Hospitalización ALTA</div><div class="v">{{ resumen.hospitalizacion.por_severidad.ALTA if resumen.hospitalizacion and resumen.hospitalizacion.por_severidad else 0 }}</div></div>
+        <div class="card"><div>Hospitalización MEDIA</div><div class="v">{{ resumen.hospitalizacion.por_severidad.MEDIA if resumen.hospitalizacion and resumen.hospitalizacion.por_severidad else 0 }}</div></div>
+        <div class="card"><div>Quirófano CRITICAL</div><div class="v">{{ resumen.quirofano.por_nivel.CRITICAL if resumen.quirofano and resumen.quirofano.por_nivel else 0 }}</div></div>
+        <div class="card"><div>Quirófano WARNING</div><div class="v">{{ resumen.quirofano.por_nivel.WARNING if resumen.quirofano and resumen.quirofano.por_nivel else 0 }}</div></div>
+    </div>
+
+    <div class="block">
+        <h2>Panel Central Unificado (Alertas + Acciones + PR + Issues)</h2>
+        <div class="cards">
+            <div class="card"><div>Total vista actual</div><div class="v">{{ resumen.unified.total if resumen.unified else 0 }}</div></div>
+            <div class="card"><div>Total bruto</div><div class="v">{{ resumen.unified.total_raw if resumen.unified else 0 }}</div></div>
+            <div class="card"><div>ALTA</div><div class="v">{{ resumen.unified.por_severidad.ALTA if resumen.unified and resumen.unified.por_severidad else 0 }}</div></div>
+            <div class="card"><div>MEDIA</div><div class="v">{{ resumen.unified.por_severidad.MEDIA if resumen.unified and resumen.unified.por_severidad else 0 }}</div></div>
+            <div class="card"><div>BAJA</div><div class="v">{{ resumen.unified.por_severidad.BAJA if resumen.unified and resumen.unified.por_severidad else 0 }}</div></div>
+            <div class="card"><div>Umbral P95 (profile)</div><div class="v">{{ '%.1f'|format(resumen.runtime_kpis.thresholds.api_p95_ms_max) if resumen.runtime_kpis and resumen.runtime_kpis.thresholds else 0 }}</div></div>
+            <div class="card"><div>Umbral error 5xx%</div><div class="v">{{ '%.2f'|format(resumen.runtime_kpis.thresholds.error_rate_pct_max) if resumen.runtime_kpis and resumen.runtime_kpis.thresholds else 0 }}</div></div>
+        </div>
+
+        <form method="get" action="/reporte/alertas" class="filters">
+            <div>
+                <label for="severity">Severidad</label>
+                <select id="severity" name="severity">
+                    <option value="ALL" {% if severity_filter == 'ALL' %}selected{% endif %}>Todas</option>
+                    <option value="ALTA" {% if severity_filter == 'ALTA' %}selected{% endif %}>ALTA</option>
+                    <option value="MEDIA" {% if severity_filter == 'MEDIA' %}selected{% endif %}>MEDIA</option>
+                    <option value="BAJA" {% if severity_filter == 'BAJA' %}selected{% endif %}>BAJA</option>
+                    <option value="INFO" {% if severity_filter == 'INFO' %}selected{% endif %}>INFO</option>
+                </select>
+            </div>
+            <div>
+                <label for="module">Módulo</label>
+                <select id="module" name="module">
+                    <option value="ALL" {% if module_filter == 'ALL' %}selected{% endif %}>Todos</option>
+                    {% for m in module_options %}
+                    <option value="{{ m }}" {% if module_filter == m %}selected{% endif %}>{{ m }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="status">Estado</label>
+                <select id="status" name="status">
+                    <option value="ALL" {% if status_filter == 'ALL' %}selected{% endif %}>Todos</option>
+                    {% for st in status_options %}
+                    <option value="{{ st }}" {% if status_filter == st %}selected{% endif %}>{{ st }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="limit">Límite</label>
+                <input id="limit" name="limit" type="number" min="50" max="2000" step="50" value="{{ limit_filter or 400 }}">
+            </div>
+            <div>
+                <button type="submit">Aplicar filtros</button>
+            </div>
+            <div>
+                <a class="clear" href="/reporte/alertas">Limpiar</a>
+            </div>
+        </form>
+
+        <table>
+            <tr><th>Fecha</th><th>Módulo</th><th>Fuente</th><th>Severidad</th><th>Estado</th><th>Título</th><th>Descripción</th><th>Ref</th></tr>
+            {% for e in unified_feed %}
+            <tr>
+                <td>{{ e.date }}</td>
+                <td>{{ e.module }}</td>
+                <td>{{ e.source }}</td>
+                <td><span class="sev-{{ e.severity }}">{{ e.severity }}</span></td>
+                <td>{{ e.status }}</td>
+                <td>{{ e.title }}</td>
+                <td>{{ e.description }}</td>
+                <td>{{ e.ref }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8">Sin registros para los filtros actuales.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="block">
+        <h2>Alertas Centrales fau_BOT</h2>
+        <table>
+            <tr><th>Fecha</th><th>Severidad</th><th>Categoría</th><th>Título</th><th>Descripción</th><th>Recomendación</th><th>Estado</th><th>Operación</th></tr>
+            {% for a in central_alerts %}
+            {% set am = central_alert_action_map.get(a.id) if central_alert_action_map else None %}
+            <tr>
+                <td>{{ a.created_at }}</td>
+                <td><span class="sev-{{ a.severity }}">{{ a.severity }}</span></td>
+                <td>{{ a.category }}</td>
+                <td>{{ a.title }}</td>
+                <td>{{ a.description }}</td>
+                <td>{{ a.recommendation }}</td>
+                <td>
+                    {% if am and am.resolved_at %}
+                    <span class="badge st-TEST_PASSED">RESUELTA</span><br>
+                    <span style="font-size:11px;">{{ am.resolution_reason or "handled" }}</span>
+                    {% elif am and am.ack_at %}
+                    <span class="badge st-READY_FOR_TEST">ACK</span><br>
+                    <span style="font-size:11px;">{{ am.ack_by or "N/E" }}</span>
+                    {% else %}
+                    <span class="badge st-OPEN">OPEN</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="ops">
+                        <form method="post" action="/reporte/alertas/central/{{ a.id }}/ack">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="ack_by" value="usuario_ui">
+                            <button class="mini alt" type="submit">ACK</button>
+                        </form>
+                        <form method="post" action="/reporte/alertas/central/{{ a.id }}/resolve">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="resolved_by" value="usuario_ui">
+                            <select name="resolution_reason" style="font-size:11px; padding:4px; border-radius:5px;">
+                                <option value="handled">handled</option>
+                                <option value="true_positive">true_positive</option>
+                                <option value="false_positive">false_positive</option>
+                            </select>
+                            <input type="text" name="action_taken_json" placeholder='{"accion":"..."}' style="width:160px; font-size:11px;">
+                            <button class="mini ok" type="submit">Resolver</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8">Sin alertas centrales registradas.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="block">
+        <h2>Bandeja FAU - Action Proposals</h2>
+        <table>
+            <tr><th>ID</th><th>Fecha</th><th>Fuente</th><th>Prioridad</th><th>Acción</th><th>Estado</th><th>Título</th><th>Descripción</th><th>Operación HITL</th></tr>
+            {% for a in action_proposals %}
+            <tr>
+                <td>{{ a.id }}</td>
+                <td>{{ a.created_at }}</td>
+                <td>{{ a.source_agent }}</td>
+                <td><span class="sev-{{ a.priority }}">{{ a.priority }}</span></td>
+                <td>{{ a.action_type }}</td>
+                <td><span class="badge st-{{ a.status }}">{{ a.status }}</span></td>
+                <td>{{ a.title }}</td>
+                <td>{{ a.description }}</td>
+                <td>
+                    <div class="ops">
+                        {% if a.status != 'APPROVED' and a.status != 'EXECUTED' %}
+                        <form method="post" action="/reporte/alertas/actions/{{ a.id }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="status" value="APPROVED">
+                            <button class="mini ok" type="submit">Aprobar</button>
+                        </form>
+                        {% endif %}
+                        {% if a.status != 'REJECTED' %}
+                        <form method="post" action="/reporte/alertas/actions/{{ a.id }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="status" value="REJECTED">
+                            <button class="mini no" type="submit">Rechazar</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="9">Sin acciones propuestas en esta ventana.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="block">
+        <h2>Bandeja PR Suggestions (Loop Local Fase-0)</h2>
+        <div class="subtools">
+            <a class="subbtn main" href="/reporte/alertas?severity={{ severity_filter }}&module={{ module_filter }}&status={{ status_filter }}&limit={{ limit_filter }}&pr_queue=BLOCKED">Solo bloqueados</a>
+            <a class="subbtn alt" href="/reporte/alertas?severity={{ severity_filter }}&module={{ module_filter }}&status={{ status_filter }}&limit={{ limit_filter }}&pr_queue=ALL">Ver todos</a>
+            <span style="font-size:12px; color:#374151; align-self:center;">
+                Mostrando {{ resumen.total_local_pr_suggestions_filtered }} de {{ resumen.total_local_pr_suggestions }} (bloqueados: {{ resumen.total_local_pr_blocked }})
+            </span>
+        </div>
+        <table>
+            <tr><th>ID</th><th>Fecha</th><th>Archivo</th><th>Estado</th><th>Título</th><th>Explicación</th><th>Última prueba</th><th>Operación</th></tr>
+            {% for p in local_pr_suggestions %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.updated_en or p.creado_en }}</td>
+                <td>{{ p.archivo_objetivo or 'UNKNOWN' }}</td>
+                <td><span class="badge st-{{ p.status }}">{{ p.status }}</span></td>
+                <td>{{ p.titulo_pr }}</td>
+                <td>{{ p.explicacion }}</td>
+                <td>
+                    {% set tr = p.test_report_json or {} %}
+                    {% set tr_status = tr.final_status or ('TEST_PASSED' if p.status == 'TEST_PASSED' else ('TEST_FAILED' if p.status == 'TEST_FAILED' else 'N/A')) %}
+                    {% set compile_state = ('OK' if ('compile_ok' in tr and tr.compile_ok) else ('FAIL' if ('compile_ok' in tr and (not tr.compile_ok)) else 'NA')) %}
+                    {% set pytest_state = ('OK' if ('pytest_ok' in tr and tr.pytest_ok) else ('SKIP' if ('pytest_skipped' in tr and tr.pytest_skipped) else ('FAIL' if ('pytest_ok' in tr and (not tr.pytest_ok) and (not ('pytest_skipped' in tr and tr.pytest_skipped))) else 'NA'))) %}
+                    {% if tr_status != 'N/A' %}
+                    <div class="test-summary {% if tr_status == 'TEST_FAILED' or compile_state == 'FAIL' %}crit{% elif tr_status == 'TEST_PASSED' and compile_state == 'OK' %}ok{% else %}mid{% endif %}">
+                    <div><span class="badge st-{{ tr_status }}">{{ tr_status }}</span></div>
+                    <div style="font-size:11px; color:#4b5563; margin-top:4px;">{{ tr.updated_en or p.updated_en or '' }}</div>
+                    <div style="margin-top:4px;">
+                        <span class="tsub {% if compile_state == 'OK' %}ok{% elif compile_state == 'FAIL' %}fail{% else %}na{% endif %}">compile {{ compile_state }}</span>
+                        <span class="tsub {% if pytest_state == 'OK' %}ok{% elif pytest_state == 'SKIP' %}skip{% elif pytest_state == 'FAIL' %}fail{% else %}na{% endif %}">pytest {{ pytest_state }}</span>
+                    </div>
+                    {% if tr.note %}
+                    <div style="font-size:11px; color:#7c2d12; margin-top:2px;">{{ tr.note }}</div>
+                    {% endif %}
+                    </div>
+                    {% else %}
+                    <span class="badge st-PENDING_REVIEW">SIN PRUEBA</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="ops" style="flex-wrap:wrap;">
+                        <form method="post" action="/reporte/alertas/pr-suggestions/{{ p.id }}/spec">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <button class="mini alt" type="submit">Generar SPEC</button>
+                        </form>
+                        <form method="post" action="/reporte/alertas/pr-suggestions/{{ p.id }}/ready-for-patch">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <button class="mini warn" type="submit">READY_FOR_PATCH</button>
+                        </form>
+                        <form method="post" action="/reporte/alertas/pr-suggestions/{{ p.id }}/run-tests">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <button class="mini ok" type="submit">Run Tests</button>
+                        </form>
+                        <form method="post" action="/reporte/alertas/pr-suggestions/{{ p.id }}/patch" style="display:block; width:100%; margin-top:6px;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <textarea class="patch-box" name="patch_diff" placeholder="Pegar unified diff (debe incluir 'diff --git a/... b/...')">{{ p.patch_diff or '' }}</textarea>
+                            <div style="margin-top:4px;">
+                                <button class="mini alt" type="submit">Guardar PATCH_READY</button>
+                            </div>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8">Sin PR suggestions locales.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="block">
+        <h2>Alertas AI_HOSPITALIZACION (últimos 30 días)</h2>
+        <table>
+            <tr><th>Fecha</th><th>Severidad</th><th>Paciente</th><th>NSS</th><th>Tipo</th><th>Mensaje</th><th>Recomendación</th></tr>
+            {% for a in hospital_alerts %}
+            <tr>
+                <td>{{ a.alert_ts }}</td>
+                <td><span class="sev-{{ a.severity }}">{{ a.severity }}</span></td>
+                <td>{{ a.paciente }}</td>
+                <td>{{ a.nss }}</td>
+                <td>{{ a.alert_type }}</td>
+                <td>{{ a.message }}</td>
+                <td>{{ a.recommendation }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">Sin alertas de hospitalización registradas.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="block">
+        <h2>Alertas AI_QUIROFANO (últimos 30 días)</h2>
+        <table>
+            <tr><th>Fecha</th><th>Nivel</th><th>Programación</th><th>Mensaje</th><th>Detalle</th><th>Resuelta</th></tr>
+            {% for a in qx_alerts %}
+            <tr>
+                <td>{{ a.fecha_creacion }}</td>
+                <td><span class="sev-{{ a.nivel }}">{{ a.nivel }}</span></td>
+                <td>{{ a.programacion_id }}</td>
+                <td>{{ a.mensaje }}</td>
+                <td>{{ a.detalles.tipo_insight if a.detalles else '' }}</td>
+                <td>{{ 'SI' if a.resuelta else 'NO' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">Sin alertas de quirófano registradas.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+</body>
+</html>

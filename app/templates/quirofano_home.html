@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Módulo Quirúrgico - IMSS Urología</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --imss-fondo: #f3f6f5; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: linear-gradient(120deg, #0f3a34, #1f5c53); min-height: 100vh; padding: 24px; }
+        .container { max-width: 980px; margin: 0 auto; background: #fff; border-radius: 14px; border: 2px solid var(--imss-dorado); padding: 28px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); position: relative; overflow: hidden; }
+        .container::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--imss-verde), var(--imss-dorado), var(--imss-verde)); }
+        .global-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+        .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:var(--imss-verde); background:#fff; transition: all 0.2s; }
+        .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+        .nav-chip.active { background:var(--imss-dorado); border-color:#9e7a4c; color:#13322B; box-shadow: 0 2px 8px rgba(179,142,93,0.3); }
+        .breadcrumbs { font-size:12px; color:#5f6d68; margin-bottom:12px; text-align:center; }
+        h1 { margin: 0 0 6px 0; text-align: center; color: var(--imss-verde); font-size: 34px; }
+        h2 { margin: 0 0 8px 0; text-align: center; color: var(--imss-dorado); font-size: 19px; letter-spacing: 1px; text-transform: uppercase; }
+        .smart-banner {
+            background: linear-gradient(135deg, #edf8f3, #fffaf3);
+            border: 1px solid #d8c4a2;
+            border-radius: 10px;
+            padding: 12px 18px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--imss-verde);
+        }
+        .smart-banner strong { font-size: 14px; }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 220px; text-decoration: none; color: var(--imss-verde);
+            background: var(--imss-fondo); border: 2px solid var(--imss-dorado); border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            position: relative; overflow: hidden;
+            opacity: 0; animation: fadeInUp 0.5s ease forwards;
+        }
+        .card:nth-child(1) { animation-delay: 0s; }
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--imss-dorado), var(--imss-verde)); transform:scaleX(0); transition: transform 0.3s ease; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(19, 50, 43, 0.24); }
+        .card:hover::after { transform: scaleX(1); }
+        .icon { font-size: 58px; line-height: 1; margin-bottom: 14px; }
+        .label { font-size: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+        .actions { text-align: center; margin-top: 24px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .btn-back { display: inline-block; text-decoration: none; background: linear-gradient(135deg, var(--imss-verde), #1a4a3f); color: #fff; padding: 11px 20px; border-radius: 8px; font-weight: 700; transition: all 0.2s; box-shadow: 0 2px 8px rgba(19,50,43,0.25); }
+        .btn-back:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(19,50,43,0.35); }
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @media (max-width: 760px) {
+            .grid { grid-template-columns: 1fr; }
+            .card { min-height: 170px; }
+            .label { font-size: 20px; }
+            h1 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="global-nav">
+            <a class="nav-chip" href="/">Menú</a>
+            <a class="nav-chip" href="/consulta_externa">Consulta Externa</a>
+            <a class="nav-chip" href="/hospitalizacion">Hospitalización</a>
+            <a class="nav-chip active" href="/quirofano">Quirófano</a>
+            <a class="nav-chip" href="/expediente">Expediente</a>
+            <a class="nav-chip" href="/reporte">Reporte</a>
+        </div>
+        <div class="breadcrumbs">Menú principal → Quirófano</div>
+        <h1>MÓDULO QUIRÚRGICO</h1>
+        <h2>Quirófano</h2>
+
+        <div class="smart-banner">
+            <strong>GESTIÓN QUIRÚRGICA INTEGRAL</strong><br>
+            Programación, seguimiento y notas postquirúrgicas vinculadas al expediente único.
+        </div>
+
+        <div class="grid">
+            <a class="card" href="/quirofano/urgencias">
+                <div class="icon">🚨</div>
+                <div class="label">Urgencias</div>
+            </a>
+            <a class="card" href="/quirofano/programada">
+                <div class="icon">🗓️</div>
+                <div class="label">Cirugía Programada</div>
+            </a>
+            <a class="card" href="/reporte" style="grid-column: 1 / -1; min-height: 130px; background: linear-gradient(135deg, #fffaf3, #edf8f3); border-style: dashed;">
+                <div class="icon" style="font-size:36px;">📊</div>
+                <div class="label" style="font-size:18px;">Dashboard Quirúrgico y Estadísticas</div>
+            </a>
+        </div>
+        <div class="actions">
+            <a class="btn-back" href="/">← Volver al menú principal</a>
+            <a class="btn-back" href="/hospitalizacion" style="background:linear-gradient(135deg,var(--imss-dorado),#c9a778);color:#13322B;">🏥 Hospitalización</a>
+        </div>
+    </div>
+</body>
+</html>

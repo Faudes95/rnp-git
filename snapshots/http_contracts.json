@@ -1,0 +1,217 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "kind": "html",
+      "status": 200,
+      "contains": [
+        "Registro Nacional de Pacientes",
+        "HOSPITALIZACIÓN"
+      ]
+    },
+    {
+      "path": "/consulta",
+      "kind": "html",
+      "status": 200,
+      "contains": [
+        "Consulta Externa"
+      ]
+    },
+    {
+      "path": "/consulta/metadata",
+      "kind": "html",
+      "status": 200,
+      "contains": [
+        "Piloto Metadata-Driven",
+        "Vista clásica"
+      ]
+    },
+    {
+      "path": "/hospitalizacion/metadata",
+      "kind": "html",
+      "status": 200,
+      "contains": [
+        "Hospitalización - Piloto Metadata-Driven",
+        "Vista metadata"
+      ]
+    },
+    {
+      "path": "/quirofano/urgencias/metadata",
+      "kind": "html",
+      "status": 200,
+      "contains": [
+        "Urgencias Quirúrgicas - Piloto Metadata-Driven",
+        "Vista metadata"
+      ]
+    },
+    {
+      "path": "/reporte",
+      "kind": "html",
+      "status": 200,
+      "contains": [
+        "REPORTE ESTADÍSTICO"
+      ]
+    },
+    {
+      "path": "/admin/connectivity",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "status",
+        "connectivity_mode",
+        "vendor_assets",
+        "fallback_assets"
+      ]
+    },
+    {
+      "path": "/admin/database/status",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "target_mode",
+        "ready_for_target",
+        "clinical",
+        "surgical"
+      ]
+    },
+    {
+      "path": "/api/forms/consulta_externa/schema",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "form_code",
+        "form_name",
+        "version",
+        "sections"
+      ]
+    },
+    {
+      "path": "/api/forms/hospitalizacion_ingreso/schema",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "form_code",
+        "form_name",
+        "version",
+        "sections"
+      ]
+    },
+    {
+      "path": "/api/forms/urgencias_solicitud_qx/schema",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "form_code",
+        "form_name",
+        "version",
+        "sections"
+      ]
+    },
+    {
+      "path": "/api/stats/oncology",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "total_oncologicos_programados",
+        "por_diagnostico",
+        "por_ecog"
+      ]
+    },
+    {
+      "path": "/api/stats/quirofano/cancelaciones/resumen",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "total_canceladas",
+        "por_concepto",
+        "por_medico",
+        "por_procedimiento"
+      ]
+    },
+    {
+      "path": "/api/dashboard/resumen",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "total",
+        "oncologicos",
+        "litiasis",
+        "proc_unicos"
+      ]
+    },
+    {
+      "path": "/admin/outbox/summary",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "total",
+        "por_estado",
+        "por_modulo",
+        "latest"
+      ]
+    },
+    {
+      "path": "/api/v1/health",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "status",
+        "api_version",
+        "timestamp"
+      ]
+    },
+    {
+      "path": "/api/v1/meta",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "api_version",
+        "status",
+        "contract_frozen",
+        "breaking_changes_policy"
+      ]
+    },
+    {
+      "path": "/api/v1/forms",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "total",
+        "forms"
+      ]
+    },
+    {
+      "path": "/api/v1/events/summary",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "total",
+        "por_modulo",
+        "por_event_type",
+        "latest"
+      ]
+    },
+    {
+      "path": "/api/v1/jobs/summary",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "total",
+        "por_estado",
+        "por_job",
+        "latest"
+      ]
+    },
+    {
+      "path": "/api/v1/database/status",
+      "kind": "json",
+      "status": 200,
+      "keys": [
+        "target_mode",
+        "ready_for_target",
+        "clinical",
+        "surgical"
+      ]
+    }
+  ]
+}

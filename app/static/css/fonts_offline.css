@@ -1,0 +1,8 @@
+/* Modo híbrido: elimina dependencia de Google Fonts.
+   Si Montserrat no está instalada localmente, usa fallback institucional. */
+:root {
+  --rnp-font-stack: 'Montserrat', 'Avenir Next', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+html, body {
+  font-family: var(--rnp-font-stack);
+}

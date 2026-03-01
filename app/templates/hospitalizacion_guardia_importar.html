@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Importar archivos de guardia</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; }
+        body { font-family:'Montserrat',sans-serif; background:#f4f6f9; margin:0; padding:20px; }
+        .container { max-width:1200px; margin:auto; background:#fff; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.10); padding:22px; }
+        h1,h2 { color:var(--imss-verde); margin:0 0 12px; }
+        .toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+        .btn { text-decoration:none; border:0; border-radius:7px; padding:10px 12px; color:#fff; background:var(--imss-verde); font-weight:700; cursor:pointer; display:inline-block; }
+        .btn-dorado { background:var(--imss-dorado); }
+        .card { border:1px solid #dde6e1; border-radius:10px; background:#fbfdfc; padding:12px; margin-bottom:12px; }
+        .alert { padding:10px 12px; border-radius:8px; margin-bottom:10px; font-size:13px; }
+        .ok { background:#ecf8ef; border:1px solid #b8dfbf; color:#1f5f2f; }
+        .err { background:#fdeaea; border:1px solid #efbbbb; color:#8d1b1b; }
+        table { width:100%; border-collapse:collapse; }
+        th { background:var(--imss-verde); color:#fff; text-align:left; padding:8px; font-size:12px; }
+        td { border-bottom:1px solid #e6ece9; padding:7px; font-size:12px; vertical-align:top; }
+        input, textarea { width:100%; border:1px solid #cfd8d3; border-radius:6px; padding:8px; font-size:12px; }
+        ul { margin:6px 0 0 16px; }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Importacion inteligente de archivos - Guardia</h1>
+    <div class="toolbar">
+        <a class="btn btn-dorado" href="/hospitalizacion/guardia?fecha={{ fecha }}">Volver a guardia</a>
+        <a class="btn btn-dorado" href="/hospitalizacion/exportar?fecha={{ fecha }}">Exportar entrega</a>
+    </div>
+
+    {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+    {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+    <div class="card">
+        <form action="/hospitalizacion/importar" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <label>Fecha de guardia</label>
+            <input type="date" name="fecha" value="{{ fecha }}" style="max-width:180px;">
+            <label style="display:block; margin-top:8px;">Archivos (xlsx, xls, docx, doc, pdf)</label>
+            <input type="file" name="files" multiple required accept=".xlsx,.xls,.docx,.doc,.pdf">
+            <div style="margin-top:10px;">
+                <button class="btn" type="submit">Procesar importacion</button>
+            </div>
+        </form>
+    </div>
+
+    {% if resumen_importacion %}
+    <div class="card">
+        <h2>Resultado de la importacion</h2>
+        <table>
+            <tr><th>Archivo</th><th>Dataset detectado</th><th>Registros insertados</th><th>Advertencias</th></tr>
+            {% for row in resumen_importacion %}
+            <tr>
+                <td>{{ row.archivo }}</td>
+                <td>{{ row.dataset }}</td>
+                <td>{{ row.insertados }}</td>
+                <td>
+                    {% if row.advertencias %}
+                    <ul>
+                        {% for w in row.advertencias %}<li>{{ w }}</li>{% endfor %}
+                    </ul>
+                    {% else %}
+                    Sin advertencias
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h2>Ultimas importaciones</h2>
+        <table>
+            <tr><th>ID</th><th>Fecha</th><th>Archivo</th><th>Dataset</th><th>Insertados</th><th>Advertencias</th><th>Creado</th></tr>
+            {% for row in ultimos %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.fecha }}</td>
+                <td>{{ row.archivo }}</td>
+                <td>{{ row.dataset_detectado or 'NO_DETECTADO' }}</td>
+                <td>{{ row.registros_insertados }}</td>
+                <td>
+                    {% if row.advertencias_json %}
+                    <ul>
+                        {% for w in row.advertencias_json %}<li>{{ w }}</li>{% endfor %}
+                    </ul>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>{{ row.creado_en }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center;">Sin importaciones previas.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "loinc",
+  "version": "2026.02",
+  "items": [
+    {"id": 1, "key": "peso", "code": "29463-7", "label": "Peso corporal"},
+    {"id": 2, "key": "talla", "code": "8302-2", "label": "Talla"},
+    {"id": 3, "key": "imc", "code": "39156-5", "label": "Indice de masa corporal"},
+    {"id": 4, "key": "ta_sistolica", "code": "8480-6", "label": "TA sistolica"},
+    {"id": 5, "key": "ta_diastolica", "code": "8462-4", "label": "TA diastolica"},
+    {"id": 6, "key": "fc", "code": "8867-4", "label": "Frecuencia cardiaca"},
+    {"id": 7, "key": "fr", "code": "9279-1", "label": "Frecuencia respiratoria"},
+    {"id": 8, "key": "temp", "code": "8310-5", "label": "Temperatura"},
+    {"id": 9, "key": "spo2", "code": "59408-5", "label": "Saturacion de oxigeno"},
+    {"id": 10, "key": "creatinina", "code": "2160-0", "label": "Creatinina"}
+  ]
+}
+

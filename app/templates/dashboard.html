@@ -1,0 +1,359 @@
+{% raw %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Epidemiológico - Urología IMSS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/static/vendor/vue.min.js"></script>
+    <script src="/static/vendor/axios.min.js"></script>
+    <script src="/static/vendor/chart.min.js"></script>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --fondo: #f4f6f9; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--fondo); padding: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; border-radius: 12px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        h1 { color: var(--imss-verde); border-bottom: 3px solid var(--imss-dorado); padding-bottom: 10px; margin-bottom: 25px; }
+        .filters { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .filter-item { background: #f8f9fa; padding: 15px; border-radius: 8px; flex: 1; min-width: 200px; }
+        .filter-item label { font-weight: 700; display: block; margin-bottom: 5px; color: var(--imss-verde); }
+        select, input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: white; border: 1px solid #e0e0e0; border-left: 6px solid var(--imss-dorado); padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .stat-card h3 { font-size: 14px; color: #666; margin-bottom: 5px; }
+        .stat-card .value { font-size: 32px; font-weight: 800; color: var(--imss-verde); }
+        .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px; margin-bottom: 30px; }
+        .chart-container { background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee; min-height: 360px; }
+        canvas { max-height: 300px; width: 100% !important; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: var(--imss-verde); color: white; padding: 10px; }
+        td { padding: 8px; border-bottom: 1px solid #ddd; }
+        .loading { text-align: center; padding: 40px; color: var(--imss-verde); }
+        .toolbar { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+        .btn { background: var(--imss-verde); color: #fff; border: none; border-radius: 6px; padding: 10px 14px; cursor: pointer; }
+        .empty { color: #666; font-size: 13px; margin-top: 8px; }
+        @keyframes rnpFadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    </style>
+    <!-- === ADDITIVE Dashboard Enhancements === -->
+    <style>
+        /* Gradient top border */
+        .container { position:relative; overflow:hidden; }
+        .container::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--imss-verde), var(--imss-dorado), var(--imss-verde)); z-index:5; }
+
+        /* Global nav */
+        .dashboard-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+        .dashboard-nav .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:var(--imss-verde); background:#fff; transition:all 0.2s; }
+        .dashboard-nav .nav-chip:hover { background:#edf8f3; border-color:#3da68f; transform:translateY(-1px); }
+        .dashboard-nav .nav-chip.active { background:var(--imss-dorado); border-color:#9e7a4c; color:#13322B; box-shadow:0 2px 8px rgba(179,142,93,0.3); }
+
+        /* Enhanced header */
+        h1 { position:relative; }
+        h1::after { content:'Dashboard Inteligente'; display:block; font-size:13px; font-weight:500; color:#5f6d68; letter-spacing:0.5px; margin-top:4px; text-transform:none; border:none; }
+
+        /* Stat cards enhanced with animation */
+        @keyframes cardPulseIn { from { opacity:0; transform:scale(0.92) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
+        .stat-card { transition: all 0.25s ease; opacity:0; animation: cardPulseIn 0.5s cubic-bezier(0.23,1,0.32,1) forwards; position:relative; overflow:hidden; }
+        .stat-card:nth-child(1) { animation-delay:0.05s; }
+        .stat-card:nth-child(2) { animation-delay:0.12s; }
+        .stat-card:nth-child(3) { animation-delay:0.19s; }
+        .stat-card:nth-child(4) { animation-delay:0.26s; }
+        .stat-card:hover { transform:translateY(-4px); box-shadow:0 10px 28px rgba(19,50,43,0.15); border-left-color:var(--imss-verde); }
+        .stat-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--imss-dorado), var(--imss-verde)); transform:scaleX(0); transition:transform 0.3s; }
+        .stat-card:hover::after { transform:scaleX(1); }
+        .stat-card .value { background:linear-gradient(135deg, var(--imss-verde), #1a5c4f); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+        /* Chart containers enhanced */
+        .chart-container { transition:all 0.25s ease; border:1px solid #dce5e1; }
+        .chart-container:hover { box-shadow:0 8px 24px rgba(19,50,43,0.10); transform:translateY(-2px); }
+        .chart-container h3 { color:var(--imss-verde); font-size:14px; text-transform:uppercase; letter-spacing:0.5px; padding-bottom:8px; border-bottom:2px solid var(--imss-dorado); margin-bottom:10px; }
+
+        /* Filter items enhanced */
+        .filter-item { border:1px solid #e8ede9; transition:all 0.2s; }
+        .filter-item:hover { border-color:var(--imss-dorado); box-shadow:0 4px 12px rgba(179,142,93,0.10); }
+        select:focus, input:focus { border-color:var(--imss-dorado); outline:none; box-shadow:0 0 0 3px rgba(179,142,93,0.15); }
+
+        /* Table enhanced */
+        thead th { position:sticky; top:0; z-index:5; box-shadow:0 2px 4px rgba(19,50,43,0.10); }
+        tbody tr:nth-child(even) { background:#f8faf9; }
+        tbody tr:hover { background:rgba(179,142,93,0.08); transition:background 0.18s; }
+
+        /* Buttons enhanced */
+        .btn { transition:all 0.2s; box-shadow:0 2px 8px rgba(19,50,43,0.2); }
+        .btn:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(19,50,43,0.3); }
+
+        /* Loading animation */
+        .loading { animation: rnpFadeIn 0.5s ease; }
+        .loading::before { content:'⏳ '; }
+
+        /* Toolbar enhanced */
+        .toolbar { padding:10px 14px; background:linear-gradient(135deg, #edf8f3, #fffaf3); border:1px solid #d8c4a2; border-radius:10px; }
+
+        /* Print */
+        @media print { .toolbar, .filters, .dashboard-nav { display:none; } body { background:#fff; } .container { box-shadow:none; } }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <!-- ADDITIVE: Global navigation -->
+        <div class="dashboard-nav">
+            <a class="nav-chip" href="/">Menú</a>
+            <a class="nav-chip" href="/consulta_externa">Consulta Externa</a>
+            <a class="nav-chip" href="/hospitalizacion">Hospitalización</a>
+            <a class="nav-chip" href="/quirofano">Quirófano</a>
+            <a class="nav-chip" href="/expediente">Expediente</a>
+            <a class="nav-chip" href="/reporte">Reporte</a>
+            <a class="nav-chip active" href="/analisis/dashboard">Dashboard</a>
+        </div>
+        <h1>DASHBOARD EPIDEMIOLOGICO - UROLOGIA</h1>
+        <div class="toolbar">
+            <button class="btn" @click="cargarDatos">Actualizar</button>
+            <a href="/analisis/cargar-archivos" class="btn" style="text-decoration:none;">Cargar archivos</a>
+            <a href="/" class="btn" style="text-decoration:none;">Menu principal</a>
+        </div>
+
+        <div class="filters">
+            <div class="filter-item">
+                <label>Año</label>
+                <select v-model="filtroAnio" @change="cargarDatos">
+                    <option value="">Todos</option>
+                    <option v-for="a in years" :key="'y-'+a" :value="a">{{ a }}</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>Mes</label>
+                <select v-model="filtroMes" @change="cargarDatos">
+                    <option value="">Todos</option>
+                    <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+                    <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+                    <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+                    <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>Diagnostico</label>
+                <select v-model="filtroDiagnostico" @change="cargarDatos">
+                    <option value="">Todos</option>
+                    <option v-for="d in diagnosticos" :key="'d-'+d" :value="d">{{ d }}</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>HGZ</label>
+                <select v-model="filtroHGZ" @change="cargarDatos">
+                    <option value="">Todos</option>
+                    <option v-for="h in hgzList" :key="'h-'+h" :value="h">{{ h }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div v-if="loading" class="loading">Cargando datos...</div>
+
+        <div v-else>
+            <div class="stats-grid">
+                <div class="stat-card"><h3>PACIENTES PROGRAMADOS</h3><div class="value">{{ stats.total }}</div></div>
+                <div class="stat-card"><h3>ONCOLOGICOS</h3><div class="value">{{ stats.oncologicos }}</div></div>
+                <div class="stat-card"><h3>LITIASIS</h3><div class="value">{{ stats.litiasis }}</div></div>
+                <div class="stat-card"><h3>PROCEDIMIENTOS UNICOS</h3><div class="value">{{ stats.proc_unicos }}</div></div>
+            </div>
+
+            <div class="charts">
+                <div class="chart-container">
+                    <h3>Tendencia de Programaciones</h3>
+                    <canvas id="chartTendencia"></canvas>
+                    <div v-if="!tendenciaData.length" class="empty">Sin datos para el filtro seleccionado.</div>
+                </div>
+                <div class="chart-container">
+                    <h3>Distribucion por Diagnostico</h3>
+                    <canvas id="chartDiagnostico"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Distribucion por Sexo</h3>
+                    <canvas id="chartSexo"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Top 10 Procedimientos</h3>
+                    <canvas id="chartProcedimientos"></canvas>
+                </div>
+            </div>
+
+            <h2>Desglose Detallado</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Diagnostico</th>
+                        <th>Procedimiento</th>
+                        <th>Sexo</th>
+                        <th>Edad</th>
+                        <th>HGZ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="row in detalles" :key="'row-'+row.id">
+                        <td>{{ row.fecha }}</td>
+                        <td>{{ row.diagnostico }}</td>
+                        <td>{{ row.procedimiento }}</td>
+                        <td>{{ row.sexo }}</td>
+                        <td>{{ row.edad }}</td>
+                        <td>{{ row.hgz }}</td>
+                    </tr>
+                    <tr v-if="!detalles.length">
+                        <td colspan="6" style="text-align:center;">Sin registros para el filtro seleccionado.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                loading: true,
+                filtroAnio: '',
+                filtroMes: '',
+                filtroDiagnostico: '',
+                filtroHGZ: '',
+                years: [],
+                diagnosticos: [],
+                hgzList: [],
+                stats: { total: 0, oncologicos: 0, litiasis: 0, proc_unicos: 0 },
+                tendenciaData: [],
+                detalles: [],
+                charts: {}
+            },
+            mounted() {
+                this.cargarCatalogos();
+                this.cargarDatos();
+            },
+            methods: {
+                buildParams(includeHGZ = true) {
+                    const p = {};
+                    if (this.filtroAnio) p.anio = Number(this.filtroAnio);
+                    if (this.filtroMes) p.mes = Number(this.filtroMes);
+                    if (this.filtroDiagnostico) p.diagnostico = this.filtroDiagnostico;
+                    if (includeHGZ && this.filtroHGZ) p.hgz = this.filtroHGZ;
+                    return p;
+                },
+                async cargarCatalogos() {
+                    try {
+                        const [catRes, hgzRes] = await Promise.all([
+                            axios.get('/qx/catalogos_cached'),
+                            axios.get('/api/dashboard/hgz')
+                        ]);
+                        this.diagnosticos = catRes.data.patologias || [];
+                        this.hgzList = (hgzRes.data || []).map(x => x.hgz);
+                    } catch(e) {
+                        console.error(e);
+                    }
+                },
+                async cargarDatos() {
+                    this.loading = true;
+                    try {
+                        const params = this.buildParams(true);
+                        const paramsNoHGZ = this.buildParams(false);
+                        const [resumenRes, tendenciaRes, diagRes, sexoRes, procRes, detalleRes, hgzRes] = await Promise.all([
+                            axios.get('/api/dashboard/resumen', { params }),
+                            axios.get('/api/dashboard/tendencia', { params }),
+                            axios.get('/api/dashboard/diagnosticos', { params }),
+                            axios.get('/api/dashboard/sexo', { params }),
+                            axios.get('/api/dashboard/procedimientos_top', { params }),
+                            axios.get('/api/dashboard/detalle', { params }),
+                            axios.get('/api/dashboard/hgz', { params: paramsNoHGZ }),
+                        ]);
+
+                        this.stats = resumenRes.data || this.stats;
+                        this.tendenciaData = tendenciaRes.data || [];
+                        this.detalles = detalleRes.data || [];
+                        this.hgzList = (hgzRes.data || []).map(x => x.hgz);
+
+                        const years = [...new Set((this.tendenciaData || []).map(d => d.anio))].filter(v => !!v);
+                        this.years = years.sort((a,b) => b - a);
+
+                        this.$nextTick(() => {
+                            this.destroyCharts();
+                            this.renderCharts(this.tendenciaData, diagRes.data || [], sexoRes.data || [], procRes.data || []);
+                        });
+                    } catch(e) {
+                        console.error(e);
+                        alert('Error al cargar datos del dashboard');
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                renderCharts(tendencia, diagnosticos, sexo, procedimientos) {
+                    // Tendencia
+                    const ctx1 = document.getElementById('chartTendencia').getContext('2d');
+                    this.charts.tendencia = new Chart(ctx1, {
+                        type: 'line',
+                        data: {
+                            labels: tendencia.map(d => `${d.anio}-${String(d.mes).padStart(2,'0')}`),
+                            datasets: [{
+                                label: 'Programaciones',
+                                data: tendencia.map(d => d.cantidad),
+                                borderColor: '#13322B',
+                                backgroundColor: 'rgba(19,50,43,0.10)',
+                                tension: 0.2
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+
+                    // Diagnosticos
+                    const ctx2 = document.getElementById('chartDiagnostico').getContext('2d');
+                    this.charts.diagnostico = new Chart(ctx2, {
+                        type: 'bar',
+                        data: {
+                            labels: diagnosticos.map(d => d.label),
+                            datasets: [{ label: 'Casos', data: diagnosticos.map(d => d.value), backgroundColor: '#B38E5D' }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+
+                    // Sexo
+                    const ctx3 = document.getElementById('chartSexo').getContext('2d');
+                    this.charts.sexo = new Chart(ctx3, {
+                        type: 'doughnut',
+                        data: {
+                            labels: sexo.map(d => d.label),
+                            datasets: [{
+                                data: sexo.map(d => d.value),
+                                backgroundColor: ['#13322B', '#B38E5D', '#7FA59A']
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+
+                    // Procedimientos
+                    const ctx4 = document.getElementById('chartProcedimientos').getContext('2d');
+                    this.charts.procedimientos = new Chart(ctx4, {
+                        type: 'bar',
+                        data: {
+                            labels: procedimientos.map(d => d.label),
+                            datasets: [{ label: 'Cantidad', data: procedimientos.map(d => d.value), backgroundColor: '#13322B' }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                },
+                destroyCharts() {
+                    Object.values(this.charts).forEach(c => c && c.destroy());
+                    this.charts = {};
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+{% endraw %}

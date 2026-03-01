@@ -1,0 +1,2116 @@
+{
+  "count": 301,
+  "routes": [
+    {
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "name": "menu_principal"
+    },
+    {
+      "path": "/admin/actualizar_data_mart",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_actualizar_data_mart"
+    },
+    {
+      "path": "/admin/actualizar_data_mart_async",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_actualizar_data_mart_async"
+    },
+    {
+      "path": "/admin/calidad_datos",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_calidad_datos"
+    },
+    {
+      "path": "/admin/connectivity",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_connectivity"
+    },
+    {
+      "path": "/admin/database/status",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_database_status"
+    },
+    {
+      "path": "/admin/dependencies",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_dependencies"
+    },
+    {
+      "path": "/admin/entrenar_modelo_riesgo",
+      "methods": [
+        "POST"
+      ],
+      "name": "admin_entrenar_modelo_riesgo"
+    },
+    {
+      "path": "/admin/entrenar_modelo_riesgo_v2",
+      "methods": [
+        "POST"
+      ],
+      "name": "admin_entrenar_modelo_riesgo_v2"
+    },
+    {
+      "path": "/admin/events/recent",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_events_recent"
+    },
+    {
+      "path": "/admin/events/summary",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_events_summary"
+    },
+    {
+      "path": "/admin/geocodificar",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_geocodificar"
+    },
+    {
+      "path": "/admin/jobs/recent",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_jobs_recent"
+    },
+    {
+      "path": "/admin/jobs/summary",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_jobs_summary"
+    },
+    {
+      "path": "/admin/master-identity/backfill",
+      "methods": [
+        "POST"
+      ],
+      "name": "admin_master_identity_backfill"
+    },
+    {
+      "path": "/admin/master-identity/conflictos",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_master_identity_conflictos"
+    },
+    {
+      "path": "/admin/master-identity/conflictos/{master_id}/resolver",
+      "methods": [
+        "POST"
+      ],
+      "name": "admin_master_identity_conflicto_resolver"
+    },
+    {
+      "path": "/admin/modelos_ml",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_listar_modelos_ml"
+    },
+    {
+      "path": "/admin/models/cache",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_models_cache_status"
+    },
+    {
+      "path": "/admin/models/cache/clear",
+      "methods": [
+        "POST"
+      ],
+      "name": "admin_models_cache_clear"
+    },
+    {
+      "path": "/admin/models/cache/warmup",
+      "methods": [
+        "POST"
+      ],
+      "name": "admin_models_cache_warmup"
+    },
+    {
+      "path": "/admin/observability/alerts",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_observability_alerts"
+    },
+    {
+      "path": "/admin/observability/health",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_observability_health"
+    },
+    {
+      "path": "/admin/observability/metrics",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_observability_metrics"
+    },
+    {
+      "path": "/admin/outbox/ack/{event_id}",
+      "methods": [
+        "POST"
+      ],
+      "name": "admin_outbox_ack"
+    },
+    {
+      "path": "/admin/outbox/summary",
+      "methods": [
+        "GET"
+      ],
+      "name": "admin_outbox_summary"
+    },
+    {
+      "path": "/ai/fau-bot",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_dashboard"
+    },
+    {
+      "path": "/ai/fau-bot-core",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_panel"
+    },
+    {
+      "path": "/ai/quirofano",
+      "methods": [
+        "GET"
+      ],
+      "name": "ai_quirofano_dashboard"
+    },
+    {
+      "path": "/analisis/cargar-archivos",
+      "methods": [
+        "GET"
+      ],
+      "name": "analisis_cargar_archivos_form"
+    },
+    {
+      "path": "/analisis/cargar-archivos",
+      "methods": [
+        "POST"
+      ],
+      "name": "analisis_cargar_archivos_submit"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/alerts",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_alerts"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/architect/rules",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_architect_rules"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/architect/scan",
+      "methods": [
+        "POST"
+      ],
+      "name": "fau_bot_core_architect_scan"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/architect/suggestions",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_architect_suggestions"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/dev/scan",
+      "methods": [
+        "POST"
+      ],
+      "name": "fau_bot_core_dev_scan"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/dev/suggestions",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_dev_suggestions"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/hitl/audit",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_hitl_audit"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/hitl/suggestions",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_hitl_list"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/hitl/suggestions/{suggestion_id}/status",
+      "methods": [
+        "POST"
+      ],
+      "name": "fau_bot_core_hitl_update"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/knowledge/eval-offline",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_knowledge_eval_offline"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/knowledge/load-default",
+      "methods": [
+        "POST"
+      ],
+      "name": "fau_bot_core_load_default_knowledge"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/knowledge/search",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_knowledge_search"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/run",
+      "methods": [
+        "POST"
+      ],
+      "name": "fau_bot_core_run"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/runs",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_runs"
+    },
+    {
+      "path": "/api/ai/fau-bot-core/status",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_core_status"
+    },
+    {
+      "path": "/api/ai/fau-bot/actions",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_actions"
+    },
+    {
+      "path": "/api/ai/fau-bot/actions/{action_id}/status",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_action_status"
+    },
+    {
+      "path": "/api/ai/fau-bot/alerts",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_alerts"
+    },
+    {
+      "path": "/api/ai/fau-bot/central/analyze/{consulta_id}",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_central_analyze"
+    },
+    {
+      "path": "/api/ai/fau-bot/central/pipeline/{consulta_id}",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_central_pipeline"
+    },
+    {
+      "path": "/api/ai/fau-bot/connectors",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_connectors"
+    },
+    {
+      "path": "/api/ai/fau-bot/connectors",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_upsert_connector"
+    },
+    {
+      "path": "/api/ai/fau-bot/connectors/{connector_name}/grant",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_connector_grant"
+    },
+    {
+      "path": "/api/ai/fau-bot/connectors/{connector_name}/ingest",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_connector_ingest"
+    },
+    {
+      "path": "/api/ai/fau-bot/external-events",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_external_events"
+    },
+    {
+      "path": "/api/ai/fau-bot/knowledge/search",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_knowledge_search"
+    },
+    {
+      "path": "/api/ai/fau-bot/knowledge/upsert",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_knowledge_upsert"
+    },
+    {
+      "path": "/api/ai/fau-bot/reports",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_reports"
+    },
+    {
+      "path": "/api/ai/fau-bot/run",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_run"
+    },
+    {
+      "path": "/api/ai/fau-bot/runs",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_runs"
+    },
+    {
+      "path": "/api/ai/fau-bot/status",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_status"
+    },
+    {
+      "path": "/api/ai/fau-bot/system/logs",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_system_logs"
+    },
+    {
+      "path": "/api/ai/fau-bot/system/pr-suggestions",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_fau_bot_system_pr_suggestions"
+    },
+    {
+      "path": "/api/ai/fau-bot/system/pr-suggestions/{suggestion_id}/status",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_system_pr_suggestion_status"
+    },
+    {
+      "path": "/api/ai/fau-bot/system/self-improvement",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_fau_bot_system_self_improvement"
+    },
+    {
+      "path": "/api/ai/hospitalizacion/alertas",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalizacion_alertas"
+    },
+    {
+      "path": "/api/ai/hospitalizacion/patient/{consulta_id}/alertas",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalizacion_patient_alerts"
+    },
+    {
+      "path": "/api/ai/hospitalizacion/patient/{consulta_id}/predicciones",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalizacion_patient_predictions"
+    },
+    {
+      "path": "/api/ai/hospitalizacion/patient/{consulta_id}/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalizacion_patient_summary"
+    },
+    {
+      "path": "/api/ai/hospitalizacion/run",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_hospitalizacion_run"
+    },
+    {
+      "path": "/api/ai/quirofano/alertas",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_quirofano_alertas"
+    },
+    {
+      "path": "/api/ai/quirofano/analizar/{programacion_id}",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_quirofano_analizar_programacion"
+    },
+    {
+      "path": "/api/ai/quirofano/predicciones",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_quirofano_predicciones"
+    },
+    {
+      "path": "/api/ai/quirofano/run",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_quirofano_run_window"
+    },
+    {
+      "path": "/api/cie11/search",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_cie11_search"
+    },
+    {
+      "path": "/api/consulta/health",
+      "methods": [
+        "GET"
+      ],
+      "name": "consulta_health"
+    },
+    {
+      "path": "/api/consulta/mensaje-estatus",
+      "methods": [
+        "GET"
+      ],
+      "name": "consulta_mensaje_estatus"
+    },
+    {
+      "path": "/api/consulta/normalizar-identificadores",
+      "methods": [
+        "GET"
+      ],
+      "name": "consulta_normalizar_identificadores"
+    },
+    {
+      "path": "/api/consulta/seccion/cargar/{draft_id}/{seccion_codigo}",
+      "methods": [
+        "GET"
+      ],
+      "name": "seccion_cargar"
+    },
+    {
+      "path": "/api/consulta/seccion/finalizar",
+      "methods": [
+        "POST"
+      ],
+      "name": "seccion_finalizar"
+    },
+    {
+      "path": "/api/consulta/seccion/guardar",
+      "methods": [
+        "POST"
+      ],
+      "name": "guardar_seccion"
+    },
+    {
+      "path": "/api/consulta/seccion/resumen/{draft_id}",
+      "methods": [
+        "GET"
+      ],
+      "name": "seccion_resumen"
+    },
+    {
+      "path": "/api/consulta/seccion/validar",
+      "methods": [
+        "POST"
+      ],
+      "name": "validar_seccion"
+    },
+    {
+      "path": "/api/consulta_externa/recetas/ingest",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_consulta_externa_recetas_ingest"
+    },
+    {
+      "path": "/api/dashboard/detalle",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_dashboard_detalle"
+    },
+    {
+      "path": "/api/dashboard/diagnosticos",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_dashboard_diagnosticos"
+    },
+    {
+      "path": "/api/dashboard/health",
+      "methods": [
+        "GET"
+      ],
+      "name": "dashboard_health"
+    },
+    {
+      "path": "/api/dashboard/hgz",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_dashboard_hgz"
+    },
+    {
+      "path": "/api/dashboard/procedimientos_top",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_dashboard_procedimientos_top"
+    },
+    {
+      "path": "/api/dashboard/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_dashboard_resumen"
+    },
+    {
+      "path": "/api/dashboard/resumen-lite",
+      "methods": [
+        "GET"
+      ],
+      "name": "dashboard_resumen"
+    },
+    {
+      "path": "/api/dashboard/sexo",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_dashboard_sexo"
+    },
+    {
+      "path": "/api/dashboard/tendencia",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_dashboard_tendencia"
+    },
+    {
+      "path": "/api/device/vitals",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_device_vitals"
+    },
+    {
+      "path": "/api/expediente/audit/accesos",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_expediente_audit_accesos"
+    },
+    {
+      "path": "/api/expediente/cohortes",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_expediente_list_cohorts"
+    },
+    {
+      "path": "/api/expediente/cohortes",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_expediente_create_cohort"
+    },
+    {
+      "path": "/api/expediente/cohortes/run",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_expediente_run_cohort"
+    },
+    {
+      "path": "/api/expediente/cohortes/{cohort_id}/run",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_expediente_run_saved_cohort"
+    },
+    {
+      "path": "/api/expediente/genomica/{consulta_id}",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_genomica_get"
+    },
+    {
+      "path": "/api/expediente/genomica/{consulta_id}",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_genomica_save"
+    },
+    {
+      "path": "/api/expediente/provenance/{consulta_id}",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_expediente_provenance"
+    },
+    {
+      "path": "/api/expediente/rules",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_expediente_rules"
+    },
+    {
+      "path": "/api/expediente/{consulta_id}/enriquecido",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_expediente_enriquecido"
+    },
+    {
+      "path": "/api/fhir/health",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_health"
+    },
+    {
+      "path": "/api/fhir/legacy-endpoints",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_legacy_endpoints"
+    },
+    {
+      "path": "/api/fhir/metadata",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_metadata"
+    },
+    {
+      "path": "/api/forecast/surgery",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_forecast_surgery"
+    },
+    {
+      "path": "/api/forms",
+      "methods": [
+        "GET"
+      ],
+      "name": "forms_list"
+    },
+    {
+      "path": "/api/forms/{form_code}/schema",
+      "methods": [
+        "GET"
+      ],
+      "name": "forms_schema"
+    },
+    {
+      "path": "/api/forms/{form_code}/seed-defaults",
+      "methods": [
+        "POST"
+      ],
+      "name": "forms_seed_defaults"
+    },
+    {
+      "path": "/api/forms/{form_code}/validate",
+      "methods": [
+        "POST"
+      ],
+      "name": "forms_validate"
+    },
+    {
+      "path": "/api/geostats/hgz",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_geostats_hgz"
+    },
+    {
+      "path": "/api/geostats/pacientes",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_geostats_pacientes"
+    },
+    {
+      "path": "/api/hospitalizacion/egresos",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalizacion_egresos"
+    },
+    {
+      "path": "/api/hospitalizacion/guardia/reporte",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalizacion_reporte_guardia"
+    },
+    {
+      "path": "/api/hospitalizacion/guardia/templates",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalizacion_guardia_templates"
+    },
+    {
+      "path": "/api/hospitalizacion/guardia/templates/{dataset}",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalizacion_guardia_template"
+    },
+    {
+      "path": "/api/hospitalizacion/guardia/templates/{dataset}",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_hospitalizacion_guardia_template_upsert"
+    },
+    {
+      "path": "/api/hospitalizacion/ingresos",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalizacion_ingresos"
+    },
+    {
+      "path": "/api/interconexion/consulta/{consulta_id}",
+      "methods": [
+        "GET"
+      ],
+      "name": "interconexion_consulta"
+    },
+    {
+      "path": "/api/master-identity/stats/operativo",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_master_identity_stats_operativo"
+    },
+    {
+      "path": "/api/master-identity/stats/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_master_identity_stats"
+    },
+    {
+      "path": "/api/master-identity/{nss}",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_master_identity_get"
+    },
+    {
+      "path": "/api/master-identity/{nss}/journey",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_master_identity_journey"
+    },
+    {
+      "path": "/api/mobile/expediente/{consulta_id}",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_mobile_expediente"
+    },
+    {
+      "path": "/api/offline/sync",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_offline_sync"
+    },
+    {
+      "path": "/api/predict/risk",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_predict_risk"
+    },
+    {
+      "path": "/api/quirofano/catalogos",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_catalogos"
+    },
+    {
+      "path": "/api/quirofano/health",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_health"
+    },
+    {
+      "path": "/api/quirofano/resumen-programadas",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_resumen_programadas"
+    },
+    {
+      "path": "/api/reporte/health",
+      "methods": [
+        "GET"
+      ],
+      "name": "reporte_health"
+    },
+    {
+      "path": "/api/reporte/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "reporte_resumen"
+    },
+    {
+      "path": "/api/research/export/csv",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_research_export_csv"
+    },
+    {
+      "path": "/api/research/export/openclinica",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_export_openclinica"
+    },
+    {
+      "path": "/api/research/export/redcap",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_export_redcap"
+    },
+    {
+      "path": "/api/research/export/sas",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_export_sas"
+    },
+    {
+      "path": "/api/stats/cirugias-realizadas/desglose",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_cirugias_realizadas_desglose"
+    },
+    {
+      "path": "/api/stats/cirugias-realizadas/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_cirugias_realizadas_resumen"
+    },
+    {
+      "path": "/api/stats/cohortes/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_cohortes_resumen"
+    },
+    {
+      "path": "/api/stats/cola-preventiva/desglose",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_cola_preventiva_desglose"
+    },
+    {
+      "path": "/api/stats/cola-preventiva/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_cola_preventiva_resumen"
+    },
+    {
+      "path": "/api/stats/consulta-externa/servicios",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_consulta_externa_servicios_stats"
+    },
+    {
+      "path": "/api/stats/expediente/completitud",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_expediente_completitud"
+    },
+    {
+      "path": "/api/stats/hemoderivados/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_hemoderivados_resumen"
+    },
+    {
+      "path": "/api/stats/lithiasis",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_lithiasis"
+    },
+    {
+      "path": "/api/stats/litiasis/jj",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_litiasis_jj"
+    },
+    {
+      "path": "/api/stats/oncology",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_oncology"
+    },
+    {
+      "path": "/api/stats/pendientes-programar/desglose",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_pendientes_programar_desglose"
+    },
+    {
+      "path": "/api/stats/pendientes-programar/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_pendientes_programar_resumen"
+    },
+    {
+      "path": "/api/stats/quirofano/cancelaciones/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_quirofano_cancelaciones_resumen"
+    },
+    {
+      "path": "/api/stats/sangrado/cirujano-procedimiento",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_sangrado_cirujano_procedimiento"
+    },
+    {
+      "path": "/api/stats/sangrado/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_sangrado_resumen"
+    },
+    {
+      "path": "/api/stats/surgery",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_surgery"
+    },
+    {
+      "path": "/api/stats/urgencias/resumen",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_stats_urgencias_resumen"
+    },
+    {
+      "path": "/api/survival/km/{diagnostico}",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_survival_km"
+    },
+    {
+      "path": "/api/survival/logrank",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_survival_logrank"
+    },
+    {
+      "path": "/api/trends/diagnosticos",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_trends_diagnosticos"
+    },
+    {
+      "path": "/api/trends/lista_espera",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_trends_lista_espera"
+    },
+    {
+      "path": "/api/trends/procedimientos",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_trends_procedimientos"
+    },
+    {
+      "path": "/api/v1/database/status",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_database_status"
+    },
+    {
+      "path": "/api/v1/dev/codex/patch-from-suggestion/{suggestion_id}",
+      "methods": [
+        "POST"
+      ],
+      "name": "devops_ai_codex_patch_alias"
+    },
+    {
+      "path": "/api/v1/dev/pr-suggestions",
+      "methods": [
+        "GET"
+      ],
+      "name": "devops_ai_list_pr_suggestions"
+    },
+    {
+      "path": "/api/v1/dev/pr-suggestions/generate",
+      "methods": [
+        "POST"
+      ],
+      "name": "devops_ai_generate_pr_suggestions"
+    },
+    {
+      "path": "/api/v1/dev/pr-suggestions/{suggestion_id}/build-patch",
+      "methods": [
+        "POST"
+      ],
+      "name": "devops_ai_pr_build_patch"
+    },
+    {
+      "path": "/api/v1/dev/pr-suggestions/{suggestion_id}/mark-merged",
+      "methods": [
+        "POST"
+      ],
+      "name": "devops_ai_pr_mark_merged"
+    },
+    {
+      "path": "/api/v1/dev/pr-suggestions/{suggestion_id}/run-tests",
+      "methods": [
+        "POST"
+      ],
+      "name": "devops_ai_pr_run_tests"
+    },
+    {
+      "path": "/api/v1/dev/pr-suggestions/{suggestion_id}/spec",
+      "methods": [
+        "POST"
+      ],
+      "name": "devops_ai_pr_spec"
+    },
+    {
+      "path": "/api/v1/dev/pr-suggestions/{suggestion_id}/status",
+      "methods": [
+        "POST"
+      ],
+      "name": "devops_ai_pr_set_status"
+    },
+    {
+      "path": "/api/v1/dev/telemetry/issues",
+      "methods": [
+        "GET"
+      ],
+      "name": "devops_ai_telemetry_issues"
+    },
+    {
+      "path": "/api/v1/dev/telemetry/runtime-kpis",
+      "methods": [
+        "GET"
+      ],
+      "name": "devops_ai_telemetry_runtime_kpis"
+    },
+    {
+      "path": "/api/v1/dev/telemetry/scan",
+      "methods": [
+        "POST"
+      ],
+      "name": "devops_ai_telemetry_scan"
+    },
+    {
+      "path": "/api/v1/events/recent",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_events_recent"
+    },
+    {
+      "path": "/api/v1/events/summary",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_events_summary"
+    },
+    {
+      "path": "/api/v1/forms",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_forms"
+    },
+    {
+      "path": "/api/v1/forms/{form_code}/schema",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_form_schema"
+    },
+    {
+      "path": "/api/v1/forms/{form_code}/validate",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_v1_form_validate"
+    },
+    {
+      "path": "/api/v1/health",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_health"
+    },
+    {
+      "path": "/api/v1/hospitalization/daily-notes/{note_id}",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalization_get_daily_note"
+    },
+    {
+      "path": "/api/v1/hospitalization/episodes",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_hospitalization_create_episode"
+    },
+    {
+      "path": "/api/v1/hospitalization/episodes/{episode_id}",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalization_get_episode"
+    },
+    {
+      "path": "/api/v1/hospitalization/episodes/{episode_id}/close",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_hospitalization_close_episode"
+    },
+    {
+      "path": "/api/v1/hospitalization/episodes/{episode_id}/daily-notes",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalization_list_daily_notes"
+    },
+    {
+      "path": "/api/v1/hospitalization/episodes/{episode_id}/daily-notes",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_hospitalization_upsert_daily_note"
+    },
+    {
+      "path": "/api/v1/hospitalization/patients/{patient_id}/active-episode",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalization_active_episode"
+    },
+    {
+      "path": "/api/v1/hospitalization/patients/{patient_id}/daily-notes",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalization_patient_daily_notes"
+    },
+    {
+      "path": "/api/v1/hospitalization/patients/{patient_id}/episodes",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_hospitalization_patient_episodes"
+    },
+    {
+      "path": "/api/v1/jobs/recent",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_jobs_recent"
+    },
+    {
+      "path": "/api/v1/jobs/summary",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_jobs_summary"
+    },
+    {
+      "path": "/api/v1/master-identity/{nss}",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_master_identity"
+    },
+    {
+      "path": "/api/v1/meta",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_meta"
+    },
+    {
+      "path": "/api/v1/stats/consulta-externa/servicios",
+      "methods": [
+        "GET"
+      ],
+      "name": "api_v1_stats_consulta_externa"
+    },
+    {
+      "path": "/api/voice/soap",
+      "methods": [
+        "POST"
+      ],
+      "name": "api_voice_soap"
+    },
+    {
+      "path": "/archivos_paciente/{archivo_id}",
+      "methods": [
+        "GET"
+      ],
+      "name": "descargar_archivo_paciente"
+    },
+    {
+      "path": "/busqueda",
+      "methods": [
+        "GET"
+      ],
+      "name": "busqueda"
+    },
+    {
+      "path": "/busqueda_semantica",
+      "methods": [
+        "GET"
+      ],
+      "name": "busqueda_semantica"
+    },
+    {
+      "path": "/carga_masiva/status/{task_id}",
+      "methods": [
+        "GET"
+      ],
+      "name": "carga_masiva_status"
+    },
+    {
+      "path": "/carga_masiva_excel",
+      "methods": [
+        "POST"
+      ],
+      "name": "carga_masiva_excel"
+    },
+    {
+      "path": "/consulta",
+      "methods": [
+        "GET"
+      ],
+      "name": "formulario_consulta"
+    },
+    {
+      "path": "/consulta/metadata",
+      "methods": [
+        "GET"
+      ],
+      "name": "formulario_consulta_metadata"
+    },
+    {
+      "path": "/consulta_externa",
+      "methods": [
+        "GET"
+      ],
+      "name": "consulta_externa_home"
+    },
+    {
+      "path": "/consulta_externa/consulta",
+      "methods": [
+        "GET"
+      ],
+      "name": "consulta_externa_consulta_redirect"
+    },
+    {
+      "path": "/consulta_externa/home",
+      "methods": [
+        "GET"
+      ],
+      "name": "consulta_externa_home_compat"
+    },
+    {
+      "path": "/consulta_externa/leoch",
+      "methods": [
+        "GET"
+      ],
+      "name": "consulta_externa_leoch_form"
+    },
+    {
+      "path": "/consulta_externa/leoch/guardar",
+      "methods": [
+        "POST"
+      ],
+      "name": "consulta_externa_leoch_guardar"
+    },
+    {
+      "path": "/consulta_externa/recetas",
+      "methods": [
+        "GET"
+      ],
+      "name": "consulta_externa_recetas"
+    },
+    {
+      "path": "/consulta_externa/uroendoscopia",
+      "methods": [
+        "GET"
+      ],
+      "name": "consulta_externa_uroendoscopia_form"
+    },
+    {
+      "path": "/consulta_externa/uroendoscopia/guardar",
+      "methods": [
+        "POST"
+      ],
+      "name": "consulta_externa_uroendoscopia_guardar"
+    },
+    {
+      "path": "/dashboard",
+      "methods": [
+        "GET"
+      ],
+      "name": "dashboard_epidemiologico"
+    },
+    {
+      "path": "/docs",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "name": "swagger_ui_html"
+    },
+    {
+      "path": "/docs/oauth2-redirect",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "name": "swagger_ui_redirect"
+    },
+    {
+      "path": "/expediente",
+      "methods": [
+        "GET"
+      ],
+      "name": "ver_expediente"
+    },
+    {
+      "path": "/expediente/fase1",
+      "methods": [
+        "GET"
+      ],
+      "name": "expediente_fase1_form"
+    },
+    {
+      "path": "/expediente/fase1",
+      "methods": [
+        "POST"
+      ],
+      "name": "expediente_fase1_save"
+    },
+    {
+      "path": "/expediente/nota-medica",
+      "methods": [
+        "GET"
+      ],
+      "name": "expediente_nota_medica_form"
+    },
+    {
+      "path": "/expediente/nota-medica",
+      "methods": [
+        "POST"
+      ],
+      "name": "expediente_nota_medica_save"
+    },
+    {
+      "path": "/expediente_fase1",
+      "methods": [
+        "GET"
+      ],
+      "name": "expediente_fase1_compat"
+    },
+    {
+      "path": "/fau-bot/dashboard",
+      "methods": [
+        "GET"
+      ],
+      "name": "fau_bot_dashboard_compat"
+    },
+    {
+      "path": "/fhir/CarePlan",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_careplan"
+    },
+    {
+      "path": "/fhir/Condition",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_condition_search"
+    },
+    {
+      "path": "/fhir/Encounter",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_encounter_search"
+    },
+    {
+      "path": "/fhir/Goal",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_goal"
+    },
+    {
+      "path": "/fhir/MedicationRequest",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_medication_request"
+    },
+    {
+      "path": "/fhir/Observation",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_observation_search"
+    },
+    {
+      "path": "/fhir/Patient/{curp}",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_patient_by_curp"
+    },
+    {
+      "path": "/fhir/Procedure",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_procedure_search"
+    },
+    {
+      "path": "/fhir/expediente",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_expediente"
+    },
+    {
+      "path": "/fhir/export/cohort",
+      "methods": [
+        "GET"
+      ],
+      "name": "fhir_export_cohort"
+    },
+    {
+      "path": "/guardar_consulta_completa",
+      "methods": [
+        "POST"
+      ],
+      "name": "guardar_consulta_completa"
+    },
+    {
+      "path": "/hospitalizacion",
+      "methods": [
+        "GET"
+      ],
+      "name": "listar_hospitalizaciones"
+    },
+    {
+      "path": "/hospitalizacion/alta",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_alta_form"
+    },
+    {
+      "path": "/hospitalizacion/alta/guardar",
+      "methods": [
+        "POST"
+      ],
+      "name": "hospitalizacion_alta_guardar"
+    },
+    {
+      "path": "/hospitalizacion/alta/{egreso_id}/imprimir",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_alta_imprimir"
+    },
+    {
+      "path": "/hospitalizacion/buscar",
+      "methods": [
+        "POST"
+      ],
+      "name": "buscar_paciente_hospitalizacion"
+    },
+    {
+      "path": "/hospitalizacion/censo",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_censo_diario"
+    },
+    {
+      "path": "/hospitalizacion/censo/guardar",
+      "methods": [
+        "POST"
+      ],
+      "name": "hospitalizacion_censo_guardar"
+    },
+    {
+      "path": "/hospitalizacion/censo/imprimir",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_censo_imprimir"
+    },
+    {
+      "path": "/hospitalizacion/egresos",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_egresos"
+    },
+    {
+      "path": "/hospitalizacion/estancias-prolongadas",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_estancias_prolongadas"
+    },
+    {
+      "path": "/hospitalizacion/estancias-prolongadas/estrategias",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_estancias_estrategias"
+    },
+    {
+      "path": "/hospitalizacion/exportar",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_exportar"
+    },
+    {
+      "path": "/hospitalizacion/gestion-camas",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_gestion_camas"
+    },
+    {
+      "path": "/hospitalizacion/guardia",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia"
+    },
+    {
+      "path": "/hospitalizacion/guardia/guardar",
+      "methods": [
+        "POST"
+      ],
+      "name": "hospitalizacion_guardia_guardar"
+    },
+    {
+      "path": "/hospitalizacion/guardia/{dataset}/eliminar/{record_id}",
+      "methods": [
+        "POST"
+      ],
+      "name": "hospitalizacion_guardia_dataset_eliminar"
+    },
+    {
+      "path": "/hospitalizacion/guardia/{dataset}/exportar",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_dataset_exportar"
+    },
+    {
+      "path": "/hospitalizacion/guardia/{dataset}/guardar",
+      "methods": [
+        "POST"
+      ],
+      "name": "hospitalizacion_guardia_dataset_guardar"
+    },
+    {
+      "path": "/hospitalizacion/importar",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_importar_form"
+    },
+    {
+      "path": "/hospitalizacion/importar",
+      "methods": [
+        "POST"
+      ],
+      "name": "hospitalizacion_guardia_importar_submit"
+    },
+    {
+      "path": "/hospitalizacion/incapacidades",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_incapacidades"
+    },
+    {
+      "path": "/hospitalizacion/ingresar",
+      "methods": [
+        "GET"
+      ],
+      "name": "ingresar_hospitalizacion_form"
+    },
+    {
+      "path": "/hospitalizacion/ingresos",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_ingresos"
+    },
+    {
+      "path": "/hospitalizacion/labs",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_labs"
+    },
+    {
+      "path": "/hospitalizacion/metadata",
+      "methods": [
+        "GET"
+      ],
+      "name": "formulario_hospitalizacion_metadata"
+    },
+    {
+      "path": "/hospitalizacion/nuevo",
+      "methods": [
+        "GET"
+      ],
+      "name": "nuevo_hospitalizacion_form"
+    },
+    {
+      "path": "/hospitalizacion/nuevo",
+      "methods": [
+        "POST"
+      ],
+      "name": "guardar_hospitalizacion"
+    },
+    {
+      "path": "/hospitalizacion/operados",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_operados"
+    },
+    {
+      "path": "/hospitalizacion/productividad-ce",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_productividad_ce"
+    },
+    {
+      "path": "/hospitalizacion/rendicion-division",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_rendicion_division"
+    },
+    {
+      "path": "/hospitalizacion/reporte",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_reporte"
+    },
+    {
+      "path": "/hospitalizacion/reporte/egresos",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_reporte_egresos"
+    },
+    {
+      "path": "/hospitalizacion/reporte/guardia",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_reporte_guardia"
+    },
+    {
+      "path": "/hospitalizacion/sala13",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_sala13"
+    },
+    {
+      "path": "/hospitalizacion/tablero",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_tablero"
+    },
+    {
+      "path": "/hospitalizacion/valoraciones",
+      "methods": [
+        "GET"
+      ],
+      "name": "hospitalizacion_guardia_valoraciones"
+    },
+    {
+      "path": "/mapa_epidemiologico",
+      "methods": [
+        "GET"
+      ],
+      "name": "mapa_epidemiologico"
+    },
+    {
+      "path": "/mapa_epidemiologico_geojson",
+      "methods": [
+        "GET"
+      ],
+      "name": "mapa_epidemiologico_geojson"
+    },
+    {
+      "path": "/openapi.json",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "name": "openapi"
+    },
+    {
+      "path": "/quirofano",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_home"
+    },
+    {
+      "path": "/quirofano/lista",
+      "methods": [
+        "GET"
+      ],
+      "name": "listar_quirofanos"
+    },
+    {
+      "path": "/quirofano/nuevo",
+      "methods": [
+        "GET"
+      ],
+      "name": "nuevo_quirofano_form"
+    },
+    {
+      "path": "/quirofano/nuevo",
+      "methods": [
+        "POST"
+      ],
+      "name": "guardar_quirofano"
+    },
+    {
+      "path": "/quirofano/programada",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_programada_home"
+    },
+    {
+      "path": "/quirofano/programada/cancelar",
+      "methods": [
+        "POST"
+      ],
+      "name": "cancelar_quirofano_programada"
+    },
+    {
+      "path": "/quirofano/programada/lista",
+      "methods": [
+        "GET"
+      ],
+      "name": "listar_quirofanos"
+    },
+    {
+      "path": "/quirofano/programada/postquirurgica",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_postquirurgica"
+    },
+    {
+      "path": "/quirofano/programada/postquirurgica",
+      "methods": [
+        "POST"
+      ],
+      "name": "guardar_postquirurgica"
+    },
+    {
+      "path": "/quirofano/programada/{surgical_programacion_id}/postquirurgica",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_postquirurgica_direct"
+    },
+    {
+      "path": "/quirofano/urgencias",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_urgencias"
+    },
+    {
+      "path": "/quirofano/urgencias",
+      "methods": [
+        "POST"
+      ],
+      "name": "guardar_quirofano_urgencias"
+    },
+    {
+      "path": "/quirofano/urgencias/cancelar",
+      "methods": [
+        "POST"
+      ],
+      "name": "cancelar_quirofano_urgencias"
+    },
+    {
+      "path": "/quirofano/urgencias/lista",
+      "methods": [
+        "GET"
+      ],
+      "name": "listar_quirofanos_urgencias"
+    },
+    {
+      "path": "/quirofano/urgencias/metadata",
+      "methods": [
+        "GET"
+      ],
+      "name": "formulario_urgencias_metadata"
+    },
+    {
+      "path": "/quirofano/urgencias/nuevo",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_urgencias_nuevo_compat"
+    },
+    {
+      "path": "/quirofano/urgencias/postquirurgica",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_urgencias_postquirurgica"
+    },
+    {
+      "path": "/quirofano/urgencias/postquirurgica",
+      "methods": [
+        "POST"
+      ],
+      "name": "guardar_postquirurgica_urgencias"
+    },
+    {
+      "path": "/quirofano/urgencias/solicitud",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_urgencias_solicitud"
+    },
+    {
+      "path": "/quirofano/urgencias/solicitud",
+      "methods": [
+        "POST"
+      ],
+      "name": "guardar_quirofano_urgencias"
+    },
+    {
+      "path": "/quirofano/urgencias/{surgical_programacion_id}/postquirurgica",
+      "methods": [
+        "GET"
+      ],
+      "name": "quirofano_urgencias_postquirurgica_direct"
+    },
+    {
+      "path": "/qx/catalogos",
+      "methods": [
+        "GET"
+      ],
+      "name": "qx_catalogos"
+    },
+    {
+      "path": "/qx/catalogos_cached",
+      "methods": [
+        "GET"
+      ],
+      "name": "qx_catalogos_cached"
+    },
+    {
+      "path": "/redoc",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "name": "redoc_html"
+    },
+    {
+      "path": "/reporte",
+      "methods": [
+        "GET"
+      ],
+      "name": "reporte"
+    },
+    {
+      "path": "/reporte/alertas",
+      "methods": [
+        "GET"
+      ],
+      "name": "reporte_alertas_faubot"
+    },
+    {
+      "path": "/reporte/alertas/actions/{action_id}",
+      "methods": [
+        "POST"
+      ],
+      "name": "reporte_alertas_action_status"
+    },
+    {
+      "path": "/reporte/cirugias-realizadas",
+      "methods": [
+        "GET"
+      ],
+      "name": "reporte_cirugias_realizadas"
+    },
+    {
+      "path": "/reporte/cola-preventiva",
+      "methods": [
+        "GET"
+      ],
+      "name": "reporte_cola_preventiva"
+    },
+    {
+      "path": "/reporte/pendientes-programar",
+      "methods": [
+        "GET"
+      ],
+      "name": "reporte_pendientes_programar"
+    },
+    {
+      "path": "/reporte/sangrado",
+      "methods": [
+        "GET"
+      ],
+      "name": "reporte_sangrado"
+    },
+    {
+      "path": "/reporte_cached",
+      "methods": [
+        "GET"
+      ],
+      "name": "reporte_cached"
+    }
+  ]
+}

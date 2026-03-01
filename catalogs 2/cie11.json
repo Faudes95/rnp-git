@@ -1,0 +1,17 @@
+{
+  "name": "cie11",
+  "version": "2026.02",
+  "items": [
+    {"id": 1, "key": "ca_prostata", "code": "2C82.0", "label": "Cancer de prostata"},
+    {"id": 2, "key": "ca_vejiga", "code": "2C90.0", "label": "Cancer de vejiga"},
+    {"id": 3, "key": "ca_rinon", "code": "2C80.0", "label": "Cancer de rinon"},
+    {"id": 4, "key": "ca_testiculo", "code": "2C60.0", "label": "Cancer de testiculo"},
+    {"id": 5, "key": "ca_pene", "code": "2C70.0", "label": "Cancer de pene"},
+    {"id": 6, "key": "ca_urotelial_alto", "code": "2C91.0", "label": "Cancer urotelial tracto superior"},
+    {"id": 7, "key": "litiasis_rinon", "code": "GB60.0", "label": "Calculo renal"},
+    {"id": 8, "key": "litiasis_ureter", "code": "GB61.0", "label": "Calculo ureteral"},
+    {"id": 9, "key": "litiasis_vejiga", "code": "GB62.0", "label": "Calculo vesical"},
+    {"id": 10, "key": "hpb", "code": "GA70.0", "label": "Hiperplasia prostatica benigna"}
+  ]
+}
+

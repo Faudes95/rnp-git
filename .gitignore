@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+.coverage
+*.pyc
+*.pyo
+*.log
+*.pid
+.DS_Store
+.env
+.env.*
+*.db
+__MACOSX/

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Externa - Urología</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --fondo: #f4f6f9; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--fondo); font-family: 'Montserrat', sans-serif; padding: 24px; }
+        .container { max-width: 1120px; margin: 0 auto; background: #fff; border-radius: 12px; border-top: 6px solid var(--imss-verde); box-shadow: 0 8px 28px rgba(0,0,0,0.09); padding: 24px; position: relative; overflow: hidden; }
+        .container::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--imss-verde), var(--imss-dorado), var(--imss-verde)); }
+        .header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+        .header h1 { margin: 0; color: var(--imss-verde); font-size: 30px; }
+        .header p { margin: 6px 0 0 0; color: #5e5e5e; font-size: 13px; }
+        .global-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+        .nav-chip { text-decoration: none; padding: 7px 11px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1px solid #cfd9d4; color: var(--imss-verde); background: #fff; transition: all 0.2s; }
+        .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+        .nav-chip.active { background: var(--imss-dorado); border-color: #9e7a4c; color: #13322B; box-shadow: 0 2px 8px rgba(179,142,93,0.3); }
+        .breadcrumbs { font-size: 12px; color: #5f6d68; margin-bottom: 14px; }
+        .btn { text-decoration: none; color: #fff; background: linear-gradient(135deg, var(--imss-verde), #1a4a3f); padding: 10px 16px; border-radius: 8px; font-weight: 700; transition: all 0.2s; box-shadow: 0 2px 8px rgba(19,50,43,0.25); }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(19,50,43,0.35); }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+        .card {
+            text-decoration: none;
+            border: 1px solid #d8c4a2;
+            border-radius: 14px;
+            background: #fffaf2;
+            padding: 20px;
+            color: var(--imss-verde);
+            min-height: 155px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--imss-dorado), var(--imss-verde)); transform:scaleX(0); transition: transform 0.3s ease; }
+        .card:hover { background: #f2e7d7; transform: translateY(-4px); box-shadow: 0 8px 24px rgba(19,50,43,0.12); }
+        .card:hover::after { transform: scaleX(1); }
+        .icon {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--imss-dorado), #c9a778); color: #13322B; display: inline-flex;
+            align-items: center; justify-content: center; font-weight: 800; font-size: 18px;
+            box-shadow: 0 4px 12px rgba(179,142,93,0.3);
+        }
+        .title { font-size: 18px; font-weight: 800; margin-top: 10px; }
+        .desc { font-size: 13px; color: #4d4d4d; margin-top: 6px; line-height: 1.35; }
+        .footer { margin-top: 18px; font-size: 12px; color: #6b6b6b; text-align: center; padding-top: 14px; border-top: 1px solid #eee; }
+        /* Animated entry */
+        .card { opacity: 0; animation: fadeInUp 0.4s ease forwards; }
+        .card:nth-child(1) { animation-delay: 0s; }
+        .card:nth-child(2) { animation-delay: 0.08s; }
+        .card:nth-child(3) { animation-delay: 0.16s; }
+        .card:nth-child(4) { animation-delay: 0.24s; }
+        .card:nth-child(5) { animation-delay: 0.32s; }
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        /* Section header enhancement */
+        .section-header-bar {
+            background: linear-gradient(135deg, #edf8f3, #fffaf3);
+            border: 1px solid #d8c4a2;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-header-bar .shb-icon { width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg,var(--imss-verde),#1a4a3f); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; }
+        .section-header-bar .shb-text { font-size:13px; color:var(--imss-verde); }
+        .section-header-bar .shb-text strong { font-size:15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="global-nav">
+            <a class="nav-chip" href="/">Menú</a>
+            <a class="nav-chip active" href="/consulta_externa">Consulta Externa</a>
+            <a class="nav-chip" href="/hospitalizacion">Hospitalización</a>
+            <a class="nav-chip" href="/quirofano">Quirófano</a>
+            <a class="nav-chip" href="/expediente">Expediente</a>
+            <a class="nav-chip" href="/reporte">Reporte</a>
+        </div>
+        <div class="breadcrumbs">Menú principal → Consulta Externa</div>
+        <div class="header">
+            <div>
+                <h1>Consulta Externa</h1>
+                <p>Seleccione el servicio para capturar atención clínica y mantener continuidad en el expediente único.</p>
+            </div>
+            <a class="btn" href="/">← Menú Principal</a>
+        </div>
+
+        <div class="section-header-bar">
+            <div class="shb-icon">🩺</div>
+            <div class="shb-text">
+                <strong>SERVICIOS DE CONSULTA EXTERNA</strong><br>
+                Cada servicio se vincula automáticamente al expediente clínico único del paciente por NSS.
+            </div>
+        </div>
+
+        <div class="section-header-bar" style="margin-top:8px;">
+            <div class="shb-icon" style="background:linear-gradient(135deg,#B38E5D,#9e7a4c);font-size:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="shb-text">
+                <strong>PRIMERA VEZ</strong><br>
+                Para pacientes nuevos. Captura completa de datos clinicos, antecedentes y protocolo.
+            </div>
+        </div>
+        <div class="cards">
+            <a class="card" href="/consulta/metadata">
+                <div class="icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#13322B" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </div>
+                <div>
+                    <div class="title">Consulta Primera Vez</div>
+                    <div class="desc">Captura completa por secciones con diccionario de datos. Guarda en expediente clinico unico.</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="section-header-bar" style="margin-top:20px;">
+            <div class="shb-icon" style="font-size:16px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div class="shb-text">
+                <strong>CONSULTAS SUBSECUENTES</strong><br>
+                Busque al paciente por NSS/Nombre para acceder a su perfil clinico integral y agregar notas.
+            </div>
+        </div>
+        <div class="cards">
+            <a class="card" href="/perfil-clinico/consulta-externa">
+                <div class="icon" style="background:linear-gradient(135deg, #1b5e20, #2e7d32);color:#fff;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <div>
+                    <div class="title">Consulta Externa</div>
+                    <div class="desc">Perfil clinico del paciente con antecedentes, notas previas y captura de consulta subsecuente.</div>
+                </div>
+            </a>
+            <a class="card" href="/perfil-clinico/uroendoscopia">
+                <div class="icon" style="background:linear-gradient(135deg, #0d47a1, #1565c0);color:#fff;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4"/></svg>
+                </div>
+                <div>
+                    <div class="title">Uroendoscopia</div>
+                    <div class="desc">Perfil clinico con acceso directo a registro de procedimiento endoscopico.</div>
+                </div>
+            </a>
+            <a class="card" href="/consulta_externa/recetas?return_to=/consulta_externa">
+                <div class="icon" style="background:linear-gradient(135deg, #6a1b9a, #8e24aa);color:#fff;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
+                </div>
+                <div>
+                    <div class="title">Recetas</div>
+                    <div class="desc">Modulo de prescripcion medica vinculado al expediente clinico del paciente.</div>
+                </div>
+            </a>
+            <a class="card" href="/perfil-clinico/leoch">
+                <div class="icon" style="background:linear-gradient(135deg, #e65100, #ef6c00);color:#fff;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+                <div>
+                    <div class="title">LEOCH</div>
+                    <div class="desc">Perfil clinico con acceso a sesiones de litotricia y variables de resultado.</div>
+                </div>
+            </a>
+            <a class="card" href="/expediente" style="border-color:#13322B;background:linear-gradient(135deg,#edf8f3,#fff);">
+                <div class="icon" style="background:linear-gradient(135deg,#13322B,#1a4a3f);color:#fff;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                </div>
+                <div>
+                    <div class="title">Expediente Clinico</div>
+                    <div class="desc">Acceso rapido al expediente clinico unico integrado con busqueda por NSS.</div>
+                </div>
+            </a>
+        </div>
+        <div class="footer">Todas las atenciones se vinculan al expediente clínico por consulta_id/NSS/nombre. · IMSS Urología CMNR</div>
+    </div>
+</body>
+</html>

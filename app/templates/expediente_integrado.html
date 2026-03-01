@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expediente Clínico Integrado — RNP IMSS Urología</title>
+<link rel="stylesheet" href="/static/css/rnp_ui_system.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   EXPEDIENTE INTEGRADO — UI Design System
+   ═══════════════════════════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ei-bg:#f4f6f8;
+  --ei-surface:#fff;
+  --ei-border:#e2e8f0;
+  --ei-shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --ei-shadow-lg:0 4px 16px rgba(0,0,0,.08);
+  --ei-radius:12px;
+  --ei-radius-sm:8px;
+  --verde:#13322B;--verde-l:#1a4a3f;--verde-xl:#2a7a6c;
+  --dorado:#B38E5D;--dorado-l:#c9a778;--dorado-bg:#fffaf3;
+  --azul:#2563eb;--azul-bg:#eff6ff;
+  --rojo:#dc2626;--rojo-bg:#fee2e2;
+  --naranja:#ea580c;--naranja-bg:#fff7ed;
+  --morado:#7c3aed;--morado-bg:#f5f3ff;
+  --gris-500:#6b7b89;--gris-300:#cdd5db;--gris-100:#f1f4f6;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+}
+body{font-family:var(--font);background:var(--ei-bg);color:#1e293b;line-height:1.5}
+
+/* ── HEADER ── */
+.ei-header{
+  background:linear-gradient(135deg,var(--verde) 0%,var(--verde-l) 100%);
+  color:#fff;padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;
+  position:sticky;top:0;z-index:100;
+}
+.ei-header .logo{font-weight:700;font-size:15px;letter-spacing:.5px;opacity:.9}
+.ei-header .title{font-size:17px;font-weight:600;flex:1}
+.ei-header .badge{background:var(--dorado);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
+.ei-header a{color:var(--dorado-l);text-decoration:none;font-size:13px;font-weight:500}
+.ei-header a:hover{text-decoration:underline}
+
+/* ── SEARCH PANEL ── */
+.ei-search-panel{
+  background:var(--ei-surface);border-bottom:1px solid var(--ei-border);
+  padding:20px 24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+}
+.ei-search-panel input{
+  flex:1;min-width:200px;padding:10px 16px;border:1.5px solid var(--ei-border);
+  border-radius:var(--ei-radius-sm);font-size:14px;outline:none;transition:border .2s;
+}
+.ei-search-panel input:focus{border-color:var(--verde)}
+.ei-search-panel .btn-buscar{
+  background:var(--verde);color:#fff;border:none;padding:10px 24px;
+  border-radius:var(--ei-radius-sm);font-size:14px;font-weight:600;cursor:pointer;
+  transition:background .2s;
+}
+.ei-search-panel .btn-buscar:hover{background:var(--verde-l)}
+.ei-search-panel .btn-reindex{
+  background:transparent;color:var(--verde);border:1.5px solid var(--verde);
+  padding:9px 18px;border-radius:var(--ei-radius-sm);font-size:13px;cursor:pointer;
+  font-weight:500;transition:all .2s;
+}
+.ei-search-panel .btn-reindex:hover{background:var(--verde);color:#fff}
+
+/* ── MAIN LAYOUT ── */
+.ei-container{max-width:1440px;margin:0 auto;padding:20px 24px}
+.ei-grid{display:grid;grid-template-columns:340px 1fr;gap:20px}
+@media(max-width:1024px){.ei-grid{grid-template-columns:1fr}}
+
+/* ── PATIENT SIDEBAR ── */
+.ei-sidebar{display:flex;flex-direction:column;gap:16px}
+.ei-card{
+  background:var(--ei-surface);border-radius:var(--ei-radius);
+  box-shadow:var(--ei-shadow);overflow:hidden;border:1px solid var(--ei-border);
+}
+.ei-card-header{
+  padding:14px 18px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--ei-border);
+}
+.ei-card-body{padding:16px 18px}
+
+/* Patient Header Card */
+.patient-hero{
+  background:linear-gradient(135deg,var(--verde) 0%,#1a5c4c 100%);
+  color:#fff;padding:24px 20px;border-radius:var(--ei-radius);
+  position:relative;overflow:hidden;
+}
+.patient-hero::before{
+  content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;
+  background:rgba(179,142,93,.15);border-radius:50%;
+}
+.patient-hero .ph-name{font-size:20px;font-weight:700;margin-bottom:4px}
+.patient-hero .ph-nss{font-size:13px;opacity:.75;font-family:monospace}
+.patient-hero .ph-dx{
+  margin-top:12px;padding:8px 12px;background:rgba(255,255,255,.12);
+  border-radius:var(--ei-radius-sm);font-size:13px;font-weight:500;
+  border-left:3px solid var(--dorado);
+}
+.patient-hero .ph-meta{
+  display:flex;gap:16px;margin-top:14px;font-size:12px;opacity:.85;flex-wrap:wrap
+}
+.patient-hero .ph-meta span{display:flex;align-items:center;gap:4px}
+
+/* Score Ring */
+.score-ring{
+  display:flex;align-items:center;gap:14px;padding:16px;
+  background:var(--dorado-bg);border-radius:var(--ei-radius-sm);margin-bottom:8px;
+}
+.score-ring .ring{
+  width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;color:var(--verde);
+  position:relative;
+}
+.score-ring .ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg)}
+.score-ring .ring-label{font-size:12px;color:var(--gris-500);font-weight:500}
+.score-ring .ring-title{font-size:14px;font-weight:700;color:var(--verde)}
+
+/* Stats Row */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.stat-box{
+  text-align:center;padding:10px 8px;background:var(--gris-100);
+  border-radius:var(--ei-radius-sm);
+}
+.stat-box .n{font-size:22px;font-weight:800;color:var(--verde)}
+.stat-box .l{font-size:10px;color:var(--gris-500);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+/* Problem List */
+.problem-item{
+  display:flex;align-items:center;gap:8px;padding:8px 0;
+  border-bottom:1px solid var(--gris-100);font-size:13px;
+}
+.problem-item:last-child{border:none}
+.problem-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.problem-dot.activo{background:var(--rojo)}
+.problem-dot.cronico{background:var(--naranja)}
+.problem-dot.resuelto{background:var(--gris-300)}
+
+/* Alert Card */
+.alert-item{
+  display:flex;gap:10px;padding:10px 14px;margin-bottom:8px;
+  border-radius:var(--ei-radius-sm);font-size:13px;line-height:1.4;
+  align-items:flex-start;
+}
+.alert-item.critical{background:var(--rojo-bg);border-left:3px solid var(--rojo)}
+.alert-item.warning{background:var(--naranja-bg);border-left:3px solid var(--naranja)}
+.alert-item.info{background:var(--azul-bg);border-left:3px solid var(--azul)}
+.alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.alert-text{flex:1}
+.alert-actions{display:flex;gap:4px;margin-top:6px}
+.alert-actions button{
+  font-size:11px;padding:3px 8px;border-radius:4px;border:none;cursor:pointer;
+  font-weight:600;transition:opacity .2s;
+}
+.alert-actions button:hover{opacity:.8}
+.alert-actions .btn-ack{background:var(--dorado);color:#fff}
+.alert-actions .btn-resolve{background:var(--verde);color:#fff}
+
+/* ── MAIN CONTENT ── */
+.ei-main{display:flex;flex-direction:column;gap:16px}
+
+/* Tabs */
+.ei-tabs{
+  display:flex;gap:2px;background:var(--gris-100);border-radius:var(--ei-radius);
+  padding:3px;overflow-x:auto;
+}
+.ei-tab{
+  padding:10px 18px;border-radius:var(--ei-radius-sm);font-size:13px;
+  font-weight:600;cursor:pointer;white-space:nowrap;border:none;
+  background:transparent;color:var(--gris-500);transition:all .2s;
+}
+.ei-tab:hover{color:var(--verde)}
+.ei-tab.active{background:var(--ei-surface);color:var(--verde);box-shadow:var(--ei-shadow)}
+
+/* Tab Content */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Timeline */
+.tl-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tl-filter{
+  padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;
+  border:1.5px solid var(--ei-border);background:var(--ei-surface);
+  cursor:pointer;transition:all .2s;color:var(--gris-500);
+}
+.tl-filter:hover,.tl-filter.active{border-color:var(--verde);color:var(--verde);background:rgba(19,50,43,.04)}
+
+.tl-event{
+  display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--gris-100);
+  align-items:flex-start;
+}
+.tl-event:last-child{border:none}
+.tl-dot-col{display:flex;flex-direction:column;align-items:center;min-width:40px}
+.tl-dot{
+  width:12px;height:12px;border-radius:50%;border:2px solid var(--verde);
+  background:var(--ei-surface);flex-shrink:0;
+}
+.tl-dot.consulta{border-color:var(--verde);background:var(--verde)}
+.tl-dot.hospitalizacion{border-color:var(--rojo);background:var(--rojo)}
+.tl-dot.cirugia{border-color:var(--morado);background:var(--morado)}
+.tl-dot.procedimiento{border-color:var(--naranja);background:var(--naranja)}
+.tl-dot.lab{border-color:var(--azul);background:var(--azul)}
+.tl-dot.alerta{border-color:var(--rojo);background:transparent}
+.tl-line{width:2px;flex:1;background:var(--gris-300);margin-top:4px}
+.tl-body{flex:1}
+.tl-title{font-size:14px;font-weight:600;color:#1e293b}
+.tl-meta{font-size:12px;color:var(--gris-500);margin-top:2px;display:flex;gap:12px}
+.tl-summary{font-size:13px;color:#475569;margin-top:6px;line-height:1.5}
+.tl-badge{
+  display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+}
+.tl-badge.consulta{background:#d0f0e4;color:var(--verde)}
+.tl-badge.hospitalizacion{background:var(--rojo-bg);color:var(--rojo)}
+.tl-badge.cirugia{background:var(--morado-bg);color:var(--morado)}
+.tl-badge.procedimiento{background:var(--naranja-bg);color:var(--naranja)}
+.tl-badge.lab{background:var(--azul-bg);color:var(--azul)}
+
+/* Document Viewer */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.doc-card{
+  background:var(--ei-surface);border:1px solid var(--ei-border);
+  border-radius:var(--ei-radius-sm);padding:16px;cursor:pointer;
+  transition:all .2s;
+}
+.doc-card:hover{box-shadow:var(--ei-shadow-lg);border-color:var(--verde)}
+.doc-card .dc-type{font-size:10px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--gris-500)}
+.doc-card .dc-title{font-size:14px;font-weight:600;margin-top:4px;color:#1e293b}
+.doc-card .dc-meta{font-size:12px;color:var(--gris-500);margin-top:8px;display:flex;gap:12px}
+
+/* Antecedentes Grid */
+.ant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ant-card{
+  background:var(--gris-100);border-radius:var(--ei-radius-sm);padding:14px;
+}
+.ant-card .ant-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--verde);margin-bottom:8px}
+.ant-card .ant-item{font-size:13px;padding:4px 0;color:#475569}
+
+/* Vitals */
+.vitals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.vital-card{
+  text-align:center;padding:16px;background:var(--gris-100);
+  border-radius:var(--ei-radius-sm);
+}
+.vital-card .v-value{font-size:24px;font-weight:800;color:var(--verde)}
+.vital-card .v-label{font-size:11px;color:var(--gris-500);text-transform:uppercase;margin-top:4px}
+.vital-card .v-unit{font-size:12px;color:var(--gris-500)}
+
+/* Document Detail Modal */
+.modal-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);
+  z-index:200;display:none;align-items:center;justify-content:center;
+  padding:24px;
+}
+.modal-overlay.show{display:flex}
+.modal-box{
+  background:var(--ei-surface);border-radius:var(--ei-radius);
+  max-width:800px;width:100%;max-height:80vh;overflow-y:auto;
+  box-shadow:var(--ei-shadow-lg);
+}
+.modal-header{
+  padding:16px 20px;border-bottom:1px solid var(--ei-border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.modal-header h3{font-size:16px;font-weight:700;color:var(--verde)}
+.modal-close{
+  background:none;border:none;font-size:20px;cursor:pointer;color:var(--gris-500);
+  padding:4px 8px;
+}
+.modal-body{padding:20px}
+.modal-body .field-row{
+  display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--gris-100);
+  font-size:13px;
+}
+.modal-body .field-label{font-weight:600;color:var(--gris-500);min-width:140px}
+.modal-body .field-value{color:#1e293b;flex:1}
+
+/* Tags */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:6px}
+.tag-pill{
+  padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;
+  background:var(--dorado-bg);color:var(--dorado);border:1px solid var(--dorado-l);
+}
+.tag-pill.diagnostico{background:#d0f0e4;color:var(--verde);border-color:var(--verde-xl)}
+.tag-pill.procedimiento{background:var(--morado-bg);color:var(--morado);border-color:var(--morado)}
+
+/* Loading */
+.ei-loading{text-align:center;padding:40px;color:var(--gris-500)}
+.ei-loading .spinner{
+  width:32px;height:32px;border:3px solid var(--gris-300);
+  border-top-color:var(--verde);border-radius:50%;
+  animation:spin .8s linear infinite;margin:0 auto 12px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Empty State */
+.empty-state{text-align:center;padding:40px;color:var(--gris-500)}
+.empty-state .icon{font-size:40px;margin-bottom:12px;opacity:.4}
+.empty-state p{font-size:14px}
+
+/* Hide/Show helper */
+.hidden{display:none!important}
+
+/* Responsive */
+@media(max-width:768px){
+  .ei-container{padding:12px}
+  .ei-grid{gap:12px}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .doc-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="ei-header">
+  <span class="logo">IMSS · CMN LA RAZA</span>
+  <span class="title">Expediente Clínico Integrado</span>
+  <span class="badge">UROLOGÍA</span>
+  <a href="/menu">☰ Menú</a>
+</header>
+
+<!-- ═══ SEARCH PANEL ═══ -->
+<div class="ei-search-panel">
+  <input type="text" id="searchNSS" placeholder="NSS del paciente..." value="{{ patient_uid or '' }}" autofocus>
+  <input type="text" id="searchNombre" placeholder="Nombre (opcional)...">
+  <button class="btn-buscar" onclick="cargarExpediente()">🔍 Buscar</button>
+  <button class="btn-reindex" onclick="reindexar()" title="Reindexar datos del paciente">⟳ Reindexar</button>
+</div>
+
+<!-- ═══ EMPTY STATE ═══ -->
+<div id="emptyState" class="empty-state" style="padding:80px 24px">
+  <div class="icon">📋</div>
+  <p style="font-size:16px;font-weight:600;color:var(--verde)">Expediente Clínico Integrado</p>
+  <p style="margin-top:8px">Ingrese el NSS del paciente para visualizar su expediente completo</p>
+</div>
+
+<!-- ═══ LOADING ═══ -->
+<div id="loadingState" class="ei-loading hidden">
+  <div class="spinner"></div>
+  <p>Cargando expediente...</p>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div id="mainContent" class="ei-container hidden">
+  <div class="ei-grid">
+
+    <!-- ── SIDEBAR ── -->
+    <div class="ei-sidebar">
+      <!-- Patient Hero -->
+      <div class="patient-hero" id="patientHero">
+        <div class="ph-name" id="phName">—</div>
+        <div class="ph-nss" id="phNSS">NSS: —</div>
+        <div class="ph-dx" id="phDx">Sin diagnóstico registrado</div>
+        <div class="ph-meta">
+          <span id="phEdad">—</span>
+          <span id="phSexo">—</span>
+          <span id="phSangre">—</span>
+        </div>
+      </div>
+
+      <!-- Completeness Score -->
+      <div class="ei-card">
+        <div class="ei-card-body">
+          <div class="score-ring">
+            <div class="ring" id="scoreRing">
+              <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="24" fill="none" stroke="#e2e8f0" stroke-width="4"/>
+                <circle cx="28" cy="28" r="24" fill="none" stroke="#13322B" stroke-width="4"
+                  stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round" id="scoreCircle"/>
+              </svg>
+              <span id="scoreValue">0</span>
+            </div>
+            <div>
+              <div class="ring-title">Completitud del Expediente</div>
+              <div class="ring-label">Score de integridad</div>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-box"><div class="n" id="statConsultas">0</div><div class="l">Consultas</div></div>
+            <div class="stat-box"><div class="n" id="statHosp">0</div><div class="l">Hosp.</div></div>
+            <div class="stat-box"><div class="n" id="statDocs">0</div><div class="l">Documentos</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problem List -->
+      <div class="ei-card">
+        <div class="ei-card-header">⚕ Lista de Problemas</div>
+        <div class="ei-card-body" id="problemList">
+          <div class="empty-state"><p>Sin problemas registrados</p></div>
+        </div>
+      </div>
+
+      <!-- Alertas Activas -->
+      <div class="ei-card">
+        <div class="ei-card-header">⚠ Alertas Activas</div>
+        <div class="ei-card-body" id="alertsList">
+          <div class="empty-state"><p>Sin alertas</p></div>
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="ei-card">
+        <div class="ei-card-header">🏷 Etiquetas Clínicas</div>
+        <div class="ei-card-body" id="tagCloud">
+          <div class="empty-state"><p>Sin etiquetas</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MAIN AREA ── -->
+    <div class="ei-main">
+      <!-- Tabs -->
+      <div class="ei-tabs">
+        <button class="ei-tab active" onclick="switchTab('resumen')">📊 Resumen</button>
+        <button class="ei-tab" onclick="switchTab('timeline')">📅 Timeline</button>
+        <button class="ei-tab" onclick="switchTab('notas')">📝 Notas Médicas</button>
+        <button class="ei-tab" onclick="switchTab('vitals')">💓 Vitales / Labs</button>
+        <button class="ei-tab" onclick="switchTab('qx')">🔪 Qx / Procedimientos</button>
+        <button class="ei-tab" onclick="switchTab('antecedentes')">📋 Antecedentes</button>
+      </div>
+
+      <!-- Tab: Resumen -->
+      <div class="tab-content active" id="tab-resumen">
+        <div class="ei-card">
+          <div class="ei-card-header">📊 Resumen Clínico Dinámico</div>
+          <div class="ei-card-body" id="resumenContent">
+            <div class="ei-loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Timeline -->
+      <div class="tab-content" id="tab-timeline">
+        <div class="ei-card">
+          <div class="ei-card-header">📅 Timeline Universal</div>
+          <div class="ei-card-body">
+            <div class="tl-filters" id="timelineFilters">
+              <button class="tl-filter active" onclick="filterTimeline('')">Todos</button>
+              <button class="tl-filter" onclick="filterTimeline('consulta')">Consultas</button>
+              <button class="tl-filter" onclick="filterTimeline('hospitalizacion')">Hospitalizaciones</button>
+              <button class="tl-filter" onclick="filterTimeline('cirugia')">Cirugías</button>
+              <button class="tl-filter" onclick="filterTimeline('procedimiento')">Procedimientos</button>
+              <button class="tl-filter" onclick="filterTimeline('lab')">Labs</button>
+            </div>
+            <div id="timelineEvents">
+              <div class="ei-loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Notas -->
+      <div class="tab-content" id="tab-notas">
+        <div class="ei-card">
+          <div class="ei-card-header">📝 Documentos Clínicos</div>
+          <div class="ei-card-body">
+            <div class="doc-grid" id="docGrid">
+              <div class="ei-loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Vitales -->
+      <div class="tab-content" id="tab-vitals">
+        <div class="ei-card">
+          <div class="ei-card-header">💓 Signos Vitales / Somatometría</div>
+          <div class="ei-card-body">
+            <div class="vitals-grid" id="vitalsGrid">
+              <div class="ei-loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Qx -->
+      <div class="tab-content" id="tab-qx">
+        <div class="ei-card">
+          <div class="ei-card-header">🔪 Cirugías y Procedimientos</div>
+          <div class="ei-card-body" id="qxContent">
+            <div class="ei-loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Antecedentes -->
+      <div class="tab-content" id="tab-antecedentes">
+        <div class="ei-card">
+          <div class="ei-card-header">📋 Antecedentes del Paciente</div>
+          <div class="ei-card-body">
+            <div class="ant-grid" id="antGrid">
+              <div class="ei-loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /ei-main -->
+  </div><!-- /ei-grid -->
+</div><!-- /ei-container -->
+
+<!-- ═══ DOCUMENT DETAIL MODAL ═══ -->
+<div class="modal-overlay" id="docModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">Documento</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Expediente Integrado — JavaScript Controller
+   ═══════════════════════════════════════════════════════════════ */
+let currentPatient = null;
+let currentResumen = null;
+let allTimelineEvents = [];
+
+// ── SEARCH & LOAD ──
+async function cargarExpediente() {
+  const nss = document.getElementById('searchNSS').value.trim();
+  if (!nss) return alert('Ingrese un NSS');
+
+  document.getElementById('emptyState').classList.add('hidden');
+  document.getElementById('mainContent').classList.add('hidden');
+  document.getElementById('loadingState').classList.remove('hidden');
+
+  try {
+    // Load resumen
+    const res = await fetch(`/api/v1/ehr/resumen?patient_uid=${encodeURIComponent(nss)}`);
+    if (!res.ok) throw new Error('Paciente no encontrado');
+    const data = await res.json();
+    currentResumen = data;
+    currentPatient = nss;
+
+    renderPatientHero(data.patient);
+    renderScore(data.completeness_score, data.features);
+    renderProblems(data.problems);
+    renderAlerts(data.alertas);
+    renderResumen(data);
+    renderVitals(data.vitals);
+    renderAntecedentes(data.antecedentes);
+
+    // Load timeline
+    loadTimeline(nss);
+    loadDocuments(nss);
+    loadTags(nss);
+    loadQx(nss);
+
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+  } catch(e) {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('emptyState').classList.remove('hidden');
+    alert('Error: ' + e.message);
+  }
+}
+
+// ── RENDER PATIENT HERO ──
+function renderPatientHero(p) {
+  document.getElementById('phName').textContent = p.nombre || '—';
+  document.getElementById('phNSS').textContent = `NSS: ${p.nss || '—'} · CURP: ${p.curp || '—'}`;
+  document.getElementById('phDx').textContent = p.diagnostico_principal || 'Sin diagnóstico registrado';
+  document.getElementById('phEdad').textContent = p.edad ? `${p.edad} años` : '—';
+  document.getElementById('phSexo').textContent = p.sexo || '—';
+  document.getElementById('phSangre').textContent = p.tipo_sangre ? `🩸 ${p.tipo_sangre}` : '';
+}
+
+// ── RENDER SCORE ──
+function renderScore(score, features) {
+  const val = Math.round(score || 0);
+  document.getElementById('scoreValue').textContent = val;
+  const circle = document.getElementById('scoreCircle');
+  const circumference = 2 * Math.PI * 24; // ~150.8
+  const offset = circumference - (circumference * val / 100);
+  circle.setAttribute('stroke-dashoffset', offset);
+
+  // Color based on score
+  let color = '#dc2626'; // red
+  if (val >= 75) color = '#13322B'; // green
+  else if (val >= 50) color = '#B38E5D'; // gold
+  else if (val >= 25) color = '#ea580c'; // orange
+  circle.setAttribute('stroke', color);
+
+  // Stats
+  if (features) {
+    document.getElementById('statConsultas').textContent = features.total_consultas || 0;
+    document.getElementById('statHosp').textContent = features.total_hospitalizaciones || 0;
+  }
+  if (currentResumen) {
+    document.getElementById('statDocs').textContent = currentResumen.total_docs || 0;
+  }
+}
+
+// ── RENDER PROBLEMS ──
+function renderProblems(problems) {
+  const el = document.getElementById('problemList');
+  if (!problems || problems.length === 0) {
+    el.innerHTML = '<div class="empty-state"><p>Sin problemas registrados</p></div>';
+    return;
+  }
+  el.innerHTML = problems.map(p => `
+    <div class="problem-item">
+      <div class="problem-dot ${p.status || 'activo'}"></div>
+      <div style="flex:1">
+        <div style="font-weight:600">${esc(p.problem_name)}</div>
+        ${p.cie10_code ? `<div style="font-size:11px;color:var(--gris-500)">${esc(p.cie10_code)}</div>` : ''}
+      </div>
+      <div style="font-size:11px;color:var(--gris-500)">${p.onset_date || ''}</div>
+    </div>
+  `).join('');
+}
+
+// ── RENDER ALERTS ──
+function renderAlerts(alertas) {
+  const el = document.getElementById('alertsList');
+  if (!alertas || alertas.length === 0) {
+    el.innerHTML = '<div class="empty-state"><p>Sin alertas activas ✓</p></div>';
+    return;
+  }
+  el.innerHTML = alertas.map(a => `
+    <div class="alert-item ${a.severity || 'warning'}">
+      <span class="alert-icon">${a.severity === 'critical' ? '🔴' : a.severity === 'warning' ? '🟡' : 'ℹ️'}</span>
+      <div>
+        <div class="alert-text">${esc(a.alert_text)}</div>
+        <div class="alert-actions">
+          ${a.status === 'generated' ? `<button class="btn-ack" onclick="ackAlert(${a.id})">Reconocer</button>` : ''}
+          ${a.status !== 'resolved' ? `<button class="btn-resolve" onclick="resolveAlert(${a.id})">Resolver</button>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── RENDER RESUMEN ──
+function renderResumen(data) {
+  const el = document.getElementById('resumenContent');
+  const p = data.patient;
+  const f = data.features || {};
+
+  let html = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <h4 style="font-size:14px;font-weight:700;color:var(--verde);margin-bottom:8px">Datos del Paciente</h4>
+        <div class="field-row"><span class="field-label">Nombre</span><span class="field-value">${esc(p.nombre)}</span></div>
+        <div class="field-row"><span class="field-label">NSS</span><span class="field-value">${esc(p.nss)}</span></div>
+        <div class="field-row"><span class="field-label">Diagnóstico</span><span class="field-value">${esc(p.diagnostico_principal)}</span></div>
+        <div class="field-row"><span class="field-label">Edad / Sexo</span><span class="field-value">${p.edad || '—'} años · ${esc(p.sexo)}</span></div>
+      </div>
+      <div>
+        <h4 style="font-size:14px;font-weight:700;color:var(--verde);margin-bottom:8px">Métricas del Expediente</h4>
+        <div class="field-row"><span class="field-label">Total documentos</span><span class="field-value">${data.total_docs}</span></div>
+        <div class="field-row"><span class="field-label">Consultas</span><span class="field-value">${f.total_consultas || 0}</span></div>
+        <div class="field-row"><span class="field-label">Hospitalizaciones</span><span class="field-value">${f.total_hospitalizaciones || 0}</span></div>
+        <div class="field-row"><span class="field-label">Cirugías</span><span class="field-value">${f.total_cirugias || 0}</span></div>
+        <div class="field-row"><span class="field-label">Días desde últ. consulta</span><span class="field-value">${f.dias_desde_ultima_consulta != null ? f.dias_desde_ultima_consulta + ' días' : '—'}</span></div>
+        <div class="field-row"><span class="field-label">Completitud</span><span class="field-value">${Math.round(data.completeness_score || 0)}%</span></div>
+      </div>
+    </div>
+  `;
+
+  // Problems summary in resumen
+  if (data.problems && data.problems.length > 0) {
+    html += `<h4 style="font-size:14px;font-weight:700;color:var(--verde);margin:16px 0 8px">Lista de Problemas Activos</h4>`;
+    html += data.problems.filter(p => p.status === 'activo').map(p =>
+      `<div style="display:flex;gap:8px;padding:4px 0;font-size:13px;align-items:center">
+        <span style="color:var(--rojo)">●</span> ${esc(p.problem_name)} ${p.cie10_code ? `<span style="color:var(--gris-500);margin-left:8px">(${esc(p.cie10_code)})</span>` : ''}
+      </div>`
+    ).join('');
+  }
+
+  el.innerHTML = html;
+}
+
+// ── RENDER VITALS ──
+function renderVitals(vitals) {
+  const el = document.getElementById('vitalsGrid');
+  if (!vitals) { el.innerHTML = '<div class="empty-state"><p>Sin datos</p></div>'; return; }
+
+  const items = [
+    { label: 'Peso', value: vitals.peso, unit: 'kg' },
+    { label: 'Talla', value: vitals.talla, unit: 'cm' },
+    { label: 'IMC', value: vitals.imc, unit: 'kg/m²' },
+    { label: 'T/A', value: vitals.ta, unit: 'mmHg' },
+    { label: 'FC', value: vitals.fc, unit: 'lpm' },
+    { label: 'Temp', value: vitals.temp, unit: '°C' },
+  ];
+
+  el.innerHTML = items.map(i => `
+    <div class="vital-card">
+      <div class="v-value">${i.value || '—'}</div>
+      <div class="v-label">${i.label}</div>
+      <div class="v-unit">${i.value ? i.unit : ''}</div>
+    </div>
+  `).join('');
+}
+
+// ── RENDER ANTECEDENTES ──
+function renderAntecedentes(ant) {
+  const el = document.getElementById('antGrid');
+  if (!ant) { el.innerHTML = '<div class="empty-state"><p>Sin antecedentes</p></div>'; return; }
+
+  const sections = [
+    { key: 'patologicos', title: 'Patológicos', icon: '🏥', color: 'var(--rojo)' },
+    { key: 'quirurgicos', title: 'Quirúrgicos', icon: '🔪', color: 'var(--morado)' },
+    { key: 'alergias', title: 'Alergias', icon: '⚠️', color: 'var(--naranja)' },
+    { key: 'heredofamiliares', title: 'Heredofamiliares', icon: '👨‍👩‍👧‍👦', color: 'var(--azul)' },
+    { key: 'toxicomanias', title: 'Toxicomanías', icon: '🚬', color: 'var(--gris-500)' },
+  ];
+
+  el.innerHTML = sections.map(s => {
+    const items = ant[s.key] || [];
+    const content = items.length > 0
+      ? items.map(i => {
+          if (typeof i === 'string') return `<div class="ant-item">${esc(i)}</div>`;
+          const label = i.patologia || i.procedimiento || i.alergeno || i.padecimiento || i.sustancia || JSON.stringify(i);
+          return `<div class="ant-item">${esc(label)}</div>`;
+        }).join('')
+      : '<div class="ant-item" style="color:var(--gris-400)">No registrado</div>';
+
+    return `
+      <div class="ant-card">
+        <div class="ant-title" style="color:${s.color}">${s.icon} ${s.title}</div>
+        ${content}
+      </div>
+    `;
+  }).join('');
+}
+
+// ── LOAD TIMELINE ──
+async function loadTimeline(nss, eventType = '') {
+  const el = document.getElementById('timelineEvents');
+  el.innerHTML = '<div class="ei-loading"><div class="spinner"></div></div>';
+
+  let url = `/api/v1/ehr/timeline?patient_uid=${encodeURIComponent(nss)}&limit=200`;
+  if (eventType) url += `&event_type=${eventType}`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    allTimelineEvents = data.events || [];
+    renderTimeline(allTimelineEvents);
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><p>Error cargando timeline</p></div>';
+  }
+}
+
+function renderTimeline(events) {
+  const el = document.getElementById('timelineEvents');
+  if (!events || events.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="icon">📅</div><p>Sin eventos en el timeline</p></div>';
+    return;
+  }
+
+  el.innerHTML = events.map((e, i) => {
+    const dateStr = e.event_ts ? new Date(e.event_ts).toLocaleDateString('es-MX', {year:'numeric', month:'short', day:'numeric'}) : '';
+    return `
+      <div class="tl-event">
+        <div class="tl-dot-col">
+          <div class="tl-dot ${e.event_type || ''}"></div>
+          ${i < events.length - 1 ? '<div class="tl-line"></div>' : ''}
+        </div>
+        <div class="tl-body">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span class="tl-badge ${e.event_type || ''}">${esc(e.event_type || '')}</span>
+            <span class="tl-title">${esc(e.title || '')}</span>
+          </div>
+          <div class="tl-meta">
+            <span>📅 ${dateStr}</span>
+            ${e.service ? `<span>🏥 ${esc(e.service)}</span>` : ''}
+            ${e.author ? `<span>👤 ${esc(e.author)}</span>` : ''}
+          </div>
+          ${e.summary ? `<div class="tl-summary">${esc(e.summary)}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterTimeline(type) {
+  // Update active state
+  document.querySelectorAll('.tl-filter').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  if (!type) {
+    renderTimeline(allTimelineEvents);
+  } else {
+    renderTimeline(allTimelineEvents.filter(e => e.event_type === type));
+  }
+}
+
+// ── LOAD DOCUMENTS ──
+async function loadDocuments(nss) {
+  const el = document.getElementById('docGrid');
+  el.innerHTML = '<div class="ei-loading"><div class="spinner"></div></div>';
+
+  try {
+    const res = await fetch(`/api/v1/ehr/documentos?patient_uid=${encodeURIComponent(nss)}`);
+    const data = await res.json();
+    const docs = data.docs || [];
+
+    if (docs.length === 0) {
+      el.innerHTML = '<div class="empty-state"><p>Sin documentos</p></div>';
+      return;
+    }
+
+    el.innerHTML = docs.map(d => {
+      const dateStr = d.created_at ? new Date(d.created_at).toLocaleDateString('es-MX') : '';
+      const typeLabel = {
+        'nota_consulta': '📋 Consulta',
+        'nota_ingreso': '🏥 Ingreso',
+        'nota_qx': '🔪 Cirugía',
+        'nota_leoch': '⚡ LEOCH',
+        'nota_uroendoscopia': '🔬 Uroendoscopia',
+      }[d.doc_type] || ('📄 ' + (d.doc_type || ''));
+
+      return `
+        <div class="doc-card" onclick="openDocument(${d.id})">
+          <div class="dc-type">${typeLabel}</div>
+          <div class="dc-title">${esc(d.title || 'Documento')}</div>
+          <div class="dc-meta">
+            <span>📅 ${dateStr}</span>
+            ${d.service ? `<span>🏥 ${esc(d.service)}</span>` : ''}
+            ${d.author ? `<span>👤 ${esc(d.author)}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><p>Error cargando documentos</p></div>';
+  }
+}
+
+// ── LOAD TAGS ──
+async function loadTags(nss) {
+  const el = document.getElementById('tagCloud');
+
+  try {
+    const res = await fetch(`/api/v1/ehr/tags?patient_uid=${encodeURIComponent(nss)}`);
+    const data = await res.json();
+    const tags = data.tags || [];
+
+    if (tags.length === 0) {
+      el.innerHTML = '<div class="empty-state"><p>Sin etiquetas</p></div>';
+      return;
+    }
+
+    el.innerHTML = '<div class="tag-cloud">' + tags.map(t =>
+      `<span class="tag-pill ${t.tag_category || ''}">${esc(t.tag_name)} <span style="opacity:.6">(${t.doc_count})</span></span>`
+    ).join('') + '</div>';
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><p>Error</p></div>';
+  }
+}
+
+// ── LOAD QX ──
+async function loadQx(nss) {
+  const el = document.getElementById('qxContent');
+
+  try {
+    const res = await fetch(`/api/v1/ehr/timeline?patient_uid=${encodeURIComponent(nss)}&event_type=cirugia&limit=50`);
+    const data = await res.json();
+    const events = data.events || [];
+
+    // Also load procedimientos
+    const res2 = await fetch(`/api/v1/ehr/timeline?patient_uid=${encodeURIComponent(nss)}&event_type=procedimiento&limit=50`);
+    const data2 = await res2.json();
+    const procs = data2.events || [];
+
+    const all = [...events, ...procs].sort((a, b) => (b.event_ts || '').localeCompare(a.event_ts || ''));
+
+    if (all.length === 0) {
+      el.innerHTML = '<div class="empty-state"><div class="icon">🔪</div><p>Sin cirugías o procedimientos registrados</p></div>';
+      return;
+    }
+
+    el.innerHTML = all.map(e => {
+      const dateStr = e.event_ts ? new Date(e.event_ts).toLocaleDateString('es-MX', {year:'numeric', month:'long', day:'numeric'}) : '';
+      const isQx = e.event_type === 'cirugia';
+      return `
+        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--gris-100);align-items:flex-start">
+          <div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;
+            background:${isQx ? 'var(--morado-bg)' : 'var(--naranja-bg)'}">
+            ${isQx ? '🔪' : '⚡'}
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:14px">${esc(e.title || '')}</div>
+            <div style="font-size:12px;color:var(--gris-500);margin-top:2px">
+              📅 ${dateStr}
+              ${e.author ? ` · 👤 ${esc(e.author)}` : ''}
+              ${e.service ? ` · ${esc(e.service)}` : ''}
+            </div>
+            ${e.summary ? `<div style="font-size:13px;color:#475569;margin-top:6px">${esc(e.summary)}</div>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><p>Error cargando datos</p></div>';
+  }
+}
+
+// ── DOCUMENT DETAIL MODAL ──
+async function openDocument(docId) {
+  const modal = document.getElementById('docModal');
+  const body = document.getElementById('modalBody');
+  body.innerHTML = '<div class="ei-loading"><div class="spinner"></div></div>';
+  modal.classList.add('show');
+
+  try {
+    const res = await fetch(`/api/v1/ehr/documento/${docId}`);
+    const data = await res.json();
+    const doc = data.doc;
+
+    document.getElementById('modalTitle').textContent = doc.title || 'Documento';
+
+    let html = '';
+
+    // Metadata
+    html += `<div class="field-row"><span class="field-label">Tipo</span><span class="field-value">${esc(doc.doc_type)}</span></div>`;
+    html += `<div class="field-row"><span class="field-label">Servicio</span><span class="field-value">${esc(doc.service || '')}</span></div>`;
+    html += `<div class="field-row"><span class="field-label">Fecha</span><span class="field-value">${doc.created_at || ''}</span></div>`;
+    html += `<div class="field-row"><span class="field-label">Autor</span><span class="field-value">${esc(doc.author || '—')}</span></div>`;
+    html += `<div class="field-row"><span class="field-label">Versión</span><span class="field-value">${doc.version || 1}</span></div>`;
+
+    // Tags
+    if (doc.tags && doc.tags.length > 0) {
+      html += `<div style="margin-top:12px"><strong style="font-size:12px;color:var(--gris-500)">ETIQUETAS</strong>
+        <div class="tag-cloud" style="margin-top:6px">
+          ${doc.tags.map(t => `<span class="tag-pill ${t.tag_category || ''}">${esc(t.tag_name)}</span>`).join('')}
+        </div>
+      </div>`;
+    }
+
+    // Content
+    if (doc.content_data && typeof doc.content_data === 'object') {
+      html += `<div style="margin-top:16px;border-top:1px solid var(--ei-border);padding-top:12px">
+        <strong style="font-size:12px;color:var(--gris-500)">CONTENIDO CLÍNICO</strong>`;
+
+      for (const [key, val] of Object.entries(doc.content_data)) {
+        if (val && val !== '' && val !== null && val !== 'None') {
+          html += `<div class="field-row"><span class="field-label">${esc(key)}</span><span class="field-value">${esc(String(val))}</span></div>`;
+        }
+      }
+      html += '</div>';
+    }
+
+    body.innerHTML = html;
+  } catch(e) {
+    body.innerHTML = '<div class="empty-state"><p>Error cargando documento</p></div>';
+  }
+}
+
+function closeModal() {
+  document.getElementById('docModal').classList.remove('show');
+}
+
+// ── TAB SWITCHING ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.ei-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── ALERT ACTIONS ──
+async function ackAlert(id) {
+  await fetch(`/api/v1/ehr/alertas/${id}/acknowledge`, { method: 'POST' });
+  if (currentPatient) {
+    const res = await fetch(`/api/v1/ehr/alertas?patient_uid=${encodeURIComponent(currentPatient)}&status=generated`);
+    const data = await res.json();
+    renderAlerts(data.alertas || []);
+  }
+}
+
+async function resolveAlert(id) {
+  const action = prompt('Acción tomada:');
+  if (action === null) return;
+  await fetch(`/api/v1/ehr/alertas/${id}/resolve`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action_taken: action, outcome: 'resolved' }),
+  });
+  if (currentPatient) {
+    const res = await fetch(`/api/v1/ehr/alertas?patient_uid=${encodeURIComponent(currentPatient)}`);
+    const data = await res.json();
+    renderAlerts((data.alertas || []).filter(a => a.status !== 'resolved'));
+  }
+}
+
+// ── REINDEX ──
+async function reindexar() {
+  const nss = document.getElementById('searchNSS').value.trim();
+  if (!nss) return alert('Ingrese un NSS primero');
+
+  try {
+    const res = await fetch(`/api/v1/ehr/reindex?patient_uid=${encodeURIComponent(nss)}`, { method: 'POST' });
+    const data = await res.json();
+    alert(`Reindexación completada: ${data.stats?.docs || 0} documentos indexados`);
+    cargarExpediente();
+  } catch(e) {
+    alert('Error al reindexar: ' + e.message);
+  }
+}
+
+// ── UTIL ──
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = String(s);
+  return d.innerHTML;
+}
+
+// ── AUTO-LOAD ──
+document.addEventListener('DOMContentLoaded', () => {
+  const nss = document.getElementById('searchNSS').value.trim();
+  if (nss) cargarExpediente();
+
+  // Enter key handler
+  document.getElementById('searchNSS').addEventListener('keypress', e => {
+    if (e.key === 'Enter') cargarExpediente();
+  });
+  document.getElementById('searchNombre').addEventListener('keypress', e => {
+    if (e.key === 'Enter') cargarExpediente();
+  });
+
+  // Close modal on overlay click
+  document.getElementById('docModal').addEventListener('click', e => {
+    if (e.target.classList.contains('modal-overlay')) closeModal();
+  });
+});
+</script>
+</body>
+</html>

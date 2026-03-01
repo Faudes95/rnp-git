@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Alta Hospitalaria</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root {
+            --imss-verde: #13322B;
+            --imss-dorado: #B38E5D;
+            --fondo: #f4f6f9;
+        }
+        body { font-family: 'Montserrat', sans-serif; background: var(--fondo); margin: 0; padding: 20px; }
+        .container { max-width: 1320px; margin: auto; background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+        h1 { color: var(--imss-verde); margin: 0 0 10px 0; }
+        h2 { color: var(--imss-verde); margin: 0 0 8px 0; }
+        .alert { padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
+        .ok { background:#ebf8ef; border:1px solid #b6dfc0; color:#1f5f2f; }
+        .err { background:#fdeaea; border:1px solid #efb9b9; color:#8d1b1b; }
+        .card { border: 1px solid #d9e2dd; border-radius: 10px; padding: 14px; background: #fbfcfc; margin-bottom: 12px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 10px; }
+        .w2 { grid-column: span 2; }
+        .w3 { grid-column: span 3; }
+        label { font-size: 12px; color: var(--imss-verde); font-weight: 700; display: block; margin-bottom: 4px; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #cfd8d3; border-radius: 6px; font-size: 13px; }
+        textarea { min-height: 80px; resize: vertical; }
+        .btn { background: var(--imss-verde); color: #fff; text-decoration: none; border: none; border-radius: 7px; padding: 10px 14px; cursor: pointer; font-weight: 700; display:inline-block; }
+        .btn-alt { background: var(--imss-dorado); }
+        .row-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .muted { color: #4e5f57; font-size: 12px; }
+        .chip { display:inline-block; padding: 4px 8px; border-radius: 999px; background:#ebf3ef; color:#15372f; font-size:12px; margin-right:4px; margin-top:4px; }
+        @media (max-width: 760px) {
+            .w2, .w3 { grid-column: span 1; }
+        }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>6. ALTA HOSPITALARIA</h1>
+
+    {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+    {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+    <div class="card">
+        <h2>Seleccionar paciente hospitalizado activo</h2>
+        <form method="get" action="/hospitalizacion/alta" class="grid">
+            <div class="w2">
+                <label>Paciente activo</label>
+                <select name="hospitalizacion_id" required>
+                    <option value="">Seleccione</option>
+                    {% for a in activos %}
+                    <option value="{{ a.id }}" {% if prefill.hospitalizacion_id|string == a.id|string %}selected{% endif %}>
+                        [{{ a.cama or 'S/CAMA' }}] {{ a.nombre_completo }} | NSS {{ a.nss }} | Dx {{ a.diagnostico }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-alt">Cargar formato</button>
+            </div>
+        </form>
+    </div>
+
+    <form method="post" action="/hospitalizacion/alta/guardar" id="form-alta">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="hospitalizacion_id" value="{{ prefill.hospitalizacion_id }}">
+
+        <div class="card">
+            <h2>Formato de egreso hospitalario</h2>
+            <div class="grid">
+                <div><label>Fecha de egreso</label><input type="date" name="fecha_egreso" value="{{ prefill.fecha_egreso }}" required></div>
+                <div><label>NSS</label><input type="text" name="nss" value="{{ prefill.nss }}" required maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 dígitos"></div>
+                <div class="w2"><label>Nombre completo</label><input type="text" name="nombre_completo" value="{{ prefill.nombre_completo }}" required></div>
+                <div><label>Sexo</label><input type="text" name="sexo" value="{{ prefill.sexo }}" required></div>
+                <div><label>Edad</label><input type="number" name="edad" value="{{ prefill.edad }}" min="0" max="120"></div>
+                <div><label>Cama</label><input type="text" name="cama" value="{{ prefill.cama }}" required></div>
+                <div class="w2"><label>Diagnóstico</label><input type="text" name="diagnostico" value="{{ prefill.diagnostico }}" required></div>
+                <div class="w2"><label>Procedimiento realizado</label><input type="text" id="procedimiento_realizado" name="procedimiento_realizado" value="{{ prefill.procedimiento_realizado }}"></div>
+                <div><label>Días de estancia</label><input type="number" name="dias_estancia" value="{{ prefill.dias_estancia }}" min="0"></div>
+                <div><label>Médico a cargo</label><input type="text" name="medico_a_cargo" value="{{ prefill.medico_a_cargo }}" required></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Tratamiento al egreso</h2>
+            <div class="grid">
+                <div>
+                    <label>¿Se otorgó antibiótico?</label>
+                    <select name="antibiotico_otorgado" id="antibiotico_otorgado">
+                        {% for yn in yes_no %}
+                        <option value="{{ yn }}" {% if prefill.antibiotico_otorgado == yn %}selected{% endif %}>{{ yn }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="box_antibiotico_nombre">
+                    <label>Antibiótico</label>
+                    <input type="text" name="antibiotico_nombre" value="{{ prefill.antibiotico_nombre }}" placeholder="Ej. Ceftriaxona 1g c/24h 5 días">
+                </div>
+                <div>
+                    <label>¿Se otorgó incapacidad?</label>
+                    <select name="incapacidad_otorgada">
+                        {% for yn in yes_no %}
+                        <option value="{{ yn }}" {% if prefill.incapacidad_otorgada == yn %}selected{% endif %}>{{ yn }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label>Estado al egreso</label>
+                    <select name="estado_al_egreso">
+                        {% for st in estado_egreso_options %}
+                        <option value="{{ st }}" {% if prefill.estado_al_egreso == st %}selected{% endif %}>{{ st }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label>Destino del egreso</label>
+                    <select name="destino_egreso">
+                        {% for de in destino_egreso_options %}
+                        <option value="{{ de }}" {% if prefill.destino_egreso == de %}selected{% endif %}>{{ de }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label>¿Signos de alarma entregados?</label>
+                    <select name="signos_alarma_entregados">
+                        {% for yn in yes_no %}
+                        <option value="{{ yn }}" {% if prefill.signos_alarma_entregados == yn %}selected{% endif %}>{{ yn }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label>Fecha de cita control</label>
+                    <input type="date" name="cita_control_fecha" value="{{ prefill.cita_control_fecha }}">
+                </div>
+                <div>
+                    <label>Servicio cita control</label>
+                    <input type="text" name="cita_control_servicio" value="{{ prefill.cita_control_servicio }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Drenajes y dispositivos al egreso</h2>
+            <div class="grid">
+                <div>
+                    <label>¿Egreso con drenaje?</label>
+                    <select name="egreso_con_drenaje" id="egreso_con_drenaje">
+                        {% for yn in yes_no %}
+                        <option value="{{ yn }}" {% if prefill.egreso_con_drenaje == yn %}selected{% endif %}>{{ yn }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="box_drenaje_tipo">
+                    <label>Tipo de drenaje</label>
+                    <select name="drenaje_tipo" id="drenaje_tipo">
+                        <option value="">Seleccione</option>
+                        {% for d in ["PENROSE","SARATOGA","JACKSON","NEFROSTOMIA","CONDUCTO ILEAL","URETEROSTOMA","DRENAJE PELVICO"] %}
+                        <option value="{{ d }}" {% if prefill.drenaje_tipo == d %}selected{% endif %}>{{ d }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="box_drenaje_lateralidad">
+                    <label>Lateralidad drenaje</label>
+                    <select name="drenaje_lateralidad">
+                        <option value="">N/E</option>
+                        <option value="L" {% if prefill.drenaje_lateralidad == "L" %}selected{% endif %}>L</option>
+                        <option value="R" {% if prefill.drenaje_lateralidad == "R" %}selected{% endif %}>R</option>
+                        <option value="BILAT" {% if prefill.drenaje_lateralidad == "BILAT" %}selected{% endif %}>BILAT</option>
+                        <option value="NA" {% if prefill.drenaje_lateralidad == "NA" %}selected{% endif %}>NA</option>
+                    </select>
+                </div>
+                <div id="box_drenaje_colocacion">
+                    <label>Fecha colocación drenaje</label>
+                    <input type="date" name="drenaje_fecha_colocacion" value="{{ prefill.drenaje_fecha_colocacion }}">
+                </div>
+                <div id="box_drenaje_retiro">
+                    <label>Fecha retiro drenaje</label>
+                    <input type="date" name="drenaje_fecha_retiro" value="{{ prefill.drenaje_fecha_retiro }}">
+                </div>
+            </div>
+
+            <div class="grid" style="margin-top:10px;">
+                <div>
+                    <label>¿Egreso con dispositivo?</label>
+                    <select name="egreso_con_dispositivo" id="egreso_con_dispositivo">
+                        {% for yn in yes_no %}
+                        <option value="{{ yn }}" {% if prefill.egreso_con_dispositivo == yn %}selected{% endif %}>{{ yn }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="box_dispositivo_tipo">
+                    <label>Tipo de dispositivo</label>
+                    <select name="dispositivo_tipo" id="dispositivo_tipo">
+                        <option value="">Seleccione</option>
+                        {% for d in ["SONDA FOLEY","CATETER JJ","CATETER URETERAL","CATETER URETERAL POR REPARACION POR FISTULA VESICOVAGINAL"] %}
+                        <option value="{{ d }}" {% if prefill.dispositivo_tipo == d %}selected{% endif %}>{{ d }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="box_dispositivo_lateralidad">
+                    <label>Lateralidad dispositivo</label>
+                    <select name="dispositivo_lateralidad">
+                        <option value="">N/E</option>
+                        <option value="L" {% if prefill.dispositivo_lateralidad == "L" %}selected{% endif %}>L</option>
+                        <option value="R" {% if prefill.dispositivo_lateralidad == "R" %}selected{% endif %}>R</option>
+                        <option value="BILAT" {% if prefill.dispositivo_lateralidad == "BILAT" %}selected{% endif %}>BILAT</option>
+                        <option value="NA" {% if prefill.dispositivo_lateralidad == "NA" %}selected{% endif %}>NA</option>
+                    </select>
+                </div>
+                <div id="box_dispositivo_colocacion">
+                    <label>Fecha colocación dispositivo</label>
+                    <input type="date" name="dispositivo_fecha_colocacion" value="{{ prefill.dispositivo_fecha_colocacion }}">
+                </div>
+                <div id="box_dispositivo_retiro">
+                    <label>Fecha retiro dispositivo</label>
+                    <input type="date" name="dispositivo_fecha_retiro" value="{{ prefill.dispositivo_fecha_retiro }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Complicaciones y plan de egreso</h2>
+            <div class="grid">
+                <div>
+                    <label>¿Hubo complicación?</label>
+                    <select name="hubo_complicacion" id="hubo_complicacion">
+                        {% for yn in yes_no %}
+                        <option value="{{ yn }}" {% if prefill.hubo_complicacion == yn %}selected{% endif %}>{{ yn }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="box_complicacion_catalogo">
+                    <label>Complicación principal</label>
+                    <select name="complicacion_catalogo" id="complicacion_catalogo">
+                        <option value="">Seleccione</option>
+                        {% for c in complicaciones_base %}
+                        <option value="{{ c }}" {% if prefill.complicacion_catalogo == c %}selected{% endif %}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="w2" id="box_complicacion_texto">
+                    <label>Detalle de complicación (texto libre)</label>
+                    <textarea name="complicacion_texto">{{ prefill.complicacion_texto }}</textarea>
+                </div>
+                <div class="w3">
+                    <label>Plan de egreso</label>
+                    <textarea name="plan_egreso" placeholder="Plan terapéutico, vigilancia, seguimiento">{{ prefill.plan_egreso }}</textarea>
+                </div>
+                <div class="w3">
+                    <label>Indicaciones al egreso</label>
+                    <textarea name="indicaciones_egreso" placeholder="Medicación, cuidados, signos de alarma">{{ prefill.indicaciones_egreso }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Asociación automática a evento quirúrgico</h2>
+            <p class="muted">Si marca "SI", el sistema busca automáticamente el evento quirúrgico previo en módulos de quirófano y adjunta hallazgos, fecha y médico.</p>
+            {% if postquirurgica_href %}
+            <div class="alert ok" style="margin-top:6px;">
+                Flujo sugerido: complete/actualice nota postquirúrgica antes del egreso si aplica.
+                <a class="btn btn-alt" style="margin-left:8px;padding:6px 10px;" href="{{ postquirurgica_href }}">Ir a nota postquirúrgica</a>
+            </div>
+            {% endif %}
+            <div class="grid">
+                <div>
+                    <label>¿Se realizó procedimiento quirúrgico?</label>
+                    <select name="se_realizo_procedimiento_qx" id="se_realizo_procedimiento_qx">
+                        {% for yn in yes_no %}
+                        <option value="{{ yn }}" {% if prefill.se_realizo_procedimiento_qx == yn %}selected{% endif %}>{{ yn }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div><label>Evento encontrado</label><input type="text" name="evento_qx_encontrado" value="{{ prefill.evento_qx_encontrado }}" readonly></div>
+                <div><label>Fuente</label><input type="text" name="evento_qx_fuente" value="{{ prefill.evento_qx_fuente }}" readonly></div>
+                <div><label>Fecha procedimiento</label><input type="date" name="fecha_procedimiento_qx" value="{{ prefill.fecha_procedimiento_qx }}" readonly></div>
+                <div><label>Médico que realizó</label><input type="text" name="medico_procedimiento_qx" value="{{ prefill.medico_procedimiento_qx }}" readonly></div>
+                <div class="w2"><label>Hallazgos quirúrgicos</label><textarea name="hallazgos_qx" readonly>{{ prefill.hallazgos_qx }}</textarea></div>
+            </div>
+        </div>
+
+        <div class="row-actions">
+            <button class="btn" type="submit">REALIZAR EGRESO HOSPITALARIO</button>
+            {% if egreso_id %}
+            <a class="btn btn-alt" href="/hospitalizacion/alta/{{ egreso_id }}/imprimir">IMPRIMIR EGRESO HOSPITALARIO</a>
+            {% endif %}
+            {% if prefill.consulta_id %}
+            <a class="btn btn-alt" href="/expediente?consulta_id={{ prefill.consulta_id }}">Ver expediente del paciente</a>
+            {% endif %}
+            <a class="btn btn-alt" href="/hospitalizacion/reporte/egresos">Ver EGRESOS HOSPITALARIOS</a>
+            <a class="btn btn-alt" href="/hospitalizacion">Volver a Hospitalización</a>
+        </div>
+    </form>
+</div>
+
+<script>
+(function() {
+    const complicacionesBase = {{ complicaciones_base | tojson }};
+    const complicacionesPorPatron = {{ complicaciones_por_patron | tojson }};
+
+    const procedimientoInput = document.getElementById('procedimiento_realizado');
+    const selectComp = document.getElementById('complicacion_catalogo');
+    const huboComp = document.getElementById('hubo_complicacion');
+    const boxCompCatalogo = document.getElementById('box_complicacion_catalogo');
+    const boxCompTexto = document.getElementById('box_complicacion_texto');
+    const antibioSel = document.getElementById('antibiotico_otorgado');
+    const boxAntibio = document.getElementById('box_antibiotico_nombre');
+    const egresoConDrenaje = document.getElementById('egreso_con_drenaje');
+    const drenajeTipo = document.getElementById('drenaje_tipo');
+    const boxDrenajeTipo = document.getElementById('box_drenaje_tipo');
+    const boxDrenajeLateralidad = document.getElementById('box_drenaje_lateralidad');
+    const boxDrenajeColocacion = document.getElementById('box_drenaje_colocacion');
+    const boxDrenajeRetiro = document.getElementById('box_drenaje_retiro');
+    const egresoConDispositivo = document.getElementById('egreso_con_dispositivo');
+    const dispositivoTipo = document.getElementById('dispositivo_tipo');
+    const boxDispositivoTipo = document.getElementById('box_dispositivo_tipo');
+    const boxDispositivoLateralidad = document.getElementById('box_dispositivo_lateralidad');
+    const boxDispositivoColocacion = document.getElementById('box_dispositivo_colocacion');
+    const boxDispositivoRetiro = document.getElementById('box_dispositivo_retiro');
+
+    function optionsForProcedure(proc) {
+        const upper = (proc || '').toUpperCase();
+        let list = [...complicacionesBase];
+        Object.keys(complicacionesPorPatron || {}).forEach((pattern) => {
+            if (upper.includes(pattern)) {
+                const merged = [...(complicacionesPorPatron[pattern] || []), ...complicacionesBase];
+                const uniq = [];
+                merged.forEach((item) => {
+                    if (!uniq.includes(item)) uniq.push(item);
+                });
+                list = uniq;
+            }
+        });
+        return list;
+    }
+
+    function fillComplicationOptions() {
+        const current = (selectComp && selectComp.value) ? selectComp.value : '';
+        const options = optionsForProcedure(procedimientoInput ? procedimientoInput.value : '');
+        if (!selectComp) return;
+        selectComp.innerHTML = '<option value="">Seleccione</option>';
+        options.forEach((op) => {
+            const el = document.createElement('option');
+            el.value = op;
+            el.textContent = op;
+            if (current && current === op) el.selected = true;
+            selectComp.appendChild(el);
+        });
+    }
+
+    function toggleComplications() {
+        const on = (huboComp && huboComp.value === 'SI');
+        if (boxCompCatalogo) boxCompCatalogo.style.display = on ? '' : 'none';
+        if (boxCompTexto) boxCompTexto.style.display = on ? '' : 'none';
+    }
+
+    function toggleAntibiotico() {
+        const on = (antibioSel && antibioSel.value === 'SI');
+        if (boxAntibio) boxAntibio.style.display = on ? '' : 'none';
+    }
+
+    function toggleDrenaje() {
+        const on = (egresoConDrenaje && egresoConDrenaje.value === 'SI');
+        [boxDrenajeTipo, boxDrenajeLateralidad, boxDrenajeColocacion, boxDrenajeRetiro].forEach((el) => {
+            if (el) el.style.display = on ? '' : 'none';
+        });
+        const noLat = ['CONDUCTO ILEAL', 'DRENAJE PELVICO'];
+        const hideLat = !on || (drenajeTipo && noLat.includes((drenajeTipo.value || '').toUpperCase()));
+        if (boxDrenajeLateralidad) boxDrenajeLateralidad.style.display = hideLat ? 'none' : '';
+    }
+
+    function toggleDispositivo() {
+        const on = (egresoConDispositivo && egresoConDispositivo.value === 'SI');
+        [boxDispositivoTipo, boxDispositivoLateralidad, boxDispositivoColocacion, boxDispositivoRetiro].forEach((el) => {
+            if (el) el.style.display = on ? '' : 'none';
+        });
+        const hideLat = !on || (dispositivoTipo && (dispositivoTipo.value || '').toUpperCase() === 'SONDA FOLEY');
+        if (boxDispositivoLateralidad) boxDispositivoLateralidad.style.display = hideLat ? 'none' : '';
+    }
+
+    if (procedimientoInput) procedimientoInput.addEventListener('input', fillComplicationOptions);
+    if (huboComp) huboComp.addEventListener('change', toggleComplications);
+    if (antibioSel) antibioSel.addEventListener('change', toggleAntibiotico);
+    if (egresoConDrenaje) egresoConDrenaje.addEventListener('change', toggleDrenaje);
+    if (drenajeTipo) drenajeTipo.addEventListener('change', toggleDrenaje);
+    if (egresoConDispositivo) egresoConDispositivo.addEventListener('change', toggleDispositivo);
+    if (dispositivoTipo) dispositivoTipo.addEventListener('change', toggleDispositivo);
+
+    fillComplicationOptions();
+    toggleComplications();
+    toggleAntibiotico();
+    toggleDrenaje();
+    toggleDispositivo();
+})();
+</script>
+</body>
+</html>

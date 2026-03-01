@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640">
+  <rect width="640" height="640" fill="#13322B"/>
+  <circle cx="320" cy="220" r="120" fill="#B38E5D"/>
+  <rect x="160" y="360" width="320" height="160" rx="24" fill="#ffffff"/>
+  <text x="320" y="448" text-anchor="middle" font-family="Arial" font-size="64" font-weight="700" fill="#13322B">IMSS</text>
+</svg>

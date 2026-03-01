@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>IA Quirófano - fau_BOT</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; --fondo:#f4f6f9; }
+        body { font-family:'Montserrat',sans-serif; margin:0; padding:20px; background:var(--fondo); }
+        .container { max-width:1320px; margin:auto; background:#fff; border-radius:10px; padding:24px; box-shadow:0 8px 24px rgba(0,0,0,.10); }
+        h1,h2 { color:var(--imss-verde); margin:0 0 10px 0; }
+        h1 { border-bottom:3px solid var(--imss-dorado); padding-bottom:10px; }
+        .row { display:grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap:12px; margin:12px 0; }
+        .card { border:1px solid #dce5e1; border-left:5px solid var(--imss-dorado); border-radius:8px; background:#fff; padding:10px; }
+        .v { font-size:24px; font-weight:800; color:var(--imss-verde); }
+        .section { margin-top:16px; border:1px solid #e3e9e6; border-radius:8px; background:#fafcfb; padding:12px; }
+        .btn { background:var(--imss-verde); color:#fff; border:none; border-radius:6px; padding:10px 14px; cursor:pointer; font-weight:700; text-decoration:none; display:inline-block; }
+        .btn.alt { background:var(--imss-dorado); color:#122; }
+        .tools { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 12px; }
+        table { width:100%; border-collapse:collapse; margin-top:8px; }
+        th { background:var(--imss-verde); color:#fff; text-align:left; font-size:12px; padding:8px; }
+        td { border-bottom:1px solid #e7ece9; padding:8px; font-size:12px; vertical-align:top; }
+        input { border:1px solid #cfd8de; border-radius:6px; padding:8px; font-family:'Montserrat',sans-serif; }
+        .muted { color:#5d6972; font-size:12px; }
+        .log { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; background:#061018; color:#d8f2e6; border-radius:8px; padding:10px; min-height:110px; max-height:240px; overflow:auto; font-size:12px; }
+        .sev-CRITICAL { color:#8f1111; font-weight:800; }
+        .sev-WARNING { color:#8b5e00; font-weight:700; }
+        .sev-INFO { color:#1a5d7f; font-weight:700; }
+        @media (max-width:1100px) { .row { grid-template-columns:1fr; } }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>IA Quirófano - Agente Especializado</h1>
+    <p class="muted">Actualizado: {{ fecha }} | Integrado de manera aditiva con fau_BOT y reporte de alertas.</p>
+
+    <div class="tools">
+        <a class="btn" href="/ai/fau-bot">Panel fau_BOT</a>
+        <a class="btn alt" href="/reporte/alertas">ALERTAS</a>
+        <a class="btn alt" href="/api/ai/quirofano/alertas" target="_blank">JSON alertas</a>
+        <a class="btn alt" href="/api/ai/quirofano/predicciones" target="_blank">JSON predicciones</a>
+        <a class="btn alt" href="/">Menú principal</a>
+    </div>
+
+    <div class="row">
+        <div class="card"><div>Total alertas</div><div class="v">{{ resumen.total or 0 }}</div></div>
+        <div class="card"><div>CRITICAL</div><div class="v">{{ resumen.por_nivel.CRITICAL if resumen and resumen.por_nivel else 0 }}</div></div>
+        <div class="card"><div>WARNING</div><div class="v">{{ resumen.por_nivel.WARNING if resumen and resumen.por_nivel else 0 }}</div></div>
+        <div class="card"><div>INFO</div><div class="v">{{ resumen.por_nivel.INFO if resumen and resumen.por_nivel else 0 }}</div></div>
+    </div>
+
+    <div class="section">
+        <h2>Análisis puntual de programación</h2>
+        <form method="post" action="#" onsubmit="return analizarProgramacion(event)">
+            <input id="programacion_id" type="number" min="1" placeholder="ID programación" required>
+            <button class="btn" type="submit">Analizar</button>
+        </form>
+        <p class="muted">Usa WebSocket para recibir eventos en tiempo real del monitor local.</p>
+        <div id="ws-log" class="log"></div>
+    </div>
+
+    <div class="section">
+        <h2>Alertas recientes de quirófano</h2>
+        <table>
+            <tr><th>Fecha</th><th>Nivel</th><th>Programación</th><th>Mensaje</th><th>Tipo insight</th><th>Resuelta</th></tr>
+            {% for a in qx_alerts %}
+            <tr>
+                <td>{{ a.fecha_creacion }}</td>
+                <td><span class="sev-{{ a.nivel }}">{{ a.nivel }}</span></td>
+                <td>{{ a.programacion_id }}</td>
+                <td>{{ a.mensaje }}</td>
+                <td>{{ a.detalles.tipo_insight if a.detalles else '' }}</td>
+                <td>{{ 'SI' if a.resuelta else 'NO' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">Sin alertas registradas.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Predicciones recientes</h2>
+        <table>
+            <tr><th>Fecha</th><th>Programación</th><th>Paciente</th><th>Riesgo cancelación</th><th>Riesgo complicación</th><th>Duración estimada (min)</th></tr>
+            {% for p in qx_predictions %}
+            <tr>
+                <td>{{ p.created_at }}</td>
+                <td>{{ p.programacion_id }}</td>
+                <td>{{ p.paciente }}</td>
+                <td>{{ p.riesgo_cancelacion }}</td>
+                <td>{{ p.riesgo_complicacion }}</td>
+                <td>{{ p.duracion_estimada_min }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">Sin predicciones registradas.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<script>
+(() => {
+    const logEl = document.getElementById("ws-log");
+    const addLog = (text) => {
+        const ts = new Date().toISOString();
+        logEl.textContent = `[${ts}] ${text}\n` + logEl.textContent;
+    };
+
+    const scheme = window.location.protocol === "https:" ? "wss" : "ws";
+    const ws = new WebSocket(`${scheme}://${window.location.host}/ai/quirofano/ws/alertas`);
+    ws.onopen = () => { addLog("WebSocket conectado"); ws.send("latest:25"); };
+    ws.onmessage = (ev) => {
+        try {
+            const payload = JSON.parse(ev.data);
+            addLog(JSON.stringify(payload));
+        } catch {
+            addLog(ev.data);
+        }
+    };
+    ws.onclose = () => addLog("WebSocket desconectado");
+    ws.onerror = () => addLog("Error WebSocket");
+    window._qxWs = ws;
+})();
+
+async function analizarProgramacion(ev) {
+    ev.preventDefault();
+    const id = document.getElementById("programacion_id").value;
+    if (!id) return false;
+    const res = await fetch(`/api/ai/quirofano/analizar/${id}?async_mode=false`, { method: "POST" });
+    const data = await res.json();
+    const logEl = document.getElementById("ws-log");
+    logEl.textContent = `[${new Date().toISOString()}] ${JSON.stringify(data)}\n` + logEl.textContent;
+    return false;
+}
+</script>
+</body>
+</html>

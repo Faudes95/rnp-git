@@ -1,0 +1,29 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    container_name: rnp_app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./urologia.db
+      - SURGICAL_DATABASE_URL=sqlite:///./urologia_quirurgico.db
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    container_name: rnp_postgres
+    environment:
+      POSTGRES_USER: rnp
+      POSTGRES_PASSWORD: rnp
+      POSTGRES_DB: rnp
+    ports:
+      - "5432:5432"
+    volumes:
+      - rnp_pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  rnp_pg_data:

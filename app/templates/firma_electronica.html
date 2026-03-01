@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RNP IMSS — Firma Electrónica Médica</title>
+<link href="/static/css/rnp_redesign.css" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f3;min-height:100vh}
+.top-bar{background:linear-gradient(135deg,#006b3f,#00a86b);color:white;padding:16px 24px;
+  display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.top-bar h1{font-size:1.2rem;font-weight:600}
+.top-bar a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.85rem;
+  padding:6px 14px;border:1px solid rgba(255,255,255,0.3);border-radius:8px;transition:all 0.2s}
+.top-bar a:hover{background:rgba(255,255,255,0.15)}
+.container{max-width:900px;margin:24px auto;padding:0 20px}
+.section-card{background:white;border-radius:16px;padding:28px;margin-bottom:20px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.section-card h2{font-size:1.1rem;color:#1a5e3a;margin-bottom:16px;padding-bottom:10px;
+  border-bottom:2px solid #e8f5e9;display:flex;align-items:center;gap:10px}
+.section-card h2 svg{width:22px;height:22px;fill:#006b3f}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:0.8rem;font-weight:600;color:#444;margin-bottom:5px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;
+  border:1.5px solid #ddd;border-radius:10px;font-size:0.9rem;transition:border 0.2s;outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#006b3f}
+/* Canvas de firma */
+.canvas-container{position:relative;border:2px dashed #ccc;border-radius:14px;
+  padding:8px;background:#fafffe;text-align:center;transition:border 0.3s}
+.canvas-container.active{border-color:#006b3f;border-style:solid}
+#signatureCanvas{width:100%;height:200px;cursor:crosshair;touch-action:none;border-radius:10px;
+  background:white}
+.canvas-actions{display:flex;gap:10px;margin-top:10px;justify-content:center}
+.canvas-actions button{padding:8px 20px;border-radius:8px;font-size:0.82rem;cursor:pointer;
+  border:none;font-weight:600;transition:all 0.2s}
+.btn-clear{background:#f5f5f5;color:#666}
+.btn-clear:hover{background:#eee}
+.btn-save{background:linear-gradient(135deg,#006b3f,#00a86b);color:white}
+.btn-save:hover{box-shadow:0 4px 12px rgba(0,107,63,0.3)}
+.hint{font-size:0.75rem;color:#888;margin-top:6px;text-align:center}
+/* Verificar firma */
+.verify-section{margin-top:20px}
+.verify-result{padding:14px;border-radius:10px;margin-top:12px;display:none}
+.verify-result.valid{background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32;display:block}
+.verify-result.invalid{background:#ffebee;border:1px solid #ef9a9a;color:#c62828;display:block}
+/* Historial */
+.firma-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.firma-item{display:flex;align-items:center;gap:14px;padding:12px 16px;
+  background:#f8faf9;border-radius:10px;border:1px solid #e8e8e8}
+.firma-item .icon{width:36px;height:36px;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;flex-shrink:0}
+.firma-item .icon.valid{background:#e8f5e9}
+.firma-item .icon.valid svg{fill:#4caf50}
+.firma-item .icon.invalid{background:#ffebee}
+.firma-item .icon.invalid svg{fill:#f44336}
+.firma-item .icon svg{width:20px;height:20px}
+.firma-info{flex:1;min-width:0}
+.firma-info .tipo{font-weight:600;font-size:0.85rem;color:#333}
+.firma-info .meta{font-size:0.75rem;color:#888;margin-top:2px}
+.firma-hash{font-family:monospace;font-size:0.7rem;color:#aaa;word-break:break-all}
+.empty-state{text-align:center;padding:30px;color:#aaa;font-size:0.9rem}
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#f5f5f5;border-radius:12px;padding:4px}
+.tab-btn{flex:1;padding:10px;border:none;background:none;border-radius:10px;cursor:pointer;
+  font-size:0.85rem;font-weight:500;color:#666;transition:all 0.2s}
+.tab-btn.active{background:white;color:#006b3f;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600}
+.status-badge.valid{background:#e8f5e9;color:#2e7d32}
+.status-badge.invalid{background:#ffebee;color:#c62828}
+@media(max-width:768px){.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="/">← Menú</a>
+  <h1>🔏 Firma Electrónica Médica</h1>
+</div>
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('firmar')">✍️ Firmar Documento</button>
+    <button class="tab-btn" onclick="showTab('verificar')">🔍 Verificar Firma</button>
+    <button class="tab-btn" onclick="showTab('historial')">📋 Historial</button>
+  </div>
+
+  <!-- TAB: Firmar -->
+  <div id="tab-firmar" class="tab-content active">
+    <div class="section-card">
+      <h2><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Datos del Documento</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>NSS del Paciente *</label>
+          <input type="text" id="firmaNss" maxlength="10" placeholder="0000000000">
+        </div>
+        <div class="form-group">
+          <label>Tipo de Documento *</label>
+          <select id="firmaTipo">
+            <option value="NOTA_MEDICA">Nota Médica</option>
+            <option value="CONSENTIMIENTO">Consentimiento Informado</option>
+            <option value="RECETA">Receta Médica</option>
+            <option value="INTERCONSULTA">Interconsulta</option>
+            <option value="EGRESO">Nota de Egreso</option>
+            <option value="ALTA">Nota de Alta</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nombre del Médico *</label>
+          <input type="text" id="firmaNombre" placeholder="DR. NOMBRE COMPLETO">
+        </div>
+        <div class="form-group">
+          <label>Matrícula</label>
+          <input type="text" id="firmaMatricula" placeholder="000000">
+        </div>
+        <div class="form-group">
+          <label>Cédula Profesional</label>
+          <input type="text" id="firmaCedula" placeholder="0000000">
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="firmaUsername" placeholder="usuario">
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg> Captura de Firma</h2>
+      <div class="canvas-container" id="canvasContainer">
+        <canvas id="signatureCanvas"></canvas>
+      </div>
+      <p class="hint">Dibuje su firma con el mouse o dedo en pantalla táctil</p>
+      <div class="canvas-actions">
+        <button class="btn-clear" onclick="clearCanvas()">🗑️ Limpiar</button>
+        <button class="btn-save" onclick="submitFirma()">✅ Firmar Documento</button>
+      </div>
+      <div id="firmaResult" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <!-- TAB: Verificar -->
+  <div id="tab-verificar" class="tab-content">
+    <div class="section-card">
+      <h2><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg> Verificar Firma</h2>
+      <div class="form-group">
+        <label>Hash de Firma (SHA-256)</label>
+        <input type="text" id="verifyHash" placeholder="Pegue el hash de la firma aquí">
+      </div>
+      <button class="btn-save" onclick="verifyFirma()" style="margin-top:8px">🔍 Verificar</button>
+      <div id="verifyResult" class="verify-result"></div>
+    </div>
+  </div>
+
+  <!-- TAB: Historial -->
+  <div id="tab-historial" class="tab-content">
+    <div class="section-card">
+      <h2><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg> Historial de Firmas</h2>
+      <div class="form-group">
+        <label>Buscar por NSS</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="histNss" maxlength="10" placeholder="0000000000" style="flex:1">
+          <button class="btn-save" onclick="loadHistorial()" style="padding:10px 20px">Buscar</button>
+        </div>
+      </div>
+      <div id="historialList" class="firma-list">
+        <div class="empty-state">Ingrese un NSS para ver el historial de firmas</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function cleanUrl(p){try{return new URL(p,window.location.origin).href}catch(e){return p}}
+
+/* Tabs */
+function showTab(name){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* Canvas de firma */
+const canvas=document.getElementById('signatureCanvas');
+const ctx=canvas.getContext('2d');
+let drawing=false,hasDrawn=false;
+
+function initCanvas(){
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width-16;
+  canvas.height=200;
+  ctx.strokeStyle='#1a1a1a';
+  ctx.lineWidth=2.5;
+  ctx.lineCap='round';
+  ctx.lineJoin='round';
+}
+
+function getPos(e){
+  const r=canvas.getBoundingClientRect();
+  const t=e.touches?e.touches[0]:e;
+  return{x:t.clientX-r.left,y:t.clientY-r.top};
+}
+
+canvas.addEventListener('mousedown',e=>{drawing=true;const p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);
+  document.getElementById('canvasContainer').classList.add('active')});
+canvas.addEventListener('mousemove',e=>{if(!drawing)return;const p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();hasDrawn=true});
+canvas.addEventListener('mouseup',()=>{drawing=false});
+canvas.addEventListener('mouseleave',()=>{drawing=false});
+canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);
+  document.getElementById('canvasContainer').classList.add('active')},{passive:false});
+canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();hasDrawn=true},{passive:false});
+canvas.addEventListener('touchend',()=>{drawing=false});
+
+function clearCanvas(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);hasDrawn=false;
+  document.getElementById('canvasContainer').classList.remove('active');
+}
+
+window.addEventListener('resize',initCanvas);
+initCanvas();
+
+/* Submit firma */
+async function submitFirma(){
+  if(!hasDrawn){alert('Dibuje su firma antes de enviar');return}
+  const nss=document.getElementById('firmaNss').value.trim();
+  const nombre=document.getElementById('firmaNombre').value.trim();
+  if(!nss||nss.length!==10){alert('NSS debe tener 10 dígitos');return}
+  if(!nombre){alert('Nombre del médico requerido');return}
+
+  const imgData=canvas.toDataURL('image/png');
+  const payload={
+    nss:nss,
+    firma_imagen_base64:imgData,
+    tipo_documento:document.getElementById('firmaTipo').value,
+    firmante_username:document.getElementById('firmaUsername').value.trim()||'admin',
+    firmante_nombre:nombre,
+    firmante_matricula:document.getElementById('firmaMatricula').value.trim(),
+    firmante_cedula:document.getElementById('firmaCedula').value.trim(),
+    firmante_rol:'medico_adscrito'
+  };
+
+  try{
+    const res=await fetch(cleanUrl('/api/firma-electronica'),{method:'POST',
+      headers:{'Content-Type':'application/json'},credentials:'same-origin',
+      body:JSON.stringify(payload)});
+    const data=await res.json();
+    const el=document.getElementById('firmaResult');
+    if(data.ok){
+      el.innerHTML=`<div style="background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32;padding:14px;border-radius:10px">
+        <strong>✅ Firma registrada exitosamente</strong><br>
+        <small>Hash: <code>${data.firma_hash}</code></small><br>
+        <small>ID: ${data.firma_id} · ${data.timestamp}</small></div>`;
+      clearCanvas();
+    }else{
+      el.innerHTML=`<div style="background:#ffebee;border:1px solid #ef9a9a;color:#c62828;padding:14px;border-radius:10px">
+        <strong>❌ Error:</strong> ${data.error}</div>`;
+    }
+  }catch(err){
+    document.getElementById('firmaResult').innerHTML=`<div style="background:#fff3e0;padding:14px;border-radius:10px;color:#e65100">Error de conexión</div>`;
+  }
+}
+
+/* Verificar */
+async function verifyFirma(){
+  const hash=document.getElementById('verifyHash').value.trim();
+  if(!hash){alert('Ingrese el hash de la firma');return}
+  try{
+    const res=await fetch(cleanUrl(`/api/firma-electronica/verify/${hash}`),{credentials:'same-origin'});
+    const data=await res.json();
+    const el=document.getElementById('verifyResult');
+    if(data.ok&&data.valid){
+      el.className='verify-result valid';
+      el.innerHTML=`<strong>✅ Firma VÁLIDA</strong><br>
+        Firmante: ${data.firma.firmante}<br>Matrícula: ${data.firma.matricula}<br>
+        Documento: ${data.firma.tipo_documento}<br>Fecha: ${data.firma.fecha}`;
+    }else if(data.ok&&!data.valid){
+      el.className='verify-result invalid';
+      el.innerHTML=`<strong>⚠️ Firma INVALIDADA</strong><br>Motivo: ${data.firma.motivo_invalidacion||'N/A'}`;
+    }else{
+      el.className='verify-result invalid';
+      el.innerHTML=`<strong>❌ Firma NO encontrada</strong><br>El hash no corresponde a ninguna firma registrada.`;
+    }
+  }catch(err){
+    document.getElementById('verifyResult').className='verify-result invalid';
+    document.getElementById('verifyResult').textContent='Error de conexión';
+  }
+}
+
+/* Historial */
+async function loadHistorial(){
+  const nss=document.getElementById('histNss').value.trim();
+  if(!nss){alert('Ingrese un NSS');return}
+  try{
+    const res=await fetch(cleanUrl(`/api/firma-electronica/patient/${nss}`),{credentials:'same-origin'});
+    const data=await res.json();
+    const el=document.getElementById('historialList');
+    if(!data.ok||!data.firmas.length){
+      el.innerHTML='<div class="empty-state">No se encontraron firmas para este paciente</div>';return;
+    }
+    el.innerHTML=data.firmas.map(f=>`
+      <div class="firma-item">
+        <div class="icon ${f.valida?'valid':'invalid'}">
+          <svg viewBox="0 0 24 24"><path d="${f.valida
+            ?'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z'
+            :'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'}"/></svg>
+        </div>
+        <div class="firma-info">
+          <div class="tipo">${f.tipo_documento} <span class="status-badge ${f.valida?'valid':'invalid'}">${f.valida?'VÁLIDA':'INVALIDADA'}</span></div>
+          <div class="meta">${f.firmante} · Mat: ${f.matricula||'N/A'} · ${f.fecha||''}</div>
+        </div>
+        <div class="firma-hash">${f.firma_hash.slice(0,16)}...</div>
+      </div>
+    `).join('');
+  }catch(err){
+    document.getElementById('historialList').innerHTML='<div class="empty-state">Error al cargar historial</div>';
+  }
+}
+
+// Auto-fill username from localStorage
+const u=JSON.parse(localStorage.getItem('rnp_user')||'{}');
+if(u.username)document.getElementById('firmaUsername').value=u.username;
+if(u.nombre)document.getElementById('firmaNombre').value=u.nombre;
+if(u.matricula)document.getElementById('firmaMatricula').value=u.matricula;
+</script>
+</body>
+</html>

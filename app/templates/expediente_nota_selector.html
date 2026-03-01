@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar modo de Nota Diaria</title>
+    <style>
+        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; --fondo:#f4f6f9; }
+        body { margin:0; padding:20px; font-family:'Montserrat',sans-serif; background:var(--fondo); color:#13322B; }
+        .container { max-width:980px; margin:auto; background:#fff; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.1); padding:24px; }
+        h1 { margin:0 0 8px; color:var(--imss-verde); }
+        .muted { color:#4b5563; font-size:13px; }
+        .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:14px; margin-top:14px; }
+        .card { border:1px solid #dce5e0; border-left:6px solid var(--imss-dorado); border-radius:10px; background:#fbfdfc; padding:14px; }
+        .btn { display:inline-block; text-decoration:none; border:0; border-radius:8px; background:var(--imss-verde); color:#fff; padding:10px 14px; font-weight:700; cursor:pointer; }
+        .btn.alt { background:var(--imss-dorado); color:#1d1d1d; }
+        ul { margin:8px 0 12px 18px; }
+    </style>
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Seleccionar Modo de Nota Médica Diaria</h1>
+    <p class="muted">Paciente: <strong>{{ target_nombre or consulta.nombre }}</strong> | NSS: <strong>{{ target_nss or consulta.nss }}</strong></p>
+    <div class="grid">
+        <div class="card">
+            <h3>Modo Clásico</h3>
+            <p class="muted">Formulario tradicional de nota médica diaria.</p>
+            <ul>
+                <li>Captura rápida para operación diaria.</li>
+                <li>Mismo flujo histórico ya conocido.</li>
+                <li>Integra laboratorios del día por perfil.</li>
+            </ul>
+            <a class="btn" href="/expediente/nota-medica?consulta_id={{ consulta.id }}">Abrir modo clásico</a>
+        </div>
+        <div class="card">
+            <h3>Modo Estructurado</h3>
+            <p class="muted">Captura orientada a analítica, cohortes y alertas.</p>
+            <ul>
+                <li>Bloques estructurados por problema/plan.</li>
+                <li>Versionado de nota diaria.</li>
+                <li>Etiquetas clínicas para análisis estadístico.</li>
+            </ul>
+            <a class="btn" href="/expediente/inpatient-captura?consulta_id={{ consulta.id }}{% if hospitalizacion_id %}&hospitalizacion_id={{ hospitalizacion_id }}{% endif %}#nota-diaria">Abrir modo estructurado</a>
+        </div>
+    </div>
+    <div style="margin-top:14px;">
+        <a class="btn alt" href="/expediente?consulta_id={{ consulta.id }}">Volver al expediente</a>
+    </div>
+</div>
+</body>
+</html>

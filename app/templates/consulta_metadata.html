@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta Externa - Metadata</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; --fondo:#f4f6f9; }
+        body { margin:0; padding:20px; font-family:'Montserrat',sans-serif; background:var(--fondo); }
+        .container { max-width:1280px; margin:auto; background:#fff; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.1); padding:22px; }
+        .global-nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+        .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:var(--imss-verde); background:#fff; }
+        .nav-chip.active { background:var(--imss-dorado); border-color:#9e7a4c; color:#13322B; }
+        h1 { color:var(--imss-verde); margin:0 0 6px 0; }
+        .sub { color:#4f635c; font-size:13px; margin-bottom:12px; }
+        .toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
+        .btn { border:none; border-radius:7px; padding:10px 14px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; }
+        .btn-main { background:var(--imss-verde); color:#fff; }
+        .btn-alt { background:var(--imss-dorado); color:#1b1b1b; }
+        .draft-id { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; background:#f7faf8; border:1px solid #d2e0da; border-radius:6px; padding:7px 10px; }
+        .section { border:1px solid #e2e9e5; border-left:6px solid var(--imss-dorado); border-radius:8px; padding:14px; margin:12px 0; background:#fbfdfc; }
+        .section-head { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+        .section-title { font-weight:800; color:var(--imss-verde); }
+        .status-chip { border-radius:999px; padding:2px 10px; font-size:11px; font-weight:700; border:1px solid #cdd; }
+        .status-pending { background:#fff8e1; color:#7a5a00; border-color:#efd79a; }
+        .status-ok { background:#e8f5e9; color:#1b5e20; border-color:#b7dcbc; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:10px; }
+        label { display:block; font-size:11px; color:#4f615b; font-weight:700; text-transform:uppercase; margin-bottom:5px; }
+        input,select,textarea { width:100%; border:1px solid #cfd9d4; border-radius:6px; padding:9px; font-family:inherit; font-size:13px; }
+        textarea { min-height:90px; resize:vertical; }
+        .actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+        .msg { margin-top:10px; border-radius:6px; padding:8px 10px; font-size:12px; display:none; }
+        .msg.ok { display:block; background:#e8f5e9; border:1px solid #b7dcbc; color:#1b5e20; }
+        .msg.err { display:block; background:#ffebee; border:1px solid #f3c3c7; color:#8b1e22; }
+        .msg.warn { display:block; background:#fff8e1; border:1px solid #efd79a; color:#7a5a00; }
+        .footer-note { margin-top:14px; color:#5d6d67; font-size:12px; }
+    </style>
+    <style>
+    /* === RNP Additive UI Enhancements === */
+    .nav-chip { transition: all 0.2s ease; }
+    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
+    table tbody tr:nth-child(even) { background: #f8faf9; }
+    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
+    .btn, button[type="submit"] { transition: all 0.2s ease; }
+    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
+    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
+    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+    </style>
+<link href="/static/css/rnp_redesign.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="global-nav">
+            <a class="nav-chip" href="/">Menú</a>
+            <a class="nav-chip" href="/consulta">Consulta Clásica</a>
+            <a class="nav-chip active" href="/consulta/metadata">Consulta Metadata</a>
+            <a class="nav-chip" href="/expediente">Expediente</a>
+            <a class="nav-chip" href="/reporte">Reporte</a>
+        </div>
+
+        <h1>Consulta Externa - Piloto Metadata-Driven</h1>
+        <div class="sub">Captura por diccionario de datos (aditiva), sin afectar el formulario clásico.</div>
+
+        <div class="toolbar">
+            <button class="btn btn-main" type="button" onclick="reloadSchema()">Recargar diccionario</button>
+            <a class="btn btn-alt" href="/consulta">Abrir formulario clásico</a>
+            <span class="draft-id">Draft ID: <strong id="draftId">(sin guardar)</strong></span>
+        </div>
+
+        <div id="sectionsRoot"></div>
+
+        <div class="footer-note">
+            Este piloto guarda por sección usando las rutas actuales de captura y validación para evitar regresiones.
+        </div>
+    </div>
+
+    <script>
+        const CSRF_TOKEN = "{{ csrf_token }}";
+        const FORM_CODE = "consulta_externa";
+        let draftId = "";
+
+        async function apiJson(url, options = {}) {
+            const res = await fetch(url, options);
+            const txt = await res.text();
+            let data = {};
+            try { data = txt ? JSON.parse(txt) : {}; } catch(_) { data = { raw: txt }; }
+            if (!res.ok) {
+                throw new Error(data.detail || data.message || `HTTP ${res.status}`);
+            }
+            return data;
+        }
+
+        function setDraftId(value) {
+            draftId = value || draftId || "";
+            document.getElementById("draftId").textContent = draftId || "(sin guardar)";
+        }
+
+        function fieldHtml(sectionCode, field) {
+            const id = `f_${sectionCode}_${field.field_name}`;
+            const label = field.field_label || field.field_name;
+            const req = field.required ? ' required' : '';
+            const ph = field.placeholder ? ` placeholder="${String(field.placeholder).replace(/"/g,'&quot;')}"` : '';
+            const val = field.default_value ? String(field.default_value).replace(/"/g,'&quot;') : '';
+
+            if ((field.field_type || '').toLowerCase() === 'select') {
+                const opts = (field.options || []).map(o => {
+                    const v = String(o.value ?? o.label ?? '');
+                    const l = String(o.label ?? o.value ?? '');
+                    return `<option value="${v.replace(/"/g,'&quot;')}">${l}</option>`;
+                }).join('');
+                return `<div><label for="${id}">${label}${field.required ? ' *' : ''}</label><select id="${id}" name="${field.field_name}"${req}>${opts}</select></div>`;
+            }
+
+            if ((field.field_type || '').toLowerCase() === 'textarea') {
+                return `<div style="grid-column:1 / -1;"><label for="${id}">${label}${field.required ? ' *' : ''}</label><textarea id="${id}" name="${field.field_name}"${req}${ph}>${val}</textarea></div>`;
+            }
+
+            const typeMap = { number: 'number', date: 'date' };
+            const type = typeMap[(field.field_type || '').toLowerCase()] || 'text';
+            return `<div><label for="${id}">${label}${field.required ? ' *' : ''}</label><input id="${id}" type="${type}" name="${field.field_name}" value="${val}"${req}${ph}></div>`;
+        }
+
+        function sectionCardHtml(section) {
+            const code = section.section_code;
+            const fields = (section.fields || []).map(f => fieldHtml(code, f)).join('');
+            return `
+                <section class="section" data-section-code="${code}">
+                    <div class="section-head">
+                        <div class="section-title">${code}. ${section.section_title}</div>
+                        <span id="chip_${code}" class="status-chip status-pending">Pendiente</span>
+                    </div>
+                    <div class="grid">${fields}</div>
+                    <div class="actions">
+                        <button class="btn btn-alt" type="button" onclick="validarSeccion('${code}')">Validar sección</button>
+                        <button class="btn btn-main" type="button" onclick="guardarSeccion('${code}', '${(section.section_title || '').replace(/'/g, '&#39;')}')">Guardar sección</button>
+                    </div>
+                    <div id="msg_${code}" class="msg"></div>
+                </section>
+            `;
+        }
+
+        function getSectionPayload(sectionCode) {
+            const root = document.querySelector(`section[data-section-code="${sectionCode}"]`);
+            if (!root) return {};
+            const out = {};
+            root.querySelectorAll('[name]').forEach(el => {
+                if (el.type === 'checkbox') {
+                    out[el.name] = !!el.checked;
+                } else {
+                    out[el.name] = el.value;
+                }
+            });
+            return out;
+        }
+
+        function showMsg(sectionCode, type, text) {
+            const box = document.getElementById(`msg_${sectionCode}`);
+            if (!box) return;
+            box.className = `msg ${type}`;
+            box.textContent = text;
+        }
+
+        function setSectionStatus(sectionCode, ok) {
+            const chip = document.getElementById(`chip_${sectionCode}`);
+            if (!chip) return;
+            chip.className = `status-chip ${ok ? 'status-ok' : 'status-pending'}`;
+            chip.textContent = ok ? 'Guardada' : 'Pendiente';
+        }
+
+        async function validarSeccion(sectionCode) {
+            try {
+                const payload = getSectionPayload(sectionCode);
+                const res = await apiJson(`/api/forms/${FORM_CODE}/validate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ csrf_token: CSRF_TOKEN, section_code: sectionCode, payload })
+                });
+                const v = (res || {}).validation || {};
+                const errs = v.errors || {};
+                const warns = v.warnings || {};
+                if (Object.keys(errs).length) {
+                    showMsg(sectionCode, 'err', `Errores: ${Object.entries(errs).map(([k,m]) => `${k}: ${m}`).join(' | ')}`);
+                    return false;
+                }
+                if (Object.keys(warns).length) {
+                    showMsg(sectionCode, 'warn', `Validación OK con advertencias: ${Object.entries(warns).map(([k,m]) => `${k}: ${m}`).join(' | ')}`);
+                } else {
+                    showMsg(sectionCode, 'ok', 'Validación OK');
+                }
+                return true;
+            } catch (e) {
+                showMsg(sectionCode, 'err', `Error validando: ${e.message}`);
+                return false;
+            }
+        }
+
+        async function guardarSeccion(sectionCode, sectionTitle) {
+            const ok = await validarSeccion(sectionCode);
+            if (!ok) return;
+            try {
+                const payload = getSectionPayload(sectionCode);
+                const res = await apiJson('/api/consulta/seccion/guardar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        csrf_token: CSRF_TOKEN,
+                        draft_id: draftId || null,
+                        seccion_codigo: sectionCode,
+                        seccion_nombre: sectionTitle,
+                        payload
+                    })
+                });
+                setDraftId((res.saved || {}).draft_id || draftId);
+                setSectionStatus(sectionCode, true);
+                showMsg(sectionCode, 'ok', `Sección guardada correctamente`);
+            } catch (e) {
+                showMsg(sectionCode, 'err', `Error guardando: ${e.message}`);
+            }
+        }
+
+        async function reloadSchema() {
+            const root = document.getElementById('sectionsRoot');
+            root.innerHTML = '<div class="sub">Cargando diccionario...</div>';
+            try {
+                const schema = await apiJson(`/api/forms/${FORM_CODE}/schema`);
+                const sections = schema.sections || [];
+                root.innerHTML = sections.map(sectionCardHtml).join('');
+            } catch (e) {
+                root.innerHTML = `<div class="msg err" style="display:block;">No se pudo cargar diccionario: ${e.message}</div>`;
+            }
+        }
+
+        reloadSchema();
+    </script>
+<script src="/static/js/clinical_validation.js"></script>
+<script src="/static/js/patient_autofill.js"></script>
+</body>
+</html>

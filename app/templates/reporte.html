@@ -1,0 +1,1936 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>REPORTE ESTADISTICO - Urologia</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; padding: 20px; }
+        .container { max-width: 1200px; margin: auto; background: white; border-radius: 8px; padding: 30px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
+        h1 { color: #13322B; margin-bottom: 10px; }
+        h2 { color: #13322B; margin-top: 30px; }
+        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+        .card { background: #f9fafb; padding: 15px; border-radius: 8px; border: 1px solid #e5e7eb; }
+        img { max-width: 100%; border-radius: 8px; border: 1px solid #e5e7eb; }
+        .notice { padding: 12px; background: #fff8e1; border-radius: 6px; border: 1px solid #f0c36d; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .btn { background: #13322B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
+        .global-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+        .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:#13322B; background:#fff; }
+        .nav-chip.active { background:#B38E5D; border-color:#9e7a4c; color:#13322B; }
+        .breadcrumbs { font-size:12px; color:#5f6d68; margin-top:6px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+        .title-wrap p { margin: 4px 0 0 0; }
+        .icon-links { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+        .panel-central {
+            margin-top: 16px;
+            padding: 16px;
+            border: 1px solid #d8c4a2;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #fffdf8 0%, #fff 100%);
+        }
+        .panel-central h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .panel-btn {
+            border: 1px solid #a88a5f;
+            border-radius: 10px;
+            background: #f8f1e6;
+            color: #13322B;
+            font-weight: 700;
+            padding: 10px 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all .15s ease-in-out;
+        }
+        .panel-btn:hover {
+            background: #e8d7be;
+        }
+        .panel-btn.active {
+            background: #B38E5D;
+            border-color: #8f6f45;
+            color: #13322B;
+        }
+        .panel-view {
+            border: 1px solid #e5d5b8;
+            border-radius: 10px;
+            background: #fff;
+            padding: 14px;
+        }
+        .panel-view h3 {
+            margin: 0;
+            color: #13322B;
+        }
+        .panel-subtitle {
+            margin: 6px 0 10px 0;
+            color: #555;
+            font-size: 13px;
+        }
+        .panel-kpis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .panel-kpi {
+            border: 1px solid #e9e9e9;
+            border-radius: 8px;
+            padding: 10px;
+            background: #f9fafb;
+        }
+        .panel-kpi-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .panel-kpi-value {
+            font-size: 17px;
+            font-weight: 700;
+            color: #13322B;
+        }
+        .panel-insights {
+            border: 1px solid #eee6d9;
+            border-radius: 8px;
+            background: #fffdfa;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+        .panel-insights ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+        .panel-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .panel-link {
+            border: 1px solid #d8c4a2;
+            border-radius: 20px;
+            background: #f8f1e6;
+            color: #13322B;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 6px 10px;
+        }
+        .panel-link:hover {
+            background: #e8d7be;
+        }
+        .icon-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 1px solid #a88a5f;
+            border-radius: 10px;
+            background: #B38E5D;
+            color: #13322B;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .icon-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #13322B;
+            color: #fff;
+            font-size: 18px;
+            flex: 0 0 auto;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        table th { background: #13322B; color: #fff; padding: 8px; font-size: 13px; text-align: left; }
+        table td { border-bottom: 1px solid #e6e6e6; padding: 8px; font-size: 13px; }
+        .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+    </style>
+
+    <!-- === ADDITIVE ENHANCEMENT STYLES === -->
+    <style>
+        /* --- Gradient header bar at the top of the page --- */
+        .rnp-gradient-header {
+            background: linear-gradient(135deg, #13322B 0%, #1e4d40 40%, #B38E5D 100%);
+            color: #fff;
+            padding: 18px 28px;
+            border-radius: 8px 8px 0 0;
+            margin: -30px -30px 24px -30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .rnp-gradient-header h1 {
+            color: #fff;
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+        .rnp-gradient-header .rnp-header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+        .rnp-gradient-header .rnp-header-badge {
+            background: rgba(179,142,93,0.25);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* --- Enhanced .card with KPI styling --- */
+        .card {
+            position: relative;
+            border-left: 4px solid #B38E5D;
+            background: linear-gradient(135deg, #f9fafb 0%, #fff 100%);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(19,50,43,0.12);
+        }
+        .card strong {
+            font-size: 12px;
+            color: #5f6d68;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* --- Summary grid cards: larger values --- */
+        .summary .card {
+            font-size: 22px;
+            font-weight: 700;
+            color: #13322B;
+            line-height: 1.3;
+        }
+
+        /* --- Enhanced table styling --- */
+        table thead th,
+        table th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: #13322B;
+            color: #fff;
+        }
+        table tbody tr:nth-child(even),
+        table tr:nth-child(even) {
+            background-color: #f7f9f8;
+        }
+        table tbody tr:hover,
+        table tr:hover {
+            background-color: #eef3f1;
+        }
+        table td {
+            transition: background-color 0.15s ease;
+        }
+
+        /* --- Glassmorphism for panel-central --- */
+        .panel-central {
+            background: linear-gradient(180deg, rgba(255,253,248,0.92) 0%, rgba(255,255,255,0.96) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(216,196,162,0.6);
+            box-shadow: 0 8px 32px rgba(19,50,43,0.08);
+        }
+
+        /* --- Animated entry for sections --- */
+        @keyframes rnpFadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .rnp-animate-section {
+            animation: rnpFadeSlideIn 0.5s ease-out both;
+        }
+        .rnp-animate-section:nth-child(2) { animation-delay: 0.05s; }
+        .rnp-animate-section:nth-child(3) { animation-delay: 0.10s; }
+        .rnp-animate-section:nth-child(4) { animation-delay: 0.15s; }
+        .rnp-animate-section:nth-child(5) { animation-delay: 0.20s; }
+        .rnp-animate-section:nth-child(6) { animation-delay: 0.25s; }
+
+        /* --- Charts section subtle background --- */
+        .rnp-charts-bg {
+            background: linear-gradient(180deg, #f7f9f8 0%, #fff 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+            border: 1px solid #e8ede9;
+        }
+
+        /* --- RESUMEN EJECUTIVO INTELIGENTE --- */
+        .rnp-resumen-ejecutivo {
+            border: 2px solid #B38E5D;
+            border-radius: 14px;
+            padding: 24px;
+            margin-top: 20px;
+            margin-bottom: 28px;
+            background: linear-gradient(180deg, #fffdf8 0%, #fff 100%);
+            position: relative;
+        }
+        .rnp-resumen-ejecutivo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #13322B, #B38E5D);
+            border-radius: 14px 14px 0 0;
+        }
+        .rnp-resumen-titulo {
+            font-size: 18px;
+            font-weight: 800;
+            color: #13322B;
+            margin: 0 0 6px 0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .rnp-resumen-subtitulo {
+            font-size: 13px;
+            color: #5f6d68;
+            margin: 0 0 20px 0;
+        }
+        .rnp-mega-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 768px) {
+            .rnp-mega-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .rnp-mega-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .rnp-mega-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .rnp-mega-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(19,50,43,0.10);
+        }
+        .rnp-mega-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+        }
+        .rnp-mega-card.border-verde::before { background: #13322B; }
+        .rnp-mega-card.border-dorado::before { background: #B38E5D; }
+        .rnp-mega-card.border-teal::before { background: #1e8a6e; }
+        .rnp-mega-card.border-amber::before { background: #d4a017; }
+        .rnp-mega-card.border-coral::before { background: #c75c3a; }
+        .rnp-mega-card.border-slate::before { background: #5f6d68; }
+        .rnp-mega-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .rnp-mega-icon.bg-verde { background: rgba(19,50,43,0.1); color: #13322B; }
+        .rnp-mega-icon.bg-dorado { background: rgba(179,142,93,0.15); color: #8f6f45; }
+        .rnp-mega-icon.bg-teal { background: rgba(30,138,110,0.12); color: #1e8a6e; }
+        .rnp-mega-icon.bg-amber { background: rgba(212,160,23,0.12); color: #a07c10; }
+        .rnp-mega-icon.bg-coral { background: rgba(199,92,58,0.12); color: #c75c3a; }
+        .rnp-mega-icon.bg-slate { background: rgba(95,109,104,0.12); color: #5f6d68; }
+        .rnp-mega-body { flex: 1; min-width: 0; }
+        .rnp-mega-value {
+            font-size: 30px;
+            font-weight: 800;
+            color: #13322B;
+            line-height: 1.1;
+            margin-bottom: 4px;
+        }
+        .rnp-mega-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #5f6d68;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        /* --- Donut chart container --- */
+        .rnp-donut-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .rnp-donut-wrapper {
+            max-width: 280px;
+            width: 100%;
+        }
+        .rnp-donut-legend {
+            font-size: 13px;
+            color: #13322B;
+        }
+        .rnp-donut-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .rnp-donut-legend-swatch {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        /* --- Print-friendly button --- */
+        .rnp-print-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: linear-gradient(135deg, #13322B, #1e4d40);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(19,50,43,0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rnp-print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(19,50,43,0.4);
+        }
+        .rnp-print-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        @media print {
+            .rnp-print-btn { display: none !important; }
+            .global-nav { display: none !important; }
+            .icon-links { display: none !important; }
+            body { padding: 0; background: #fff; }
+            .container { box-shadow: none; padding: 10px; }
+            .rnp-gradient-header {
+                background: #13322B !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .card:hover,
+            .rnp-mega-card:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            .rnp-animate-section {
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- === GRADIENT HEADER BAR === -->
+        <div class="rnp-gradient-header">
+            <div>
+                <h1>REPORTE ESTADISTICO</h1>
+                <p class="rnp-header-subtitle">Servicio de Urologia &mdash; Analisis Integral</p>
+            </div>
+            <span class="rnp-header-badge">Generado: {{ fecha }}</span>
+        </div>
+
+        <div class="global-nav">
+            <a class="nav-chip" href="/">Menu</a>
+            <a class="nav-chip" href="/consulta_externa">Consulta Externa</a>
+            <a class="nav-chip" href="/hospitalizacion">Hospitalizacion</a>
+            <a class="nav-chip" href="/quirofano">Quirofano</a>
+            <a class="nav-chip" href="/expediente">Expediente</a>
+            <a class="nav-chip active" href="/reporte">Reporte</a>
+        </div>
+        <div class="top-bar">
+            <div class="title-wrap">
+                <h1>📊 REPORTE ESTADÍSTICO</h1>
+                <p>Generado: {{ fecha }}</p>
+                {% if cache_meta %}
+                <p class="breadcrumbs">Cache reporte: {{ "HIT" if cache_meta.hit else "MISS" }} · TTL {{ cache_meta.ttl_sec }}s · Base {{ cache_meta.generated_at or "N/E" }}</p>
+                {% endif %}
+                <p class="breadcrumbs">Menú principal → Reporte Estadístico</p>
+            </div>
+            <a href="/analisis/cargar-archivos" class="btn">Cargar archivos</a>
+        </div>
+
+        <!-- === RESUMEN EJECUTIVO INTELIGENTE === -->
+        <section class="rnp-resumen-ejecutivo rnp-animate-section">
+            <h2 class="rnp-resumen-titulo">Resumen Ejecutivo Inteligente</h2>
+            <p class="rnp-resumen-subtitulo">Indicadores clave del servicio a la fecha de generacion del reporte</p>
+            <div class="rnp-mega-grid">
+                <div class="rnp-mega-card border-verde">
+                    <div class="rnp-mega-icon bg-verde">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div class="rnp-mega-body">
+                        <div class="rnp-mega-value">{{ total }}</div>
+                        <div class="rnp-mega-label">Total Pacientes</div>
+                    </div>
+                </div>
+                <div class="rnp-mega-card border-coral">
+                    <div class="rnp-mega-icon bg-coral">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    </div>
+                    <div class="rnp-mega-body">
+                        <div class="rnp-mega-value">{{ total_onco }}</div>
+                        <div class="rnp-mega-label">Oncologicos</div>
+                    </div>
+                </div>
+                <div class="rnp-mega-card border-dorado">
+                    <div class="rnp-mega-icon bg-dorado">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <div class="rnp-mega-body">
+                        <div class="rnp-mega-value">{{ total_programados }}</div>
+                        <div class="rnp-mega-label">Programados</div>
+                    </div>
+                </div>
+                <div class="rnp-mega-card border-teal">
+                    <div class="rnp-mega-icon bg-teal">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="rnp-mega-body">
+                        <div class="rnp-mega-value">{{ total_realizadas }}</div>
+                        <div class="rnp-mega-label">Cirugias Realizadas</div>
+                    </div>
+                </div>
+                <div class="rnp-mega-card border-amber">
+                    <div class="rnp-mega-icon bg-amber">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="rnp-mega-body">
+                        <div class="rnp-mega-value">{{ total_pendientes_programar }}</div>
+                        <div class="rnp-mega-label">Pendientes de Programar</div>
+                    </div>
+                </div>
+                <div class="rnp-mega-card border-slate">
+                    <div class="rnp-mega-icon bg-slate">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </div>
+                    <div class="rnp-mega-body">
+                        <div class="rnp-mega-value">{{ cancelacion_global.tasa_pct if cancelacion_global else 0 }}%</div>
+                        <div class="rnp-mega-label">Tasa Cancelacion</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donut chart: Cohortes -->
+            <div class="rnp-donut-section">
+                <div class="rnp-donut-wrapper">
+                    <canvas id="rnpDonutCohortes"></canvas>
+                </div>
+                <div class="rnp-donut-legend" id="rnpDonutLegend">
+                    <div class="rnp-donut-legend-item">
+                        <span class="rnp-donut-legend-swatch" style="background:#13322B;"></span>
+                        <span>Oncologicos</span>
+                    </div>
+                    <div class="rnp-donut-legend-item">
+                        <span class="rnp-donut-legend-swatch" style="background:#B38E5D;"></span>
+                        <span>Litiasis</span>
+                    </div>
+                    <div class="rnp-donut-legend-item">
+                        <span class="rnp-donut-legend-swatch" style="background:#5f9e8f;"></span>
+                        <span>Otros</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="icon-links">
+            <a href="/reporte/alertas" class="icon-card">
+                <span class="icon-badge">⚠</span>
+                <span>ALERTAS</span>
+            </a>
+            <a href="/reporte/pendientes-programar" class="icon-card">
+                <span class="icon-badge">🕒</span>
+                <span>PENDIENTES DE PROGRAMAR</span>
+            </a>
+            <a href="/reporte/cirugias-realizadas" class="icon-card">
+                <span class="icon-badge">🩺</span>
+                <span>CIRUGÍAS REALIZADAS</span>
+            </a>
+            <a href="/reporte/sangrado" class="icon-card">
+                <span class="icon-badge">🩸</span>
+                <span>SANGRADO QUIRÚRGICO</span>
+            </a>
+            <a href="/reporte/cola-preventiva" class="icon-card">
+                <span class="icon-badge">📈</span>
+                <span>COLA PREVENTIVA</span>
+            </a>
+        </div>
+
+        <section class="panel-central">
+            <h2>Panel Central Dinámico</h2>
+            <div class="panel-grid">
+                <button type="button" class="panel-btn active" data-panel-key="hospitalizacion">1. HOSPITALIZACIÓN</button>
+                <button type="button" class="panel-btn" data-panel-key="quirofano">2. QUIRÓFANO</button>
+                <button type="button" class="panel-btn" data-panel-key="consulta_externa">3. CONSULTA EXTERNA</button>
+                <button type="button" class="panel-btn" data-panel-key="curva_prediccion">4. CURVA DE PREDICCIÓN</button>
+            </div>
+            <div class="panel-view">
+                <h3 id="panel-central-titulo">Hospitalización</h3>
+                <p class="panel-subtitle" id="panel-central-subtitulo"></p>
+                <div class="panel-kpis" id="panel-central-kpis"></div>
+                <div class="panel-insights">
+                    <strong>Lectura rápida</strong>
+                    <ul id="panel-central-insights"></ul>
+                </div>
+                <div class="panel-links" id="panel-central-links"></div>
+            </div>
+        </section>
+
+        <div class="summary" id="resumen-ejecutivo">
+            <div class="card"><strong>Total pacientes:</strong><br>{{ total }}</div>
+            <div class="card"><strong>Oncológicos:</strong><br>{{ total_onco }}</div>
+            <div class="card"><strong>Protocolos completos:</strong><br>{{ completos }}</div>
+            <div class="card"><strong>Protocolos incompletos:</strong><br>{{ incompletos }}</div>
+            <div class="card"><strong>Pacientes programados:</strong><br>{{ total_programados }}</div>
+            <div class="card"><strong>Urgencias programadas:</strong><br>{{ total_urgencias_programadas }}</div>
+            <div class="card"><strong>Pendientes de programar:</strong><br>{{ total_pendientes_programar }}</div>
+            <div class="card"><strong>Cirugías realizadas:</strong><br>{{ total_realizadas }}</div>
+            <div class="card"><strong>Tasa cancelación quirúrgica:</strong><br>{{ cancelacion_global.tasa_pct if cancelacion_global else 0 }}%</div>
+            <div class="card"><strong>Mediana Programada→Realizada:</strong><br>{{ tiempo_programada_a_realizada.mediana_dias if tiempo_programada_a_realizada else "N/A" }} días</div>
+            <div class="card"><strong>P90 Programada→Realizada:</strong><br>{{ tiempo_programada_a_realizada.p90_dias if tiempo_programada_a_realizada else "N/A" }} días</div>
+            <div class="card"><strong>Índice estancia prolongada:</strong><br>{{ indice_estancia_prolongada.indice_pct if indice_estancia_prolongada else 0 }}%</div>
+            <div class="card"><strong>Incidencia AKI (ΔCr):</strong><br>{{ incidencia_laboratorios.aki_delta_creatinina.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.aki_delta_creatinina else 0 }}%</div>
+            <div class="card"><strong>Incidencia Clostridium:</strong><br>{{ incidencia_laboratorios.infeccion_clostridium.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.infeccion_clostridium else 0 }}%</div>
+        </div>
+
+        <h2 id="seccion-observabilidad-ui">Observabilidad de errores funcionales UI</h2>
+        <div class="summary">
+            <div class="card"><strong>Operabilidad (últimos {{ operability_metrics.window_minutes if operability_metrics else 60 }} min):</strong><br>{{ operability_metrics.events if operability_metrics else 0 }} eventos</div>
+            <div class="card"><strong>Error 5xx:</strong><br>{{ operability_metrics.errors_5xx if operability_metrics else 0 }} ({{ operability_metrics.error_rate_pct if operability_metrics else 0 }}%)</div>
+            <div class="card"><strong>Latencia P95:</strong><br>{{ operability_metrics.latency.p95_ms if operability_metrics and operability_metrics.latency else 0 }} ms</div>
+            <div class="card"><strong>Latencia promedio:</strong><br>{{ operability_metrics.latency.avg_ms if operability_metrics and operability_metrics.latency else 0 }} ms</div>
+        </div>
+        <div class="summary">
+            <div class="card"><strong>Total errores UI ({{ ui_error_summary.window_days if ui_error_summary else 7 }} días):</strong><br>{{ ui_error_summary.total if ui_error_summary else 0 }}</div>
+            <div class="card"><strong>Tipo principal:</strong><br>{% if ui_error_summary and ui_error_summary.by_type and ui_error_summary.by_type|length > 0 %}{{ ui_error_summary.by_type[0].event_type }} ({{ ui_error_summary.by_type[0].total }}){% else %}N/E{% endif %}</div>
+            <div class="card"><strong>Ruta principal:</strong><br>{% if ui_error_summary and ui_error_summary.by_path and ui_error_summary.by_path|length > 0 %}{{ ui_error_summary.by_path[0].path }} ({{ ui_error_summary.by_path[0].total }}){% else %}N/E{% endif %}</div>
+        </div>
+        <div class="split">
+            <div>
+                <h3>Top mensajes UI</h3>
+                <table>
+                    <tr><th>Mensaje</th><th>N</th></tr>
+                    {% for r in (ui_error_summary.top_messages if ui_error_summary else []) %}
+                    <tr><td>{{ r.message }}</td><td>{{ r.total }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin errores UI registrados.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Últimos eventos UI</h3>
+                <table>
+                    <tr><th>Fecha</th><th>Tipo</th><th>Ruta</th><th>Mensaje</th></tr>
+                    {% for r in (ui_error_summary.latest if ui_error_summary else []) %}
+                    <tr>
+                        <td>{{ r.created_at or "-" }}</td>
+                        <td>{{ r.event_type }}</td>
+                        <td>{{ r.path }}</td>
+                        <td>{{ r.message or "-" }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4">Sin eventos UI recientes.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h2 id="seccion-hospitalizacion-estructurada">Hospitalización estructurada (Captura IA)</h2>
+        <div class="summary">
+            <div class="card"><strong>Notas diarias estructuradas:</strong><br>{{ inpatient_structured_metrics.total_daily_notes if inpatient_structured_metrics else 0 }}</div>
+            <div class="card"><strong>Signos vitales seriados:</strong><br>{{ inpatient_structured_metrics.total_vitals if inpatient_structured_metrics else 0 }}</div>
+            <div class="card"><strong>Bloques I/O:</strong><br>{{ inpatient_structured_metrics.total_io if inpatient_structured_metrics else 0 }}</div>
+            <div class="card"><strong>Labs estructurados:</strong><br>{{ inpatient_structured_metrics.total_labs if inpatient_structured_metrics else 0 }}</div>
+            <div class="card"><strong>Eventos clínicos:</strong><br>{{ inpatient_structured_metrics.total_events if inpatient_structured_metrics else 0 }}</div>
+            <div class="card"><strong>Dispositivos activos:</strong><br>{{ inpatient_structured_metrics.active_devices if inpatient_structured_metrics else 0 }}</div>
+            <div class="card"><strong>Hospitalizados activos:</strong><br>{{ inpatient_structured_metrics.active_hospitalizados if inpatient_structured_metrics else 0 }}</div>
+            <div class="card"><strong>Con drenaje:</strong><br>{{ inpatient_structured_metrics.drainage.with_drain if inpatient_structured_metrics and inpatient_structured_metrics.drainage else 0 }}</div>
+            <div class="card"><strong>Sin drenaje:</strong><br>{{ inpatient_structured_metrics.drainage.without_drain if inpatient_structured_metrics and inpatient_structured_metrics.drainage else 0 }}</div>
+            <div class="card"><strong>Con dispositivo:</strong><br>{{ inpatient_structured_metrics.support_devices.with_device if inpatient_structured_metrics and inpatient_structured_metrics.support_devices else 0 }}</div>
+            <div class="card"><strong>Sin dispositivo:</strong><br>{{ inpatient_structured_metrics.support_devices.without_device if inpatient_structured_metrics and inpatient_structured_metrics.support_devices else 0 }}</div>
+            <div class="card"><strong>Acciones sobre alertas:</strong><br>{{ inpatient_structured_metrics.alert_actions.total if inpatient_structured_metrics and inpatient_structured_metrics.alert_actions else 0 }}</div>
+            <div class="card"><strong>ACK de alertas:</strong><br>{{ inpatient_structured_metrics.alert_actions.ack if inpatient_structured_metrics and inpatient_structured_metrics.alert_actions else 0 }}</div>
+            <div class="card"><strong>Alertas resueltas:</strong><br>{{ inpatient_structured_metrics.alert_actions.resolved if inpatient_structured_metrics and inpatient_structured_metrics.alert_actions else 0 }}</div>
+            <div class="card"><strong>Completitud estructurada hoy:</strong><br>{{ inpatient_structured_metrics.today.completitud_pct if inpatient_structured_metrics and inpatient_structured_metrics.today else 0 }}%</div>
+        </div>
+        <div class="split">
+            <div>
+                <h3>Captura de hoy</h3>
+                <table>
+                    <tr><th>Bloque</th><th>Registros</th></tr>
+                    <tr><td>Notas diarias</td><td>{{ inpatient_structured_metrics.today.notes if inpatient_structured_metrics and inpatient_structured_metrics.today else 0 }}</td></tr>
+                    <tr><td>Signos vitales</td><td>{{ inpatient_structured_metrics.today.vitals if inpatient_structured_metrics and inpatient_structured_metrics.today else 0 }}</td></tr>
+                    <tr><td>Ingresos/Egresos</td><td>{{ inpatient_structured_metrics.today.io if inpatient_structured_metrics and inpatient_structured_metrics.today else 0 }}</td></tr>
+                    <tr><td>Labs</td><td>{{ inpatient_structured_metrics.today.labs if inpatient_structured_metrics and inpatient_structured_metrics.today else 0 }}</td></tr>
+                    <tr><td>Eventos</td><td>{{ inpatient_structured_metrics.today.events if inpatient_structured_metrics and inpatient_structured_metrics.today else 0 }}</td></tr>
+                </table>
+            </div>
+            <div>
+                <h3>Top eventos clínicos estructurados</h3>
+                <table>
+                    <tr><th>Evento</th><th>N</th></tr>
+                    {% for ev in (inpatient_structured_metrics.top_event_types if inpatient_structured_metrics else []) %}
+                    <tr><td>{{ ev.event_type }}</td><td>{{ ev.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin eventos estructurados.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="split">
+            <div>
+                <h3>Drenajes por tipo (activos)</h3>
+                <table>
+                    <tr><th>Tipo</th><th>N</th></tr>
+                    {% for d in (inpatient_structured_metrics.drainage.by_type if inpatient_structured_metrics and inpatient_structured_metrics.drainage else []) %}
+                    <tr><td>{{ d.tipo }}</td><td>{{ d.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin drenajes activos registrados.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Dispositivos por tipo (activos)</h3>
+                <table>
+                    <tr><th>Tipo</th><th>N</th></tr>
+                    {% for d in (inpatient_structured_metrics.support_devices.by_type if inpatient_structured_metrics and inpatient_structured_metrics.support_devices else []) %}
+                    <tr><td>{{ d.tipo }}</td><td>{{ d.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin dispositivos activos registrados.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="split">
+            <div>
+                <h3>Índice urinario (mes actual)</h3>
+                <div class="card"><strong>Promedio global:</strong> {{ inpatient_structured_metrics.urinary_index_month.promedio_global if inpatient_structured_metrics and inpatient_structured_metrics.urinary_index_month else "N/E" }}</div>
+                <table>
+                    <tr><th>NSS</th><th>Promedio</th><th>N</th></tr>
+                    {% for r in (inpatient_structured_metrics.urinary_index_month.by_patient if inpatient_structured_metrics and inpatient_structured_metrics.urinary_index_month else []) %}
+                    <tr><td>{{ r.nss }}</td><td>{{ r.promedio }}</td><td>{{ r.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="3">Sin registros de índice urinario mensual.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Índice urinario por sexo / edad / diagnóstico</h3>
+                <table>
+                    <tr><th>Sexo</th><th>Promedio</th><th>N</th></tr>
+                    {% for r in (inpatient_structured_metrics.urinary_index_month.by_sex if inpatient_structured_metrics and inpatient_structured_metrics.urinary_index_month else []) %}
+                    <tr><td>{{ r.sexo }}</td><td>{{ r.promedio }}</td><td>{{ r.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="3">Sin datos por sexo.</td></tr>
+                    {% endfor %}
+                </table>
+                <table style="margin-top:10px;">
+                    <tr><th>Grupo edad</th><th>Promedio</th><th>N</th></tr>
+                    {% for r in (inpatient_structured_metrics.urinary_index_month.by_age_group if inpatient_structured_metrics and inpatient_structured_metrics.urinary_index_month else []) %}
+                    <tr><td>{{ r.grupo_edad }}</td><td>{{ r.promedio }}</td><td>{{ r.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="3">Sin datos por edad.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="split">
+            <div>
+                <h3>Drenajes (mes actual) por sexo / edad / diagnóstico</h3>
+                <table>
+                    <tr><th>Sexo</th><th>N</th></tr>
+                    {% for r in (inpatient_structured_metrics.drainage_month_breakdown.by_sex if inpatient_structured_metrics and inpatient_structured_metrics.drainage_month_breakdown else []) %}
+                    <tr><td>{{ r.sexo }}</td><td>{{ r.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin datos.</td></tr>
+                    {% endfor %}
+                </table>
+                <table style="margin-top:10px;">
+                    <tr><th>Grupo edad</th><th>N</th></tr>
+                    {% for r in (inpatient_structured_metrics.drainage_month_breakdown.by_age_group if inpatient_structured_metrics and inpatient_structured_metrics.drainage_month_breakdown else []) %}
+                    <tr><td>{{ r.grupo_edad }}</td><td>{{ r.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin datos.</td></tr>
+                    {% endfor %}
+                </table>
+                <table style="margin-top:10px;">
+                    <tr><th>Diagnóstico</th><th>N</th></tr>
+                    {% for r in (inpatient_structured_metrics.drainage_month_breakdown.by_diagnostico if inpatient_structured_metrics and inpatient_structured_metrics.drainage_month_breakdown else []) %}
+                    <tr><td>{{ r.diagnostico }}</td><td>{{ r.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin datos.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Dispositivos (mes actual) por sexo / edad / diagnóstico</h3>
+                <table>
+                    <tr><th>Sexo</th><th>N</th></tr>
+                    {% for r in (inpatient_structured_metrics.support_devices_month_breakdown.by_sex if inpatient_structured_metrics and inpatient_structured_metrics.support_devices_month_breakdown else []) %}
+                    <tr><td>{{ r.sexo }}</td><td>{{ r.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin datos.</td></tr>
+                    {% endfor %}
+                </table>
+                <table style="margin-top:10px;">
+                    <tr><th>Grupo edad</th><th>N</th></tr>
+                    {% for r in (inpatient_structured_metrics.support_devices_month_breakdown.by_age_group if inpatient_structured_metrics and inpatient_structured_metrics.support_devices_month_breakdown else []) %}
+                    <tr><td>{{ r.grupo_edad }}</td><td>{{ r.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin datos.</td></tr>
+                    {% endfor %}
+                </table>
+                <table style="margin-top:10px;">
+                    <tr><th>Diagnóstico</th><th>N</th></tr>
+                    {% for r in (inpatient_structured_metrics.support_devices_month_breakdown.by_diagnostico if inpatient_structured_metrics and inpatient_structured_metrics.support_devices_month_breakdown else []) %}
+                    <tr><td>{{ r.diagnostico }}</td><td>{{ r.n }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin datos.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        {% if notice %}
+        <div class="notice" style="margin-top:20px;">{{ notice }}</div>
+        {% endif %}
+
+        <h2 id="seccion-seguridad-clinica">Seguridad Clínica y Desenlaces (Alta Prioridad)</h2>
+        <h3>Cirugías Realizadas</h3>
+        <div class="split">
+            <div>
+                <h3>Desglose por procedimiento</h3>
+                <table>
+                    <tr><th>Procedimiento</th><th>Cantidad</th></tr>
+                    {% for item, count in realizadas_por_procedimiento %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Desglose por cirujano</h3>
+                <table>
+                    <tr><th>Cirujano</th><th>Cantidad</th></tr>
+                    {% for item, count in realizadas_por_cirujano %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Desglose por sangrado</h3>
+                <table>
+                    <tr><th>Sangrado</th><th>Cantidad</th></tr>
+                    {% for item, count in realizadas_por_sangrado %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h3>Incidencias Clínicas</h3>
+        <table>
+            <tr><th>Indicador</th><th>Pacientes</th><th>Incidencia %</th></tr>
+            <tr><td>AKI (ΔCreatinina ≥ 0.3)</td><td>{{ incidencia_laboratorios.aki_delta_creatinina.pacientes if incidencia_laboratorios and incidencia_laboratorios.aki_delta_creatinina else 0 }}</td><td>{{ incidencia_laboratorios.aki_delta_creatinina.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.aki_delta_creatinina else 0 }}</td></tr>
+            <tr><td>Anemia Hb &lt; 10</td><td>{{ incidencia_laboratorios.anemia_hb_menor_10.pacientes if incidencia_laboratorios and incidencia_laboratorios.anemia_hb_menor_10 else 0 }}</td><td>{{ incidencia_laboratorios.anemia_hb_menor_10.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.anemia_hb_menor_10 else 0 }}</td></tr>
+            <tr><td>Anemia Hb &lt; 8</td><td>{{ incidencia_laboratorios.anemia_hb_menor_8.pacientes if incidencia_laboratorios and incidencia_laboratorios.anemia_hb_menor_8 else 0 }}</td><td>{{ incidencia_laboratorios.anemia_hb_menor_8.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.anemia_hb_menor_8 else 0 }}</td></tr>
+            <tr><td>Leucocitosis &gt; 10,000</td><td>{{ incidencia_laboratorios.leucocitosis_mayor_10000.pacientes if incidencia_laboratorios and incidencia_laboratorios.leucocitosis_mayor_10000 else 0 }}</td><td>{{ incidencia_laboratorios.leucocitosis_mayor_10000.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.leucocitosis_mayor_10000 else 0 }}</td></tr>
+            <tr><td>Trombocitopenia (Plt &lt; 150)</td><td>{{ incidencia_laboratorios.trombocitopenia_plt_menor_150.pacientes if incidencia_laboratorios and incidencia_laboratorios.trombocitopenia_plt_menor_150 else 0 }}</td><td>{{ incidencia_laboratorios.trombocitopenia_plt_menor_150.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.trombocitopenia_plt_menor_150 else 0 }}</td></tr>
+            <tr><td>Disnatremias</td><td>{{ incidencia_laboratorios.disnatremias.pacientes if incidencia_laboratorios and incidencia_laboratorios.disnatremias else 0 }}</td><td>{{ incidencia_laboratorios.disnatremias.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.disnatremias else 0 }}</td></tr>
+            <tr><td>Dispotasemias</td><td>{{ incidencia_laboratorios.dispotasemias.pacientes if incidencia_laboratorios and incidencia_laboratorios.dispotasemias else 0 }}</td><td>{{ incidencia_laboratorios.dispotasemias.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.dispotasemias else 0 }}</td></tr>
+            <tr><td>Infección por Clostridium</td><td>{{ incidencia_laboratorios.infeccion_clostridium.pacientes if incidencia_laboratorios and incidencia_laboratorios.infeccion_clostridium else 0 }}</td><td>{{ incidencia_laboratorios.infeccion_clostridium.incidencia_pct if incidencia_laboratorios and incidencia_laboratorios.infeccion_clostridium else 0 }}</td></tr>
+        </table>
+
+        <h3>Desenlaces Postquirúrgicos</h3>
+        <table>
+            <tr><th>Indicador</th><th>Pacientes</th></tr>
+            <tr><td>Reingreso 30d (SI)</td><td>{{ desenlaces_postquirurgicos.reingreso_30d_si if desenlaces_postquirurgicos else 0 }}</td></tr>
+            <tr><td>Reintervención 30d (SI)</td><td>{{ desenlaces_postquirurgicos.reintervencion_30d_si if desenlaces_postquirurgicos else 0 }}</td></tr>
+            <tr><td>Mortalidad 30d (SI)</td><td>{{ desenlaces_postquirurgicos.mortalidad_30d_si if desenlaces_postquirurgicos else 0 }}</td></tr>
+            <tr><td>Reingreso 90d (SI)</td><td>{{ desenlaces_postquirurgicos.reingreso_90d_si if desenlaces_postquirurgicos else 0 }}</td></tr>
+            <tr><td>Reintervención 90d (SI)</td><td>{{ desenlaces_postquirurgicos.reintervencion_90d_si if desenlaces_postquirurgicos else 0 }}</td></tr>
+            <tr><td>Mortalidad 90d (SI)</td><td>{{ desenlaces_postquirurgicos.mortalidad_90d_si if desenlaces_postquirurgicos else 0 }}</td></tr>
+        </table>
+
+        <h2 id="seccion-operacion-critica">Operación Crítica (Flujo, Estancia y Capacidad)</h2>
+        {% if charts_advanced and (charts_advanced.cancelacion_proc or charts_advanced.cancelacion_concepto or charts_advanced.ocupacion_mensual or charts_advanced.incidencias_labs) %}
+        <h3>Métricas Integradas (Interconectadas)</h3>
+        <div class="grid rnp-charts-bg">
+            {% if charts_advanced.cancelacion_proc %}
+            <div><img src="data:image/png;base64,{{ charts_advanced.cancelacion_proc }}" alt="Cancelación por procedimiento"></div>
+            {% endif %}
+            {% if charts_advanced.cancelacion_concepto %}
+            <div><img src="data:image/png;base64,{{ charts_advanced.cancelacion_concepto }}" alt="Cancelación por concepto"></div>
+            {% endif %}
+            {% if charts_advanced.ocupacion_mensual %}
+            <div><img src="data:image/png;base64,{{ charts_advanced.ocupacion_mensual }}" alt="Ocupación mensual"></div>
+            {% endif %}
+            {% if charts_advanced.incidencias_labs %}
+            <div><img src="data:image/png;base64,{{ charts_advanced.incidencias_labs }}" alt="Incidencias de laboratorio"></div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <h3>Cancelación y Estancia</h3>
+        <div class="split">
+            <div>
+                <h3>Tasa de cancelación por procedimiento</h3>
+                <table>
+                    <tr><th>Procedimiento</th><th>Total</th><th>Canceladas</th><th>Tasa %</th></tr>
+                    {% for row in cancelacion_por_procedimiento %}
+                    <tr>
+                        <td>{{ row.procedimiento }}</td>
+                        <td>{{ row.total }}</td>
+                        <td>{{ row.canceladas }}</td>
+                        <td>{{ row.tasa_pct }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Estancia media/mediana por procedimiento</h3>
+                <table>
+                    <tr><th>Procedimiento</th><th>N</th><th>Promedio</th><th>Mediana</th><th>P90</th></tr>
+                    {% for row in estancia_por_procedimiento %}
+                    <tr>
+                        <td>{{ row.grupo }}</td>
+                        <td>{{ row.n }}</td>
+                        <td>{{ row.promedio }}</td>
+                        <td>{{ row.mediana }}</td>
+                        <td>{{ row.p90 }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <h3 id="seccion-cancelaciones-concepto">Cancelaciones por Concepto (Auditoría Quirófano)</h3>
+        <div class="split">
+            <div>
+                <h3>Por concepto</h3>
+                <table>
+                    <tr><th>Código</th><th>Concepto</th><th>Categoría</th><th>Canceladas</th><th>% sobre canceladas</th></tr>
+                    {% for row in cancelacion_por_concepto %}
+                    <tr>
+                        <td>{{ row.codigo }}</td>
+                        <td>{{ row.concepto }}</td>
+                        <td>{{ row.categoria }}</td>
+                        <td>{{ row.canceladas }}</td>
+                        <td>{{ row.tasa_sobre_canceladas_pct }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Por médico</h3>
+                <table>
+                    <tr><th>Médico</th><th>Canceladas</th><th>% sobre canceladas</th></tr>
+                    {% for row in cancelacion_por_medico %}
+                    <tr>
+                        <td>{{ row.medico }}</td>
+                        <td>{{ row.canceladas }}</td>
+                        <td>{{ row.tasa_sobre_canceladas_pct }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="split">
+            <div>
+                <h3>Por diagnóstico</h3>
+                <table>
+                    <tr><th>Diagnóstico</th><th>Canceladas</th></tr>
+                    {% for row in cancelacion_por_diagnostico %}
+                    <tr><td>{{ row.diagnostico }}</td><td>{{ row.canceladas }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Temporalidad</h3>
+                <table>
+                    <tr><th>Mes</th><th>Canceladas</th></tr>
+                    {% for row in cancelacion_por_mes %}
+                    <tr><td>{{ row.mes }}</td><td>{{ row.canceladas }}</td></tr>
+                    {% endfor %}
+                </table>
+                <table style="margin-top:10px;">
+                    <tr><th>Semana</th><th>Canceladas</th></tr>
+                    {% for row in cancelacion_por_semana %}
+                    <tr><td>{{ row.semana }}</td><td>{{ row.canceladas }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <h3>Procedimiento × concepto</h3>
+        <table>
+            <tr><th>Procedimiento</th><th>Concepto</th><th>Canceladas</th></tr>
+            {% for row in cancelacion_por_procedimiento_concepto %}
+            <tr><td>{{ row.procedimiento }}</td><td>{{ row.concepto }}</td><td>{{ row.canceladas }}</td></tr>
+            {% endfor %}
+        </table>
+        <h3>Detalle de cancelaciones</h3>
+        <table>
+            <tr>
+                <th>Fecha</th><th>NSS</th><th>Paciente</th><th>Médico</th><th>Diagnóstico</th><th>Procedimiento</th><th>Código</th><th>Concepto</th><th>Categoría</th><th>Detalle</th>
+            </tr>
+            {% for row in cancelacion_detalle_rows %}
+            <tr>
+                <td>{{ row.fecha or "-" }}</td>
+                <td>{{ row.nss or "-" }}</td>
+                <td>{{ row.paciente_nombre or "-" }}</td>
+                <td>{{ row.medico or "-" }}</td>
+                <td>{{ row.diagnostico or "-" }}</td>
+                <td>{{ row.procedimiento or "-" }}</td>
+                <td>{{ row.codigo or "-" }}</td>
+                <td>{{ row.concepto or "-" }}</td>
+                <td>{{ row.categoria or "-" }}</td>
+                <td>{{ row.detalle or "-" }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h3>Embudo Operativo y Cohortes</h3>
+        <div class="split">
+            <div>
+                <h3>Embudo</h3>
+                <table>
+                    <tr><th>Fase</th><th>Cantidad</th></tr>
+                    <tr><td>Ingreso</td><td>{{ embudo_operativo.ingreso if embudo_operativo else 0 }}</td></tr>
+                    <tr><td>Programación</td><td>{{ embudo_operativo.programacion if embudo_operativo else 0 }}</td></tr>
+                    <tr><td>Cirugía realizada</td><td>{{ embudo_operativo.cirugia_realizada if embudo_operativo else 0 }}</td></tr>
+                    <tr><td>Postquirúrgica</td><td>{{ embudo_operativo.postquirurgica if embudo_operativo else 0 }}</td></tr>
+                    <tr><td>Alta</td><td>{{ embudo_operativo.alta if embudo_operativo else 0 }}</td></tr>
+                </table>
+            </div>
+            <div>
+                <h3>Cohortes dinámicas</h3>
+                <table>
+                    <tr><th>Cohorte</th><th>Cantidad</th></tr>
+                    <tr><td>Oncológicos</td><td>{{ cohortes_dinamicas.oncologicos if cohortes_dinamicas else 0 }}</td></tr>
+                    <tr><td>Litiasis</td><td>{{ cohortes_dinamicas.litiasis if cohortes_dinamicas else 0 }}</td></tr>
+                    <tr><td>Urgencias</td><td>{{ cohortes_dinamicas.urgencias if cohortes_dinamicas else 0 }}</td></tr>
+                    <tr><td>Programados</td><td>{{ cohortes_dinamicas.programados if cohortes_dinamicas else 0 }}</td></tr>
+                    <tr><td>Postqx complicados</td><td>{{ cohortes_dinamicas.postqx_complicados if cohortes_dinamicas else 0 }}</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <h2 id="seccion-continuidad-reingresos">Continuidad y Reingresos (Master Identity NSS)</h2>
+        <div class="summary">
+            <div class="card"><strong>Ventana analizada (meses):</strong><br>{{ master_identity_stats.window_months if master_identity_stats else 0 }}</div>
+            <div class="card"><strong>Pacientes únicos (NSS):</strong><br>{{ master_identity_stats.total_master_identity if master_identity_stats else 0 }}</div>
+            <div class="card"><strong>Pacientes activos en ventana:</strong><br>{{ master_identity_stats.active_patients_window if master_identity_stats else 0 }}</div>
+            <div class="card"><strong>Eventos clínicos en ventana:</strong><br>{{ master_identity_stats.total_events_window if master_identity_stats else 0 }}</div>
+            <div class="card"><strong>Hospitalizados (ventana):</strong><br>{{ master_identity_stats.hospitalizados_window if master_identity_stats else 0 }}</div>
+            <div class="card"><strong>Pacientes con reingresos:</strong><br>{{ master_identity_stats.pacientes_reingresos_window if master_identity_stats else 0 }}</div>
+            <div class="card"><strong>Tasa reingreso (NSS):</strong><br>{{ master_identity_stats.tasa_reingreso_window_pct if master_identity_stats else 0 }}%</div>
+        </div>
+        <div class="split">
+            <div>
+                <h3>Top pacientes recurrentes por NSS</h3>
+                <table>
+                    <tr><th>NSS</th><th>Paciente</th><th>Sexo</th><th>Ingresos</th><th>Cirugías</th><th>Egresos</th></tr>
+                    {% for row in (master_identity_stats.top_recurrentes if master_identity_stats else []) %}
+                    <tr>
+                        <td>{{ row.nss_canonico }}</td>
+                        <td>{{ row.nombre_canonico or "NO_REGISTRADO" }}</td>
+                        <td>{{ row.sexo_canonico or "NO_REGISTRADO" }}</td>
+                        <td>{{ row.hosp_ingresos_window or 0 }}</td>
+                        <td>{{ row.cirugias_acumuladas or 0 }}</td>
+                        <td>{{ row.egresos_acumulados or 0 }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6">Sin pacientes recurrentes en la ventana seleccionada.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Distribución de eventos por tipo</h3>
+                <table>
+                    <tr><th>Evento</th><th>Total</th></tr>
+                    {% for event_name, event_total in (master_identity_stats.event_type_counts.items() if master_identity_stats and master_identity_stats.event_type_counts else []) %}
+                    <tr><td>{{ event_name }}</td><td>{{ event_total }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin eventos clasificados.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Distribución de eventos por módulo</h3>
+                <table>
+                    <tr><th>Módulo</th><th>Total</th></tr>
+                    {% for module_name, module_total in (master_identity_stats.module_counts.items() if master_identity_stats and master_identity_stats.module_counts else []) %}
+                    <tr><td>{{ module_name }}</td><td>{{ module_total }}</td></tr>
+                    {% else %}
+                    <tr><td colspan="2">Sin módulos clasificados.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h2 id="seccion-programacion">Programación Quirúrgica (Asociado)</h2>
+        <h3>Programación Quirúrgica: Sexo y Patología</h3>
+        <div class="split">
+            <div>
+                <h3>Pacientes programados por sexo</h3>
+                <table>
+                    <tr><th>Sexo</th><th>Cantidad</th></tr>
+                    {% for item, count in sexo_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Pacientes programados por patología</h3>
+                <table>
+                    <tr><th>Patología</th><th>Cantidad</th></tr>
+                    {% for item, count in patologias_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h3>Procedimientos Programados</h3>
+        <div class="split">
+            <div>
+                <h3>Conteo por procedimiento</h3>
+                <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>
+                    {% for item, count in procedimientos_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Abordaje + procedimiento</h3>
+                <table><tr><th>Abordaje | Procedimiento</th><th>Cantidad</th></tr>
+                    {% for item, count in procedimiento_abordaje_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Sistemas de succión (FANS/DISS)</h3>
+                <table><tr><th>Sistema</th><th>Cantidad</th></tr>
+                    {% for item, count in succion_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Pacientes con equipos integrales (INTERMED)</h3>
+                <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>
+                    {% for item, count in intermed_por_procedimiento %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Programados por HGZ</h3>
+                <table><tr><th>HGZ</th><th>Cantidad</th></tr>
+                    {% for item, count in hgz_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h3>Programados por Edad</h3>
+        <div class="split">
+            <div>
+                <h3>Lista alimentada por edad</h3>
+                <table>
+                    <tr><th>Rango/Edad</th><th>Cantidad</th></tr>
+                    {% for item, count in edad_programados_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                {% if chart_edad_combinada %}
+                <h3>Promedio por edad integrado</h3>
+                <img src="data:image/png;base64,{{ chart_edad_combinada }}" alt="Promedio por edad integrado">
+                {% endif %}
+            </div>
+        </div>
+
+        <h3>Pendientes de Programar (protocolo completo)</h3>
+        <div class="split">
+            <div>
+                <h3>Desglose por edad</h3>
+                <table>
+                    <tr><th>Edad</th><th>Cantidad</th></tr>
+                    {% for item, count in pendientes_por_edad %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Desglose por sexo</h3>
+                <table>
+                    <tr><th>Sexo</th><th>Cantidad</th></tr>
+                    {% for item, count in pendientes_por_sexo %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Desglose por diagnóstico</h3>
+                <table>
+                    <tr><th>Diagnóstico</th><th>Cantidad</th></tr>
+                    {% for item, count in pendientes_por_diagnostico %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h2 id="seccion-consulta-externa">Consulta Externa por Servicio (Productividad y Casuística)</h2>
+        <div class="summary">
+            <div class="card"><strong>Atenciones totales registradas:</strong><br>{{ consulta_ext_total_atenciones }}</div>
+            {% for servicio, total in consulta_ext_por_servicio %}
+            <div class="card"><strong>{{ servicio }}:</strong><br>{{ total }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="split">
+            <div>
+                <h3>Desglose por servicio y sexo</h3>
+                <table>
+                    <tr><th>Servicio</th><th>Sexo</th><th>Total</th></tr>
+                    {% for row in consulta_ext_por_servicio_sexo %}
+                    <tr><td>{{ row.servicio }}</td><td>{{ row.sexo }}</td><td>{{ row.total }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Desglose por servicio y edad</h3>
+                <table>
+                    <tr><th>Servicio</th><th>Grupo edad</th><th>Total</th></tr>
+                    {% for row in consulta_ext_por_servicio_edad %}
+                    <tr><td>{{ row.servicio }}</td><td>{{ row.edad_grupo }}</td><td>{{ row.total }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Desglose por servicio y diagnóstico</h3>
+                <table>
+                    <tr><th>Servicio</th><th>Diagnóstico</th><th>Total</th></tr>
+                    {% for row in consulta_ext_por_servicio_diagnostico[:80] %}
+                    <tr><td>{{ row.servicio }}</td><td>{{ row.diagnostico }}</td><td>{{ row.total }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h3>Detalle analítico (servicio + sexo + edad + diagnóstico)</h3>
+        <table>
+            <tr><th>Servicio</th><th>Sexo</th><th>Edad</th><th>Diagnóstico</th><th>Total</th></tr>
+            {% for row in consulta_ext_detalle[:160] %}
+            <tr>
+                <td>{{ row.servicio }}</td>
+                <td>{{ row.sexo }}</td>
+                <td>{{ row.edad_grupo }}</td>
+                <td>{{ row.diagnostico }}</td>
+                <td>{{ row.total }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">Sin atenciones de servicios de consulta externa registradas.</td></tr>
+            {% endfor %}
+        </table>
+
+        <h3>Recomendaciones de captura por servicio (evidencia clínica aplicada)</h3>
+        <div class="split">
+            {% for servicio, recs in consulta_ext_recomendaciones.items() %}
+            <div class="card">
+                <strong>{{ servicio }}</strong>
+                <ul>
+                    {% for item in recs %}
+                    <li style="margin-top:6px;">{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2 id="seccion-urgencias">Bloque Urgencias Quirúrgicas</h2>
+        <div class="split">
+            <div>
+                <h3>Urgencias por sexo</h3>
+                <table><tr><th>Sexo</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_sexo_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Urgencias por diagnóstico</h3>
+                <table><tr><th>Diagnóstico</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_patologias_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Urgencias por procedimiento</h3>
+                <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_procedimientos_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Urgencias por HGZ</h3>
+                <table><tr><th>HGZ</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_hgz_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Urgencias con insumo INTERMED</h3>
+                <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_insumos_intermed %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h3>Solicitudes de hemoderivados (urgencias programadas)</h3>
+        <div class="split">
+            <div>
+                <h3>Resumen de solicitudes</h3>
+                <table>
+                    <tr><th>Indicador</th><th>Valor</th></tr>
+                    <tr><td>Total urgencias con solicitud</td><td>{{ hemoderivados_metricas.solicitudes_urgencias_total if hemoderivados_metricas else 0 }}</td></tr>
+                    <tr><td>Total programadas con solicitud</td><td>{{ hemoderivados_metricas.solicitudes_programadas_total if hemoderivados_metricas else 0 }}</td></tr>
+                    <tr><td>PG solicitados</td><td>{{ hemoderivados_metricas.solicitudes_urgencias_unidades.pg if hemoderivados_metricas else 0 }}</td></tr>
+                    <tr><td>PFC solicitados</td><td>{{ hemoderivados_metricas.solicitudes_urgencias_unidades.pfc if hemoderivados_metricas else 0 }}</td></tr>
+                    <tr><td>CP solicitados</td><td>{{ hemoderivados_metricas.solicitudes_urgencias_unidades.cp if hemoderivados_metricas else 0 }}</td></tr>
+                </table>
+            </div>
+            <div>
+                <h3>Top procedimiento (urgencias)</h3>
+                <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>
+                    {% for item, count in (hemoderivados_metricas.solicitudes_urgencias_por_procedimiento if hemoderivados_metricas else []) %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Top HGZ (urgencias)</h3>
+                <table><tr><th>HGZ</th><th>Cantidad</th></tr>
+                    {% for item, count in (hemoderivados_metricas.solicitudes_urgencias_por_hgz if hemoderivados_metricas else []) %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <table>
+            <tr>
+                <th>Fecha</th><th>NSS</th><th>Paciente</th><th>Procedimiento</th><th>HGZ</th><th>PG</th><th>PFC</th><th>CP</th>
+            </tr>
+            {% for row in urg_hemoderivados_rows %}
+            <tr>
+                <td>{{ row.fecha or '-' }}</td>
+                <td>{{ row.nss }}</td>
+                <td>{{ row.paciente_nombre }}</td>
+                <td>{{ row.procedimiento }}</td>
+                <td>{{ row.hgz }}</td>
+                <td>{{ row.pg }}</td>
+                <td>{{ row.pfc }}</td>
+                <td>{{ row.cp }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8">Sin solicitudes de hemoderivados registradas en urgencias.</td></tr>
+            {% endfor %}
+        </table>
+
+        <h3>Solicitudes de hemoderivados (cirugía programada)</h3>
+        <div class="split">
+            <div>
+                <h3>Unidades solicitadas (programada)</h3>
+                <table>
+                    <tr><th>Componente</th><th>Unidades</th></tr>
+                    <tr><td>Paquete globular</td><td>{{ hemoderivados_metricas.solicitudes_programadas_unidades.pg if hemoderivados_metricas else 0 }}</td></tr>
+                    <tr><td>Plasma fresco congelado</td><td>{{ hemoderivados_metricas.solicitudes_programadas_unidades.pfc if hemoderivados_metricas else 0 }}</td></tr>
+                    <tr><td>Concentrado plaquetario</td><td>{{ hemoderivados_metricas.solicitudes_programadas_unidades.cp if hemoderivados_metricas else 0 }}</td></tr>
+                </table>
+            </div>
+            <div>
+                <h3>Top procedimiento (programada)</h3>
+                <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>
+                    {% for item, count in (hemoderivados_metricas.solicitudes_programadas_por_procedimiento if hemoderivados_metricas else []) %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Top HGZ (programada)</h3>
+                <table><tr><th>HGZ</th><th>Cantidad</th></tr>
+                    {% for item, count in (hemoderivados_metricas.solicitudes_programadas_por_hgz if hemoderivados_metricas else []) %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h3>Uso de hemoderivados en cirugías realizadas (programada + urgencias)</h3>
+        <div class="split">
+            <div>
+                <table>
+                    <tr><th>Indicador</th><th>Valor</th></tr>
+                    <tr><td>Cirugías con uso</td><td>{{ hemoderivados_metricas.uso_total_cirugias_realizadas if hemoderivados_metricas else 0 }}</td></tr>
+                    <tr><td>PG usados</td><td>{{ hemoderivados_metricas.uso_unidades_totales.pg if hemoderivados_metricas else 0 }}</td></tr>
+                    <tr><td>PFC usados</td><td>{{ hemoderivados_metricas.uso_unidades_totales.pfc if hemoderivados_metricas else 0 }}</td></tr>
+                    <tr><td>CP usados</td><td>{{ hemoderivados_metricas.uso_unidades_totales.cp if hemoderivados_metricas else 0 }}</td></tr>
+                </table>
+            </div>
+            <div>
+                <h3>Uso por origen</h3>
+                <table><tr><th>Origen</th><th>Cantidad</th></tr>
+                    {% for item, count in (hemoderivados_metricas.uso_por_origen if hemoderivados_metricas else []) %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Top cirujano (unidades)</h3>
+                <table><tr><th>Cirujano</th><th>Unidades</th></tr>
+                    {% for item, count in (hemoderivados_metricas.uso_unidades_por_cirujano if hemoderivados_metricas else [])[:15] %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h3>Oncológicos por cirugía de urgencia</h3>
+        <div class="split">
+            <div>
+                <h3>Diagnóstico</h3>
+                <table><tr><th>Diagnóstico</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_onco_diag_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>ECOG</h3>
+                <table><tr><th>ECOG</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_onco_ecog_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Charlson</h3>
+                <table><tr><th>Charlson</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_onco_charlson_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Edad</h3>
+                <table><tr><th>Rango</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_onco_edad_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h3>Litiasis por cirugía de urgencia</h3>
+        <div class="split">
+            <div>
+                <h3>Diagnóstico</h3>
+                <table><tr><th>Diagnóstico</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_litiasis_diag_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>UH</h3>
+                <table><tr><th>Rango UH</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_litiasis_uh_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Tamaño</h3>
+                <table><tr><th>Tamaño</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_litiasis_tamano_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Subtipo &gt;20 mm</h3>
+                <table><tr><th>Subtipo</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_litiasis_subtipo_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Ubicación</h3>
+                <table><tr><th>Ubicación</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_litiasis_ubicacion_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Hidronefrosis</h3>
+                <table><tr><th>Estado</th><th>Cantidad</th></tr>
+                    {% for item, count in urg_litiasis_hidronefrosis_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h2 id="seccion-oncologico">Bloque Oncológico</h2>
+        <div class="split">
+            <div>
+                <h3>Desglose por diagnóstico</h3>
+                <table>
+                    <tr><th>Diagnóstico</th><th>Cantidad</th></tr>
+                    {% for item, count in onco_diag_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Desglose por ECOG</h3>
+                <table>
+                    <tr><th>ECOG</th><th>Cantidad</th></tr>
+                    {% for item, count in onco_ecog_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Desglose por Charlson</h3>
+                <table>
+                    <tr><th>Charlson</th><th>Cantidad</th></tr>
+                    {% for item, count in onco_charlson_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Desglose por edad</h3>
+                <table>
+                    <tr><th>Rango</th><th>Cantidad</th></tr>
+                    {% for item, count in onco_edad_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        {% if onco_pacientes %}
+        <h3>Listado oncológico programado</h3>
+        <table>
+            <tr><th>NSS</th><th>Paciente</th><th>Edad</th><th>Patología</th><th>ECOG</th><th>Charlson</th></tr>
+            {% for p in onco_pacientes %}
+            <tr>
+                <td>{{ p.nss }}</td>
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.edad }}</td>
+                <td>{{ p.patologia }}</td>
+                <td>{{ p.ecog }}</td>
+                <td>{{ p.charlson }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+        <h2 id="seccion-litiasis">Bloque Litiasis</h2>
+        <div class="split">
+            <div>
+                <h3>Por diagnóstico</h3>
+                <table><tr><th>Diagnóstico</th><th>Cantidad</th></tr>
+                    {% for item, count in litiasis_diag_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Cálculo renal por UH</h3>
+                <table><tr><th>UH</th><th>Cantidad</th></tr>
+                    {% for item, count in litiasis_uh_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Cálculo renal por tamaño</h3>
+                <table><tr><th>Tamaño</th><th>Cantidad</th></tr>
+                    {% for item, count in litiasis_tamano_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Subtipo &gt;20 mm</h3>
+                <table><tr><th>Subtipo</th><th>Cantidad</th></tr>
+                    {% for item, count in litiasis_subtipo_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Ubicación litiasis</h3>
+                <table><tr><th>Ubicación</th><th>Cantidad</th></tr>
+                    {% for item, count in litiasis_ubicacion_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div>
+                <h3>Hidronefrosis</h3>
+                <table><tr><th>Estado</th><th>Cantidad</th></tr>
+                    {% for item, count in litiasis_hidronefrosis_counts %}
+                    <tr><td>{{ item }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <h3>Catéter JJ en litiasis (programada + urgencia)</h3>
+        <div class="split">
+            <div>
+                <h3>Totales y origen</h3>
+                <table>
+                    <tr><th>Indicador</th><th>Valor</th></tr>
+                    <tr><td>Total JJ colocados</td><td>{{ jj_metricas.total_jj_colocados if jj_metricas else 0 }}</td></tr>
+                    {% if jj_metricas and jj_metricas.por_origen %}
+                        {% for item in jj_metricas.por_origen %}
+                        <tr><td>{{ item[0] }}</td><td>{{ item[1] }}</td></tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+            <div>
+                <h3>JJ por médico</h3>
+                <table><tr><th>Médico</th><th>Cantidad</th></tr>
+                    {% if jj_metricas and jj_metricas.por_medico %}
+                        {% for item in jj_metricas.por_medico %}
+                        <tr><td>{{ item[0] }}</td><td>{{ item[1] }}</td></tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+            <div>
+                <h3>JJ por procedimiento</h3>
+                <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>
+                    {% if jj_metricas and jj_metricas.por_procedimiento %}
+                        {% for item in jj_metricas.por_procedimiento %}
+                        <tr><td>{{ item[0] }}</td><td>{{ item[1] }}</td></tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+            <div>
+                <h3>JJ por semana</h3>
+                <table><tr><th>Semana</th><th>Cantidad</th></tr>
+                    {% if jj_metricas and jj_metricas.por_semana %}
+                        {% for item in jj_metricas.por_semana %}
+                        <tr><td>{{ item[0] }}</td><td>{{ item[1] }}</td></tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+            <div>
+                <h3>JJ por mes</h3>
+                <table><tr><th>Mes</th><th>Cantidad</th></tr>
+                    {% if jj_metricas and jj_metricas.por_mes %}
+                        {% for item in jj_metricas.por_mes %}
+                        <tr><td>{{ item[0] }}</td><td>{{ item[1] }}</td></tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+        <h2 id="seccion-epidemiologia">Epidemiología, Cohortes y Calidad</h2>
+        <h3>Desglose combinado (Edad + Diagnóstico + Procedimiento + ECOG + Sexo)</h3>
+        <table>
+            <tr>
+                <th>Edad</th>
+                <th>Diagnóstico</th>
+                <th>Procedimiento</th>
+                <th>ECOG</th>
+                <th>Sexo</th>
+                <th>Cantidad</th>
+            </tr>
+            {% for row in edad_combinado_counts %}
+            <tr>
+                <td>{{ row.edad }}</td>
+                <td>{{ row.diagnostico }}</td>
+                <td>{{ row.procedimiento }}</td>
+                <td>{{ row.ecog }}</td>
+                <td>{{ row.sexo }}</td>
+                <td>{{ row.cantidad }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="split">
+            <div>
+                <h3>Productividad por turno</h3>
+                <table>
+                    <tr><th>Turno</th><th>Registros</th></tr>
+                    {% if productividad_guardia and productividad_guardia.por_turno %}
+                        {% for item in productividad_guardia.por_turno %}
+                        <tr><td>{{ item[0] }}</td><td>{{ item[1] }}</td></tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+            <div>
+                <h3>Densidad por HGZ</h3>
+                <table>
+                    <tr><th>HGZ</th><th>Casos</th></tr>
+                    {% if mapa_epidemiologico and mapa_epidemiologico.por_hgz %}
+                        {% for item in mapa_epidemiologico.por_hgz %}
+                        <tr><td>{{ item[0] }}</td><td>{{ item[1] }}</td></tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        <h3>Calidad de captura</h3>
+        <table>
+            <tr><th>Métrica</th><th>Valor</th></tr>
+            <tr><td>Completitud hospitalización %</td><td>{{ calidad_captura.hospitalizacion_completitud_pct if calidad_captura else "N/A" }}</td></tr>
+            <tr><td>Completitud quirúrgico %</td><td>{{ calidad_captura.quirurgico_completitud_pct if calidad_captura else "N/A" }}</td></tr>
+            <tr><td>Data quality pendiente</td><td>{{ calidad_captura.data_quality_pendiente if calidad_captura else 0 }}</td></tr>
+        </table>
+
+        <h2 id="seccion-analisis-exploratorio">Análisis Exploratorio y Proyección (Menor Impacto Operativo)</h2>
+        {% if chart_diagnosticos %}
+        <h3>Distribución de Diagnósticos</h3>
+        <div class="rnp-charts-bg">
+        <img src="data:image/png;base64,{{ chart_diagnosticos }}" alt="Distribución diagnósticos">
+        </div>
+        {% endif %}
+
+        {% if numeric_charts %}
+        <h3>Variables Numéricas</h3>
+        <div class="grid rnp-charts-bg">
+            {% for chart in numeric_charts %}
+            <div>
+                <img src="data:image/png;base64,{{ chart }}" alt="Histograma">
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if chart_survival %}
+        <h3>Curva de Supervivencia (Kaplan-Meier)</h3>
+        <div class="rnp-charts-bg">
+        <img src="data:image/png;base64,{{ chart_survival }}" alt="Kaplan-Meier">
+        <p style="font-size:12px; color:#555;">Evento aproximado: estatus_protocolo = completo. Censura para otros estados.</p>
+        </div>
+        {% endif %}
+
+        {% if chart_waitlist %}
+        <h3>Predicción Lista de Espera Quirúrgica</h3>
+        <div class="rnp-charts-bg">
+        <img src="data:image/png;base64,{{ chart_waitlist }}" alt="Proyección lista de espera">
+        </div>
+        {% endif %}
+
+        <br>
+        <a href="/" class="btn">← Volver al Menú</a>
+    </div>
+
+    <!-- Print-friendly floating button -->
+    <button class="rnp-print-btn" onclick="window.print()" title="Imprimir reporte">
+        <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Imprimir
+    </button>
+
+    <script>
+        (function () {
+            const payload = {{ panel_payload | tojson }};
+            const titleEl = document.getElementById("panel-central-titulo");
+            const subtitleEl = document.getElementById("panel-central-subtitulo");
+            const kpisEl = document.getElementById("panel-central-kpis");
+            const insightsEl = document.getElementById("panel-central-insights");
+            const linksEl = document.getElementById("panel-central-links");
+            const buttons = Array.from(document.querySelectorAll(".panel-btn[data-panel-key]"));
+
+            function renderPanel(key) {
+                const moduleData = payload[key];
+                if (!moduleData) {
+                    return;
+                }
+
+                titleEl.textContent = moduleData.titulo || "Panel";
+                subtitleEl.textContent = moduleData.subtitulo || "";
+
+                kpisEl.innerHTML = "";
+                (moduleData.kpis || []).forEach((item) => {
+                    const card = document.createElement("div");
+                    card.className = "panel-kpi";
+                    const label = document.createElement("div");
+                    label.className = "panel-kpi-label";
+                    label.textContent = item.label || "";
+                    const value = document.createElement("div");
+                    value.className = "panel-kpi-value";
+                    value.textContent = item.value || "0";
+                    card.appendChild(label);
+                    card.appendChild(value);
+                    kpisEl.appendChild(card);
+                });
+
+                insightsEl.innerHTML = "";
+                (moduleData.insights || []).forEach((item) => {
+                    const li = document.createElement("li");
+                    li.textContent = item;
+                    insightsEl.appendChild(li);
+                });
+
+                linksEl.innerHTML = "";
+                (moduleData.links || []).forEach((item) => {
+                    const link = document.createElement("a");
+                    link.className = "panel-link";
+                    link.href = "#" + (item.target || "");
+                    link.textContent = item.label || "Ver";
+                    link.addEventListener("click", (event) => {
+                        const targetId = item.target || "";
+                        const section = targetId ? document.getElementById(targetId) : null;
+                        if (!section) {
+                            return;
+                        }
+                        event.preventDefault();
+                        section.scrollIntoView({ behavior: "smooth", block: "start" });
+                    });
+                    linksEl.appendChild(link);
+                });
+
+                buttons.forEach((button) => {
+                    button.classList.toggle("active", button.dataset.panelKey === key);
+                });
+            }
+
+            buttons.forEach((button) => {
+                button.addEventListener("click", () => renderPanel(button.dataset.panelKey));
+            });
+
+            renderPanel("hospitalizacion");
+        })();
+    </script>
+
+    <!-- === Chart.js Donut for Resumen Ejecutivo === -->
+    <script>
+        (function () {
+            var canvasEl = document.getElementById('rnpDonutCohortes');
+            if (!canvasEl) return;
+            var oncoVal = parseInt('{{ cohortes_dinamicas.oncologicos if cohortes_dinamicas else 0 }}', 10) || 0;
+            var litVal  = parseInt('{{ cohortes_dinamicas.litiasis if cohortes_dinamicas else 0 }}', 10) || 0;
+            var totalVal = parseInt('{{ total }}', 10) || 0;
+            var otrosVal = Math.max(0, totalVal - oncoVal - litVal);
+            if (typeof Chart === 'undefined') return;
+            new Chart(canvasEl, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Oncologicos', 'Litiasis', 'Otros'],
+                    datasets: [{
+                        data: [oncoVal, litVal, otrosVal],
+                        backgroundColor: ['#13322B', '#B38E5D', '#5f9e8f'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#13322B',
+                            titleFont: { family: 'Montserrat', weight: '700' },
+                            bodyFont: { family: 'Montserrat' }
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+
+    <!-- === Section animation observer === -->
+    <script>
+        (function () {
+            var sections = document.querySelectorAll('h2, .rnp-resumen-ejecutivo, .panel-central, .summary, .split, .grid');
+            if (!('IntersectionObserver' in window)) return;
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('rnp-animate-section');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.08 });
+            sections.forEach(function (el) {
+                observer.observe(el);
+            });
+        })();
+    </script>
+</body>
+</html>
