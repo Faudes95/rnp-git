@@ -611,7 +611,7 @@ async def expediente_contexto_wizard(
     )
     options = [
         ("/expediente", "Expediente Clínico Único"),
-        ("/expediente/nota-medica", "Nota médica clásica"),
+        ("/expediente/inpatient-captura", "+ Realizar nota médica"),
         ("/expediente/inpatient-captura", "Captura intrahospitalaria estructurada"),
         ("/expediente/fase1", "Módulo Fase 1"),
     ]
@@ -833,6 +833,19 @@ async def expediente_nota_medica_form(
     nss = merged.get("nss")
     nombre = merged.get("nombre")
 
+    target_url = "/expediente/inpatient-captura"
+    qparams = []
+    if consulta_id is not None:
+        qparams.append(f"consulta_id={int(consulta_id)}")
+    if nss:
+        qparams.append(f"nss={quote(_safe_text(nss))}")
+    if nombre:
+        qparams.append(f"nombre={quote(_safe_text(nombre))}")
+    if qparams:
+        target_url = f"{target_url}?{'&'.join(qparams)}"
+    target_url += "#nota-diaria"
+    return RedirectResponse(url=target_url, status_code=303)
+
     consulta, consulta_ids, target_nss, target_name = resolve_profile_identity(
         db,
         m,
@@ -930,14 +943,14 @@ async def expediente_nota_diaria_selector(
     if consulta is None:
         return HTMLResponse("<h1>Paciente no encontrado</h1><a href='/expediente'>Volver</a>", status_code=404)
 
-    resp = m.render_template(
-        "expediente_nota_selector.html",
-        request=request,
-        consulta=consulta,
-        target_nss=target_nss or (consulta.nss or ""),
-        target_nombre=target_name or (consulta.nombre or ""),
-        hospitalizacion_id=hospitalizacion_id,
-    )
+    target_url = f"/expediente/inpatient-captura?consulta_id={int(getattr(consulta, 'id', 0) or 0)}"
+    if hospitalizacion_id is not None:
+        try:
+            target_url += f"&hospitalizacion_id={int(hospitalizacion_id)}"
+        except Exception:
+            pass
+    target_url += "#nota-diaria"
+    resp = RedirectResponse(url=target_url, status_code=303)
     actor = _safe_text(request.headers.get("X-User") or "ui_shell")
     saved_ctx = save_active_context(
         db,
@@ -947,7 +960,7 @@ async def expediente_nota_diaria_selector(
             "hospitalizacion_id": hospitalizacion_id,
             "nss": target_nss or (consulta.nss or ""),
             "nombre": target_name or (consulta.nombre or ""),
-            "source": "expediente_nota_selector",
+            "source": "expediente_nota_selector_redirect",
         },
         source_route="/expediente/nota-diaria",
     )
@@ -978,7 +991,7 @@ async def expediente_nota_medica_save(request: Request, db: Session = Depends(_g
         "<h1>Nota médica guardada</h1>"
         f"<p>Nota ID: {saved.get('nota_id')}</p>"
         f"<p><a href='/expediente?consulta_id={consulta_id}'>Volver al expediente</a></p>"
-        f"<p><a href='/expediente/nota-medica?consulta_id={consulta_id}'>Capturar otra nota</a></p>"
+        f"<p><a href='/expediente/inpatient-captura?consulta_id={consulta_id}#nota-diaria'>Capturar otra nota</a></p>"
     )
 
 
@@ -1075,7 +1088,55 @@ async def expediente_inpatient_captura_form(
     )
 
     vitals_latest = vitals_items[-1] if vitals_items else {}
+    # Prefill de nota diaria: prioriza última toma de vitales registrada y,
+    # si no existe, reutiliza última nota diaria estructurada del episodio.
+    note_prefill_hr = _to_int((vitals_latest or {}).get("heart_rate"))
+    note_prefill_sbp = _to_int((vitals_latest or {}).get("sbp"))
+    note_prefill_dbp = _to_int((vitals_latest or {}).get("dbp"))
+    note_prefill_temp = _to_float((vitals_latest or {}).get("temperature"))
     io_latest = io_items[-1] if io_items else {}
+    is_first_intrahospital_note = len(daily_notes_items or []) == 0
+
+    for n in reversed(daily_notes_items or []):
+        vj = n.get("vitals_json") if isinstance(n.get("vitals_json"), dict) else {}
+        if note_prefill_hr is None:
+            note_prefill_hr = _to_int(vj.get("hr") if vj.get("hr") is not None else vj.get("heart_rate"))
+        if note_prefill_sbp is None:
+            note_prefill_sbp = _to_int(vj.get("sbp"))
+        if note_prefill_dbp is None:
+            note_prefill_dbp = _to_int(vj.get("dbp"))
+        if note_prefill_temp is None:
+            note_prefill_temp = _to_float(vj.get("temp") if vj.get("temp") is not None else vj.get("temperature"))
+        if (
+            note_prefill_hr is not None
+            and note_prefill_sbp is not None
+            and note_prefill_dbp is not None
+            and note_prefill_temp is not None
+        ):
+            break
+
+    default_peso = _to_float((io_latest or {}).get("weight_kg"))
+    default_talla = _to_float((io_latest or {}).get("height_cm"))
+    default_imc = None
+    for n in reversed(daily_notes_items or []):
+        vj = n.get("vitals_json") if isinstance(n.get("vitals_json"), dict) else {}
+        if default_peso is None:
+            default_peso = _to_float(vj.get("peso"))
+        if default_talla is None:
+            default_talla = _to_float(vj.get("talla"))
+        if default_imc is None:
+            default_imc = _to_float(vj.get("imc"))
+        if default_peso is not None and default_talla is not None and default_imc is not None:
+            break
+    if default_imc is None and default_peso is not None and default_talla is not None:
+        try:
+            talla_val = float(default_talla)
+            talla_m = talla_val / 100.0 if talla_val > 3 else talla_val
+            if talla_m > 0:
+                default_imc = round(float(default_peso) / (talla_m * talla_m), 2)
+        except Exception:
+            default_imc = None
+
     devices_active = [d for d in devices_items if bool(d.get("present"))]
     active_drain = _latest_active_support(devices_items, kind="drenaje")
     active_support_device = _latest_active_support(devices_items, kind="dispositivo")
@@ -1295,6 +1356,10 @@ async def expediente_inpatient_captura_form(
         resumen_foley_activo=resumen_foley_activo,
         events_summary_today=events_summary_today,
         devices_snapshot=devices_snapshot,
+        note_prefill_hr=note_prefill_hr,
+        note_prefill_sbp=note_prefill_sbp,
+        note_prefill_dbp=note_prefill_dbp,
+        note_prefill_temp=note_prefill_temp,
         timeline_rows=timeline_rows[-200:],
         block_status=block_status,
         completitud_pct=completitud_pct,
@@ -1302,6 +1367,10 @@ async def expediente_inpatient_captura_form(
         servicios_nota=NOTA_MEDICA_SERVICIOS,
         cie10_catalog=get_cie10_catalog(db, m, limit=2500),
         daily_notes_items=daily_notes_items,
+        is_first_intrahospital_note=is_first_intrahospital_note,
+        default_peso=default_peso,
+        default_talla=default_talla,
+        default_imc=default_imc,
         tags_items=tags_items,
         fecha_hoy=date.today().isoformat(),
         default_tab=request.query_params.get("tab") or "resumen",
@@ -2099,7 +2168,7 @@ async def expediente_inpatient_captura_daily_note_save(request: Request, db: Ses
         cie10_codigo = _safe_text(raw.get("cie10_codigo"))
         if (not cie10_codigo) and diagnostico_cie10 and " - " in diagnostico_cie10:
             cie10_codigo = _safe_text(diagnostico_cie10.split(" - ", 1)[0]).upper()
-        free_text = _safe_text(raw.get("free_text"))
+        free_text = _safe_text(raw.get("free_text")) or _safe_text(raw.get("note_text")) or _safe_text(raw.get("nota_texto"))
 
         upsert_inpatient_daily_note_v2(
             db,

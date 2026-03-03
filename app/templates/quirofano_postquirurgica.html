@@ -5,6 +5,7 @@
     <title>Nota Postquirúrgica - IMSS Urología</title>
     <link href="/static/css/fonts_offline.css" rel="stylesheet">
     <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
     <style>
         :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --fondo: #f4f6f9; }
         body { margin: 0; font-family: 'Montserrat', sans-serif; background: var(--fondo); padding: 20px; }
@@ -42,7 +43,7 @@
     @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
     </style>
 </head>
-<body>
+<body class="qf-refresh">
     <div class="container">
         <h1>{{ titulo or "🩺 Nota Postquirúrgica" }}</h1>
         <p class="small">Al guardar, la cirugía pasa a estatus <strong>REALIZADA</strong> y se refleja en Reporte Estadístico.</p>

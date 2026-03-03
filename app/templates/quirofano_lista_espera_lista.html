@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Espera de Programación Quirúrgica</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
+    <style>
+        :root{
+            --verde:#13322B;
+            --verde2:#1a4a3f;
+            --dorado:#B38E5D;
+            --dorado-2:#d2b386;
+            --borde:#d8e3df;
+            --fondo:#f3f7f6;
+            --card:#ffffff;
+            --texto:#13322B;
+            --muted:#5f7770;
+            --rojo:#9b1c1c;
+            --ambar:#8a651e;
+            --azul:#154c88;
+            --verde-ok:#1f6f43;
+        }
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            padding:20px;
+            background:
+                radial-gradient(circle at 85% -10%, rgba(179,142,93,.16), transparent 40%),
+                radial-gradient(circle at -5% 110%, rgba(19,50,43,.12), transparent 38%),
+                var(--fondo);
+            font-family:'Montserrat',sans-serif;
+            color:var(--texto);
+        }
+        .wrap{
+            max-width:1420px;
+            margin:0 auto;
+            background:var(--card);
+            border:1px solid var(--borde);
+            border-radius:18px;
+            box-shadow:0 16px 34px rgba(19,50,43,.12);
+            overflow:hidden;
+        }
+        .head{
+            padding:22px 26px;
+            border-bottom:3px solid var(--dorado);
+            background:
+                linear-gradient(130deg, rgba(19,50,43,.96) 0%, rgba(26,74,63,.96) 56%, rgba(16,57,48,.96) 100%),
+                linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
+            color:#fff;
+        }
+        .head-main{
+            display:flex;
+            justify-content:space-between;
+            gap:20px;
+            align-items:flex-start;
+            flex-wrap:wrap;
+        }
+        .head h1{margin:0;font-size:30px;line-height:1.05;letter-spacing:.2px}
+        .head p{margin:10px 0 0;font-size:13px;color:rgba(255,255,255,.88);max-width:780px}
+        .head-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+        .head-badge{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:6px 11px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:800;
+            border:1px solid rgba(255,255,255,.2);
+            background:rgba(255,255,255,.08);
+            color:#f2f7f6;
+        }
+
+        .toolbar{
+            padding:14px 26px;
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            background:linear-gradient(180deg,#f9fcfb,#f4f8f7);
+            border-bottom:1px solid var(--borde);
+        }
+        .btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            padding:11px 14px;
+            border-radius:11px;
+            text-decoration:none;
+            font-weight:800;
+            font-size:12px;
+            letter-spacing:.2px;
+            border:1px solid transparent;
+            transition:.2s ease;
+        }
+        .btn:hover{transform:translateY(-1px)}
+        .btn.main{
+            background:linear-gradient(135deg,var(--verde),var(--verde2));
+            color:#fff;
+            box-shadow:0 8px 18px rgba(19,50,43,.24);
+        }
+        .btn.alt{
+            background:#fff;
+            color:var(--verde);
+            border-color:#c8d7d2;
+        }
+        .btn.alt:hover{
+            border-color:var(--dorado);
+            box-shadow:0 8px 18px rgba(179,142,93,.16);
+        }
+
+        .stats{
+            display:grid;
+            grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:12px;
+            padding:16px 26px;
+            border-bottom:1px solid var(--borde);
+            background:#fff;
+        }
+        .card{
+            border-radius:14px;
+            border:1px solid #d8e4e0;
+            background:linear-gradient(165deg,#fff 0%,#f6faf8 100%);
+            padding:14px;
+            position:relative;
+            overflow:hidden;
+        }
+        .card::after{
+            content:"";
+            position:absolute;
+            right:-20px;
+            top:-20px;
+            width:80px;
+            height:80px;
+            border-radius:50%;
+            background:radial-gradient(circle, rgba(179,142,93,.18), transparent 70%);
+            pointer-events:none;
+        }
+        .card .k{
+            font-size:10px;
+            text-transform:uppercase;
+            font-weight:800;
+            color:var(--muted);
+            letter-spacing:.5px;
+        }
+        .card .v{
+            font-size:34px;
+            font-weight:900;
+            line-height:1.05;
+            color:var(--texto);
+            margin-top:4px;
+        }
+        .card .s{
+            font-size:11px;
+            font-weight:700;
+            color:#6d857d;
+            margin-top:4px;
+        }
+
+        .filters-shell{
+            padding:14px 26px 18px;
+            border-bottom:1px solid var(--borde);
+            background:linear-gradient(180deg,#f8fbfa,#f4f8f7);
+        }
+        .filters{
+            border:1px solid #d6e3df;
+            border-radius:14px;
+            background:#fff;
+            padding:14px;
+        }
+        .grid{
+            display:grid;
+            grid-template-columns:2fr 1fr 1fr 1fr auto;
+            gap:10px;
+            align-items:end;
+        }
+        .field label{
+            display:block;
+            font-size:10px;
+            font-weight:800;
+            text-transform:uppercase;
+            letter-spacing:.5px;
+            color:#45645c;
+            margin-bottom:6px;
+        }
+        .field input,.field select{
+            width:100%;
+            padding:10px 11px;
+            border:1px solid #c8d8d2;
+            border-radius:9px;
+            background:#fcfffe;
+            color:#163f35;
+            font-family:inherit;
+        }
+        .field input:focus,.field select:focus{
+            outline:none;
+            border-color:var(--dorado);
+            box-shadow:0 0 0 3px rgba(179,142,93,.14);
+        }
+
+        .table-wrap{padding:16px 26px 24px}
+        .table-shell{
+            border:1px solid #d5e2de;
+            border-radius:14px;
+            overflow:hidden;
+            background:#fff;
+        }
+        table{width:100%;border-collapse:collapse;font-size:12px}
+        thead th{
+            position:sticky;
+            top:0;
+            z-index:2;
+            background:linear-gradient(90deg,#0f3a31,#155344);
+            color:#f1f7f5;
+            font-size:10px;
+            text-transform:uppercase;
+            letter-spacing:.5px;
+            font-weight:900;
+            padding:12px 10px;
+            border-bottom:2px solid var(--dorado);
+            text-align:left;
+        }
+        tbody td{
+            padding:11px 10px;
+            border-bottom:1px solid #e5eeea;
+            vertical-align:top;
+            color:#21453b;
+        }
+        tbody tr:nth-child(even){background:#fbfdfc}
+        tbody tr:hover{background:#f1f8f4}
+        .row-prio-MUY-ALTA td:first-child,
+        .row-prio-ALTA td:first-child,
+        .row-prio-MEDIA td:first-child,
+        .row-prio-BAJA td:first-child{
+            position:relative;
+        }
+        .row-prio-MUY-ALTA td:first-child::before,
+        .row-prio-ALTA td:first-child::before,
+        .row-prio-MEDIA td:first-child::before,
+        .row-prio-BAJA td:first-child::before{
+            content:"";
+            position:absolute;
+            left:0;
+            top:0;
+            bottom:0;
+            width:4px;
+        }
+        .row-prio-MUY-ALTA td:first-child::before{background:#b91c1c}
+        .row-prio-ALTA td:first-child::before{background:#d97706}
+        .row-prio-MEDIA td:first-child::before{background:#ca8a04}
+        .row-prio-BAJA td:first-child::before{background:#15803d}
+
+        .badge{
+            display:inline-flex;
+            align-items:center;
+            gap:5px;
+            padding:4px 9px;
+            border-radius:999px;
+            font-size:10px;
+            font-weight:900;
+            border:1px solid #cedbd6;
+            background:#f7fbfa;
+            color:#2f564d;
+            white-space:nowrap;
+        }
+        .prio-MUY-ALTA{background:#fff2f2;border-color:#efb2b2;color:var(--rojo)}
+        .prio-ALTA{background:#fff7ec;border-color:#f1d5a7;color:#9a5a09}
+        .prio-MEDIA{background:#fff9e8;border-color:#ead7a5;color:var(--ambar)}
+        .prio-BAJA{background:#edf8f1;border-color:#b9deca;color:var(--verde-ok)}
+
+        .wait-chip{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:4px 9px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:900;
+            border:1px solid #d0ddd8;
+            background:#f7fbf9;
+        }
+        .wait-hi{background:#fff2f2;border-color:#efb2b2;color:var(--rojo)}
+        .wait-med{background:#fff7e9;border-color:#ebd6ab;color:#9d6c1e}
+        .wait-low{background:#edf8f1;border-color:#bedfcd;color:#1d6f42}
+
+        .name-main{font-weight:900;color:#173f35;line-height:1.25}
+        .tiny{font-size:10px;color:#668279;margin-top:3px}
+        .ecog-pill{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:46px;
+            padding:3px 8px;
+            border-radius:999px;
+            border:1px solid #b7ccf4;
+            background:#edf4ff;
+            color:var(--azul);
+            font-size:10px;
+            font-weight:900;
+        }
+        .action-row{display:flex;gap:6px;flex-wrap:wrap}
+        .btn.action{
+            padding:7px 10px;
+            font-size:10px;
+            border-radius:8px;
+        }
+        .btn.action.alt{background:#f7fbfa}
+
+        @media (max-width:1180px){
+            .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+            .grid{grid-template-columns:1fr 1fr}
+            .table-wrap{overflow:auto}
+            table{min-width:1260px}
+        }
+        @media (max-width:720px){
+            body{padding:10px}
+            .head h1{font-size:24px}
+            .grid{grid-template-columns:1fr}
+            .stats{grid-template-columns:1fr}
+            .table-wrap{padding:10px}
+        }
+    </style>
+</head>
+<body class="qf-refresh">
+    <div class="wrap">
+        <div class="head">
+            <div class="head-main">
+                <div>
+                    <h1>Lista de Espera de Programación Quirúrgica</h1>
+                    <p>Panel operativo de urología quirúrgica: prioriza por severidad clínica, tiempo en espera y condición oncológica sin alterar la trazabilidad existente.</p>
+                </div>
+                <div class="head-badges">
+                    <span class="head-badge">Orden clínico activo</span>
+                    <span class="head-badge">Triage por prioridad</span>
+                    <span class="head-badge">Gobernanza longitudinal</span>
+                    <span class="head-badge">BD dedicada lista espera</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <a class="btn main" href="/quirofano/lista-espera/ingresar">➕ Ingresar nuevo paciente</a>
+            <a class="btn alt" href="/quirofano">🏥 Módulo quirúrgico</a>
+            <a class="btn alt" href="/reporte/cola-preventiva">📊 Reporte histórico (compat)</a>
+        </div>
+
+        <div class="stats">
+            <div class="card">
+                <div class="k">Total en espera</div>
+                <div class="v">{{ total }}</div>
+                <div class="s">Pacientes activos en cola quirúrgica</div>
+            </div>
+            <div class="card">
+                <div class="k">Prioridad alta / muy alta</div>
+                <div class="v">{{ total_alta }}</div>
+                <div class="s">Candidatos de atención preferente</div>
+            </div>
+            <div class="card">
+                <div class="k">Oncológicos en espera</div>
+                <div class="v">{{ total_onco }}</div>
+                <div class="s">Seguimiento sensible oncológico</div>
+            </div>
+            <div class="card">
+                <div class="k">Promedio de días en espera</div>
+                <div class="v">{{ promedio_espera }}</div>
+                <div class="s">Tiempo medio de permanencia</div>
+            </div>
+        </div>
+
+        <div class="filters-shell">
+            <div class="filters">
+                <div style="font-size:10px;color:#5f7b73;font-weight:700;margin-bottom:10px">
+                    Fuente espejo dedicada: {{ waitlist_db_file }}
+                </div>
+                <form method="get" action="/quirofano/lista-espera">
+                    <div class="grid">
+                        <div class="field">
+                            <label>Búsqueda</label>
+                            <input name="q" value="{{ q }}" placeholder="NSS / Nombre / Diagnóstico / Procedimiento">
+                        </div>
+                        <div class="field">
+                            <label>Prioridad</label>
+                            <select name="prioridad">
+                                <option value="">Todas</option>
+                                <option value="MUY ALTA" {% if prioridad == 'MUY ALTA' %}selected{% endif %}>MUY ALTA</option>
+                                <option value="ALTA" {% if prioridad == 'ALTA' %}selected{% endif %}>ALTA</option>
+                                <option value="MEDIA" {% if prioridad == 'MEDIA' %}selected{% endif %}>MEDIA</option>
+                                <option value="BAJA" {% if prioridad == 'BAJA' %}selected{% endif %}>BAJA</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Diagnóstico</label>
+                            <select name="patologia">
+                                <option value="">Todos</option>
+                                {% for p in patologia_options %}
+                                <option value="{{ p }}" {% if patologia == p %}selected{% endif %}>{{ p }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>HGZ</label>
+                            <input name="hgz" value="{{ hgz }}" placeholder="Ej. HGZ 01">
+                        </div>
+                        <button class="btn main" type="submit">Aplicar filtros</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="table-shell">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Prioridad</th>
+                            <th>Días espera</th>
+                            <th>Fecha ingreso</th>
+                            <th>NSS</th>
+                            <th>Paciente</th>
+                            <th>Edad / Sexo</th>
+                            <th>Diagnóstico</th>
+                            <th>ECOG</th>
+                            <th>Procedimiento en espera</th>
+                            <th>HGZ</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in waitlist_rows %}
+                        {% set wait_class = 'wait-low' %}
+                        {% if r.dias_espera >= 90 %}
+                            {% set wait_class = 'wait-hi' %}
+                        {% elif r.dias_espera >= 45 %}
+                            {% set wait_class = 'wait-med' %}
+                        {% endif %}
+                        <tr class="row-prio-{{ r.prioridad_css or 'NE' }}">
+                            <td><span class="badge prio-{{ r.prioridad_css or 'NE' }}">{{ r.prioridad_clinica or 'N/E' }}</span></td>
+                            <td><span class="wait-chip {{ wait_class }}">{{ r.dias_espera }} días</span></td>
+                            <td>{{ r.fecha_ingreso }}</td>
+                            <td><strong>{{ r.nss }}</strong></td>
+                            <td>
+                                <div class="name-main">{{ r.paciente_nombre }}</div>
+                                {% if r.onco %}<div class="tiny">Paciente oncológico</div>{% endif %}
+                            </td>
+                            <td>{{ r.edad if r.edad is not none else 'N/E' }} / {{ r.sexo or 'N/E' }}</td>
+                            <td>{{ r.patologia or 'N/E' }}</td>
+                            <td><span class="ecog-pill">{{ r.ecog or 'N/E' }}</span></td>
+                            <td>
+                                <div class="name-main">{{ r.procedimiento_programado or 'N/E' }}</div>
+                                {% if r.motivo_prioridad %}<div class="tiny">{{ r.motivo_prioridad }}</div>{% endif %}
+                            </td>
+                            <td>{{ r.hgz or 'N/E' }}</td>
+                            <td><span class="badge">{{ r.estatus or 'N/E' }}</span></td>
+                            <td>
+                                <div class="action-row">
+                                    <a class="btn action alt" href="/expediente?consulta_id={{ r.consulta_id }}">Expediente</a>
+                                    <a class="btn action alt" href="/quirofano/lista-espera/ingresar?consulta_id={{ r.consulta_id }}&nss={{ r.nss|urlencode }}">Editar</a>
+                                    <a class="btn action main" href="/quirofano/nuevo?consulta_id={{ r.consulta_id }}">Programar</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="12">Sin pacientes en lista de espera con los filtros actuales.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

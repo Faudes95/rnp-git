@@ -5,6 +5,7 @@
     <title>IA Quirófano - fau_BOT</title>
     <link href="/static/css/fonts_offline.css" rel="stylesheet">
     <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
     <style>
         :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; --fondo:#f4f6f9; }
         body { font-family:'Montserrat',sans-serif; margin:0; padding:20px; background:var(--fondo); }
@@ -41,7 +42,7 @@
     @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
     </style>
 </head>
-<body>
+<body class="qf-refresh">
 <div class="container">
     <h1>IA Quirófano - Agente Especializado</h1>
     <p class="muted">Actualizado: {{ fecha }} | Integrado de manera aditiva con fau_BOT y reporte de alertas.</p>

@@ -98,7 +98,7 @@ def api_inpatient_daily_note(
             io_summary_json=payload.io_summary_json,
             symptoms_json=payload.symptoms_json,
             events_pending_json=payload.events_pending_json,
-            free_text=payload.free_text,
+            free_text=(payload.free_text or payload.note_text),
             is_final=payload.is_final,
             upsert=bool(upsert),
             consulta_patient_id=payload.consulta_patient_id,

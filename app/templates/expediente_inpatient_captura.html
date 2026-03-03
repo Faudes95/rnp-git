@@ -80,8 +80,6 @@
 
         <div class="toolbar">
             <a class="btn alt" href="/expediente?consulta_id={{ consulta.id }}">Volver al Expediente</a>
-            <a class="btn alt" href="/expediente/nota-diaria?consulta_id={{ consulta.id }}{% if hospitalizacion_id %}&hospitalizacion_id={{ hospitalizacion_id }}{% endif %}">Cambiar modo</a>
-            <a class="btn alt" href="/expediente/nota-medica?consulta_id={{ consulta.id }}">Nota médica clásica</a>
             <a class="btn alt" href="/hospitalizacion">Hospitalización</a>
             <a class="btn" href="/expediente/inpatient-captura/export/xlsx?consulta_id={{ consulta.id }}{% if hospitalizacion_id %}&hospitalizacion_id={{ hospitalizacion_id }}{% endif %}">Exportar XLSX</a>
             <a class="btn" href="/expediente/inpatient-captura/export/docx?consulta_id={{ consulta.id }}{% if hospitalizacion_id %}&hospitalizacion_id={{ hospitalizacion_id }}{% endif %}">Exportar DOCX</a>
@@ -156,7 +154,7 @@
         <section class="tab-pane" data-pane="vitales">
             <div class="block">
                 <h2>Signos vitales seriados</h2>
-                <form method="post" action="/expediente/inpatient-captura/vitals">
+                <form id="vitalsCaptureForm" method="post" action="/expediente/inpatient-captura/vitals">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
                     <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
@@ -589,7 +587,7 @@
         <section class="tab-pane" data-pane="nota" id="nota-diaria">
             <div class="block">
                 <h2>Nota diaria intrahospitalaria</h2>
-                <form method="post" action="/expediente/inpatient-captura/daily-note">
+                <form id="dailyNoteCaptureForm" method="post" action="/expediente/inpatient-captura/daily-note">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="hidden" name="consulta_id" value="{{ consulta.id }}">
                     <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
@@ -621,13 +619,22 @@
                         </div>
                         <input type="hidden" name="is_final" value="0">
                         <div><label>Modo de actualización</label><select name="upsert"><option value="0">No</option><option value="1">Sí</option></select></div>
-                        <div><label>Frecuencia cardiaca</label><input type="number" name="hr" value="{{ vitals_latest.heart_rate if vitals_latest else '' }}"></div>
-                        <div><label>TA sistólica</label><input type="number" name="sbp" value="{{ vitals_latest.sbp if vitals_latest else '' }}"></div>
-                        <div><label>TA diastólica</label><input type="number" name="dbp" value="{{ vitals_latest.dbp if vitals_latest else '' }}"></div>
-                        <div><label>Temp</label><input type="number" step="0.1" name="temp" value="{{ vitals_latest.temperature if vitals_latest else '' }}"></div>
-                        <div><label>Peso</label><input type="number" step="0.1" name="peso" value="{{ io_latest.weight_kg if io_latest else '' }}"></div>
-                        <div><label>Talla</label><input type="number" step="0.1" name="talla" value="{{ io_latest.height_cm if io_latest else '' }}"></div>
-                        <div><label>IMC</label><input type="number" step="0.1" name="imc"></div>
+                        <div><label>Frecuencia cardiaca</label><input id="note_hr" type="number" name="hr" value="{{ note_prefill_hr if note_prefill_hr is not none else '' }}"></div>
+                        <div><label>TA sistólica</label><input id="note_sbp" type="number" name="sbp" value="{{ note_prefill_sbp if note_prefill_sbp is not none else '' }}"></div>
+                        <div><label>TA diastólica</label><input id="note_dbp" type="number" name="dbp" value="{{ note_prefill_dbp if note_prefill_dbp is not none else '' }}"></div>
+                        <div><label>Temp</label><input id="note_temp" type="number" step="0.1" name="temp" value="{{ note_prefill_temp if note_prefill_temp is not none else '' }}"></div>
+                        {% if is_first_intrahospital_note %}
+                        <div><label>Peso</label><input type="number" step="0.1" name="peso" value="{{ default_peso if default_peso is not none else (io_latest.weight_kg if io_latest else '') }}"></div>
+                        <div><label>Talla</label><input type="number" step="0.1" name="talla" value="{{ default_talla if default_talla is not none else (io_latest.height_cm if io_latest else '') }}"></div>
+                        <div><label>IMC</label><input type="number" step="0.1" name="imc" value="{{ default_imc if default_imc is not none else '' }}"></div>
+                        {% else %}
+                        <div><label>Peso (referencia)</label><input type="text" readonly value="{{ default_peso if default_peso is not none else 'N/E' }}"></div>
+                        <div><label>Talla (referencia)</label><input type="text" readonly value="{{ default_talla if default_talla is not none else 'N/E' }}"></div>
+                        <div><label>IMC (referencia)</label><input type="text" readonly value="{{ default_imc if default_imc is not none else 'N/E' }}"></div>
+                        <input type="hidden" name="peso" value="{{ default_peso if default_peso is not none else '' }}">
+                        <input type="hidden" name="talla" value="{{ default_talla if default_talla is not none else '' }}">
+                        <input type="hidden" name="imc" value="{{ default_imc if default_imc is not none else '' }}">
+                        {% endif %}
                     </div>
                     <div class="grid-small" style="margin-top:8px;">
                         <div style="grid-column:1 / -1;" class="tiny">Autorrelleno por NSS y nombre desde laboratorio estructurado + resumen de laboratorios de guardia. Puedes sobrescribir valores y agregar analitos extra.</div>
@@ -692,7 +699,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            {{ n.free_text or "N/E" }}
+                            {{ n.free_text or n.note_text or "N/E" }}
                             <div class="tiny">
                                 Balance: {{ n.io_summary_json.balance_ml if n.io_summary_json and n.io_summary_json.balance_ml is defined else "N/E" }} ml
                                 ({{ n.io_summary_json.balance_estado if n.io_summary_json and n.io_summary_json.balance_estado is defined else "N/E" }})
@@ -846,6 +853,105 @@
             }
             if (dxSelect) dxSelect.addEventListener('change', applyDx);
             applyDx();
+
+            // Prefill de la nota diaria con valores ya capturados en "Signos vitales".
+            var vitalsForm = document.getElementById('vitalsCaptureForm');
+            var noteForm = document.getElementById('dailyNoteCaptureForm');
+            var notePane = document.querySelector('.tab-pane[data-pane="nota"]');
+            var vitalsKeyBase = '';
+            if (vitalsForm) {
+                var cidInput = vitalsForm.querySelector('input[name="consulta_id"]');
+                var hidInput = vitalsForm.querySelector('input[name="hospitalizacion_id"]');
+                var cid = cidInput ? (cidInput.value || '').trim() : '';
+                var hid = hidInput ? (hidInput.value || '').trim() : '';
+                vitalsKeyBase = 'inpatient_vitals_draft:' + cid + ':' + hid;
+            }
+            function readField(formEl, name){
+                return formEl ? formEl.querySelector('[name="' + name + '"]') : null;
+            }
+            function isBlank(el){
+                return !el || !String(el.value || '').trim();
+            }
+            function markTouched(el){
+                if (!el) return;
+                el.dataset.userTouched = '1';
+            }
+            function syncVitalsToNote(){
+                if (!vitalsForm || !noteForm) return;
+                var pairs = [
+                    ['heart_rate', 'hr'],
+                    ['sbp', 'sbp'],
+                    ['dbp', 'dbp'],
+                    ['temperature', 'temp'],
+                ];
+                pairs.forEach(function(pair){
+                    var src = readField(vitalsForm, pair[0]);
+                    var dst = readField(noteForm, pair[1]);
+                    if (!src || !dst) return;
+                    var srcVal = String(src.value || '').trim();
+                    if (!srcVal) return;
+                    if (dst.dataset.userTouched === '1') return;
+                    if (!isBlank(dst)) return;
+                    dst.value = srcVal;
+                });
+            }
+            function persistVitalsDraft(){
+                if (!vitalsForm || !vitalsKeyBase || !window.localStorage) return;
+                var payload = {
+                    heart_rate: (readField(vitalsForm, 'heart_rate') || {}).value || '',
+                    sbp: (readField(vitalsForm, 'sbp') || {}).value || '',
+                    dbp: (readField(vitalsForm, 'dbp') || {}).value || '',
+                    temperature: (readField(vitalsForm, 'temperature') || {}).value || '',
+                    ts: Date.now()
+                };
+                try { localStorage.setItem(vitalsKeyBase, JSON.stringify(payload)); } catch(e){}
+            }
+            function restoreVitalsDraft(){
+                if (!vitalsForm || !vitalsKeyBase || !window.localStorage) return;
+                var raw = '';
+                try { raw = localStorage.getItem(vitalsKeyBase) || ''; } catch(e){}
+                if (!raw) return;
+                try {
+                    var payload = JSON.parse(raw);
+                    ['heart_rate', 'sbp', 'dbp', 'temperature'].forEach(function(name){
+                        var input = readField(vitalsForm, name);
+                        if (input && isBlank(input) && payload && payload[name] !== undefined && payload[name] !== null && String(payload[name]).trim()) {
+                            input.value = String(payload[name]).trim();
+                        }
+                    });
+                } catch(e){}
+            }
+            if (noteForm) {
+                ['hr', 'sbp', 'dbp', 'temp'].forEach(function(name){
+                    var input = readField(noteForm, name);
+                    if (!input) return;
+                    input.addEventListener('input', function(){ markTouched(input); });
+                    input.addEventListener('change', function(){ markTouched(input); });
+                });
+            }
+            if (vitalsForm) {
+                ['heart_rate', 'sbp', 'dbp', 'temperature'].forEach(function(name){
+                    var input = readField(vitalsForm, name);
+                    if (!input) return;
+                    input.addEventListener('input', syncVitalsToNote);
+                    input.addEventListener('change', syncVitalsToNote);
+                });
+                vitalsForm.addEventListener('submit', function(){ persistVitalsDraft(); });
+            }
+            if (notePane && window.MutationObserver) {
+                var obs = new MutationObserver(function(){
+                    if (notePane.classList.contains('active')) syncVitalsToNote();
+                });
+                obs.observe(notePane, { attributes: true, attributeFilter: ['class'] });
+            }
+            try {
+                var updated = new URLSearchParams(window.location.search || '').get('updated');
+                if (updated === 'vitals_ok' && vitalsKeyBase && window.localStorage) {
+                    localStorage.removeItem(vitalsKeyBase);
+                }
+            } catch(e){}
+            restoreVitalsDraft();
+            syncVitalsToNote();
         })();
     </script>
 <script src="/static/js/clinical_validation.js"></script>

@@ -1,0 +1,156 @@
+/* Visual refresh aditivo para interfaces del módulo quirúrgico */
+:root {
+    --qf-verde-1: #13322B;
+    --qf-verde-2: #1a4a3f;
+    --qf-verde-3: #245a4c;
+    --qf-dorado: #B38E5D;
+    --qf-line: #cadad4;
+    --qf-card: rgba(255, 255, 255, 0.9);
+}
+
+body.qf-refresh {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px;
+    color: var(--qf-verde-1);
+    background:
+        radial-gradient(circle at 12% 0%, rgba(179, 142, 93, 0.18), transparent 36%),
+        radial-gradient(circle at 88% 100%, rgba(19, 50, 43, 0.2), transparent 34%),
+        linear-gradient(130deg, #0e322c, #1c5a50 52%, #1a4a3f);
+}
+
+body.qf-refresh .container,
+body.qf-refresh .wrap {
+    max-width: 1320px;
+    margin: 0 auto;
+    border-radius: 18px;
+    border: 1px solid rgba(179, 142, 93, 0.72);
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.95), rgba(245, 251, 248, 0.91));
+    backdrop-filter: blur(3px);
+    box-shadow: 0 20px 38px rgba(0, 0, 0, 0.24);
+    overflow: hidden;
+    position: relative;
+}
+
+body.qf-refresh .container::before,
+body.qf-refresh .wrap::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--qf-verde-1), var(--qf-dorado), var(--qf-verde-3));
+    pointer-events: none;
+    z-index: 2;
+}
+
+body.qf-refresh .global-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+body.qf-refresh .nav-chip {
+    text-decoration: none;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid #c7d5d0;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--qf-verde-1);
+    transition: all 0.2s ease;
+}
+
+body.qf-refresh .nav-chip:hover {
+    transform: translateY(-1px);
+    border-color: #3da68f;
+    background: #eef8f4;
+}
+
+body.qf-refresh .nav-chip.active {
+    background: var(--qf-dorado);
+    border-color: #9f7f53;
+    color: #17342d;
+    box-shadow: 0 2px 8px rgba(179, 142, 93, 0.35);
+}
+
+body.qf-refresh h1 {
+    margin: 0 0 8px;
+    color: var(--qf-verde-1);
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+}
+
+body.qf-refresh h2 {
+    margin: 0 0 18px;
+    color: var(--qf-dorado);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+body.qf-refresh .btn,
+body.qf-refresh .btn-back,
+body.qf-refresh .submit-bar,
+body.qf-refresh button[type="submit"] {
+    transition: all 0.2s ease;
+}
+
+body.qf-refresh .btn:hover,
+body.qf-refresh .btn-back:hover,
+body.qf-refresh .submit-bar:hover,
+body.qf-refresh button[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(19, 50, 43, 0.25);
+}
+
+body.qf-refresh input:focus,
+body.qf-refresh select:focus,
+body.qf-refresh textarea:focus {
+    border-color: var(--qf-dorado);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(179, 142, 93, 0.15);
+}
+
+body.qf-refresh table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+body.qf-refresh table th {
+    background: linear-gradient(180deg, #13322B, #0f3027) !important;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-size: 11px;
+}
+
+body.qf-refresh table tbody tr:nth-child(even) {
+    background: #f8faf9;
+}
+
+body.qf-refresh table tbody tr:hover td {
+    background: rgba(179, 142, 93, 0.1);
+}
+
+body.qf-refresh .section,
+body.qf-refresh .info,
+body.qf-refresh .filters {
+    border-radius: 12px;
+    border: 1px solid #d9e4df;
+    background: rgba(255, 255, 255, 0.72);
+}
+
+body.qf-refresh .head {
+    border-bottom: 3px solid var(--qf-dorado) !important;
+}
+
+@media (max-width: 760px) {
+    body.qf-refresh {
+        padding: 10px;
+    }
+}

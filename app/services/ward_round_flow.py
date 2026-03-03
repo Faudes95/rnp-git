@@ -350,6 +350,17 @@ async def ward_round_save_inline_note_flow(
         soap_o = _safe(form.get("soap_o"))
         soap_a = _safe(form.get("soap_a"))
         soap_p = _safe(form.get("soap_p"))
+        request_user = _safe(request.headers.get("X-User") or request.headers.get("X-Forwarded-User") or "ward_round")
+        nss_digits = "".join(ch for ch in nss if ch.isdigit())[:10]
+        if len(nss_digits) != 10 and consulta_id:
+            try:
+                from app.core.app_context import main_proxy as m
+                c = db.query(m.ConsultaDB).filter(m.ConsultaDB.id == int(consulta_id)).first()
+                if c is not None:
+                    nss_digits = "".join(ch for ch in _safe(getattr(c, "nss", "")) if ch.isdigit())[:10]
+            except Exception:
+                pass
+        nss = nss_digits or nss
 
         nota_text = f"S: {soap_s}\nO: {soap_o}\nA: {soap_a}\nP: {soap_p}"
         hoy = date.today()
@@ -364,12 +375,16 @@ async def ward_round_save_inline_note_flow(
             db.execute(
                 EXPEDIENTE_NOTAS_DIARIAS.insert().values(
                     consulta_id=consulta_id,
+                    hospitalizacion_id=hospitalizacion_id or None,
                     nss=nss,
                     nombre=nombre,
                     fecha_nota=hoy,
                     cama=cama,
-                    servicio="UROLOGIA",
+                    servicio_nota="UROLOGIA",
+                    cie10_codigo="",
+                    diagnostico_cie10="",
                     nota_texto=nota_text,
+                    creado_por=request_user,
                     creado_en=utcnow(),
                 )
             )
@@ -378,18 +393,51 @@ async def ward_round_save_inline_note_flow(
 
         # Save to INPATIENT_DAILY_NOTES (structured)
         try:
-            from app.models.inpatient_daily_note import INPATIENT_DAILY_NOTES
-            db.execute(
-                INPATIENT_DAILY_NOTES.insert().values(
-                    consulta_id=consulta_id,
-                    patient_id=nss,
-                    note_date=hoy,
-                    note_type="EVOLUCION",
-                    free_text=nota_text,
-                    status="FINAL",
-                    created_at=utcnow(),
-                    updated_at=utcnow(),
-                )
+            from app.core.app_context import main_proxy as m
+            from app.services.hospitalization_notes_flow import (
+                create_or_get_active_episode,
+                upsert_daily_note,
+            )
+
+            episode = create_or_get_active_episode(
+                db,
+                m,
+                patient_id=nss,
+                consulta_id=consulta_id or None,
+                hospitalizacion_id=hospitalizacion_id or None,
+                service="UROLOGIA",
+                location=cama,
+                shift="VISITA",
+                author_user_id=request_user,
+                started_on=hoy,
+                source_route="/ward-round/nota",
+                metrics={"captura_origen": "WARD_ROUND"},
+            )
+            upsert_daily_note(
+                db,
+                episode_id=int(episode["id"]),
+                note_date=hoy,
+                note_type="PASE_VISITA",
+                service="PASE_VISITA",
+                location=cama,
+                shift="VISITA",
+                author_user_id=request_user,
+                cie10_codigo="",
+                diagnostico="",
+                vitals={},
+                labs={},
+                devices={},
+                events={"tipo": "PASE_VISITA_DIGITAL"},
+                payload={
+                    "source": "ward_round",
+                    "source_route": "/ward-round/nota",
+                    "soap": {"s": soap_s, "o": soap_o, "a": soap_a, "p": soap_p},
+                    "captura": "PASE_VISITA_DIGITAL",
+                },
+                note_text=nota_text,
+                status="FINAL",
+                source_route="/ward-round/nota",
+                mirror_legacy=False,
             )
         except Exception as e:
             logger.warning("ward_round structured note save: %s", e)

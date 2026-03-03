@@ -42,6 +42,7 @@ class InpatientDailyNoteCreate(BaseModel):
     symptoms_json: Dict[str, Any] = Field(default_factory=dict)
     events_pending_json: Dict[str, Any] = Field(default_factory=dict)
     free_text: Optional[str] = None
+    note_text: Optional[str] = None
     is_final: bool = False
     consulta_patient_id: Optional[str] = None
     note_type: Optional[str] = "EVOLUCION"
@@ -60,6 +61,7 @@ class InpatientDailyNoteOut(BaseModel):
     symptoms_json: Dict[str, Any] = Field(default_factory=dict)
     events_pending_json: Dict[str, Any] = Field(default_factory=dict)
     free_text: Optional[str] = None
+    note_text: Optional[str] = None
     is_final: bool = False
     version: int = 1
     created_at: Optional[str] = None

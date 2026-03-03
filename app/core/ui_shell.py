@@ -101,7 +101,11 @@ def _patient_links(patient_ctx: Dict[str, str]) -> List[Dict[str, str]]:
 
     if consulta_id:
         links.append({"label": "Expediente", "href": f"/expediente?consulta_id={consulta_id}"})
-        links.append({"label": "Nota diaria", "href": f"/expediente/nota-medica?consulta_id={consulta_id}"})
+        note_href = f"/expediente/inpatient-captura?consulta_id={consulta_id}"
+        if hosp_id:
+            note_href += f"&hospitalizacion_id={hosp_id}"
+        note_href += "#nota-diaria"
+        links.append({"label": "+ Realizar nota médica", "href": note_href})
     elif nss:
         q = urlencode({"nss": nss, "nombre": nombre})
         links.append({"label": "Expediente", "href": f"/expediente?{q}"})
@@ -150,14 +154,19 @@ def _suggested_actions(path: str, patient_ctx: Dict[str, str]) -> List[Dict[str,
         ]
     if p.startswith("/expediente"):
         links = [
-            {"label": "Nota médica clásica", "href": "/expediente/nota-medica"},
+            {"label": "+ Realizar nota médica", "href": "/expediente/inpatient-captura#nota-diaria"},
             {"label": "Captura estructurada", "href": "/expediente/inpatient-captura"},
             {"label": "Hospitalización", "href": "/hospitalizacion"},
         ]
         if patient_ctx.get("consulta_id"):
             cid = patient_ctx["consulta_id"]
-            links[0]["href"] = f"/expediente/nota-medica?consulta_id={cid}"
-            links[1]["href"] = f"/expediente/inpatient-captura?consulta_id={cid}#nota-diaria"
+            hid = _safe_text(patient_ctx.get("hospitalizacion_id"))
+            href = f"/expediente/inpatient-captura?consulta_id={cid}"
+            if hid:
+                href += f"&hospitalizacion_id={hid}"
+            href += "#nota-diaria"
+            links[0]["href"] = href
+            links[1]["href"] = href
         return links
     return [
         {"label": "Consulta Externa", "href": "/consulta_externa"},

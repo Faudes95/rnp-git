@@ -8,7 +8,7 @@ from urllib.parse import quote, unquote
 
 from fastapi import Request
 from fastapi.responses import HTMLResponse
-from sqlalchemy import String, and_, cast, func, or_, select
+from sqlalchemy import String, and_, cast, desc, func, or_, select
 from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
@@ -120,6 +120,138 @@ def _json_list(value: Any) -> List[Any]:
     return []
 
 
+def _humanize_key(key: str) -> str:
+    raw = _safe_text(key).replace(".", " ").replace("-", " ").replace("_", " ")
+    raw = re.sub(r"\s+", " ", raw).strip()
+    if not raw:
+        return "Campo"
+    txt = raw.title()
+    txt = txt.replace("Cie10", "CIE10").replace("Hbz", "HBZ").replace("Icu", "ICU")
+    return txt
+
+
+def _is_scalar_value(value: Any) -> bool:
+    return isinstance(value, (str, int, float, bool, date, datetime))
+
+
+def _collect_protocol_scalar_fields(payload: Dict[str, Any]) -> Dict[str, str]:
+    out: Dict[str, str] = {}
+    if not isinstance(payload, dict):
+        return out
+
+    stack: List[Dict[str, Any]] = [payload]
+    secciones = payload.get("secciones")
+    if isinstance(secciones, dict):
+        stack.append(secciones)
+        for v in secciones.values():
+            if isinstance(v, dict):
+                stack.append(v)
+
+    for block in stack:
+        for key, value in block.items():
+            if isinstance(value, dict):
+                for k2, v2 in value.items():
+                    if _is_scalar_value(v2) and _safe_text(v2):
+                        out.setdefault(_safe_text(k2).lower(), _safe_text(v2))
+                continue
+            if isinstance(value, list):
+                vals = [_safe_text(x) for x in value if _safe_text(x)]
+                if vals:
+                    out.setdefault(_safe_text(key).lower(), ", ".join(vals[:8]))
+                continue
+            if _is_scalar_value(value) and _safe_text(value):
+                out.setdefault(_safe_text(key).lower(), _safe_text(value))
+    return out
+
+
+def _build_protocolo_resumen(consulta: Any) -> List[Dict[str, str]]:
+    rows: List[Dict[str, str]] = []
+    rows.append({"label": "Diagnóstico principal", "value": _safe_text(getattr(consulta, "diagnostico_principal", "")) or "N/E"})
+    rows.append({"label": "Estatus", "value": _safe_text(getattr(consulta, "estatus_protocolo", "")) or "N/E"})
+    rows.append({"label": "Plan terapéutico", "value": _safe_text(getattr(consulta, "plan_especifico", "")) or "N/E"})
+
+    proto_dict = getattr(consulta, "protocolo_detalles", None)
+    proto = proto_dict if isinstance(proto_dict, dict) else {}
+    scalar = _collect_protocol_scalar_fields(proto)
+    preferred = [
+        ("diagnostico_cie10_codigo", "CIE10"),
+        ("cie10_codigo", "CIE10"),
+        ("diagnostico_principal", "Diagnóstico registrado"),
+        ("padecimiento_actual", "Padecimiento actual"),
+        ("exploracion_fisica", "Exploración física"),
+        ("resumen_ingreso_text", "Resumen de ingreso"),
+        ("servicio_entrada", "Servicio de entrada"),
+        ("agregado_medico", "Médico responsable"),
+    ]
+
+    seen_labels = {r["label"] for r in rows}
+    for key, label in preferred:
+        val = _safe_text(scalar.get(key))
+        if val and label not in seen_labels:
+            rows.append({"label": label, "value": val})
+            seen_labels.add(label)
+
+    if len(rows) < 12:
+        for key, val in scalar.items():
+            label = _humanize_key(key)
+            if label in seen_labels:
+                continue
+            rows.append({"label": label, "value": _safe_text(val)})
+            seen_labels.add(label)
+            if len(rows) >= 12:
+                break
+    return rows
+
+
+def _build_lista_espera_qx_summary(surgical_rows: List[Any]) -> Dict[str, Any]:
+    waiting: List[Dict[str, Any]] = []
+    waiting_status = {"PROGRAMADA", "PENDIENTE", "EN_ESPERA", "EN ESPERA"}
+
+    for row in surgical_rows or []:
+        estatus = _safe_text(getattr(row, "estatus", "")).upper()
+        if estatus not in waiting_status:
+            continue
+
+        since_raw = (
+            getattr(row, "fecha_ingreso_pendiente_programar", None)
+            or getattr(row, "creado_en", None)
+            or getattr(row, "fecha_programada", None)
+        )
+        since_date: Optional[date] = None
+        if isinstance(since_raw, datetime):
+            since_date = since_raw.date()
+        elif isinstance(since_raw, date):
+            since_date = since_raw
+
+        dias = getattr(row, "dias_en_espera", None)
+        if dias is None and since_date is not None:
+            dias = max(0, (date.today() - since_date).days)
+
+        waiting.append(
+            {
+                "id": int(getattr(row, "id", 0) or 0),
+                "procedimiento": _safe_text(getattr(row, "procedimiento_programado", None) or getattr(row, "procedimiento", None) or "N/E"),
+                "estatus": estatus,
+                "desde": since_date.isoformat() if since_date else "",
+                "dias_espera": int(dias) if isinstance(dias, (int, float)) else None,
+                "prioridad": _safe_text(getattr(row, "prioridad_clinica", None) or "NO_REGISTRADA"),
+                "origen": _safe_text(getattr(row, "modulo_origen", None) or "QUIROFANO"),
+            }
+        )
+
+    waiting.sort(key=lambda x: (x.get("desde") or "9999-12-31", -(x.get("dias_espera") or 0), x.get("id") or 0))
+    active = waiting[0] if waiting else {}
+    return {
+        "en_espera": bool(waiting),
+        "total": len(waiting),
+        "procedimiento": _safe_text(active.get("procedimiento")) if active else "",
+        "desde": _safe_text(active.get("desde")) if active else "",
+        "dias_espera": active.get("dias_espera") if active else None,
+        "prioridad": _safe_text(active.get("prioridad")) if active else "",
+        "items": waiting[:20],
+    }
+
+
 def _match_identity(
     *,
     record_nss: Any,
@@ -167,6 +299,441 @@ def _extract_lab_markers_from_payload(payload: Dict[str, Any]) -> Dict[str, floa
     return markers
 
 
+def _merge_notas_medicas_with_structured(
+    legacy_notes: List[Dict[str, Any]],
+    structured_notes: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    rows: List[Dict[str, Any]] = [dict(r) for r in (legacy_notes or [])]
+    if not structured_notes:
+        return rows
+
+    def _as_int(value: Any) -> int:
+        try:
+            return int(value)
+        except Exception:
+            return 0
+
+    def _legacy_exact_key(row: Dict[str, Any]) -> Tuple[str, int, str, int]:
+        return (
+            _safe_text(row.get("fecha_nota")),
+            _as_int(row.get("hospitalizacion_id")),
+            _safe_text(row.get("servicio_nota")).upper(),
+            _as_int(row.get("consulta_id")),
+        )
+
+    def _legacy_loose_key(row: Dict[str, Any]) -> Tuple[str, int, int]:
+        return (
+            _safe_text(row.get("fecha_nota")),
+            _as_int(row.get("hospitalizacion_id")),
+            _as_int(row.get("consulta_id")),
+        )
+
+    def _structured_exact_key(row: Dict[str, Any]) -> Tuple[str, int, str, int]:
+        return (
+            _safe_text(row.get("note_date")),
+            _as_int(row.get("hospitalizacion_id")),
+            _safe_text(row.get("service")).upper(),
+            _as_int(row.get("consulta_id")),
+        )
+
+    def _structured_loose_key(row: Dict[str, Any]) -> Tuple[str, int, int]:
+        return (
+            _safe_text(row.get("note_date")),
+            _as_int(row.get("hospitalizacion_id")),
+            _as_int(row.get("consulta_id")),
+        )
+
+    exact_index: Dict[Tuple[str, int, str, int], int] = {}
+    loose_index: Dict[Tuple[str, int, int], int] = {}
+    for idx, row in enumerate(rows):
+        if not isinstance(row.get("vitales"), dict):
+            row["vitales"] = {}
+        if not isinstance(row.get("labs"), dict):
+            row["labs"] = {}
+        key_exact = _legacy_exact_key(row)
+        if key_exact not in exact_index:
+            exact_index[key_exact] = idx
+        key_loose = _legacy_loose_key(row)
+        if key_loose not in loose_index:
+            loose_index[key_loose] = idx
+
+    for sn in structured_notes or []:
+        if not isinstance(sn, dict):
+            continue
+        s_vitals = sn.get("vitals") if isinstance(sn.get("vitals"), dict) else {}
+        s_labs = sn.get("labs") if isinstance(sn.get("labs"), dict) else {}
+        s_payload = sn.get("payload") if isinstance(sn.get("payload"), dict) else {}
+        s_text = (
+            _safe_text(sn.get("note_text"))
+            or _safe_text(sn.get("free_text"))
+            or _safe_text(s_payload.get("free_text"))
+            or _safe_text(s_payload.get("note_text"))
+        )
+
+        skey_exact = _structured_exact_key(sn)
+        idx = exact_index.get(skey_exact)
+        if idx is None:
+            idx = loose_index.get(_structured_loose_key(sn))
+
+        if idx is not None:
+            target = rows[idx]
+            if not _safe_text(target.get("nota_texto")) and s_text:
+                target["nota_texto"] = s_text
+            if not _safe_text(target.get("cama")) and _safe_text(sn.get("location")):
+                target["cama"] = _safe_text(sn.get("location"))
+            if not _safe_text(target.get("servicio_nota")) and _safe_text(sn.get("service")):
+                target["servicio_nota"] = _safe_text(sn.get("service"))
+            if not _safe_text(target.get("cie10_codigo")) and _safe_text(sn.get("cie10_codigo")):
+                target["cie10_codigo"] = _safe_text(sn.get("cie10_codigo"))
+            if not _safe_text(target.get("diagnostico_cie10")) and _safe_text(sn.get("diagnostico")):
+                target["diagnostico_cie10"] = _safe_text(sn.get("diagnostico"))
+
+            vitals_target = target.get("vitales") if isinstance(target.get("vitales"), dict) else {}
+            for k in ("hr", "sbp", "dbp", "temp", "peso", "talla", "imc"):
+                if vitals_target.get(k) in (None, "") and s_vitals.get(k) not in (None, ""):
+                    vitals_target[k] = s_vitals.get(k)
+            target["vitales"] = vitals_target
+
+            labs_target = target.get("labs") if isinstance(target.get("labs"), dict) else {}
+            for lk, lv in s_labs.items():
+                if labs_target.get(lk) in (None, "", "N/E") and lv not in (None, ""):
+                    labs_target[lk] = lv
+            target["labs"] = labs_target
+            continue
+
+        synthetic = {
+            "id": _as_int(sn.get("id")),
+            "consulta_id": sn.get("consulta_id"),
+            "hospitalizacion_id": sn.get("hospitalizacion_id"),
+            "fecha_nota": _safe_text(sn.get("note_date")),
+            "nss": _safe_text(sn.get("patient_id")),
+            "nombre": _safe_text(s_payload.get("nombre")),
+            "cama": _safe_text(sn.get("location")),
+            "servicio_nota": _safe_text(sn.get("service")),
+            "cie10_codigo": _safe_text(sn.get("cie10_codigo")),
+            "diagnostico_cie10": _safe_text(sn.get("diagnostico")),
+            "vitales": s_vitals,
+            "labs": s_labs,
+            "nota_texto": s_text,
+            "creado_por": _safe_text(sn.get("author_user_id")),
+            "creado_en": _safe_text(sn.get("created_at")) or _safe_text(sn.get("note_date")),
+        }
+        rows.append(synthetic)
+        new_idx = len(rows) - 1
+        exact_index[skey_exact] = new_idx
+        lkey = _structured_loose_key(sn)
+        if lkey not in loose_index:
+            loose_index[lkey] = new_idx
+
+    rows.sort(
+        key=lambda r: (
+            _safe_text(r.get("fecha_nota")),
+            _safe_text(r.get("creado_en")),
+            _as_int(r.get("id")),
+        ),
+        reverse=True,
+    )
+    return rows
+
+
+def _enrich_inpatient_history_with_legacy(
+    inpatient_notes: List[Dict[str, Any]],
+    legacy_notes: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    if not inpatient_notes:
+        return []
+
+    def _as_int(value: Any) -> int:
+        try:
+            return int(value)
+        except Exception:
+            return 0
+
+    exact: Dict[Tuple[str, int, str, int], Dict[str, Any]] = {}
+    loose: Dict[Tuple[str, int, int], Dict[str, Any]] = {}
+    for row in (legacy_notes or []):
+        day = _safe_text(row.get("fecha_nota"))
+        hid = _as_int(row.get("hospitalizacion_id"))
+        srv = _safe_text(row.get("servicio_nota")).upper()
+        cid = _as_int(row.get("consulta_id"))
+        if day:
+            exact.setdefault((day, hid, srv, cid), row)
+            loose.setdefault((day, hid, cid), row)
+
+    out: List[Dict[str, Any]] = []
+    for note in inpatient_notes:
+        row = dict(note or {})
+        day = _safe_text(row.get("note_date"))
+        hid = _as_int(row.get("hospitalizacion_id"))
+        srv = _safe_text(row.get("service")).upper()
+        cid = _as_int(row.get("consulta_id"))
+        legacy = exact.get((day, hid, srv, cid)) or loose.get((day, hid, cid))
+
+        if legacy:
+            if not _safe_text(row.get("note_text")) and _safe_text(legacy.get("nota_texto")):
+                row["note_text"] = _safe_text(legacy.get("nota_texto"))
+
+            vitals = row.get("vitals") if isinstance(row.get("vitals"), dict) else {}
+            lv = legacy.get("vitales") if isinstance(legacy.get("vitales"), dict) else {}
+            for k in ("hr", "sbp", "dbp", "temp", "peso", "talla", "imc"):
+                if vitals.get(k) in (None, "") and lv.get(k) not in (None, ""):
+                    vitals[k] = lv.get(k)
+            row["vitals"] = vitals
+
+            labs = row.get("labs") if isinstance(row.get("labs"), dict) else {}
+            ll = legacy.get("labs") if isinstance(legacy.get("labs"), dict) else {}
+            for lk, lv in ll.items():
+                if labs.get(lk) in (None, "", "N/E") and lv not in (None, ""):
+                    labs[lk] = lv
+            row["labs"] = labs
+
+        out.append(row)
+    return out
+
+
+def _enrich_inpatient_history_with_vitals_ts(
+    db: Session,
+    notes: List[Dict[str, Any]],
+    *,
+    consulta_ids: List[int],
+    hospitalizacion_ids: List[int],
+) -> List[Dict[str, Any]]:
+    if not notes:
+        return []
+    try:
+        from app.models.inpatient_ai_models import VITALS_TS
+    except Exception:
+        return notes
+
+    cond = []
+    if consulta_ids:
+        cond.append(VITALS_TS.c.consulta_id.in_([int(x) for x in consulta_ids if x is not None]))
+    if hospitalizacion_ids:
+        cond.append(VITALS_TS.c.hospitalizacion_id.in_([int(x) for x in hospitalizacion_ids if x is not None]))
+    if not cond:
+        return notes
+
+    rows = db.execute(
+        select(VITALS_TS)
+        .where(or_(*cond))
+        .order_by(desc(VITALS_TS.c.recorded_at), desc(VITALS_TS.c.id))
+        .limit(20000)
+    ).mappings().all()
+
+    def _row_has_values(r: Dict[str, Any]) -> bool:
+        return any(_to_float(r.get(k)) is not None for k in ("heart_rate", "sbp", "dbp", "temperature"))
+
+    def _as_int(value: Any) -> int:
+        try:
+            return int(value)
+        except Exception:
+            return 0
+
+    exact: Dict[Tuple[str, int, int], Dict[str, Any]] = {}
+    by_day_hosp: Dict[Tuple[str, int], Dict[str, Any]] = {}
+    by_day_cons: Dict[Tuple[str, int], Dict[str, Any]] = {}
+    by_day: Dict[str, Dict[str, Any]] = {}
+
+    for r in rows:
+        if not _row_has_values(r):
+            continue
+        day = _day_iso_from_dt(r.get("recorded_at"))
+        if not day:
+            continue
+        hid = _as_int(r.get("hospitalizacion_id"))
+        cid = _as_int(r.get("consulta_id"))
+        exact.setdefault((day, hid, cid), r)
+        by_day_hosp.setdefault((day, hid), r)
+        by_day_cons.setdefault((day, cid), r)
+        by_day.setdefault(day, r)
+
+    out: List[Dict[str, Any]] = []
+    for note in notes:
+        row = dict(note or {})
+        vit = row.get("vitals") if isinstance(row.get("vitals"), dict) else {}
+        has_vitals = any(_to_float(vit.get(k)) is not None for k in ("hr", "sbp", "dbp", "temp"))
+        if not has_vitals:
+            day = _safe_text(row.get("note_date"))
+            hid = _as_int(row.get("hospitalizacion_id"))
+            cid = _as_int(row.get("consulta_id"))
+            src = exact.get((day, hid, cid)) or by_day_hosp.get((day, hid)) or by_day_cons.get((day, cid)) or by_day.get(day)
+            if src:
+                if vit.get("hr") in (None, ""):
+                    vit["hr"] = _to_float(src.get("heart_rate"))
+                if vit.get("sbp") in (None, ""):
+                    vit["sbp"] = _to_float(src.get("sbp"))
+                if vit.get("dbp") in (None, ""):
+                    vit["dbp"] = _to_float(src.get("dbp"))
+                if vit.get("temp") in (None, ""):
+                    vit["temp"] = _to_float(src.get("temperature"))
+                row["vitals"] = vit
+        out.append(row)
+    return out
+
+
+def _is_ward_round_note(note: Dict[str, Any]) -> bool:
+    ntype = _safe_text(note.get("note_type")).upper()
+    if "PASE" in ntype or "WARD" in ntype:
+        return True
+
+    payload = note.get("payload") if isinstance(note.get("payload"), dict) else {}
+    source = _safe_text(payload.get("source") or payload.get("source_route") or payload.get("origin")).lower()
+    if "ward" in source or "pase_visita" in source or "pase visita" in source:
+        return True
+
+    author = _safe_text(note.get("author_user_id")).lower()
+    if "ward" in author or "pase" in author:
+        return True
+
+    text = _safe_text(note.get("note_text") or note.get("free_text"))
+    if text and re.search(r"(^|\n)s:\s*.+\n\s*o:\s*.+\n\s*a:\s*.+\n\s*p:\s*.+", text, re.IGNORECASE):
+        return True
+    return False
+
+
+def _merge_intrahosp_notes_by_day(notes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    if not notes:
+        return []
+
+    def _as_int(value: Any) -> int:
+        try:
+            return int(value)
+        except Exception:
+            return 0
+
+    groups: Dict[Tuple[str, int, int], List[Dict[str, Any]]] = defaultdict(list)
+    for raw in notes:
+        row = dict(raw or {})
+        day = _safe_text(row.get("note_date"))
+        hid = _as_int(row.get("hospitalizacion_id"))
+        cid = _as_int(row.get("consulta_id"))
+        groups[(day, hid, cid)].append(row)
+
+    merged_rows: List[Dict[str, Any]] = []
+    for (_day, _hid, _cid), bucket in groups.items():
+        ward_rows = [r for r in bucket if _is_ward_round_note(r)]
+        regular_rows = [r for r in bucket if not _is_ward_round_note(r)]
+
+        def _sort_key(r: Dict[str, Any]) -> Tuple[str, str, int]:
+            return (
+                _safe_text(r.get("created_at")),
+                _safe_text(r.get("updated_at")),
+                _as_int(r.get("id")),
+            )
+
+        if ward_rows and regular_rows:
+            regular_rows.sort(key=_sort_key, reverse=True)
+            ward_rows.sort(key=_sort_key, reverse=True)
+            base = dict(regular_rows[0])
+            ward = dict(ward_rows[0])
+
+            base_vitals = base.get("vitals") if isinstance(base.get("vitals"), dict) else {}
+            ward_vitals = ward.get("vitals") if isinstance(ward.get("vitals"), dict) else {}
+            for k in ("hr", "sbp", "dbp", "temp", "peso", "talla", "imc"):
+                if base_vitals.get(k) in (None, "") and ward_vitals.get(k) not in (None, ""):
+                    base_vitals[k] = ward_vitals.get(k)
+            base["vitals"] = base_vitals
+
+            base_labs = base.get("labs") if isinstance(base.get("labs"), dict) else {}
+            ward_labs = ward.get("labs") if isinstance(ward.get("labs"), dict) else {}
+            for k, v in ward_labs.items():
+                if base_labs.get(k) in (None, "", "N/E") and v not in (None, ""):
+                    base_labs[k] = v
+            base["labs"] = base_labs
+
+            reg_text = _safe_text(base.get("note_text") or base.get("free_text"))
+            ward_text = _safe_text(ward.get("note_text") or ward.get("free_text"))
+            text_blocks: List[str] = []
+            if reg_text:
+                text_blocks.append(f"[NOTA INTRAHOSPITALARIA]\n{reg_text}")
+            if ward_text:
+                text_blocks.append(f"[PASE DE VISITA DIGITAL]\n{ward_text}")
+            if text_blocks:
+                base["note_text"] = "\n\n".join(text_blocks)
+
+            base_payload = base.get("payload") if isinstance(base.get("payload"), dict) else {}
+            base_payload["merged_sources"] = ["INTRAHOSPITALARIA", "PASE_VISITA"]
+            base_payload["ward_round_note_ids"] = [int(x.get("id") or 0) for x in ward_rows if x.get("id") is not None]
+            base["payload"] = base_payload
+            base["note_source"] = "NOTA INTRAHOSPITALARIA + PASE DE VISITA DIGITAL"
+            base["note_type"] = "MIXTA_DIA"
+            base["source_types"] = ["INTRAHOSPITALARIA", "PASE_VISITA"]
+            merged_rows.append(base)
+            continue
+
+        row = dict(bucket[0])
+        if _is_ward_round_note(row):
+            row["note_source"] = "PASE DE VISITA DIGITAL"
+            row["source_types"] = ["PASE_VISITA"]
+        else:
+            row["note_source"] = "NOTA INTRAHOSPITALARIA"
+            row["source_types"] = ["INTRAHOSPITALARIA"]
+        merged_rows.append(row)
+
+    merged_rows.sort(
+        key=lambda r: (
+            _safe_text(r.get("note_date")),
+            _safe_text(r.get("created_at")),
+            _safe_text(r.get("updated_at")),
+            int(r.get("id") or 0),
+        ),
+        reverse=True,
+    )
+    return merged_rows
+
+
+def _resolve_latest_somatometria(
+    inpatient_notes_history: List[Dict[str, Any]],
+    legacy_notes: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    def _imc_from(peso: Optional[float], talla: Optional[float]) -> Optional[float]:
+        if peso is None or talla is None:
+            return None
+        try:
+            talla_val = float(talla)
+            if talla_val <= 0:
+                return None
+            talla_m = talla_val / 100.0 if talla_val > 3 else talla_val
+            if talla_m <= 0:
+                return None
+            return round(float(peso) / (talla_m * talla_m), 2)
+        except Exception:
+            return None
+
+    for n in (inpatient_notes_history or []):
+        vit = n.get("vitals") if isinstance(n.get("vitals"), dict) else {}
+        peso = _to_float(vit.get("peso"))
+        talla = _to_float(vit.get("talla"))
+        imc = _to_float(vit.get("imc"))
+        if imc is None:
+            imc = _imc_from(peso, talla)
+        if peso is not None or talla is not None or imc is not None:
+            return {
+                "peso": peso,
+                "talla": talla,
+                "imc": imc,
+                "fecha": _safe_text(n.get("note_date")),
+                "origen": "NOTA_INTRAHOSPITALARIA",
+            }
+
+    for n in (legacy_notes or []):
+        vit = n.get("vitales") if isinstance(n.get("vitales"), dict) else {}
+        peso = _to_float(vit.get("peso"))
+        talla = _to_float(vit.get("talla"))
+        imc = _to_float(vit.get("imc"))
+        if imc is None:
+            imc = _imc_from(peso, talla)
+        if peso is not None or talla is not None or imc is not None:
+            return {
+                "peso": peso,
+                "talla": talla,
+                "imc": imc,
+                "fecha": _safe_text(n.get("fecha_nota")),
+                "origen": "NOTA_LEGACY",
+            }
+    return {}
+
+
 def _build_profile_candidates(
     db: Session,
     m: Any,
@@ -174,10 +741,25 @@ def _build_profile_candidates(
     q: Optional[str],
     nss: Optional[str],
     nombre: Optional[str],
+    consulta_id: Optional[int] = None,
 ) -> List[Dict[str, Any]]:
     target_q = _safe_text(q)
     target_nss = _norm_nss(nss or target_q)
     target_nombre = _norm_name(nombre or target_q)
+
+    # Si no hay búsqueda explícita ni contexto de consulta, no listar perfiles para evitar ruido.
+    if not target_q and not target_nss and not target_nombre and consulta_id is None:
+        return []
+
+    # Si llega consulta_id sin filtros explícitos, anclar la detección solo a ese perfil.
+    if consulta_id is not None and not target_q and not target_nss and not target_nombre:
+        try:
+            row = db.query(m.ConsultaDB).filter(m.ConsultaDB.id == int(consulta_id)).first()
+        except Exception:
+            row = None
+        if row is not None:
+            target_nss = _norm_nss(getattr(row, "nss", ""))
+            target_nombre = _norm_name(getattr(row, "nombre", ""))
 
     candidates: Dict[str, Dict[str, Any]] = {}
 
@@ -308,6 +890,21 @@ def _build_profile_candidates(
             }
         )
     out.sort(key=lambda x: (0 if x.get("nss") else 1, x.get("nombre") or ""))
+
+    # Reducción de resultados para mostrar solo el perfil buscado cuando hay criterio de búsqueda.
+    if len(target_nss) == 10:
+        out = [x for x in out if _norm_nss(x.get("nss")) == target_nss]
+    elif target_nombre:
+        exact = [x for x in out if _norm_name(x.get("nombre")) == target_nombre]
+        if exact:
+            out = exact
+
+    if consulta_id is not None:
+        cid = int(consulta_id)
+        match_cid = [x for x in out if int(x.get("consulta_id") or 0) == cid]
+        if match_cid:
+            out = match_cid
+
     return out[:120]
 
 
@@ -765,6 +1362,12 @@ async def ver_expediente_flow(
     ensure_consulta_aditivos_schema(db)
     ensure_default_rule(db)
 
+    # Solo se muestran perfiles detectados cuando el usuario ejecuta una búsqueda explícita.
+    search_q = _safe_text(q)
+    search_nss = _safe_text(nss)
+    search_nombre = _safe_text(nombre)
+    search_requested = bool(search_q or search_nss or search_nombre)
+
     if not consulta_id and not _safe_text(nss) and not _safe_text(nombre) and not _safe_text(q):
         try:
             raw_ctx = _safe_text(request.cookies.get("rnp_patient_context"))
@@ -791,13 +1394,40 @@ async def ver_expediente_flow(
             logger.debug("No se pudo recuperar contexto activo persistente en expediente", exc_info=True)
 
     # Candidatos para buscador inteligente (NSS / Nombre)
-    profile_candidates = _build_profile_candidates(
-        db,
-        m,
-        q=q,
-        nss=nss,
-        nombre=nombre,
-    )
+    profile_candidates: List[Dict[str, Any]] = []
+    if search_requested:
+        profile_candidates = _build_profile_candidates(
+            db,
+            m,
+            q=q,
+            nss=nss,
+            nombre=nombre,
+            consulta_id=consulta_id,
+        )
+        # Modo estricto: en la UI mostrar solo el perfil objetivo de la búsqueda.
+        if profile_candidates:
+            strict_nss = _norm_nss(search_nss or search_q)
+            strict_name = _norm_name(search_nombre or search_q)
+            if len(strict_nss) == 10:
+                profile_candidates = [
+                    p for p in profile_candidates if _norm_nss(p.get("nss")) == strict_nss
+                ][:1]
+            elif strict_name:
+                exact_name = [
+                    p for p in profile_candidates if _norm_name(p.get("nombre")) == strict_name
+                ]
+                source = exact_name if exact_name else profile_candidates
+                profile_candidates = sorted(
+                    source,
+                    key=lambda p: int(p.get("consulta_id") or 0),
+                    reverse=True,
+                )[:1]
+            else:
+                profile_candidates = sorted(
+                    profile_candidates,
+                    key=lambda p: int(p.get("consulta_id") or 0),
+                    reverse=True,
+                )[:1]
 
     consulta = _select_consulta(
         db,
@@ -854,9 +1484,9 @@ async def ver_expediente_flow(
             consulta=None,
             protocolo_json="Sin detalles",
             archivos_paciente=[],
-            search_q=_safe_text(q),
-            search_nss=_safe_text(nss),
-            search_nombre=_safe_text(nombre),
+            search_q=search_q,
+            search_nss=search_nss,
+            search_nombre=search_nombre,
             profile_candidates=profile_candidates,
             selected_identity={},
             profile_metrics={},
@@ -874,6 +1504,8 @@ async def ver_expediente_flow(
             expediente_enriquecido={},
             estudios_paciente=[],
             protocolo_alertas_aditivas=[],
+            protocolo_resumen=[],
+            lista_espera_qx={"en_espera": False, "total": 0, "items": []},
         )
 
     if consulta is None:
@@ -883,9 +1515,9 @@ async def ver_expediente_flow(
             consulta=None,
             protocolo_json="Sin detalles",
             archivos_paciente=[],
-            search_q=_safe_text(q),
-            search_nss=_safe_text(nss),
-            search_nombre=_safe_text(nombre),
+            search_q=search_q,
+            search_nss=search_nss,
+            search_nombre=search_nombre,
             profile_candidates=profile_candidates,
             selected_identity={},
             profile_metrics={"error": "Paciente no encontrado con NSS/NOMBRE proporcionado."},
@@ -903,6 +1535,8 @@ async def ver_expediente_flow(
             expediente_enriquecido={},
             estudios_paciente=[],
             protocolo_alertas_aditivas=[],
+            protocolo_resumen=[],
+            lista_espera_qx={"en_espera": False, "total": 0, "items": []},
         )
 
     consulta_nss = _norm_nss(consulta.nss)
@@ -1136,6 +1770,7 @@ async def ver_expediente_flow(
                 "hallazgos": hallazgos_evento[:220] if hallazgos_evento else "",
             }
         )
+    lista_espera_qx = _build_lista_espera_qx_summary(surgical_rows)
 
     labs_series: List[Dict[str, Any]] = []
     labs_by_date: Dict[str, Dict[str, float]] = defaultdict(dict)
@@ -1347,8 +1982,21 @@ async def ver_expediente_flow(
             inpatient_episode_summary = []
             inpatient_notes_history = []
             inpatient_tags = []
+    hosp_ids_for_profile = [int(h.get("id")) for h in hospitalizaciones_payload if h.get("id") is not None]
+    inpatient_notes_history = _enrich_inpatient_history_with_legacy(inpatient_notes_history, notas_medicas)
+    inpatient_notes_history = _enrich_inpatient_history_with_vitals_ts(
+        db,
+        inpatient_notes_history,
+        consulta_ids=consulta_ids,
+        hospitalizacion_ids=hosp_ids_for_profile,
+    )
+    inpatient_notes_history = _merge_intrahosp_notes_by_day(inpatient_notes_history)
+    notas_medicas = _merge_notas_medicas_with_structured(notas_medicas, inpatient_notes_history)
+    latest_somatometria = _resolve_latest_somatometria(inpatient_notes_history, notas_medicas)
+
     expediente_enriquecido = get_enriched_by_consulta_id(db, int(consulta.id))
     protocolo_alertas_aditivas: List[str] = []
+    protocolo_resumen = _build_protocolo_resumen(consulta)
     try:
         proto_dict = consulta.protocolo_detalles if isinstance(consulta.protocolo_detalles, dict) else {}
         raw_alerts = proto_dict.get("alertas_aditivas", [])
@@ -1441,9 +2089,9 @@ async def ver_expediente_flow(
         consulta=consulta,
         protocolo_json=protocolo_json,
         archivos_paciente=archivos_paciente,
-        search_q=_safe_text(q),
-        search_nss=_safe_text(nss),
-        search_nombre=_safe_text(nombre),
+        search_q=search_q,
+        search_nss=search_nss,
+        search_nombre=search_nombre,
         profile_candidates=profile_candidates,
         selected_identity=selected_identity,
         profile_metrics=profile_metrics,
@@ -1458,6 +2106,7 @@ async def ver_expediente_flow(
         inpatient_notes_history=inpatient_notes_history[:1000],
         inpatient_tags=inpatient_tags[:500],
         inpatient_soportes=inpatient_soportes,
+        latest_somatometria=latest_somatometria,
         active_inpatient_episode=active_inpatient_episode,
         profile_alertas=profile_alertas[:200],
         active_hospitalizacion=active_hospitalizacion or {},
@@ -1466,6 +2115,8 @@ async def ver_expediente_flow(
         expediente_enriquecido=expediente_enriquecido,
         estudios_paciente=estudios_paciente,
         protocolo_alertas_aditivas=protocolo_alertas_aditivas,
+        protocolo_resumen=protocolo_resumen,
+        lista_espera_qx=lista_espera_qx,
     )
     try:
         actor = _safe_text(request.headers.get("X-User") or "ui_shell")

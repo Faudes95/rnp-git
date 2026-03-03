@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
+from sqlalchemy import desc
 
 from app.core.app_context import main_proxy as m
 from app.services.connectivity_flow import build_connectivity_payload
@@ -62,7 +63,110 @@ def _trends_response_common() -> Dict[str, Any]:
 
 
 @router.get("/", response_class=HTMLResponse)
-async def menu_principal(request: Request):
+async def menu_principal(
+    request: Request,
+    db: Session = Depends(_get_db),
+    sdb: Session = Depends(_get_surgical_db),
+):
+    total_camas_config = 40
+    kpi_camas_ocupadas = 0
+    kpi_camas_libres = 0
+    kpi_pacientes_graves = 0
+    kpi_cirugias_pendientes = 0
+
+    try:
+        total_camas_config = int(str(getattr(m, "os").getenv("HOSPITAL_TOTAL_CAMAS", "40")).strip() or "40")
+        if total_camas_config <= 0:
+            total_camas_config = 40
+    except Exception:
+        total_camas_config = 40
+
+    try:
+        normalizer = getattr(m, "normalize_nss", None)
+        active_rows = (
+            db.query(m.HospitalizacionDB)
+            .filter(m.HospitalizacionDB.estatus == "ACTIVO")
+            .all()
+        )
+        active_keys = set()
+        for row in active_rows:
+            raw_nss = getattr(row, "nss", "") or ""
+            nss = normalizer(raw_nss) if callable(normalizer) else str(raw_nss).strip()
+            key = nss or f"HOSP_{getattr(row, 'id', '')}"
+            active_keys.add(str(key))
+        kpi_camas_ocupadas = len(active_keys)
+        kpi_camas_libres = max(total_camas_config - kpi_camas_ocupadas, 0)
+    except Exception:
+        kpi_camas_ocupadas = 0
+        kpi_camas_libres = max(total_camas_config, 0)
+
+    try:
+        latest_censo = (
+            db.query(m.HospitalCensoDiarioDB)
+            .order_by(desc(m.HospitalCensoDiarioDB.fecha), desc(m.HospitalCensoDiarioDB.id))
+            .first()
+        )
+        graves_keys = set()
+        pacientes = []
+        if latest_censo is not None:
+            raw = getattr(latest_censo, "pacientes_json", None)
+            if isinstance(raw, list):
+                pacientes = raw
+        for item in pacientes:
+            if not isinstance(item, dict):
+                continue
+            estado = str(
+                item.get("estado_clinico")
+                or item.get("estatus_detalle")
+                or item.get("estado")
+                or ""
+            ).upper()
+            if "GRAVE" not in estado:
+                continue
+            key = (
+                str(item.get("nss") or "").strip()
+                or str(item.get("consulta_id") or "").strip()
+                or f"{str(item.get('nombre') or '').strip()}::{str(item.get('cama') or '').strip()}"
+            )
+            if key:
+                graves_keys.add(key)
+        if graves_keys:
+            kpi_pacientes_graves = len(graves_keys)
+        else:
+            # Fallback aditivo: si no hay censo del día, inferir desde hospitalización activa.
+            fallback_graves = (
+                db.query(m.HospitalizacionDB)
+                .filter(m.HospitalizacionDB.estatus == "ACTIVO")
+                .all()
+            )
+            for row in fallback_graves:
+                estado = str(getattr(row, "estado_clinico", "") or "").upper()
+                if "GRAVE" not in estado:
+                    continue
+                key = str(getattr(row, "nss", "") or "").strip() or f"HOSP_{getattr(row, 'id', '')}"
+                graves_keys.add(key)
+            kpi_pacientes_graves = len(graves_keys)
+    except Exception:
+        kpi_pacientes_graves = 0
+
+    try:
+        qx_rows = (
+            sdb.query(m.SurgicalProgramacionDB)
+            .filter(
+                m.SurgicalProgramacionDB.estatus.notin_(["REALIZADA", "CANCELADA"])
+            )
+            .all()
+        )
+        waiting_ids = set()
+        for row in qx_rows:
+            origen = str(getattr(row, "modulo_origen", "") or "").upper()
+            if origen == "QUIROFANO_URGENCIA":
+                continue
+            waiting_ids.add(int(getattr(row, "id", 0) or 0))
+        kpi_cirugias_pendientes = len([x for x in waiting_ids if x > 0])
+    except Exception:
+        kpi_cirugias_pendientes = 0
+
     return m.render_template(
         m.MENU_TEMPLATE,
         request=request,
@@ -78,14 +182,21 @@ async def menu_principal(request: Request):
         hospital_bg_url=m._resolve_menu_asset(
             m.MENU_HOSPITAL_BG_URL, m.MENU_HOSPITAL_BG_PATH, m.MENU_HOSPITAL_BG_FALLBACK_PATH
         ),
+        kpi_camas_ocupadas=kpi_camas_ocupadas,
+        kpi_camas_libres=kpi_camas_libres,
+        kpi_pacientes_graves=kpi_pacientes_graves,
+        kpi_cirugias_pendientes=kpi_cirugias_pendientes,
     )
 
 
-@router.get("/consulta", response_class=HTMLResponse)
+@router.get("/consulta")
 async def formulario_consulta(request: Request, return_to: Optional[str] = None, draft_id: Optional[str] = None):
-    safe_return = return_to if isinstance(return_to, str) and return_to.startswith("/") and not return_to.startswith("//") else None
-    safe_draft = str(draft_id or "").strip()[:64]
-    return m.render_template(m.CONSULTA_TEMPLATE, request=request, return_to=safe_return, initial_draft_id=safe_draft)
+    """Redirige a la consulta por secciones (metadata-driven). La consulta clásica fue reemplazada."""
+    from fastapi.responses import RedirectResponse
+    target = "/consulta/metadata"
+    if draft_id:
+        target += f"?draft_id={str(draft_id).strip()[:64]}"
+    return RedirectResponse(url=target, status_code=307)
 
 
 @router.get("/consulta/metadata", response_class=HTMLResponse)
@@ -95,7 +206,7 @@ async def formulario_consulta_metadata(request: Request):
         request=request,
         page_title="Consulta Externa - Metadata Integrada por Secciones",
         form_code="consulta_externa",
-        classic_url="/consulta",
+        classic_url="/consulta/metadata",
         pilot_url="/consulta/metadata",
         section_save_url="/api/consulta/seccion/guardar",
     )
@@ -108,7 +219,7 @@ async def formulario_consulta_metadata_pilot(request: Request):
         request=request,
         page_title="Consulta Externa - Metadata Integrada por Secciones",
         form_code="consulta_externa",
-        classic_url="/consulta",
+        classic_url="/consulta/metadata",
         pilot_url="/consulta/metadata",
         section_save_url="/api/consulta/seccion/guardar",
     )
@@ -140,9 +251,11 @@ async def formulario_urgencias_metadata(request: Request):
     )
 
 
-@router.post("/guardar_consulta_completa", response_class=HTMLResponse)
+@router.post("/guardar_consulta_completa")
 async def guardar_consulta_completa(request: Request, db: Session = Depends(_get_db)):
-    return await m.svc_guardar_consulta_completa_flow(request, db)
+    """Redirige a la consulta por secciones. La captura clásica fue reemplazada."""
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/consulta/metadata", status_code=307)
 
 
 @router.get("/reporte", response_class=HTMLResponse)

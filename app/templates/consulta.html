@@ -775,7 +775,7 @@
         function abrirNotaSubsecuente() {
             var id = _identidadSubsecuente();
             if (!id) return;
-            var url = '/expediente/nota-medica?nss=' + encodeURIComponent(id.nss) + '&nombre=' + encodeURIComponent(id.nombre);
+            var url = '/expediente/inpatient-captura?nss=' + encodeURIComponent(id.nss) + '&nombre=' + encodeURIComponent(id.nombre) + '#nota-diaria';
             window.location.href = url;
         }
 

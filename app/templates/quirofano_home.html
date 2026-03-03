@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,54 +6,191 @@
     <link href="/static/css/fonts_offline.css" rel="stylesheet">
     <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
     <style>
-        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --imss-fondo: #f3f6f5; }
-        body { font-family: 'Montserrat', sans-serif; margin: 0; background: linear-gradient(120deg, #0f3a34, #1f5c53); min-height: 100vh; padding: 24px; }
-        .container { max-width: 980px; margin: 0 auto; background: #fff; border-radius: 14px; border: 2px solid var(--imss-dorado); padding: 28px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); position: relative; overflow: hidden; }
-        .container::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--imss-verde), var(--imss-dorado), var(--imss-verde)); }
-        .global-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
-        .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:var(--imss-verde); background:#fff; transition: all 0.2s; }
-        .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-        .nav-chip.active { background:var(--imss-dorado); border-color:#9e7a4c; color:#13322B; box-shadow: 0 2px 8px rgba(179,142,93,0.3); }
-        .breadcrumbs { font-size:12px; color:#5f6d68; margin-bottom:12px; text-align:center; }
-        h1 { margin: 0 0 6px 0; text-align: center; color: var(--imss-verde); font-size: 34px; }
-        h2 { margin: 0 0 8px 0; text-align: center; color: var(--imss-dorado); font-size: 19px; letter-spacing: 1px; text-transform: uppercase; }
-        .smart-banner {
-            background: linear-gradient(135deg, #edf8f3, #fffaf3);
-            border: 1px solid #d8c4a2;
-            border-radius: 10px;
-            padding: 12px 18px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: var(--imss-verde);
+        :root{
+            --imss-verde:#13322B;
+            --imss-verde-2:#1a4a3f;
+            --imss-verde-3:#245a4c;
+            --imss-dorado:#B38E5D;
+            --imss-ice:#eef5f2;
+            --txt:#12362d;
+            --border:#c9d8d2;
         }
-        .smart-banner strong { font-size: 14px; }
-        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-        .card {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 220px; text-decoration: none; color: var(--imss-verde);
-            background: var(--imss-fondo); border: 2px solid var(--imss-dorado); border-radius: 14px;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            position: relative; overflow: hidden;
-            opacity: 0; animation: fadeInUp 0.5s ease forwards;
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            min-height:100vh;
+            padding:24px;
+            font-family:'Montserrat',sans-serif;
+            background:
+                radial-gradient(circle at 12% 0%, rgba(179,142,93,.22), transparent 36%),
+                radial-gradient(circle at 88% 100%, rgba(19,50,43,.24), transparent 36%),
+                linear-gradient(135deg,#0e322c,#1c5a50 54%,#1a4a3f);
+            color:var(--txt);
         }
-        .card:nth-child(1) { animation-delay: 0s; }
-        .card:nth-child(2) { animation-delay: 0.1s; }
-        .card:nth-child(3) { animation-delay: 0.2s; }
-        .card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--imss-dorado), var(--imss-verde)); transform:scaleX(0); transition: transform 0.3s ease; }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(19, 50, 43, 0.24); }
-        .card:hover::after { transform: scaleX(1); }
-        .icon { font-size: 58px; line-height: 1; margin-bottom: 14px; }
-        .label { font-size: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
-        .actions { text-align: center; margin-top: 24px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .btn-back { display: inline-block; text-decoration: none; background: linear-gradient(135deg, var(--imss-verde), #1a4a3f); color: #fff; padding: 11px 20px; border-radius: 8px; font-weight: 700; transition: all 0.2s; box-shadow: 0 2px 8px rgba(19,50,43,0.25); }
-        .btn-back:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(19,50,43,0.35); }
-        @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-        @media (max-width: 760px) {
-            .grid { grid-template-columns: 1fr; }
-            .card { min-height: 170px; }
-            .label { font-size: 20px; }
-            h1 { font-size: 28px; }
+        .container{
+            max-width:1120px;
+            margin:0 auto;
+            border-radius:18px;
+            border:1px solid rgba(179,142,93,.65);
+            background:linear-gradient(145deg, rgba(255,255,255,.93), rgba(248,252,250,.90));
+            backdrop-filter:blur(3px);
+            box-shadow:0 18px 38px rgba(0,0,0,.28);
+            padding:26px;
+            position:relative;
+            overflow:hidden;
+        }
+        .container::before{
+            content:'';
+            position:absolute;
+            inset:0 0 auto 0;
+            height:4px;
+            background:linear-gradient(90deg,var(--imss-verde),var(--imss-dorado),var(--imss-verde-3));
+        }
+
+        .global-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+        .nav-chip{
+            text-decoration:none;
+            padding:7px 12px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:700;
+            border:1px solid #c8d5d0;
+            color:var(--imss-verde);
+            background:rgba(255,255,255,.78);
+            transition:.2s ease;
+        }
+        .nav-chip:hover{transform:translateY(-1px);border-color:#3da68f;background:#eef8f4}
+        .nav-chip.active{background:var(--imss-dorado);border-color:#9f7f53;color:#16342d;box-shadow:0 2px 8px rgba(179,142,93,.35)}
+
+        .smart-banner{
+            border:1px solid rgba(179,142,93,.55);
+            border-radius:12px;
+            margin-bottom:18px;
+            padding:16px 18px;
+            text-align:center;
+            background:
+                linear-gradient(145deg, rgba(240,250,246,.85), rgba(255,248,236,.78));
+        }
+        .smart-banner strong{
+            display:block;
+            margin-bottom:4px;
+            color:var(--imss-verde);
+            font-size:23px;
+            font-weight:900;
+            letter-spacing:.3px;
+        }
+        .smart-banner span{
+            color:#2d4f45;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:14px;
+        }
+        .card{
+            position:relative;
+            min-height:178px;
+            text-decoration:none;
+            color:var(--txt);
+            border-radius:16px;
+            border:1px solid rgba(19,50,43,.28);
+            background:
+                linear-gradient(160deg, rgba(255,255,255,.50), rgba(242,249,246,.35)),
+                linear-gradient(40deg, rgba(19,50,43,.12), rgba(179,142,93,.08));
+            backdrop-filter:blur(6px);
+            box-shadow:0 12px 24px rgba(19,50,43,.16);
+            padding:18px;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+            transition:.28s cubic-bezier(.4,0,.2,1);
+            overflow:hidden;
+        }
+        .card::after{
+            content:'';
+            position:absolute;
+            width:130px;
+            height:130px;
+            right:-34px;
+            top:-34px;
+            border-radius:50%;
+            background:radial-gradient(circle, rgba(179,142,93,.25), transparent 68%);
+            pointer-events:none;
+        }
+        .card:hover{
+            transform:translateY(-4px);
+            border-color:var(--imss-dorado);
+            box-shadow:0 16px 30px rgba(19,50,43,.25);
+        }
+        .icon{
+            width:56px;height:56px;border-radius:14px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:30px;
+            border:1px solid rgba(19,50,43,.26);
+            background:rgba(255,255,255,.56);
+            box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);
+        }
+        .label{
+            margin-top:10px;
+            font-size:28px;
+            font-weight:900;
+            line-height:1.05;
+            text-transform:uppercase;
+            letter-spacing:.3px;
+            color:var(--imss-verde);
+        }
+        .sub{
+            margin-top:8px;
+            font-size:12px;
+            font-weight:600;
+            color:#4a6760;
+        }
+        .card.urg .icon{background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.28)}
+        .card.prog .icon{background:rgba(5,150,105,.12);border-color:rgba(5,150,105,.28)}
+        .card.wait .icon{background:rgba(179,142,93,.15);border-color:rgba(179,142,93,.35)}
+        .card.jef .icon{background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.28)}
+
+        .actions{
+            margin-top:18px;
+            display:flex;
+            gap:10px;
+            justify-content:center;
+            flex-wrap:wrap;
+        }
+        .btn-back{
+            text-decoration:none;
+            padding:11px 18px;
+            border-radius:10px;
+            font-size:13px;
+            font-weight:800;
+            border:1px solid transparent;
+            transition:.2s ease;
+        }
+        .btn-back:hover{transform:translateY(-1px)}
+        .btn-back.main{
+            background:linear-gradient(135deg,var(--imss-verde),var(--imss-verde-2));
+            color:#fff;
+            box-shadow:0 8px 20px rgba(19,50,43,.30);
+        }
+        .btn-back.alt{
+            background:linear-gradient(135deg,var(--imss-dorado),#c9a778);
+            color:#16352d;
+            box-shadow:0 8px 20px rgba(179,142,93,.28);
+        }
+
+        @media (max-width:900px){
+            .grid{grid-template-columns:1fr}
+            .label{font-size:24px}
+            .card{min-height:160px}
+        }
+        @media (max-width:680px){
+            body{padding:10px}
+            .container{padding:16px}
+            .smart-banner strong{font-size:19px}
+            .smart-banner span{font-size:12px}
         }
     </style>
 </head>
@@ -68,33 +204,51 @@
             <a class="nav-chip" href="/expediente">Expediente</a>
             <a class="nav-chip" href="/reporte">Reporte</a>
         </div>
-        <div class="breadcrumbs">Menú principal → Quirófano</div>
-        <h1>MÓDULO QUIRÚRGICO</h1>
-        <h2>Quirófano</h2>
 
         <div class="smart-banner">
-            <strong>GESTIÓN QUIRÚRGICA INTEGRAL</strong><br>
-            Programación, seguimiento y notas postquirúrgicas vinculadas al expediente único.
+            <strong>GESTIÓN QUIRÚRGICA INTEGRAL</strong>
+            <span>Programación, urgencias, lista de espera y gobierno directivo de quirófano.</span>
         </div>
 
         <div class="grid">
-            <a class="card" href="/quirofano/urgencias">
+            <a class="card urg" href="/quirofano/urgencias">
                 <div class="icon">🚨</div>
-                <div class="label">Urgencias</div>
+                <div>
+                    <div class="label">Urgencias</div>
+                    <div class="sub">Programación inmediata con trazabilidad al expediente único.</div>
+                </div>
             </a>
-            <a class="card" href="/quirofano/programada">
+
+            <a class="card prog" href="/quirofano/programada">
                 <div class="icon">🗓️</div>
-                <div class="label">Cirugía Programada</div>
+                <div>
+                    <div class="label">Cirugía Programada</div>
+                    <div class="sub">Planeación quirúrgica con protocolo y validaciones clínicas.</div>
+                </div>
             </a>
-            <a class="card" href="/reporte" style="grid-column: 1 / -1; min-height: 130px; background: linear-gradient(135deg, #fffaf3, #edf8f3); border-style: dashed;">
-                <div class="icon" style="font-size:36px;">📊</div>
-                <div class="label" style="font-size:18px;">Dashboard Quirúrgico y Estadísticas</div>
+
+            <a class="card wait" href="/quirofano/lista-espera">
+                <div class="icon">📋</div>
+                <div>
+                    <div class="label">Lista de Espera de Programación Quirúrgica</div>
+                    <div class="sub">Módulo operativo de pacientes en espera quirúrgica (antes cola preventiva).</div>
+                </div>
+            </a>
+
+            <a class="card jef" href="/quirofano/jefatura">
+                <div class="icon">🏛️</div>
+                <div>
+                    <div class="label">Jefatura de Quirófano</div>
+                    <div class="sub">Interfaz anclada para módulo directivo en construcción modular con BD dedicada.</div>
+                </div>
             </a>
         </div>
+
         <div class="actions">
-            <a class="btn-back" href="/">← Volver al menú principal</a>
-            <a class="btn-back" href="/hospitalizacion" style="background:linear-gradient(135deg,var(--imss-dorado),#c9a778);color:#13322B;">🏥 Hospitalización</a>
+            <a class="btn-back main" href="/">← Volver al menú principal</a>
+            <a class="btn-back alt" href="/hospitalizacion">🏥 Hospitalización</a>
         </div>
     </div>
 </body>
 </html>
+

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ module.nombre }} - Jefatura de Urología</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root {
+            --uro-azul: #1a3f77;
+            --uro-rojo: #7f2230;
+            --uro-rojo-osc: #5a1822;
+            --uro-marino: #102a52;
+            --uro-acento: #3f5f90;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            color: #f4f7fb;
+            background:
+                radial-gradient(circle at 10% -8%, rgba(63, 95, 144, .32), transparent 40%),
+                radial-gradient(circle at 88% 102%, rgba(127, 34, 48, .42), transparent 44%),
+                linear-gradient(130deg, #0b1f3e, #1a3f77 50%, #7f2230 100%);
+        }
+        .wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            background: linear-gradient(150deg, rgba(9, 27, 56, .84), rgba(17, 48, 90, .8));
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .wrap::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--uro-marino), var(--uro-acento), var(--uro-rojo));
+        }
+        .head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .head h1 {
+            margin: 0;
+            font-size: 32px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            line-height: 1.05;
+        }
+        .logo {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(127, 34, 48, .82);
+            background: rgba(255, 255, 255, 0.92);
+            padding: 2px;
+        }
+        .panel {
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 14px;
+            background: linear-gradient(140deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .05));
+            padding: 18px;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.26);
+            background: rgba(255, 255, 255, 0.12);
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .module-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .module-name {
+            margin: 10px 0 6px;
+            font-size: 26px;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+        .module-desc {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.45;
+            color: rgba(243, 247, 252, 0.93);
+        }
+        .actions {
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            border: 1px solid transparent;
+        }
+        .btn.main {
+            background: linear-gradient(135deg, var(--uro-azul), var(--uro-marino));
+            color: #fff;
+        }
+        .btn.alt {
+            background: linear-gradient(135deg, var(--uro-rojo), var(--uro-rojo-osc));
+            color: #fff;
+        }
+        @media (max-width: 680px) {
+            body { padding: 10px; }
+            .wrap { padding: 16px; }
+            .head h1 { font-size: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="head">
+            <h1>{{ module.nombre }}</h1>
+            <img class="logo" src="/static/img/urologia_logo_fallback.svg" alt="Logo Urología">
+        </div>
+
+        <div class="panel">
+            <span class="badge">Módulo en construcción modular</span>
+            <div class="module-icon">{{ module.icono }}</div>
+            <div class="module-name">{{ module.nombre }}</div>
+            <p class="module-desc">{{ module.descripcion }}</p>
+            <p class="module-desc" style="margin-top:8px;">
+                Este espacio quedó anclado para crecimiento exponencial sin alterar rutas clínicas actuales.
+            </p>
+        </div>
+
+        <div class="actions">
+            <a class="btn main" href="/jefatura-urologia">← Volver a Jefatura de Urología</a>
+            <a class="btn alt" href="/">Ir al menú principal</a>
+        </div>
+    </div>
+</body>
+</html>

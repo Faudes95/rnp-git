@@ -252,6 +252,7 @@ def _serialize_daily_note(row: Dict[str, Any]) -> Dict[str, Any]:
         "symptoms_json": _load(row.get("symptoms_json")),
         "events_pending_json": _load(row.get("events_pending_json")),
         "free_text": _safe_text(row.get("free_text")),
+        "note_text": _safe_text(row.get("note_text")) or _safe_text(row.get("free_text")),
         "is_final": bool(row.get("is_final", False)),
         "version": int(row.get("version") or 1),
         "created_at": row.get("created_at").isoformat() if row.get("created_at") else None,

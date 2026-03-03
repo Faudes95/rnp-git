@@ -5,7 +5,7 @@ from datetime import date
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
 from app.core.app_context import main_proxy as m
@@ -21,6 +21,10 @@ from app.services.fhir_flow import (
     fhir_procedure_search_flow,
 )
 from app.services.interconexion_flow import interconexion_consulta_flow
+from app.services.jefatura_urologia_flow import (
+    render_jefatura_urologia_home_flow,
+    render_jefatura_urologia_module_flow,
+)
 from app.services.quirofano_flow import (
     cancelar_programacion_flow,
     guardar_postquirurgica_flow,
@@ -28,6 +32,8 @@ from app.services.quirofano_flow import (
     listar_quirofanos_flow,
     render_postquirurgica_flow,
 )
+from app.services.quirofano_waitlist_flow import render_waitlist_lista_flow
+from app.services.quirofano_jefatura_flow import render_jefatura_quirofano_waiting_flow
 
 router = APIRouter(tags=["legacy-web"])
 
@@ -45,6 +51,16 @@ async def quirofano_home(request: Request):
     return m.render_template(m.QUIROFANO_HOME_TEMPLATE, request=request)
 
 
+@router.get("/jefatura-urologia", response_class=HTMLResponse)
+async def jefatura_urologia_home(request: Request):
+    return await render_jefatura_urologia_home_flow(request)
+
+
+@router.get("/jefatura-urologia/{slug}", response_class=HTMLResponse)
+async def jefatura_urologia_modulo(request: Request, slug: str):
+    return await render_jefatura_urologia_module_flow(request, slug)
+
+
 @router.get("/quirofano/programada", response_class=HTMLResponse)
 async def quirofano_programada_home(request: Request):
     return m.render_template(m.QUIROFANO_PROGRAMADA_TEMPLATE, request=request)
@@ -60,6 +76,32 @@ async def listar_quirofanos(
     q: Optional[str] = None,
 ):
     return await listar_quirofanos_flow(request, db, sdb, campo=campo, q=q)
+
+
+@router.get("/quirofano/lista-espera-programacion", response_class=HTMLResponse)
+async def listar_espera_programacion_quirurgica(
+    request: Request,
+    sdb: Session = Depends(_get_surgical_db),
+    q: Optional[str] = None,
+    mostrar_todos: Optional[int] = 0,
+):
+    _ = mostrar_todos  # compat: parámetro legado no requerido por el nuevo renderer.
+    return await render_waitlist_lista_flow(
+        request,
+        sdb,
+        q=q,
+    )
+
+
+@router.get("/quirofano/lista-espera")
+async def quirofano_lista_espera_legacy_alias():
+    # Compatibilidad con enlaces legacy: mantener navegación estable.
+    return RedirectResponse(url="/quirofano/lista-espera-programacion", status_code=307)
+
+
+@router.get("/quirofano/jefatura", response_class=HTMLResponse)
+async def jefatura_quirofano_placeholder(request: Request):
+    return await render_jefatura_quirofano_waiting_flow(request)
 
 
 @router.get("/quirofano/programada/postquirurgica", response_class=HTMLResponse)

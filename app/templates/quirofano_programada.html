@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,77 +5,181 @@
     <title>Cirugía Programada - IMSS Urología</title>
     <link href="/static/css/fonts_offline.css" rel="stylesheet">
     <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
     <style>
-        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --imss-fondo: #f3f6f5; }
-        body { font-family: 'Montserrat', sans-serif; margin: 0; background: linear-gradient(120deg, #0f3a34, #1f5c53); min-height: 100vh; padding: 24px; }
-        .container { max-width: 1080px; margin: 0 auto; background: #fff; border-radius: 14px; border: 2px solid var(--imss-dorado); padding: 28px; box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
-        h1 { margin: 0 0 6px 0; text-align: center; color: var(--imss-verde); font-size: 34px; }
-        h2 { margin: 0 0 24px 0; text-align: center; color: var(--imss-dorado); font-size: 19px; letter-spacing: 1px; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-        .card {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 210px; text-decoration: none; color: var(--imss-verde);
-            background: var(--imss-fondo); border: 2px solid var(--imss-dorado); border-radius: 14px;
-            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        .qf-programada-shell {
+            padding: 24px;
         }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(19, 50, 43, 0.24); }
-        .icon { font-size: 56px; line-height: 1; margin-bottom: 14px; }
-        .label { font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; text-align: center; padding: 0 8px; }
-        .actions { text-align: center; margin-top: 24px; }
-        .btn-back { display: inline-block; text-decoration: none; background: var(--imss-verde); color: #fff; padding: 11px 20px; border-radius: 8px; font-weight: 700; }
-        @media (max-width: 920px) {
-            .grid { grid-template-columns: 1fr; }
-            .card { min-height: 170px; }
-            .label { font-size: 18px; }
-            h1 { font-size: 28px; }
+        .qf-hero {
+            border: 1px solid rgba(179, 142, 93, .6);
+            border-radius: 14px;
+            margin-bottom: 18px;
+            padding: 16px 18px;
+            text-align: center;
+            background: linear-gradient(145deg, rgba(241, 250, 246, .9), rgba(255, 248, 236, .82));
         }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-
-    /* === Quirofano Programada additive enhancements === */
-    .container { position:relative; overflow:hidden; }
-    .container::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, #13322B, #B38E5D, #13322B); z-index:5; }
-    @keyframes fadeInUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-    .card { animation:fadeInUp 0.45s ease both; }
-    .card:nth-child(1) { animation-delay:0.05s; }
-    .card:nth-child(2) { animation-delay:0.12s; }
-    .card:nth-child(3) { animation-delay:0.19s; }
-    .card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, #B38E5D, #13322B); transform:scaleX(0); transition:transform 0.3s; }
-    .card { position:relative; overflow:hidden; }
-    .card:hover::after { transform:scaleX(1); }
-    .btn-back { transition:all 0.2s ease; box-shadow:0 2px 8px rgba(19,50,43,0.2); }
-    .btn-back:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(19,50,43,0.3); }
+        .qf-hero h1 {
+            margin: 0 0 6px;
+            font-size: 34px;
+            text-transform: uppercase;
+            color: #13322B;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+        .qf-hero p {
+            margin: 0;
+            font-size: 13px;
+            color: #2f4f46;
+            font-weight: 600;
+        }
+        .qf-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .qf-card {
+            position: relative;
+            border: 1px solid rgba(19, 50, 43, .28);
+            border-radius: 15px;
+            text-decoration: none;
+            color: #12362d;
+            background:
+                linear-gradient(160deg, rgba(255, 255, 255, .58), rgba(242, 249, 246, .42)),
+                linear-gradient(30deg, rgba(19, 50, 43, .12), rgba(179, 142, 93, .08));
+            box-shadow: 0 12px 24px rgba(19, 50, 43, .16);
+            backdrop-filter: blur(4px);
+            min-height: 198px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 18px;
+            transition: .25s ease;
+            overflow: hidden;
+        }
+        .qf-card::after {
+            content: "";
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            right: -34px;
+            top: -34px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(179, 142, 93, .25), transparent 68%);
+            pointer-events: none;
+        }
+        .qf-card:hover {
+            transform: translateY(-4px);
+            border-color: #B38E5D;
+            box-shadow: 0 16px 30px rgba(19, 50, 43, .24);
+        }
+        .qf-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            border: 1px solid rgba(19, 50, 43, .24);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            background: rgba(255, 255, 255, .56);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .3);
+        }
+        .qf-card-title {
+            margin-top: 12px;
+            font-size: 25px;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.08;
+            color: #13322B;
+        }
+        .qf-card-sub {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #4a6760;
+            font-weight: 600;
+        }
+        .qf-card.plan .qf-icon { background: rgba(5, 150, 105, .12); border-color: rgba(5, 150, 105, .28); }
+        .qf-card.lista .qf-icon { background: rgba(179, 142, 93, .15); border-color: rgba(179, 142, 93, .35); }
+        .qf-card.post .qf-icon { background: rgba(59, 130, 246, .12); border-color: rgba(59, 130, 246, .28); }
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            border: 1px solid transparent;
+        }
+        .btn-back.main {
+            background: linear-gradient(135deg, #13322B, #1a4a3f);
+            color: #fff;
+        }
+        .btn-back.alt {
+            background: linear-gradient(135deg, #B38E5D, #c8a26f);
+            color: #17342d;
+        }
+        @media (max-width: 980px) {
+            .qf-grid { grid-template-columns: 1fr; }
+            .qf-card { min-height: 172px; }
+            .qf-card-title { font-size: 22px; }
+        }
+        @media (max-width: 720px) {
+            .qf-programada-shell { padding: 16px; }
+            .qf-hero h1 { font-size: 26px; }
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>CIRUGÍA PROGRAMADA</h1>
-        <h2>Módulo Quirúrgico</h2>
-        <div class="grid">
-            <a class="card" href="/quirofano/nuevo">
-                <div class="icon">🗒️</div>
-                <div class="label">Programar cirugía</div>
+<body class="qf-refresh">
+    <div class="container qf-programada-shell">
+        <div class="global-nav">
+            <a class="nav-chip" href="/">Menú</a>
+            <a class="nav-chip" href="/consulta_externa">Consulta Externa</a>
+            <a class="nav-chip" href="/hospitalizacion">Hospitalización</a>
+            <a class="nav-chip active" href="/quirofano/programada">Cirugía Programada</a>
+            <a class="nav-chip" href="/quirofano">Módulo quirúrgico</a>
+            <a class="nav-chip" href="/expediente">Expediente</a>
+        </div>
+
+        <section class="qf-hero">
+            <h1>Cirugía Programada</h1>
+            <p>Planeación quirúrgica institucional, con trazabilidad al expediente y continuidad del flujo clínico.</p>
+        </section>
+
+        <div class="qf-grid">
+            <a class="qf-card plan" href="/quirofano/nuevo">
+                <div class="qf-icon">🗒️</div>
+                <div>
+                    <div class="qf-card-title">Programar cirugía</div>
+                    <div class="qf-card-sub">Captura de protocolo preoperatorio, diagnóstico y recursos requeridos.</div>
+                </div>
             </a>
-            <a class="card" href="/quirofano/programada/lista">
-                <div class="icon">✅</div>
-                <div class="label">Cirugías programadas</div>
+
+            <a class="qf-card lista" href="/quirofano/programada/lista">
+                <div class="qf-icon">✅</div>
+                <div>
+                    <div class="qf-card-title">Cirugías programadas</div>
+                    <div class="qf-card-sub">Panel operativo de pacientes programados, estatus y seguimiento.</div>
+                </div>
             </a>
-            <a class="card" href="/quirofano/programada/postquirurgica">
-                <div class="icon">📈</div>
-                <div class="label">Realizar nota postquirúrgica</div>
+
+            <a class="qf-card post" href="/quirofano/programada/postquirurgica">
+                <div class="qf-icon">📈</div>
+                <div>
+                    <div class="qf-card-title">Nota postquirúrgica</div>
+                    <div class="qf-card-sub">Registro postoperatorio con actualización de estatus a realizada.</div>
+                </div>
             </a>
         </div>
+
         <div class="actions">
-            <a class="btn-back" href="/quirofano">← Volver al módulo quirúrgico</a>
+            <a class="btn-back main" href="/quirofano">← Volver al módulo quirúrgico</a>
+            <a class="btn-back alt" href="/quirofano/lista-espera">📋 Lista de espera de programación</a>
         </div>
     </div>
 </body>

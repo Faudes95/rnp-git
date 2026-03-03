@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Jefatura de Urología</title>
+    <link href="/static/css/fonts_offline.css" rel="stylesheet">
+    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+    <style>
+        :root {
+            --uro-azul: #1a3f77;
+            --uro-rojo: #7f2230;
+            --uro-rojo-osc: #5a1822;
+            --uro-marino: #102a52;
+            --uro-acento: #3f5f90;
+            --uro-linea: rgba(255, 255, 255, 0.24);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            color: #f2f6fb;
+            background:
+                radial-gradient(circle at 10% -8%, rgba(63, 95, 144, .32), transparent 40%),
+                radial-gradient(circle at 88% 102%, rgba(127, 34, 48, .42), transparent 44%),
+                linear-gradient(130deg, #0b1f3e, #1a3f77 50%, #7f2230 100%);
+        }
+        .wrap {
+            max-width: 1220px;
+            margin: 0 auto;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            background: linear-gradient(150deg, rgba(9, 27, 56, .84), rgba(17, 48, 90, .8));
+            backdrop-filter: blur(6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            position: relative;
+            padding: 22px;
+        }
+        .wrap::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--uro-marino), var(--uro-acento), var(--uro-rojo));
+            pointer-events: none;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip {
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--uro-linea);
+            background: rgba(255, 255, 255, 0.08);
+            color: #f2f6fb;
+            font-size: 12px;
+            font-weight: 700;
+            transition: .2s ease;
+        }
+        .chip:hover {
+            transform: translateY(-1px);
+            border-color: rgba(114, 160, 222, .78);
+            background: rgba(255, 255, 255, 0.14);
+        }
+        .logo-box img {
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(127, 34, 48, .82);
+            background: rgba(255, 255, 255, 0.92);
+            padding: 2px;
+        }
+        .hero {
+            border: 1px solid var(--uro-linea);
+            border-radius: 15px;
+            background: linear-gradient(125deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .05));
+            padding: 16px 18px;
+            margin-bottom: 18px;
+        }
+        .hero h1 {
+            margin: 0;
+            text-transform: uppercase;
+            font-size: 38px;
+            line-height: 1;
+            letter-spacing: 0.6px;
+        }
+        .hero p {
+            margin: 10px 0 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(245, 248, 252, .9);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .card {
+            text-decoration: none;
+            color: #f8fbff;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(150deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .04));
+            min-height: 170px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: .22s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 24px rgba(0, 0, 0, 0.24);
+        }
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .card-title {
+            margin-top: 12px;
+            font-size: 22px;
+            line-height: 1.1;
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+        .card-sub {
+            margin-top: 8px;
+            font-size: 12px;
+            line-height: 1.35;
+            font-weight: 600;
+            color: rgba(245, 248, 252, .9);
+        }
+        .card.azul {
+            border-color: rgba(109, 160, 231, .52);
+            background: linear-gradient(150deg, rgba(58, 88, 133, .28), rgba(255, 255, 255, .04));
+        }
+        .card.rojo {
+            border-color: rgba(220, 109, 129, .52);
+            background: linear-gradient(150deg, rgba(100, 33, 46, .32), rgba(255, 255, 255, .04));
+        }
+        .card.naranja {
+            border-color: rgba(180, 102, 95, .5);
+            background: linear-gradient(150deg, rgba(82, 45, 63, .3), rgba(255, 255, 255, .04));
+        }
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            border: 1px solid transparent;
+        }
+        .btn.main {
+            background: linear-gradient(135deg, var(--uro-azul), var(--uro-marino));
+            color: #fff;
+        }
+        .btn.alt {
+            background: linear-gradient(135deg, var(--uro-rojo), var(--uro-rojo-osc));
+            color: #fff;
+        }
+        @media (max-width: 1080px) {
+            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .hero h1 { font-size: 32px; }
+        }
+        @media (max-width: 680px) {
+            body { padding: 10px; }
+            .wrap { padding: 14px; }
+            .grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="topbar">
+            <div class="chips">
+                <a class="chip" href="/">Menú</a>
+                <a class="chip" href="/quirofano">Módulo quirúrgico</a>
+                <a class="chip" href="/reporte">Reporte estadístico</a>
+                <a class="chip" href="/expediente">Expediente</a>
+            </div>
+            <div class="logo-box">
+                <img src="/static/img/urologia_logo_fallback.svg" alt="Logo Urología">
+            </div>
+        </div>
+
+        <section class="hero">
+            <h1>Jefatura de Urología</h1>
+            <p>Panel modular institucional para gestión operativa, académica y administrativa del servicio.</p>
+        </section>
+
+        <div class="grid">
+            {% for module in modules %}
+            <a class="card {{ module.color or 'azul' }}" href="{{ module.href or ('/jefatura-urologia/' ~ module.slug) }}">
+                <div class="card-icon">{{ module.icono }}</div>
+                <div>
+                    <div class="card-title">{{ module.nombre }}</div>
+                    <div class="card-sub">{{ module.descripcion }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="actions">
+            <a class="btn main" href="/">← Volver al menú principal</a>
+            <a class="btn alt" href="/quirofano">🏥 Ir a módulo quirúrgico</a>
+        </div>
+    </div>
+</body>
+</html>
