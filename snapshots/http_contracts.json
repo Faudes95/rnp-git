@@ -5,8 +5,8 @@
       "kind": "html",
       "status": 200,
       "contains": [
-        "Registro Nacional de Pacientes",
-        "HOSPITALIZACIÓN"
+        "Bienvenido a UROMED",
+        "INGRESAR"
       ]
     },
     {
@@ -22,8 +22,8 @@
       "kind": "html",
       "status": 200,
       "contains": [
-        "Piloto Metadata-Driven",
-        "Vista clásica"
+        "Consulta Externa - Metadata Integrada por Secciones",
+        "UROMED Navegación Clínica"
       ]
     },
     {
@@ -32,7 +32,7 @@
       "status": 200,
       "contains": [
         "Hospitalización - Piloto Metadata-Driven",
-        "Vista metadata"
+        "UROMED Navegación Clínica"
       ]
     },
     {
@@ -41,7 +41,7 @@
       "status": 200,
       "contains": [
         "Urgencias Quirúrgicas - Piloto Metadata-Driven",
-        "Vista metadata"
+        "UROMED Navegación Clínica"
       ]
     },
     {

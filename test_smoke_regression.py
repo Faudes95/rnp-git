@@ -12,7 +12,7 @@ client = TestClient(app)
 def test_smoke_menu():
     res = client.get("/")
     assert res.status_code == 200
-    assert "REGISTRO NACIONAL DE PACIENTES" in res.text
+    assert "Bienvenido a UROMED" in res.text
 
 
 def test_smoke_consulta_form():
