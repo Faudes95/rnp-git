@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ section.nombre }} | Programa Académico</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root {
+      --uromed-blue-900: #0c2c66;
+      --uromed-blue-700: #2f62ba;
+      --uromed-blue-100: #eaf2ff;
+      --uromed-red-700: #bf2f45;
+      --uromed-text: #12345f;
+      --uromed-muted: #4d6b96;
+      --uromed-border: #c8d9f4;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 22px;
+      font-family: 'Montserrat', system-ui, sans-serif;
+      color: var(--uromed-text);
+      background:
+        radial-gradient(circle at 8% -8%, rgba(47, 98, 186, 0.16), transparent 44%),
+        radial-gradient(circle at 92% 108%, rgba(191, 47, 69, 0.14), transparent 45%),
+        linear-gradient(135deg, #edf3ff 0%, #f8fbff 60%, #f2f8ff 100%);
+    }
+
+    .wrap {
+      max-width: 940px;
+      margin: 0 auto;
+      border-radius: 18px;
+      border: 1px solid var(--uromed-border);
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 16px 32px rgba(9, 42, 91, .15);
+      overflow: hidden;
+    }
+
+    .head {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--uromed-border);
+      background: linear-gradient(100deg, #f7fbff, #edf4ff);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .head h1 {
+      margin: 0;
+      font-size: 30px;
+      color: var(--uromed-blue-900);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .badge {
+      border: 1px solid #aec8ee;
+      background: var(--uromed-blue-100);
+      color: var(--uromed-blue-900);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .content {
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .panel {
+      border: 1px solid var(--uromed-border);
+      border-radius: 14px;
+      background: linear-gradient(140deg, #fafdff, #eef5ff);
+      padding: 18px;
+    }
+
+    .icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      border: 1px solid #b8cff0;
+      background: linear-gradient(145deg, #f0f6ff, #e3eeff);
+      margin-bottom: 10px;
+    }
+
+    .title {
+      margin: 0;
+      color: var(--uromed-blue-900);
+      font-size: 26px;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+
+    .desc {
+      margin: 10px 0 0;
+      color: var(--uromed-muted);
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .note {
+      margin-top: 10px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px dashed #c2d4f2;
+      padding: 12px;
+      color: #385884;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      border: 1px solid transparent;
+    }
+
+    .btn-main { background: linear-gradient(135deg, var(--uromed-blue-900), var(--uromed-blue-700)); }
+    .btn-alt { background: linear-gradient(135deg, var(--uromed-red-700), #8a1c2f); }
+
+    @media (max-width: 720px) {
+      body { padding: 10px; }
+      .head h1 { font-size: 24px; }
+      .content { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="head">
+      <h1>{{ section.nombre }}</h1>
+      <span class="badge">Programa Académico</span>
+    </header>
+
+    <section class="content">
+      <article class="panel">
+        <div class="icon">{{ section.icono }}</div>
+        <h2 class="title">{{ section.nombre }}</h2>
+        <p class="desc">{{ section.descripcion }}</p>
+        <div class="note">
+          Submódulo anclado para crecimiento exponencial. Se mantiene aislado para integrar nuevas funciones por generación sin afectar rutas ni lógica clínica existente.
+        </div>
+      </article>
+
+      <nav class="actions" aria-label="Navegación">
+        <a class="btn btn-main" href="/jefatura-urologia/programa-academico">← Volver a Programa Académico</a>
+        <a class="btn btn-alt" href="/jefatura-urologia">Ir a Jefatura de Urología</a>
+      </nav>
+    </section>
+  </main>
+</body>
+</html>

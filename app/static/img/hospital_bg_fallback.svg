@@ -5,13 +5,13 @@
       <stop offset="100%" stop-color="#b7c6cf"/>
     </linearGradient>
     <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#13322B"/>
-      <stop offset="100%" stop-color="#1d4a41"/>
+      <stop offset="0%" stop-color="#0A3161"/>
+      <stop offset="100%" stop-color="#1F4F9F"/>
     </linearGradient>
   </defs>
   <rect width="1920" height="1080" fill="url(#g1)"/>
   <rect x="1160" y="0" width="620" height="1080" fill="#d9e2e8"/>
   <rect x="0" y="720" width="1920" height="360" fill="url(#g2)" opacity="0.88"/>
-  <text x="110" y="900" font-family="Arial" font-size="72" font-weight="700" fill="#ffffff">Hospital de Especialidades</text>
-  <text x="110" y="980" font-family="Arial" font-size="44" fill="#F3D5A7">Urologia IMSS</text>
+  <text x="110" y="900" font-family="Arial" font-size="72" font-weight="700" fill="#ffffff">Plataforma Clínica Privada</text>
+  <text x="110" y="980" font-family="Arial" font-size="44" fill="#D9E9FF">Urología UROMED</text>
 </svg>

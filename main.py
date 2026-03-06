@@ -368,6 +368,15 @@ AUTH_ENABLED = AUTH_SETTINGS.enabled
 ALLOW_INSECURE_DEFAULT_CREDENTIALS = AUTH_SETTINGS.allow_insecure_default_credentials
 AUTH_USER = AUTH_SETTINGS.user
 AUTH_PASS = AUTH_SETTINGS.password
+AUTH_PUBLIC_PATHS = {
+    "/",
+    "/inicio/ingresar",
+    "/menu-principal",
+    "/api/menu/kpis",
+}
+AUTH_PUBLIC_PREFIXES = (
+    "/static/",
+)
 MENU_IMSS_LOGO_URL = os.getenv(
     "MENU_IMSS_LOGO_URL",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/IMSS_Logo.svg/1200px-IMSS_Logo.svg.png",
@@ -2225,7 +2234,19 @@ def validate_csrf(form_data: Dict[str, Any], request: Request):
     validate_csrf_token(form_data, request, CSRF_COOKIE_NAME)
 
 
-def require_auth(credentials: Optional[HTTPBasicCredentials] = Depends(security)):
+def _is_auth_public_path(path: str) -> bool:
+    normalized = (path or "").split("?", 1)[0] or "/"
+    if normalized in AUTH_PUBLIC_PATHS:
+        return True
+    return any(normalized.startswith(prefix) for prefix in AUTH_PUBLIC_PREFIXES)
+
+
+def require_auth(
+    request: Request,
+    credentials: Optional[HTTPBasicCredentials] = Depends(security),
+):
+    if _is_auth_public_path(request.url.path):
+        return
     require_auth_basic(credentials, AUTH_SETTINGS)
 
 # ==========================================

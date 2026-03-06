@@ -1,173 +1,173 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>fau_BOT - IA Central Multi-Agente</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; --fondo:#f4f6f9; }
-        body { font-family:'Montserrat',sans-serif; margin:0; padding:20px; background:var(--fondo); }
-        .container { max-width:1400px; margin:auto; background:#fff; border-radius:10px; padding:24px; box-shadow:0 8px 24px rgba(0,0,0,.10); }
-        h1,h2,h3 { color:var(--imss-verde); margin:0 0 10px 0; }
-        h1 { border-bottom:3px solid var(--imss-dorado); padding-bottom:10px; }
-        .row { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px; margin-top:12px; }
-        .card { background:#fff; border:1px solid #dbe4df; border-left:5px solid var(--imss-dorado); border-radius:8px; padding:10px; }
-        .v { font-size:24px; font-weight:800; color:var(--imss-verde); }
-        .section { margin-top:16px; border:1px solid #e0e7e3; border-radius:8px; padding:12px; background:#fafcfb; }
-        table { width:100%; border-collapse:collapse; margin-top:8px; }
-        th { background:var(--imss-verde); color:#fff; padding:8px; text-align:left; font-size:12px; }
-        td { border-bottom:1px solid #e6ece9; padding:7px; font-size:12px; vertical-align:top; }
-        .btn { background:var(--imss-verde); color:#fff; border:none; border-radius:6px; padding:10px 14px; cursor:pointer; font-weight:700; text-decoration:none; display:inline-block; }
-        .btn.alt { background:var(--imss-dorado); color:#13322B; }
-        .muted { color:#5a6670; font-size:12px; }
-        .sev-ALTA { color:#8d1f1f; font-weight:800; }
-        .sev-MEDIA { color:#a46a00; font-weight:700; }
-        .sev-INFO { color:#1c5a80; font-weight:700; }
-        @media (max-width: 1100px) { .row { grid-template-columns: 1fr; } }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>fau_BOT - IA Central Multi-Agente</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde:#0a3161; --imss-dorado:#c82f3f; --fondo:#f4f6f9; }
+ body { font-family:'Montserrat',sans-serif; margin:0; padding:20px; background:var(--fondo); }
+ .container { max-width:1400px; margin:auto; background:#fff; border-radius:10px; padding:24px; box-shadow:0 8px 24px rgba(0,0,0,.10); }
+ h1,h2,h3 { color:var(--imss-verde); margin:0 0 10px 0; }
+ h1 { border-bottom:3px solid var(--imss-dorado); padding-bottom:10px; }
+ .row { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px; margin-top:12px; }
+ .card { background:#fff; border:1px solid #d9e6fb; border-left:5px solid var(--imss-dorado); border-radius:8px; padding:10px; }
+ .v { font-size:24px; font-weight:800; color:var(--imss-verde); }
+ .section { margin-top:16px; border:1px solid #e0e7e3; border-radius:8px; padding:12px; background:#f7faff; }
+ table { width:100%; border-collapse:collapse; margin-top:8px; }
+ th { background:var(--imss-verde); color:#fff; padding:8px; text-align:left; font-size:12px; }
+ td { border-bottom:1px solid #e6ece9; padding:7px; font-size:12px; vertical-align:top; }
+ .btn { background:var(--imss-verde); color:#fff; border:none; border-radius:6px; padding:10px 14px; cursor:pointer; font-weight:700; text-decoration:none; display:inline-block; }
+ .btn.alt { background:var(--imss-dorado); color:#ffffff; }
+ .muted { color:#5a6670; font-size:12px; }
+ .sev-ALTA { color:#8d1f1f; font-weight:800; }
+ .sev-MEDIA { color:#a46a00; font-weight:700; }
+ .sev-INFO { color:#1c5a80; font-weight:700; }
+ @media (max-width: 1100px) { .row { grid-template-columns: 1fr; } }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
 <div class="container">
-    <h1>fau_BOT - IA Central Multi-Agente</h1>
-    <p class="muted">Orquestación jerárquica: IA por módulo + IA Central. Modo aditivo, sin alterar lógica/rutas previas.</p>
+ <h1>fau_BOT - IA Central Multi-Agente</h1>
+ <p class="muted">Orquestación jerárquica: IA por módulo + IA Central. Modo aditivo, sin alterar lógica/rutas previas.</p>
 
-    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
-        <form method="post" action="/api/ai/fau-bot/run" style="display:inline;">
-            <input type="hidden" name="window_days" value="30">
-            <button class="btn" type="submit">Ejecutar ciclo fau_BOT (30 días)</button>
-        </form>
-        <a class="btn alt" href="/api/ai/fau-bot/status" target="_blank">Ver estado JSON</a>
-        <a class="btn alt" href="/api/ai/fau-bot/reports" target="_blank">Ver reportes JSON</a>
-        <a class="btn alt" href="/api/ai/fau-bot/actions" target="_blank">Action Proposals JSON</a>
-        <a class="btn alt" href="/api/ai/hospitalizacion/alertas" target="_blank">Alertas Hospitalización JSON</a>
-        <a class="btn alt" href="/ai/quirofano">Panel IA Quirófano</a>
-        <a class="btn alt" href="/api/ai/quirofano/alertas" target="_blank">Alertas Quirófano JSON</a>
-        <a class="btn alt" href="/api/ai/fau-bot/system/pr-suggestions" target="_blank">PR sugeridos (HITL)</a>
-        <a class="btn alt" href="/ai/fau-bot-core">Panel fau_BOT Core</a>
-        <a class="btn alt" href="/api/ai/fau-bot-core/status" target="_blank">Estado Core JSON</a>
-        <a class="btn alt" href="/reporte/alertas">ALERTAS (Reporte)</a>
-        <a class="btn alt" href="/">Menú principal</a>
-    </div>
+ <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+ <form method="post" action="/api/ai/fau-bot/run" style="display:inline;">
+ <input type="hidden" name="window_days" value="30">
+ <button class="btn" type="submit">Ejecutar ciclo fau_BOT (30 días)</button>
+ </form>
+ <a class="btn alt" href="/api/ai/fau-bot/status" target="_blank">Ver estado JSON</a>
+ <a class="btn alt" href="/api/ai/fau-bot/reports" target="_blank">Ver reportes JSON</a>
+ <a class="btn alt" href="/api/ai/fau-bot/actions" target="_blank">Action Proposals JSON</a>
+ <a class="btn alt" href="/api/ai/hospitalizacion/alertas" target="_blank">Alertas Hospitalización JSON</a>
+ <a class="btn alt" href="/ai/quirofano">Panel IA Quirófano</a>
+ <a class="btn alt" href="/api/ai/quirofano/alertas" target="_blank">Alertas Quirófano JSON</a>
+ <a class="btn alt" href="/api/ai/fau-bot/system/pr-suggestions" target="_blank">PR sugeridos (HITL)</a>
+ <a class="btn alt" href="/ai/fau-bot-core">Panel fau_BOT Core</a>
+ <a class="btn alt" href="/api/ai/fau-bot-core/status" target="_blank">Estado Core JSON</a>
+ <a class="btn alt" href="/reporte/alertas">ALERTAS (Reporte)</a>
+ <a class="btn alt" href="/">Menú principal</a>
+ </div>
 
-    <div class="row">
-        <div class="card"><div>Runs</div><div class="v">{{ payload.runs|length }}</div></div>
-        <div class="card"><div>Reportes</div><div class="v">{{ payload.reports|length }}</div></div>
-        <div class="card"><div>Alertas</div><div class="v">{{ payload.alerts|length }}</div></div>
-        <div class="card"><div>Action Proposals</div><div class="v">{{ payload.actions|length }}</div></div>
-        <div class="card"><div>Jobs Async (recientes)</div><div class="v">{{ payload.jobs_recent|length }}</div></div>
-    </div>
+ <div class="row">
+ <div class="card"><div>Runs</div><div class="v">{{ payload.runs|length }}</div></div>
+ <div class="card"><div>Reportes</div><div class="v">{{ payload.reports|length }}</div></div>
+ <div class="card"><div>Alertas</div><div class="v">{{ payload.alerts|length }}</div></div>
+ <div class="card"><div>Action Proposals</div><div class="v">{{ payload.actions|length }}</div></div>
+ <div class="card"><div>Jobs Async (recientes)</div><div class="v">{{ payload.jobs_recent|length }}</div></div>
+ </div>
 
-    <div class="section">
-        <h2>Últimos Runs</h2>
-        <table>
-            <tr><th>ID</th><th>Estado</th><th>Ventana</th><th>Disparado por</th><th>Inicio</th><th>Fin</th></tr>
-            {% for r in payload.runs %}
-            <tr>
-                <td>{{ r.id }}</td>
-                <td>{{ r.status }}</td>
-                <td>{{ r.window_days }} días</td>
-                <td>{{ r.triggered_by }}</td>
-                <td>{{ r.started_at }}</td>
-                <td>{{ r.ended_at or 'N/E' }}</td>
-            </tr>
-            {% else %}
-            <tr><td colspan="6">Sin runs ejecutados.</td></tr>
-            {% endfor %}
-        </table>
-    </div>
+ <div class="section">
+ <h2>Últimos Runs</h2>
+ <table>
+ <tr><th>ID</th><th>Estado</th><th>Ventana</th><th>Disparado por</th><th>Inicio</th><th>Fin</th></tr>
+ {% for r in payload.runs %}
+ <tr>
+ <td>{{ r.id }}</td>
+ <td>{{ r.status }}</td>
+ <td>{{ r.window_days }} días</td>
+ <td>{{ r.triggered_by }}</td>
+ <td>{{ r.started_at }}</td>
+ <td>{{ r.ended_at or 'N/E' }}</td>
+ </tr>
+ {% else %}
+ <tr><td colspan="6">Sin runs ejecutados.</td></tr>
+ {% endfor %}
+ </table>
+ </div>
 
-    <div class="section">
-        <h2>Alertas Centrales</h2>
-        <table>
-            <tr><th>Fecha</th><th>Severidad</th><th>Categoría</th><th>Título</th><th>Descripción</th><th>Recomendación</th></tr>
-            {% for a in payload.alerts %}
-            <tr>
-                <td>{{ a.created_at }}</td>
-                <td><span class="sev-{{ a.severity }}">{{ a.severity }}</span></td>
-                <td>{{ a.category }}</td>
-                <td>{{ a.title }}</td>
-                <td>{{ a.description }}</td>
-                <td>{{ a.recommendation }}</td>
-            </tr>
-            {% else %}
-            <tr><td colspan="6">Sin alertas.</td></tr>
-            {% endfor %}
-        </table>
-    </div>
+ <div class="section">
+ <h2>Alertas Centrales</h2>
+ <table>
+ <tr><th>Fecha</th><th>Severidad</th><th>Categoría</th><th>Título</th><th>Descripción</th><th>Recomendación</th></tr>
+ {% for a in payload.alerts %}
+ <tr>
+ <td>{{ a.created_at }}</td>
+ <td><span class="sev-{{ a.severity }}">{{ a.severity }}</span></td>
+ <td>{{ a.category }}</td>
+ <td>{{ a.title }}</td>
+ <td>{{ a.description }}</td>
+ <td>{{ a.recommendation }}</td>
+ </tr>
+ {% else %}
+ <tr><td colspan="6">Sin alertas.</td></tr>
+ {% endfor %}
+ </table>
+ </div>
 
-    <div class="section">
-        <h2>Bandeja FAU - Action Proposals</h2>
-        <table>
-            <tr><th>ID</th><th>Prioridad</th><th>Tipo</th><th>Título</th><th>Estado</th><th>Fuente</th><th>Fecha</th></tr>
-            {% for a in payload.actions %}
-            <tr>
-                <td>{{ a.id }}</td>
-                <td><span class="sev-{{ a.priority }}">{{ a.priority }}</span></td>
-                <td>{{ a.action_type }}</td>
-                <td>{{ a.title }}</td>
-                <td>{{ a.status }}</td>
-                <td>{{ a.source_agent }}</td>
-                <td>{{ a.created_at }}</td>
-            </tr>
-            {% else %}
-            <tr><td colspan="7">Sin acciones propuestas.</td></tr>
-            {% endfor %}
-        </table>
-    </div>
+ <div class="section">
+ <h2>Bandeja FAU - Action Proposals</h2>
+ <table>
+ <tr><th>ID</th><th>Prioridad</th><th>Tipo</th><th>Título</th><th>Estado</th><th>Fuente</th><th>Fecha</th></tr>
+ {% for a in payload.actions %}
+ <tr>
+ <td>{{ a.id }}</td>
+ <td><span class="sev-{{ a.priority }}">{{ a.priority }}</span></td>
+ <td>{{ a.action_type }}</td>
+ <td>{{ a.title }}</td>
+ <td>{{ a.status }}</td>
+ <td>{{ a.source_agent }}</td>
+ <td>{{ a.created_at }}</td>
+ </tr>
+ {% else %}
+ <tr><td colspan="7">Sin acciones propuestas.</td></tr>
+ {% endfor %}
+ </table>
+ </div>
 
-    <div class="section">
-        <h2>Background Jobs (Celery/Async)</h2>
-        <p class="muted">
-            Total: {{ payload.jobs_summary.total if payload.jobs_summary else 0 }} |
-            P95: {{ payload.jobs_summary.latencia_ms.p95 if payload.jobs_summary and payload.jobs_summary.latencia_ms else 0 }} ms
-        </p>
-        <table>
-            <tr><th>ID</th><th>Job</th><th>Status</th><th>Duración (ms)</th><th>Task ID</th><th>Inicio</th><th>Fin</th></tr>
-            {% for j in payload.jobs_recent %}
-            <tr>
-                <td>{{ j.id }}</td>
-                <td>{{ j.job_name }}</td>
-                <td>{{ j.status }}</td>
-                <td>{{ j.duration_ms or '' }}</td>
-                <td>{{ j.task_id or '' }}</td>
-                <td>{{ j.started_at }}</td>
-                <td>{{ j.ended_at or '' }}</td>
-            </tr>
-            {% else %}
-            <tr><td colspan="7">Sin jobs registrados.</td></tr>
-            {% endfor %}
-        </table>
-    </div>
+ <div class="section">
+ <h2>Background Jobs (Celery/Async)</h2>
+ <p class="muted">
+ Total: {{ payload.jobs_summary.total if payload.jobs_summary else 0 }} |
+ P95: {{ payload.jobs_summary.latencia_ms.p95 if payload.jobs_summary and payload.jobs_summary.latencia_ms else 0 }} ms
+ </p>
+ <table>
+ <tr><th>ID</th><th>Job</th><th>Status</th><th>Duración (ms)</th><th>Task ID</th><th>Inicio</th><th>Fin</th></tr>
+ {% for j in payload.jobs_recent %}
+ <tr>
+ <td>{{ j.id }}</td>
+ <td>{{ j.job_name }}</td>
+ <td>{{ j.status }}</td>
+ <td>{{ j.duration_ms or '' }}</td>
+ <td>{{ j.task_id or '' }}</td>
+ <td>{{ j.started_at }}</td>
+ <td>{{ j.ended_at or '' }}</td>
+ </tr>
+ {% else %}
+ <tr><td colspan="7">Sin jobs registrados.</td></tr>
+ {% endfor %}
+ </table>
+ </div>
 
-    <div class="section">
-        <h2>Conectores Ecosistema (PHEDS/ECE)</h2>
-        <table>
-            <tr><th>Nombre</th><th>Tipo</th><th>Permisos</th><th>Habilitado</th><th>Última Sync</th></tr>
-            {% for c in payload.connectors %}
-            <tr>
-                <td>{{ c.name }}</td>
-                <td>{{ c.kind }}</td>
-                <td>{{ 'SI' if c.permissions_granted else 'NO' }}</td>
-                <td>{{ 'SI' if c.enabled else 'NO' }}</td>
-                <td>{{ c.last_sync_at or 'N/E' }}</td>
-            </tr>
-            {% else %}
-            <tr><td colspan="5">Sin conectores.</td></tr>
-            {% endfor %}
-        </table>
-    </div>
+ <div class="section">
+ <h2>Conectores Ecosistema (PHEDS/ECE)</h2>
+ <table>
+ <tr><th>Nombre</th><th>Tipo</th><th>Permisos</th><th>Habilitado</th><th>Última Sync</th></tr>
+ {% for c in payload.connectors %}
+ <tr>
+ <td>{{ c.name }}</td>
+ <td>{{ c.kind }}</td>
+ <td>{{ 'SI' if c.permissions_granted else 'NO' }}</td>
+ <td>{{ 'SI' if c.enabled else 'NO' }}</td>
+ <td>{{ c.last_sync_at or 'N/E' }}</td>
+ </tr>
+ {% else %}
+ <tr><td colspan="5">Sin conectores.</td></tr>
+ {% endfor %}
+ </table>
+ </div>
 </div>
 </body>
 </html>

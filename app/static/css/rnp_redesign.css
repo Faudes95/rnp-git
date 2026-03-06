@@ -20,21 +20,21 @@
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #13322B;
+    color: #0a3161;
     transition: all 0.25s ease;
     user-select: none;
     margin-bottom: 0;
 }
 .rnp-collapse-trigger:hover {
-    background: linear-gradient(135deg, #edf8f3 0%, #d0f0e4 100%);
-    border-color: #B38E5D;
-    box-shadow: 0 2px 10px rgba(179, 142, 93, 0.15);
+    background: linear-gradient(135deg, #f3f8ff 0%, #e7f0ff 100%);
+    border-color: #c82f3f;
+    box-shadow: 0 2px 10px rgba(200,47,63,0.15);
 }
 .rnp-collapse-trigger::after {
     content: '';
     width: 20px;
     height: 20px;
-    background: #13322B;
+    background: #0a3161;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center/contain no-repeat;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center/contain no-repeat;
     transition: transform 0.3s ease;
@@ -58,7 +58,7 @@
 
 /* ─── CLINICAL HEADER (Patient Context Bar) ────────────────────────── */
 .clinical-header {
-    background: linear-gradient(135deg, #0f3027 0%, #13322B 40%, #1a5c4a 100%);
+    background: linear-gradient(135deg, #0f3f82 0%, #0a3161 40%, #2e6ec9 100%);
     border-radius: 16px;
     padding: 20px 24px;
     color: #fff;
@@ -83,7 +83,7 @@
     height: 80px;
     border-radius: 50%;
     background: rgba(255,255,255,0.12);
-    border: 3px solid #B38E5D;
+    border: 3px solid #c82f3f;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -173,8 +173,8 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 .smart-card:hover {
-    border-color: #B38E5D;
-    box-shadow: 0 4px 20px rgba(179,142,93,0.12);
+    border-color: #c82f3f;
+    box-shadow: 0 4px 20px rgba(200,47,63,0.1);
     transform: translateY(-2px);
 }
 .smart-card-header {
@@ -216,8 +216,8 @@
     font-weight: 700;
     padding: 2px 10px;
     border-radius: 20px;
-    background: #f0f5f3;
-    color: #13322B;
+    background: #edf3ff;
+    color: #0a3161;
 }
 .smart-card-body {
     padding: 0 16px 16px;
@@ -240,7 +240,7 @@
 .smart-card.card-blue .smart-card-icon { background: #eff6ff; color: #1e40af; }
 .smart-card.card-purple .smart-card-header { border-bottom: 2px solid #7c3aed; }
 .smart-card.card-purple .smart-card-icon { background: #f5f3ff; color: #5b21b6; }
-.smart-card.card-gold .smart-card-header { border-bottom: 2px solid #B38E5D; }
+.smart-card.card-gold .smart-card-header { border-bottom: 2px solid #c82f3f; }
 .smart-card.card-gold .smart-card-icon { background: #fef9f0; color: #92400e; }
 
 /* ─── MICRO CHART (Inline mini visualizations) ─────────────────────── */
@@ -253,7 +253,7 @@
 .micro-chart .bar {
     width: 6px;
     border-radius: 3px 3px 0 0;
-    background: linear-gradient(to top, #13322B, #3da68f);
+    background: linear-gradient(to top, #0a3161, #74abf5);
     transition: height 0.5s ease;
     min-height: 2px;
 }
@@ -274,13 +274,13 @@
     transition: all 0.2s;
 }
 .vital-item:hover {
-    border-color: #B38E5D;
-    background: #fffaf3;
+    border-color: #c82f3f;
+    background: #fff4f6;
 }
 .vital-value {
     font-size: 20px;
     font-weight: 900;
-    color: #13322B;
+    color: #0a3161;
     line-height: 1;
 }
 .vital-value.alert { color: #dc2626; }
@@ -310,7 +310,7 @@
     top: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(to bottom, #B38E5D, #d2e0da);
+    background: linear-gradient(to bottom, #c82f3f, #d2e0da);
     border-radius: 2px;
 }
 .timeline-item {
@@ -325,7 +325,7 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: #13322B;
+    background: #0a3161;
     border: 3px solid #fff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     display: flex;
@@ -348,8 +348,8 @@
     transition: all 0.2s;
 }
 .timeline-content:hover {
-    border-color: #B38E5D;
-    box-shadow: 0 4px 16px rgba(179,142,93,0.1);
+    border-color: #c82f3f;
+    box-shadow: 0 4px 16px rgba(200,47,63,0.08);
 }
 @keyframes slideInLeft {
     from { opacity: 0; transform: translateX(-16px); }
@@ -403,7 +403,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #13322B;
+    color: #0a3161;
     margin-bottom: 4px;
 }
 .rnp-field input,
@@ -421,9 +421,9 @@
 .rnp-field input:focus,
 .rnp-field select:focus,
 .rnp-field textarea:focus {
-    border-color: #B38E5D;
+    border-color: #c82f3f;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(179,142,93,0.15);
+    box-shadow: 0 0 0 3px rgba(200,47,63,0.12);
 }
 .rnp-field.has-error input,
 .rnp-field.has-error select {
@@ -481,7 +481,7 @@
     bottom: calc(100% + 8px);
     left: 50%;
     transform: translateX(-50%) scale(0.9);
-    background: #13322B;
+    background: #0a3161;
     color: #fff;
     padding: 6px 12px;
     border-radius: 8px;
@@ -508,7 +508,7 @@
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #B38E5D, #96733a);
+    background: linear-gradient(to bottom, #c82f3f, #96733a);
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {

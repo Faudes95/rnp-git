@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prototipo A — Glassmorphism Institucional</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+:root {
+ --verde:#0a3161; --verde2:#2e6ec9; --dorado:#c82f3f; --dorado-light:#ef7f8b;
+ --fondo:#0f1f1b; --glass:rgba(255,255,255,0.06); --glass2:rgba(255,255,255,0.1);
+ --border:rgba(255,255,255,0.08); --text:#e8ede9; --text-muted:#8a9e95;
+ --red:#ef4444; --blue:#3b82f6; --emerald:#10b981; --amber:#f59e0b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--fondo);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 20% 50%,rgba(31,79,159,0.4) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(200,47,63,0.12) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(26,92,74,0.2) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+.app{max-width:1440px;margin:auto;padding:20px;position:relative;z-index:1}
+
+/* ─── TOP BAR ─── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;margin-bottom:20px}
+.topbar-brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:14px;letter-spacing:1px;text-transform:uppercase}
+.topbar-brand .dot{width:10px;height:10px;border-radius:50%;background:var(--emerald);box-shadow:0 0 12px var(--emerald);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.topbar-nav{display:flex;gap:4px}
+.topbar-nav a{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;color:var(--text-muted);text-decoration:none;transition:all .25s}
+.topbar-nav a:hover,.topbar-nav a.active{background:var(--glass2);color:var(--dorado)}
+.topbar-time{font-size:11px;color:var(--text-muted);font-weight:600}
+
+/* ─── HEADLINER ─── */
+.headliner{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;padding:28px 32px;background:linear-gradient(135deg,rgba(31,79,159,0.8),rgba(26,92,74,0.4));backdrop-filter:blur(24px);border:1px solid rgba(200,47,63,0.16);border-radius:20px;margin-bottom:20px;position:sticky;top:12px;z-index:50;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.headliner::before{content:'';position:absolute;inset:0;border-radius:20px;background:linear-gradient(135deg,transparent,rgba(200,47,63,0.05));pointer-events:none}
+.avatar{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--dorado),var(--dorado-light));display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:var(--verde);box-shadow:0 8px 24px rgba(200,47,63,0.2)}
+.patient-info h1{font-size:24px;font-weight:900;letter-spacing:.5px;margin-bottom:6px}
+.patient-tags{display:flex;flex-wrap:wrap;gap:6px}
+.ptag{padding:4px 12px;border-radius:8px;font-size:11px;font-weight:700;background:var(--glass2);border:1px solid var(--border);letter-spacing:.3px}
+.ptag.gold{background:rgba(200,47,63,0.16);border-color:rgba(200,47,63,0.2);color:var(--dorado-light)}
+.ptag.critical{background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.3);color:#fca5a5;animation:pulse 2s infinite}
+.status-panel{display:flex;flex-direction:column;gap:8px}
+.status-badge{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.status-badge.active{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#6ee7b7}
+.status-badge.warn{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:#fcd34d}
+
+/* ─── CONTROLS ─── */
+.controls{display:flex;gap:8px;margin-bottom:20px;align-items:center}
+.ctrl-btn{padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:var(--glass);color:var(--text-muted);font-size:11px;font-weight:700;cursor:pointer;transition:all .25s;backdrop-filter:blur(10px)}
+.ctrl-btn:hover{background:var(--glass2);color:var(--dorado);border-color:rgba(200,47,63,0.2)}
+.ctrl-label{font-size:11px;color:var(--text-muted);margin-left:8px}
+
+/* ─── METRIC STRIP ─── */
+.metric-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+.metric{padding:18px;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:14px;text-align:center;transition:all .3s;cursor:default}
+.metric:hover{border-color:rgba(200,47,63,0.2);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.2)}
+.metric .val{font-size:28px;font-weight:900;background:linear-gradient(135deg,#fff,var(--dorado-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.metric .lab{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-top:4px}
+.metric .micro{display:flex;align-items:flex-end;justify-content:center;gap:2px;height:20px;margin-top:8px}
+.metric .micro span{width:4px;border-radius:2px;background:linear-gradient(to top,var(--dorado),var(--emerald));display:block;transition:height .5s}
+
+/* ─── ACCORDION SECTIONS ─── */
+.acc{margin-bottom:12px}
+.acc-trigger{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:all .3s;user-select:none}
+.acc-trigger:hover{background:var(--glass2);border-color:rgba(200,47,63,0.18)}
+.acc-trigger.open{border-radius:14px 14px 0 0;border-bottom-color:transparent;background:rgba(200,47,63,0.06)}
+.acc-title{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.acc-title .ico{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--glass2);border:1px solid var(--border)}
+.acc-badge{padding:4px 12px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(200,47,63,0.1);color:var(--dorado-light);border:1px solid rgba(200,47,63,0.16)}
+.acc-arrow{width:20px;height:20px;transition:transform .3s;color:var(--text-muted);font-size:12px}
+.acc-trigger.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{display:none;padding:20px;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-top:none;border-radius:0 0 14px 14px}
+.acc-body.show{display:block;animation:slideDown .3s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── TABLES ─── */
+table{width:100%;border-collapse:collapse}
+th{padding:10px 12px;text-align:left;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--dorado);border-bottom:2px solid rgba(200,47,63,0.16);background:transparent}
+td{padding:10px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:hover td{background:rgba(200,47,63,0.04)}
+
+/* ─── CHARTS ─── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.chart-box{background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:12px;padding:16px}
+.chart-box h4{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--dorado-light);margin-bottom:12px}
+.chart-placeholder{height:200px;background:linear-gradient(135deg,rgba(31,79,159,0.3),rgba(200,47,63,0.08));border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:12px;border:1px dashed var(--border)}
+
+/* ─── ACTION CARDS ─── */
+.actions-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:16px}
+.action-card{padding:16px;border-radius:12px;background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--border);text-align:center;cursor:pointer;transition:all .3s;text-decoration:none;color:var(--text)}
+.action-card:hover{transform:translateY(-4px);border-color:var(--dorado);box-shadow:0 12px 32px rgba(200,47,63,0.12)}
+.action-card .a-ico{font-size:24px;margin-bottom:8px}
+.action-card .a-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}
+
+/* ─── FLOW STEPS ─── */
+.flow-pipeline{display:flex;gap:0;margin:12px 0;overflow-x:auto}
+.flow-node{flex:1;min-width:120px;padding:12px;text-align:center;font-size:11px;font-weight:700;background:var(--glass);border:1px solid var(--border);position:relative;color:var(--text-muted)}
+.flow-node:first-child{border-radius:10px 0 0 10px}
+.flow-node:last-child{border-radius:0 10px 10px 0}
+.flow-node.done{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:#6ee7b7}
+.flow-node::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:8px solid var(--border);z-index:1}
+.flow-node:last-child::after{display:none}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px){.metric-strip{grid-template-columns:repeat(3,1fr)}.actions-grid{grid-template-columns:repeat(2,1fr)}.headliner{grid-template-columns:1fr}.chart-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.metric-strip{grid-template-columns:repeat(2,1fr)}.flow-pipeline{flex-wrap:wrap}.flow-node{border-radius:8px!important;flex:none;width:calc(50% - 4px)}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+ <div class="topbar-brand"><span class="dot"></span> UROMED UROLOGIA</div>
+ <div class="topbar-nav">
+ <a href="#">Menu</a>
+ <a href="#">Consulta</a>
+ <a href="#">Hospitalizacion</a>
+ <a href="#">Quirofano</a>
+ <a href="#" class="active">Expediente</a>
+ <a href="#">Reporte</a>
+ </div>
+ <div class="topbar-time" id="clock"></div>
+</div>
+
+<!-- HEADLINER STICKY -->
+<div class="headliner">
+ <div class="avatar">JL</div>
+ <div class="patient-info">
+ <h1>JUAN LOPEZ MARTINEZ</h1>
+ <div class="patient-tags">
+ <span class="ptag gold">NSS: 9800000008</span>
+ <span class="ptag">68 anios</span>
+ <span class="ptag">Masculino</span>
+ <span class="ptag">Dx: Hiperplasia Prostatica</span>
+ <span class="ptag">Flujo: HOSPITALIZADO</span>
+ <span class="ptag">Completitud: 82%</span>
+ </div>
+ </div>
+ <div class="status-panel">
+ <div class="status-badge active"><span class="dot" style="width:6px;height:6px"></span> CAMA 312-B</div>
+ <div class="status-badge warn">3 ALERTAS</div>
+ </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+ <button class="ctrl-btn" onclick="toggleAll(false)">Expandir todo</button>
+ <button class="ctrl-btn" onclick="toggleAll(true)">Colapsar todo</button>
+ <span class="ctrl-label">17 secciones clinicas</span>
+</div>
+
+<!-- METRICS -->
+<div class="metric-strip">
+ <div class="metric">
+ <div class="val">12</div>
+ <div class="lab">Consultas</div>
+ <div class="micro"><span style="height:8px"></span><span style="height:12px"></span><span style="height:6px"></span><span style="height:16px"></span><span style="height:20px"></span></div>
+ </div>
+ <div class="metric">
+ <div class="val">3</div>
+ <div class="lab">Hospitalizaciones</div>
+ <div class="micro"><span style="height:14px"></span><span style="height:18px"></span><span style="height:20px"></span></div>
+ </div>
+ <div class="metric">
+ <div class="val">8</div>
+ <div class="lab">Labs Seriados</div>
+ <div class="micro"><span style="height:10px"></span><span style="height:15px"></span><span style="height:12px"></span><span style="height:18px"></span></div>
+ </div>
+ <div class="metric">
+ <div class="val">5</div>
+ <div class="lab">Notas Medicas</div>
+ <div class="micro"><span style="height:8px"></span><span style="height:12px"></span><span style="height:16px"></span><span style="height:10px"></span><span style="height:14px"></span></div>
+ </div>
+ <div class="metric">
+ <div class="val">2</div>
+ <div class="lab">Cirugias</div>
+ <div class="micro"><span style="height:12px"></span><span style="height:20px"></span></div>
+ </div>
+ <div class="metric">
+ <div class="val">82%</div>
+ <div class="lab">Completitud</div>
+ <div class="micro"><span style="height:6px"></span><span style="height:10px"></span><span style="height:14px"></span><span style="height:16px"></span><span style="height:18px"></span><span style="height:20px"></span></div>
+ </div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions-grid">
+ <a class="action-card" href="#"><div class="a-ico">&#127919;</div><div class="a-label">Command Center</div></a>
+ <a class="action-card" href="#"><div class="a-ico">&#129504;</div><div class="a-label">Exp. Inteligente</div></a>
+ <a class="action-card" href="#"><div class="a-ico">&#127973;</div><div class="a-label">Pase de Visita</div></a>
+ <a class="action-card" href="#"><div class="a-ico">&#128221;</div><div class="a-label">Nota Medica</div></a>
+ <a class="action-card" href="#"><div class="a-ico">&#9888;</div><div class="a-label">Alertas</div></a>
+</div>
+
+<!-- SECTION: Flujo Clinico -->
+<div class="acc" style="margin-top:20px">
+ <div class="acc-trigger open" onclick="toggleAcc(this)">
+ <div class="acc-title"><span class="ico">&#128736;</span> Rutas Transitadas y Flujo</div>
+ <div style="display:flex;align-items:center;gap:10px"><span class="acc-badge">6 eventos</span><span class="acc-arrow">&#9660;</span></div>
+ </div>
+ <div class="acc-body show">
+ <div class="flow-pipeline">
+ <div class="flow-node done">&#9989; CONSULTA PRIMERA VEZ</div>
+ <div class="flow-node done">&#9989; PROTOCOLO</div>
+ <div class="flow-node done">&#9989; PROGRAMACION QX</div>
+ <div class="flow-node done">&#9989; CIRUGIA</div>
+ <div class="flow-node">&#11036; EGRESO</div>
+ <div class="flow-node">&#11036; SEGUIMIENTO</div>
+ </div>
+ <table style="margin-top:12px">
+ <tr><th>Fecha/Hora</th><th>Evento</th><th>Estatus</th><th>Resumen</th></tr>
+ <tr><td>2025-01-15 08:30</td><td>Consulta Primera Vez</td><td>COMPLETADO</td><td>Valoracion inicial HPB</td></tr>
+ <tr><td>2025-01-22 10:00</td><td>Protocolo quirurgico</td><td>COMPLETADO</td><td>RTU-P programada</td></tr>
+ <tr><td>2025-02-01 07:00</td><td>Cirugia realizada</td><td>COMPLETADO</td><td>RTU-P sin complicaciones</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SECTION: Labs + Charts -->
+<div class="acc">
+ <div class="acc-trigger" onclick="toggleAcc(this)">
+ <div class="acc-title"><span class="ico">&#129514;</span> Serie de Laboratorios</div>
+ <div style="display:flex;align-items:center;gap:10px"><span class="acc-badge">8 registros</span><span class="acc-arrow">&#9660;</span></div>
+ </div>
+ <div class="acc-body">
+ <div class="chart-grid">
+ <div class="chart-box">
+ <h4>Creatinina + Hemoglobina</h4>
+ <canvas id="chartA1" height="200"></canvas>
+ </div>
+ <div class="chart-box">
+ <h4>Leucocitos, Plaquetas, Na, K</h4>
+ <canvas id="chartA2" height="200"></canvas>
+ </div>
+ </div>
+ <table>
+ <tr><th>Fecha</th><th>Cr</th><th>Hb</th><th>Leu</th><th>Plt</th><th>Na</th><th>K</th></tr>
+ <tr><td>2025-02-10</td><td>1.2</td><td>13.5</td><td>7.8</td><td>245</td><td>140</td><td>4.2</td></tr>
+ <tr><td>2025-02-08</td><td>1.4</td><td>12.8</td><td>8.2</td><td>230</td><td>138</td><td>4.5</td></tr>
+ <tr><td>2025-02-06</td><td>1.6</td><td>11.9</td><td>9.1</td><td>210</td><td>136</td><td>4.8</td></tr>
+ <tr><td>2025-02-04</td><td>1.8</td><td>11.2</td><td>10.5</td><td>198</td><td>141</td><td>3.9</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SECTION: Drenajes -->
+<div class="acc">
+ <div class="acc-trigger" onclick="toggleAcc(this)">
+ <div class="acc-title"><span class="ico">&#129656;</span> Drenajes y Dispositivos</div>
+ <div style="display:flex;align-items:center;gap:10px"><span class="acc-badge">Drenaje: ACTIVO</span><span class="acc-arrow">&#9660;</span></div>
+ </div>
+ <div class="acc-body">
+ <div class="chart-grid">
+ <div class="chart-box">
+ <h4>Gasto Drenaje por Dia</h4>
+ <canvas id="chartA3" height="200"></canvas>
+ </div>
+ <div class="chart-box">
+ <h4>Uresis Foley + Indice Urinario</h4>
+ <canvas id="chartA4" height="200"></canvas>
+ </div>
+ </div>
+ <table>
+ <tr><th>Fecha</th><th>Tipo</th><th>Gasto (mL)</th><th>% Egreso</th><th>Uresis</th><th>Indice</th></tr>
+ <tr><td>2025-02-10</td><td>Penrose</td><td>120</td><td>8%</td><td>1800</td><td>0.9</td></tr>
+ <tr><td>2025-02-09</td><td>Penrose</td><td>180</td><td>12%</td><td>1650</td><td>0.8</td></tr>
+ <tr><td>2025-02-08</td><td>Penrose</td><td>250</td><td>16%</td><td>1500</td><td>0.7</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SECTION: Notas Medicas -->
+<div class="acc">
+ <div class="acc-trigger" onclick="toggleAcc(this)">
+ <div class="acc-title"><span class="ico">&#128221;</span> Notas Medicas Diarias</div>
+ <div style="display:flex;align-items:center;gap:10px"><span class="acc-badge">5 notas</span><span class="acc-arrow">&#9660;</span></div>
+ </div>
+ <div class="acc-body">
+ <div class="chart-grid">
+ <div class="chart-box" style="grid-column:1/-1">
+ <h4>Tendencia Signos Vitales</h4>
+ <canvas id="chartA5" height="180"></canvas>
+ </div>
+ </div>
+ <table>
+ <tr><th>Fecha</th><th>Cama</th><th>Servicio</th><th>FC</th><th>TA</th><th>Temp</th><th>Texto</th></tr>
+ <tr><td>2025-02-10</td><td>312-B</td><td>Urologia</td><td>72</td><td>120/80</td><td>36.5</td><td>Paciente estable, sin fiebre</td></tr>
+ <tr><td>2025-02-09</td><td>312-B</td><td>Urologia</td><td>78</td><td>130/85</td><td>36.8</td><td>Mejoria progresiva, drenaje disminuye</td></tr>
+ <tr><td>2025-02-08</td><td>312-B</td><td>Urologia</td><td>84</td><td>135/90</td><td>37.2</td><td>POI dia 1, dolor controlado</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SECTION: Datos Paciente (collapsed) -->
+<div class="acc">
+ <div class="acc-trigger" onclick="toggleAcc(this)">
+ <div class="acc-title"><span class="ico">&#128100;</span> Datos del Paciente</div>
+ <div style="display:flex;align-items:center;gap:10px"><span class="acc-arrow">&#9660;</span></div>
+ </div>
+ <div class="acc-body">
+ <table>
+ <tr><td style="font-weight:700;width:200px">Nombre</td><td>JUAN LOPEZ MARTINEZ</td></tr>
+ <tr><td style="font-weight:700">CURP</td><td>LOMJ570315HDFRTN09</td></tr>
+ <tr><td style="font-weight:700">NSS</td><td>9800000008</td></tr>
+ <tr><td style="font-weight:700">Edad</td><td>68</td></tr>
+ <tr><td style="font-weight:700">Tipo Sangre</td><td>O+</td></tr>
+ <tr><td style="font-weight:700">Telefono</td><td>55 1234 5678</td></tr>
+ <tr><td style="font-weight:700">Direccion</td><td>Av. Reforma 123, Col. Centro, CDMX, CP 06000</td></tr>
+ </table>
+ </div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Clock
+function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleString('es-MX',{weekday:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+setInterval(updateClock,1000);updateClock();
+
+// Accordion
+function toggleAcc(el){
+ el.classList.toggle('open');
+ var body=el.nextElementSibling;
+ body.classList.toggle('show');
+}
+function toggleAll(collapse){
+ document.querySelectorAll('.acc-trigger').forEach(function(t){
+ var body=t.nextElementSibling;
+ if(collapse){t.classList.remove('open');body.classList.remove('show')}
+ else{t.classList.add('open');body.classList.add('show')}
+ });
+ if(!collapse) initAllCharts();
+}
+
+// Charts
+var chartsReady=false;
+function initAllCharts(){
+ if(chartsReady) return; chartsReady=true;
+ var colors={green:'#10b981',red:'#ef4444',blue:'#3b82f6',purple:'#8b5cf6',orange:'#f59e0b',teal:'#14b8a6',gold:'#c82f3f'};
+ var base={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#8a9e95',font:{size:10,weight:'bold'},usePointStyle:true,boxWidth:8}},tooltip:{backgroundColor:'rgba(10,49,97,0.95)',titleFont:{size:11},bodyFont:{size:11},cornerRadius:8}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6b8a7d',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6b8a7d',font:{size:10}}}}};
+ var dates=['02-04','02-06','02-08','02-10'];
+ // Labs Cr+Hb
+ new Chart('chartA1',{type:'line',data:{labels:dates,datasets:[{label:'Cr',data:[1.8,1.6,1.4,1.2],borderColor:colors.red,backgroundColor:'rgba(239,68,68,0.1)',fill:true,tension:.4,pointRadius:5,pointHoverRadius:7},{label:'Hb',data:[11.2,11.9,12.8,13.5],borderColor:colors.blue,backgroundColor:'rgba(59,130,246,0.1)',fill:true,tension:.4,pointRadius:5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:base.scales.x,y:{position:'left',grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:colors.red,font:{size:10}}},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{color:colors.blue,font:{size:10}}}}})});
+ // Labs panel
+ new Chart('chartA2',{type:'line',data:{labels:dates,datasets:[{label:'Leu',data:[10.5,9.1,8.2,7.8],borderColor:colors.green,tension:.4,pointRadius:4},{label:'Plt',data:[198,210,230,245],borderColor:colors.purple,tension:.4,pointRadius:4},{label:'Na',data:[141,136,138,140],borderColor:colors.orange,tension:.4,pointRadius:4},{label:'K',data:[3.9,4.8,4.5,4.2],borderColor:colors.teal,tension:.4,pointRadius:4}]},options:base});
+ // Drenajes
+ new Chart('chartA3',{type:'bar',data:{labels:['02-08','02-09','02-10'],datasets:[{label:'Gasto mL',data:[250,180,120],backgroundColor:['rgba(31,79,159,0.8)','rgba(31,79,159,0.6)','rgba(31,79,159,0.4)'],borderColor:colors.gold,borderWidth:1,borderRadius:6}]},options:base});
+ // Foley
+ new Chart('chartA4',{type:'line',data:{labels:['02-08','02-09','02-10'],datasets:[{label:'Uresis mL',data:[1500,1650,1800],borderColor:colors.blue,backgroundColor:'rgba(59,130,246,0.1)',fill:true,tension:.4,pointRadius:5},{label:'Indice',data:[0.7,0.8,0.9],borderColor:colors.gold,tension:.4,pointRadius:5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:base.scales.x,y:{position:'left',grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:colors.blue,font:{size:10}}},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{color:colors.gold,font:{size:10}}}}})});
+ // Vitales
+ new Chart('chartA5',{type:'line',data:{labels:['02-08','02-09','02-10'],datasets:[{label:'FC',data:[84,78,72],borderColor:colors.red,tension:.3,pointRadius:5},{label:'TA Sist',data:[135,130,120],borderColor:colors.blue,tension:.3,pointRadius:5},{label:'TA Diast',data:[90,85,80],borderColor:'#60a5fa',borderDash:[5,3],tension:.3,pointRadius:4},{label:'Temp',data:[37.2,36.8,36.5],borderColor:colors.orange,tension:.3,pointRadius:5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:base.scales.x,y:{position:'left',grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8a9e95',font:{size:10}}},y1:{position:'right',min:35,max:40,grid:{drawOnChartArea:false},ticks:{color:colors.orange,font:{size:10}}}}})});
+}
+// Observer: init charts when section opens
+document.querySelectorAll('.acc-trigger').forEach(function(t){
+ t.addEventListener('click',function(){
+ if(t.classList.contains('open')){
+ setTimeout(initAllCharts,100);
+ }
+ });
+});
+// Init charts in already-open sections
+setTimeout(initAllCharts,300);
+</script>
+</body>
+</html>

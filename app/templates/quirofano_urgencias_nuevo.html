@@ -1,484 +1,484 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Cirugía de Urgencia</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --gris: #f4f6f9; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--gris); padding: 20px; margin: 0; }
-        .container { max-width: 1180px; margin: auto; background: white; border-radius: 10px; padding: 26px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); border-top: 6px solid var(--imss-verde); }
-        h1 { color: var(--imss-verde); margin: 0 0 16px 0; }
-        .form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-        .form-group { margin-bottom: 14px; }
-        .span-2 { grid-column: span 2; }
-        .span-3 { grid-column: span 3; }
-        label { font-weight: 700; display: block; margin-bottom: 6px; color: #24343a; font-size: 13px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Montserrat', sans-serif; }
-        .section { margin-top: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fafbfc; }
-        .section h2 { margin: 0 0 14px 0; font-size: 18px; color: var(--imss-verde); }
-        .section h3 { margin: 8px 0 10px 0; font-size: 14px; color: var(--imss-dorado); text-transform: uppercase; letter-spacing: 0.4px; }
-        .hidden { display: none; }
-        .insumos-wrap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-        .insumo-item { border: 1px solid #d7dce2; border-radius: 6px; padding: 8px; background: #fff; }
-        .insumo-item label { margin: 0; font-size: 12px; text-transform: none; cursor: pointer; }
-        .insumo-item input { width: auto; margin-right: 6px; }
-        .status-ok { color: #0b7a34; font-weight: 700; }
-        .status-pending { color: #9a4a12; font-weight: 700; }
-        .submit-bar {
-            width: 100%;
-            margin-top: 20px;
-            background: linear-gradient(90deg, #13322B, #1f4d42);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 14px 16px;
-            font-size: 16px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
-            cursor: pointer;
-        }
-        .submit-bar .icon { margin-right: 10px; }
-        .btn { background: #13322B; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn:hover { background: #0e2621; }
-        .btn-dorado { background: #B38E5D; }
-        @media (max-width: 980px) {
-            .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .span-3 { grid-column: span 2; }
-            .insumos-wrap { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 640px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .span-2, .span-3 { grid-column: span 1; }
-            .container { padding: 16px; }
-        }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>Cirugía de Urgencia</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde: #0a3161; --imss-dorado: #c82f3f; --gris: #f4f6f9; }
+ body { font-family: 'Montserrat', sans-serif; background: var(--gris); padding: 20px; margin: 0; }
+ .container { max-width: 1180px; margin: auto; background: white; border-radius: 10px; padding: 26px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); border-top: 6px solid var(--imss-verde); }
+ h1 { color: var(--imss-verde); margin: 0 0 16px 0; }
+ .form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+ .form-group { margin-bottom: 14px; }
+ .span-2 { grid-column: span 2; }
+ .span-3 { grid-column: span 3; }
+ label { font-weight: 700; display: block; margin-bottom: 6px; color: #24343a; font-size: 13px; text-transform: uppercase; }
+ input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Montserrat', sans-serif; }
+ .section { margin-top: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fafbfc; }
+ .section h2 { margin: 0 0 14px 0; font-size: 18px; color: var(--imss-verde); }
+ .section h3 { margin: 8px 0 10px 0; font-size: 14px; color: var(--imss-dorado); text-transform: uppercase; letter-spacing: 0.4px; }
+ .hidden { display: none; }
+ .insumos-wrap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+ .insumo-item { border: 1px solid #d7dce2; border-radius: 6px; padding: 8px; background: #fff; }
+ .insumo-item label { margin: 0; font-size: 12px; text-transform: none; cursor: pointer; }
+ .insumo-item input { width: auto; margin-right: 6px; }
+ .status-ok { color: #0b7a34; font-weight: 700; }
+ .status-pending { color: #9a4a12; font-weight: 700; }
+ .submit-bar {
+ width: 100%;
+ margin-top: 20px;
+ background: linear-gradient(90deg, #0a3161, #1f4d42);
+ color: #fff;
+ border: none;
+ border-radius: 8px;
+ padding: 14px 16px;
+ font-size: 16px;
+ font-weight: 800;
+ text-transform: uppercase;
+ letter-spacing: 0.7px;
+ cursor: pointer;
+ }
+ .submit-bar .icon { margin-right: 10px; }
+ .btn { background: #0a3161; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+ .btn:hover { background: #0e2621; }
+ .btn-dorado { background: #c82f3f; }
+ @media (max-width: 980px) {
+ .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .span-3 { grid-column: span 2; }
+ .insumos-wrap { grid-template-columns: 1fr; }
+ }
+ @media (max-width: 640px) {
+ .form-grid { grid-template-columns: 1fr; }
+ .span-2, .span-3 { grid-column: span 1; }
+ .container { padding: 16px; }
+ }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 <link href="/static/css/rnp_redesign.css" rel="stylesheet">
 </head>
 <body class="qf-refresh">
-    <div class="container">
-        <h1>🚨 Cirugía de Urgencia</h1>
-        <form action="/quirofano/urgencias/solicitud" method="post">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <input type="hidden" id="patologia_cie10" name="patologia_cie10">
-            <div class="section">
-                <h2>Datos obligatorios para solicitud de cirugía de urgencia</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>NSS</label>
-                        <input type="text" id="nss" name="nss" required maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 dígitos">
-                        <small id="autofill_hint" style="color:#B38E5D;font-size:11px;display:none;">Escriba NSS (10 dígitos) para auto-rellenar datos</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Agregado médico</label>
-                        <input type="text" id="agregado_medico" name="agregado_medico" required>
-                    </div>
-                    <div class="form-group span-3" id="autofill_banner" style="display:none;">
-                        <div style="background:#e8f5e9;border:1px solid #4caf50;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:10px;">
-                            <span style="font-size:18px;">✅</span>
-                            <span id="autofill_msg" style="font-size:13px;color:#2e7d32;font-weight:600;"></span>
-                        </div>
-                    </div>
-                    <div class="form-group span-2">
-                        <label>Nombre completo (apellidos primero)</label>
-                        <input type="text" id="nombre_completo" name="nombre_completo" required placeholder="APELLIDO PATERNO APELLIDO MATERNO NOMBRES">
-                    </div>
-                    <div class="form-group">
-                        <label>Edad</label>
-                        <input type="number" id="edad" name="edad" min="0" max="120" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Sexo</label>
-                        <select id="sexo" name="sexo" required>
-                            <option value="">Seleccionar...</option>
-                            {% for sexo in sexo_options %}
-                            <option value="{{ sexo }}">{{ sexo }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group span-2">
-                        <label>Patología (catálogo CIE 10)</label>
-                        <select id="patologia" name="patologia" required onchange="onPatologiaChange()">
-                            <option value="">Seleccionar...</option>
-                            {% for item in patologia_cie10_catalog %}
-                            <option value="{{ item.patologia }}" data-cie10="{{ item.cie10 }}">{{ item.cie10 }} | {{ item.patologia }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha de urgencia</label>
-                        <input type="date" id="fecha_urgencia" name="fecha_urgencia" value="">
-                    </div>
-                    <div class="form-group span-3">
-                        <label>Procedimiento</label>
-                        <select id="procedimiento_programado" name="procedimiento_programado" required onchange="onProcedimientoChange()">
-                            <option value="">Seleccionar...</option>
-                            {% for item in procedimiento_options %}
-                            <option value="{{ item }}">{{ item }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group span-3">
-                        <label>Insumos solicitados</label>
-                        <div class="insumos-wrap">
-                            {% for insumo in insumo_options %}
-                            <div class="insumo-item">
-                                <label><input type="checkbox" class="insumo-check" name="insumos_solicitados_list" value="{{ insumo }}" onchange="syncInsumos()"> {{ insumo }}</label>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <input type="hidden" id="insumos_solicitados" name="insumos_solicitados">
-                    </div>
-                    <div class="form-group">
-                        <label>¿Solicita hemoderivados?</label>
-                        <select id="solicita_hemoderivados" name="solicita_hemoderivados" onchange="onSolicitaHemoderivadosChange()">
-                            <option value="NO">NO</option>
-                            <option value="SI">SI</option>
-                        </select>
-                    </div>
-                    <div class="form-group span-2 hidden" id="hemoderivados_wrap">
-                        <label>Hemoderivados solicitados (unidades)</label>
-                        <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
-                            <div>
-                                <label style="text-transform:none; font-size:12px;">Paquete globular</label>
-                                <input type="number" min="0" step="1" id="hemoderivados_pg_solicitados" name="hemoderivados_pg_solicitados" value="0">
-                            </div>
-                            <div>
-                                <label style="text-transform:none; font-size:12px;">Plasma fresco congelado</label>
-                                <input type="number" min="0" step="1" id="hemoderivados_pfc_solicitados" name="hemoderivados_pfc_solicitados" value="0">
-                            </div>
-                            <div>
-                                <label style="text-transform:none; font-size:12px;">Concentrado plaquetario</label>
-                                <input type="number" min="0" step="1" id="hemoderivados_cp_solicitados" name="hemoderivados_cp_solicitados" value="0">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>HGZ de procedencia</label>
-                        <input type="text" id="hgz" name="hgz" required placeholder="Ej. HGZ 24">
-                    </div>
-                    <div class="form-group">
-                        <label>Estatus</label>
-                        <input type="text" id="estatus" name="estatus" value="PENDIENTE" readonly class="status-pending">
-                    </div>
-                </div>
-            </div>
+ <div class="container">
+ <h1>🚨 Cirugía de Urgencia</h1>
+ <form action="/quirofano/urgencias/solicitud" method="post">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <input type="hidden" id="patologia_cie10" name="patologia_cie10">
+ <div class="section">
+ <h2>Datos obligatorios para solicitud de cirugía de urgencia</h2>
+ <div class="form-grid">
+ <div class="form-group">
+ <label>NSS</label>
+ <input type="text" id="nss" name="nss" required maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 dígitos">
+ <small id="autofill_hint" style="color:#c82f3f;font-size:11px;display:none;">Escriba NSS (10 dígitos) para auto-rellenar datos</small>
+ </div>
+ <div class="form-group">
+ <label>Agregado médico</label>
+ <input type="text" id="agregado_medico" name="agregado_medico" required>
+ </div>
+ <div class="form-group span-3" id="autofill_banner" style="display:none;">
+ <div style="background:#e8f5e9;border:1px solid #4caf50;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+ <span style="font-size:18px;">✅</span>
+ <span id="autofill_msg" style="font-size:13px;color:#2e7d32;font-weight:600;"></span>
+ </div>
+ </div>
+ <div class="form-group span-2">
+ <label>Nombre completo (apellidos primero)</label>
+ <input type="text" id="nombre_completo" name="nombre_completo" required placeholder="APELLIDO PATERNO APELLIDO MATERNO NOMBRES">
+ </div>
+ <div class="form-group">
+ <label>Edad</label>
+ <input type="number" id="edad" name="edad" min="0" max="120" required>
+ </div>
+ <div class="form-group">
+ <label>Sexo</label>
+ <select id="sexo" name="sexo" required>
+ <option value="">Seleccionar...</option>
+ {% for sexo in sexo_options %}
+ <option value="{{ sexo }}">{{ sexo }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="form-group span-2">
+ <label>Patología (catálogo CIE 10)</label>
+ <select id="patologia" name="patologia" required onchange="onPatologiaChange()">
+ <option value="">Seleccionar...</option>
+ {% for item in patologia_cie10_catalog %}
+ <option value="{{ item.patologia }}" data-cie10="{{ item.cie10 }}">{{ item.cie10 }} | {{ item.patologia }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="form-group">
+ <label>Fecha de urgencia</label>
+ <input type="date" id="fecha_urgencia" name="fecha_urgencia" value="">
+ </div>
+ <div class="form-group span-3">
+ <label>Procedimiento</label>
+ <select id="procedimiento_programado" name="procedimiento_programado" required onchange="onProcedimientoChange()">
+ <option value="">Seleccionar...</option>
+ {% for item in procedimiento_options %}
+ <option value="{{ item }}">{{ item }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="form-group span-3">
+ <label>Insumos solicitados</label>
+ <div class="insumos-wrap">
+ {% for insumo in insumo_options %}
+ <div class="insumo-item">
+ <label><input type="checkbox" class="insumo-check" name="insumos_solicitados_list" value="{{ insumo }}" onchange="syncInsumos()"> {{ insumo }}</label>
+ </div>
+ {% endfor %}
+ </div>
+ <input type="hidden" id="insumos_solicitados" name="insumos_solicitados">
+ </div>
+ <div class="form-group">
+ <label>¿Solicita hemoderivados?</label>
+ <select id="solicita_hemoderivados" name="solicita_hemoderivados" onchange="onSolicitaHemoderivadosChange()">
+ <option value="NO">NO</option>
+ <option value="SI">SI</option>
+ </select>
+ </div>
+ <div class="form-group span-2 hidden" id="hemoderivados_wrap">
+ <label>Hemoderivados solicitados (unidades)</label>
+ <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+ <div>
+ <label style="text-transform:none; font-size:12px;">Paquete globular</label>
+ <input type="number" min="0" step="1" id="hemoderivados_pg_solicitados" name="hemoderivados_pg_solicitados" value="0">
+ </div>
+ <div>
+ <label style="text-transform:none; font-size:12px;">Plasma fresco congelado</label>
+ <input type="number" min="0" step="1" id="hemoderivados_pfc_solicitados" name="hemoderivados_pfc_solicitados" value="0">
+ </div>
+ <div>
+ <label style="text-transform:none; font-size:12px;">Concentrado plaquetario</label>
+ <input type="number" min="0" step="1" id="hemoderivados_cp_solicitados" name="hemoderivados_cp_solicitados" value="0">
+ </div>
+ </div>
+ </div>
+ <div class="form-group">
+ <label>HGZ de procedencia</label>
+ <input type="text" id="hgz" name="hgz" required placeholder="Ej. HGZ 24">
+ </div>
+ <div class="form-group">
+ <label>Estatus</label>
+ <input type="text" id="estatus" name="estatus" value="PENDIENTE" readonly class="status-pending">
+ </div>
+ </div>
+ </div>
 
-            <div id="onco_generico" class="section hidden">
-                <h3>Ventana dinámica oncológica</h3>
-                <div class="form-grid">
-                    <div class="form-group"><label>TNM</label><input type="text" name="tnm"></div>
-                    <div class="form-group"><label>ECOG</label><input type="text" name="ecog_onco"></div>
-                    <div class="form-group"><label>Índice Charlson</label><input type="text" name="charlson"></div>
-                    <div class="form-group"><label>Etapa clínica</label><input type="text" name="etapa_clinica"></div>
-                </div>
-            </div>
+ <div id="onco_generico" class="section hidden">
+ <h3>Ventana dinámica oncológica</h3>
+ <div class="form-grid">
+ <div class="form-group"><label>TNM</label><input type="text" name="tnm"></div>
+ <div class="form-group"><label>ECOG</label><input type="text" name="ecog_onco"></div>
+ <div class="form-group"><label>Índice Charlson</label><input type="text" name="charlson"></div>
+ <div class="form-group"><label>Etapa clínica</label><input type="text" name="etapa_clinica"></div>
+ </div>
+ </div>
 
-            <div id="onco_prostata" class="section hidden">
-                <h3>Campos extra: Cáncer de próstata</h3>
-                <div class="form-grid">
-                    <div class="form-group"><label>IPSS</label><input type="text" name="ipss"></div>
-                    <div class="form-group"><label>Gleason</label><input type="text" name="gleason"></div>
-                    <div class="form-group"><label>APE</label><input type="text" name="ape"></div>
-                    <div class="form-group"><label>RTUP previa</label>
-                        <select name="rtup_previa"><option value="">Seleccionar...</option><option>SI</option><option>NO</option></select>
-                    </div>
-                </div>
-            </div>
+ <div id="onco_prostata" class="section hidden">
+ <h3>Campos extra: Cáncer de próstata</h3>
+ <div class="form-grid">
+ <div class="form-group"><label>IPSS</label><input type="text" name="ipss"></div>
+ <div class="form-group"><label>Gleason</label><input type="text" name="gleason"></div>
+ <div class="form-group"><label>APE</label><input type="text" name="ape"></div>
+ <div class="form-group"><label>RTUP previa</label>
+ <select name="rtup_previa"><option value="">Seleccionar...</option><option>SI</option><option>NO</option></select>
+ </div>
+ </div>
+ </div>
 
-            <div id="incierto_prostata" class="section hidden">
-                <h3>Campos: Tumor de comportamiento incierto próstata</h3>
-                <div class="form-grid">
-                    <div class="form-group"><label>Tacto rectal</label><input type="text" name="tacto_rectal"></div>
-                    <div class="form-group"><label>Historial de APE</label><input type="text" name="historial_ape"></div>
-                    <div class="form-group"><label>ECOG</label><input type="text" name="ecog_incierto"></div>
-                </div>
-            </div>
+ <div id="incierto_prostata" class="section hidden">
+ <h3>Campos: Tumor de comportamiento incierto próstata</h3>
+ <div class="form-grid">
+ <div class="form-group"><label>Tacto rectal</label><input type="text" name="tacto_rectal"></div>
+ <div class="form-group"><label>Historial de APE</label><input type="text" name="historial_ape"></div>
+ <div class="form-group"><label>ECOG</label><input type="text" name="ecog_incierto"></div>
+ </div>
+ </div>
 
-            <div id="litiasis_rinon" class="section hidden">
-                <h3>Campos: Cálculo del riñón</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Unidades Hounsfield</label>
-                        <select name="uh_rango">
-                            <option value="">Seleccionar...</option>
-                            <option>100 Y 500 UH</option>
-                            <option>>500 A 1000 UH</option>
-                            <option>>1000 Y 1200 UH</option>
-                            <option>>1200 Y 1300 UH</option>
-                            <option>>1300 Y 1400 UH</option>
-                            <option>>1400 A 1500 UH</option>
-                            <option>MAYOR A 1500 UH</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Tamaño</label>
-                        <select id="litiasis_tamano_rango" name="litiasis_tamano_rango" onchange="onTamanoLitiasisChange()">
-                            <option value="">Seleccionar...</option>
-                            <option>&lt; 20 MM</option>
-                            <option>&gt; 20 MM</option>
-                        </select>
-                    </div>
-                    <div class="form-group hidden" id="litiasis_subtipo_wrap">
-                        <label>Si &gt; 20 MM</label>
-                        <select name="litiasis_subtipo_20">
-                            <option value="">Seleccionar...</option>
-                            <option>LITO CORAL COMPLETO</option>
-                            <option>LITO CORAL INCOMPLETO</option>
-                            <option>LITIASIS BILATERAL</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Ubicación</label>
-                        <select id="litiasis_ubicacion" name="litiasis_ubicacion" onchange="onUbicacionLitiasisChange()">
-                            <option value="">Seleccionar...</option>
-                            <option>LITIASIS CALICIAL SUPERIOR</option>
-                            <option>LITIASIS CALICIAL MEDIA</option>
-                            <option>LITIASIS CALICIAL INFERIOR</option>
-                            <option>LITIASIS PIELICA</option>
-                            <option>LITIASIS CALICIAL MULTIPLE</option>
-                        </select>
-                    </div>
-                    <div class="form-group hidden" id="litiasis_ubicacion_multiple_wrap">
-                        <label>Especifique ubicaciones</label>
-                        <input type="text" name="litiasis_ubicacion_multiple" placeholder="Ej. superior + inferior + pélvica">
-                    </div>
-                    <div class="form-group">
-                        <label>Hidronefrosis</label>
-                        <select name="hidronefrosis">
-                            <option value="">Seleccionar...</option>
-                            <option>SI</option>
-                            <option>NO</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+ <div id="litiasis_rinon" class="section hidden">
+ <h3>Campos: Cálculo del riñón</h3>
+ <div class="form-grid">
+ <div class="form-group">
+ <label>Unidades Hounsfield</label>
+ <select name="uh_rango">
+ <option value="">Seleccionar...</option>
+ <option>100 Y 500 UH</option>
+ <option>>500 A 1000 UH</option>
+ <option>>1000 Y 1200 UH</option>
+ <option>>1200 Y 1300 UH</option>
+ <option>>1300 Y 1400 UH</option>
+ <option>>1400 A 1500 UH</option>
+ <option>MAYOR A 1500 UH</option>
+ </select>
+ </div>
+ <div class="form-group">
+ <label>Tamaño</label>
+ <select id="litiasis_tamano_rango" name="litiasis_tamano_rango" onchange="onTamanoLitiasisChange()">
+ <option value="">Seleccionar...</option>
+ <option>&lt; 20 MM</option>
+ <option>&gt; 20 MM</option>
+ </select>
+ </div>
+ <div class="form-group hidden" id="litiasis_subtipo_wrap">
+ <label>Si &gt; 20 MM</label>
+ <select name="litiasis_subtipo_20">
+ <option value="">Seleccionar...</option>
+ <option>LITO CORAL COMPLETO</option>
+ <option>LITO CORAL INCOMPLETO</option>
+ <option>LITIASIS BILATERAL</option>
+ </select>
+ </div>
+ <div class="form-group">
+ <label>Ubicación</label>
+ <select id="litiasis_ubicacion" name="litiasis_ubicacion" onchange="onUbicacionLitiasisChange()">
+ <option value="">Seleccionar...</option>
+ <option>LITIASIS CALICIAL SUPERIOR</option>
+ <option>LITIASIS CALICIAL MEDIA</option>
+ <option>LITIASIS CALICIAL INFERIOR</option>
+ <option>LITIASIS PIELICA</option>
+ <option>LITIASIS CALICIAL MULTIPLE</option>
+ </select>
+ </div>
+ <div class="form-group hidden" id="litiasis_ubicacion_multiple_wrap">
+ <label>Especifique ubicaciones</label>
+ <input type="text" name="litiasis_ubicacion_multiple" placeholder="Ej. superior + inferior + pélvica">
+ </div>
+ <div class="form-group">
+ <label>Hidronefrosis</label>
+ <select name="hidronefrosis">
+ <option value="">Seleccionar...</option>
+ <option>SI</option>
+ <option>NO</option>
+ </select>
+ </div>
+ </div>
+ </div>
 
-            <div id="procedimiento_dinamico" class="section">
-                <h3>Ventana dinámica por procedimiento</h3>
-                <div class="form-grid">
-                    <div class="form-group hidden" id="tipo_neovejiga_wrap">
-                        <label>Tipo de neovejiga</label>
-                        <input type="text" name="tipo_neovejiga">
-                    </div>
-                    <div class="form-group hidden" id="sistema_succion_wrap">
-                        <label>Sistema de succión</label>
-                        <select name="sistema_succion">
-                            <option value="">Seleccionar...</option>
-                            <option>FANS</option>
-                            <option>DISS</option>
-                        </select>
-                    </div>
-                    <div class="form-group hidden" id="abordaje_wrap">
-                        <label>Abordaje</label>
-                        <select id="abordaje" name="abordaje">
-                            <option value="">Seleccionar...</option>
-                            <option>ABIERTO</option>
-                            <option>LAPAROSCOPICO</option>
-                            <option>ABIERTO + LAPAROSCOPICO</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+ <div id="procedimiento_dinamico" class="section">
+ <h3>Ventana dinámica por procedimiento</h3>
+ <div class="form-grid">
+ <div class="form-group hidden" id="tipo_neovejiga_wrap">
+ <label>Tipo de neovejiga</label>
+ <input type="text" name="tipo_neovejiga">
+ </div>
+ <div class="form-group hidden" id="sistema_succion_wrap">
+ <label>Sistema de succión</label>
+ <select name="sistema_succion">
+ <option value="">Seleccionar...</option>
+ <option>FANS</option>
+ <option>DISS</option>
+ </select>
+ </div>
+ <div class="form-group hidden" id="abordaje_wrap">
+ <label>Abordaje</label>
+ <select id="abordaje" name="abordaje">
+ <option value="">Seleccionar...</option>
+ <option>ABIERTO</option>
+ <option>LAPAROSCOPICO</option>
+ <option>ABIERTO + LAPAROSCOPICO</option>
+ </select>
+ </div>
+ </div>
+ </div>
 
-            <button type="submit" class="submit-bar" onclick="return beforeSubmit()">
-                <span class="icon">▮</span>Ingresar a lista de pacientes programados por cirugía de urgencia
-            </button>
-        </form>
-        <br>
-        <a href="/quirofano/urgencias/lista" class="btn">Ver lista de urgencias</a>
-        <a href="/quirofano/urgencias" class="btn btn-dorado">← Volver</a>
-    </div>
-    <script>
-        const patologiasOnco = new Set([{% for p in patologias_onco %}"{{ p }}",{% endfor %}]);
-        const patologiasLitiasis = new Set([{% for p in patologias_litiasis %}"{{ p }}",{% endfor %}]);
-        const procedimientosAbordaje = new Set([{% for p in procedimientos_abordaje %}"{{ p }}",{% endfor %}]);
-        const procedimientosAbiertos = new Set([{% for p in procedimientos_abiertos %}"{{ p }}",{% endfor %}]);
+ <button type="submit" class="submit-bar" onclick="return beforeSubmit()">
+ <span class="icon">▮</span>Ingresar a lista de pacientes programados por cirugía de urgencia
+ </button>
+ </form>
+ <br>
+ <a href="/quirofano/urgencias/lista" class="btn">Ver lista de urgencias</a>
+ <a href="/quirofano/urgencias" class="btn btn-dorado">← Volver</a>
+ </div>
+ <script>
+ const patologiasOnco = new Set([{% for p in patologias_onco %}"{{ p }}",{% endfor %}]);
+ const patologiasLitiasis = new Set([{% for p in patologias_litiasis %}"{{ p }}",{% endfor %}]);
+ const procedimientosAbordaje = new Set([{% for p in procedimientos_abordaje %}"{{ p }}",{% endfor %}]);
+ const procedimientosAbiertos = new Set([{% for p in procedimientos_abiertos %}"{{ p }}",{% endfor %}]);
 
-        function byId(id) { return document.getElementById(id); }
-        function show(id, visible) {
-            const el = byId(id);
-            if (!el) return;
-            el.classList.toggle('hidden', !visible);
-        }
+ function byId(id) { return document.getElementById(id); }
+ function show(id, visible) {
+ const el = byId(id);
+ if (!el) return;
+ el.classList.toggle('hidden', !visible);
+ }
 
-        function syncInsumos() {
-            const checks = Array.from(document.querySelectorAll('.insumo-check:checked')).map(x => x.value);
-            byId('insumos_solicitados').value = checks.join(' | ');
-            refreshEstatus();
-        }
+ function syncInsumos() {
+ const checks = Array.from(document.querySelectorAll('.insumo-check:checked')).map(x => x.value);
+ byId('insumos_solicitados').value = checks.join(' | ');
+ refreshEstatus();
+ }
 
-        function onPatologiaChange() {
-            const patSel = byId('patologia');
-            const pat = (patSel.value || '').toUpperCase();
-            const code = patSel.options[patSel.selectedIndex] ? (patSel.options[patSel.selectedIndex].dataset.cie10 || '') : '';
-            byId('patologia_cie10').value = code.toUpperCase();
-            show('onco_generico', patologiasOnco.has(pat));
-            show('onco_prostata', pat === 'CANCER DE PROSTATA');
-            show('incierto_prostata', pat === 'TUMOR DE COMPORTAMIENTO INCIERTO PROSTATA');
-            show('litiasis_rinon', pat === 'CALCULO DEL RIÑON');
-            refreshEstatus();
-        }
+ function onPatologiaChange() {
+ const patSel = byId('patologia');
+ const pat = (patSel.value || '').toUpperCase();
+ const code = patSel.options[patSel.selectedIndex] ? (patSel.options[patSel.selectedIndex].dataset.cie10 || '') : '';
+ byId('patologia_cie10').value = code.toUpperCase();
+ show('onco_generico', patologiasOnco.has(pat));
+ show('onco_prostata', pat === 'CANCER DE PROSTATA');
+ show('incierto_prostata', pat === 'TUMOR DE COMPORTAMIENTO INCIERTO PROSTATA');
+ show('litiasis_rinon', pat === 'CALCULO DEL RIÑON');
+ refreshEstatus();
+ }
 
-        function onTamanoLitiasisChange() {
-            const val = byId('litiasis_tamano_rango').value;
-            show('litiasis_subtipo_wrap', val === '> 20 MM');
-        }
+ function onTamanoLitiasisChange() {
+ const val = byId('litiasis_tamano_rango').value;
+ show('litiasis_subtipo_wrap', val === '> 20 MM');
+ }
 
-        function onUbicacionLitiasisChange() {
-            const val = byId('litiasis_ubicacion').value;
-            show('litiasis_ubicacion_multiple_wrap', val === 'LITIASIS CALICIAL MULTIPLE');
-        }
+ function onUbicacionLitiasisChange() {
+ const val = byId('litiasis_ubicacion').value;
+ show('litiasis_ubicacion_multiple_wrap', val === 'LITIASIS CALICIAL MULTIPLE');
+ }
 
-        function onProcedimientoChange() {
-            const proc = (byId('procedimiento_programado').value || '').toUpperCase();
-            show('tipo_neovejiga_wrap', proc === 'CISTOPROSTATECTOMIA RADICAL + FORMACION DE NEOVEJIGA');
-            show('sistema_succion_wrap', proc === 'NEFROLITOTRICIA LASER FLEXIBLE CON SISTEMA DE SUCCION');
-            const autoAbierto = procedimientosAbiertos.has(proc);
-            const requiereAbordaje = procedimientosAbordaje.has(proc);
-            show('abordaje_wrap', autoAbierto || requiereAbordaje);
-            const abordaje = byId('abordaje');
-            if (autoAbierto && abordaje) abordaje.value = 'ABIERTO';
-            if (!autoAbierto && !requiereAbordaje && abordaje) abordaje.value = '';
-            refreshEstatus();
-        }
+ function onProcedimientoChange() {
+ const proc = (byId('procedimiento_programado').value || '').toUpperCase();
+ show('tipo_neovejiga_wrap', proc === 'CISTOPROSTATECTOMIA RADICAL + FORMACION DE NEOVEJIGA');
+ show('sistema_succion_wrap', proc === 'NEFROLITOTRICIA LASER FLEXIBLE CON SISTEMA DE SUCCION');
+ const autoAbierto = procedimientosAbiertos.has(proc);
+ const requiereAbordaje = procedimientosAbordaje.has(proc);
+ show('abordaje_wrap', autoAbierto || requiereAbordaje);
+ const abordaje = byId('abordaje');
+ if (autoAbierto && abordaje) abordaje.value = 'ABIERTO';
+ if (!autoAbierto && !requiereAbordaje && abordaje) abordaje.value = '';
+ refreshEstatus();
+ }
 
-        function onSolicitaHemoderivadosChange() {
-            const solicita = (byId('solicita_hemoderivados').value || 'NO').toUpperCase();
-            show('hemoderivados_wrap', solicita === 'SI');
-        }
+ function onSolicitaHemoderivadosChange() {
+ const solicita = (byId('solicita_hemoderivados').value || 'NO').toUpperCase();
+ show('hemoderivados_wrap', solicita === 'SI');
+ }
 
-        function refreshEstatus() {
-            const requiredIds = ['nss', 'agregado_medico', 'nombre_completo', 'edad', 'sexo', 'patologia', 'procedimiento_programado', 'hgz'];
-            let ok = true;
-            for (const id of requiredIds) {
-                const el = byId(id);
-                if (!el || !String(el.value || '').trim()) { ok = false; break; }
-            }
-            if (!String(byId('insumos_solicitados').value || '').trim()) ok = false;
-            const estatus = byId('estatus');
-            estatus.value = ok ? 'PROGRAMADA' : 'PENDIENTE';
-            estatus.className = ok ? 'status-ok' : 'status-pending';
-        }
+ function refreshEstatus() {
+ const requiredIds = ['nss', 'agregado_medico', 'nombre_completo', 'edad', 'sexo', 'patologia', 'procedimiento_programado', 'hgz'];
+ let ok = true;
+ for (const id of requiredIds) {
+ const el = byId(id);
+ if (!el || !String(el.value || '').trim()) { ok = false; break; }
+ }
+ if (!String(byId('insumos_solicitados').value || '').trim()) ok = false;
+ const estatus = byId('estatus');
+ estatus.value = ok ? 'PROGRAMADA' : 'PENDIENTE';
+ estatus.className = ok ? 'status-ok' : 'status-pending';
+ }
 
-        function beforeSubmit() {
-            syncInsumos();
-            refreshEstatus();
-            const solicita = (byId('solicita_hemoderivados').value || 'NO').toUpperCase();
-            if (solicita === 'SI') {
-                const pg = parseInt(byId('hemoderivados_pg_solicitados').value || '0', 10) || 0;
-                const pfc = parseInt(byId('hemoderivados_pfc_solicitados').value || '0', 10) || 0;
-                const cp = parseInt(byId('hemoderivados_cp_solicitados').value || '0', 10) || 0;
-                if ((pg + pfc + cp) <= 0) {
-                    alert('Si solicita hemoderivados, capture al menos una unidad.');
-                    return false;
-                }
-            }
-            if (byId('estatus').value !== 'PROGRAMADA') {
-                alert('Completa NSS, Agregado médico, Nombre completo, Edad, Sexo, Patología, Procedimiento, Insumos y HGZ.');
-                return false;
-            }
-            return true;
-        }
+ function beforeSubmit() {
+ syncInsumos();
+ refreshEstatus();
+ const solicita = (byId('solicita_hemoderivados').value || 'NO').toUpperCase();
+ if (solicita === 'SI') {
+ const pg = parseInt(byId('hemoderivados_pg_solicitados').value || '0', 10) || 0;
+ const pfc = parseInt(byId('hemoderivados_pfc_solicitados').value || '0', 10) || 0;
+ const cp = parseInt(byId('hemoderivados_cp_solicitados').value || '0', 10) || 0;
+ if ((pg + pfc + cp) <= 0) {
+ alert('Si solicita hemoderivados, capture al menos una unidad.');
+ return false;
+ }
+ }
+ if (byId('estatus').value !== 'PROGRAMADA') {
+ alert('Completa NSS, Agregado médico, Nombre completo, Edad, Sexo, Patología, Procedimiento, Insumos y HGZ.');
+ return false;
+ }
+ return true;
+ }
 
-        byId('fecha_urgencia').value = new Date().toISOString().slice(0, 10);
-        onSolicitaHemoderivadosChange();
+ byId('fecha_urgencia').value = new Date().toISOString().slice(0, 10);
+ onSolicitaHemoderivadosChange();
 
-        /* ================================================================
-         * AUTOFILL — Eliminación de re-captura de datos (Urgencias)
-         * Cuando el médico escribe un NSS de 10 dígitos, se buscan los
-         * datos del paciente y se rellenan automáticamente.
-         * ================================================================ */
-        function cleanUrl(path) {
-            try { return new URL(path, window.location.origin).href; } catch(_) { return path; }
-        }
+ /* ================================================================
+ * AUTOFILL — Eliminación de re-captura de datos (Urgencias)
+ * Cuando el médico escribe un NSS de 10 dígitos, se buscan los
+ * datos del paciente y se rellenan automáticamente.
+ * ================================================================ */
+ function cleanUrl(path) {
+ try { return new URL(path, window.location.origin).href; } catch(_) { return path; }
+ }
 
-        let _autofillTimer = null;
-        let _lastNss = '';
+ let _autofillTimer = null;
+ let _lastNss = '';
 
-        async function doAutofillUrgencias() {
-            const nss = (byId('nss').value || '').trim().replace(/\D/g, '');
-            if (nss.length < 10 || nss === _lastNss) return;
+ async function doAutofillUrgencias() {
+ const nss = (byId('nss').value || '').trim().replace(/\D/g, '');
+ if (nss.length < 10 || nss === _lastNss) return;
 
-            try {
-                const res = await fetch(cleanUrl('/api/patient/autofill?nss=' + encodeURIComponent(nss)));
-                if (!res.ok) {
-                    if (res.status === 404) {
-                        showBanner('Paciente no encontrado — capture manualmente', '#fff3e0', '#e65100');
-                    }
-                    return;
-                }
-                const data = await res.json();
-                if (!data.ok) return;
+ try {
+ const res = await fetch(cleanUrl('/api/patient/autofill?nss=' + encodeURIComponent(nss)));
+ if (!res.ok) {
+ if (res.status === 404) {
+ showBanner('Paciente no encontrado — capture manualmente', '#fff3e0', '#e65100');
+ }
+ return;
+ }
+ const data = await res.json();
+ if (!data.ok) return;
 
-                _lastNss = nss;
-                const d = data.demograficos || {};
+ _lastNss = nss;
+ const d = data.demograficos || {};
 
-                setIfEmpty('agregado_medico', d.agregado_medico);
-                setIfEmpty('nombre_completo', d.nombre_completo || d.nombre);
-                setIfEmpty('edad', d.edad);
-                setSelectIfEmpty('sexo', d.sexo);
+ setIfEmpty('agregado_medico', d.agregado_medico);
+ setIfEmpty('nombre_completo', d.nombre_completo || d.nombre);
+ setIfEmpty('edad', d.edad);
+ setSelectIfEmpty('sexo', d.sexo);
 
-                showBanner('Datos auto-rellenados: ' + (d.nombre_completo || d.nombre || 'Paciente') + ' (NSS: ' + d.nss + ')', '#e8f5e9', '#2e7d32');
-                refreshEstatus();
-            } catch(err) {
-                console.warn('Autofill urgencias error:', err);
-            }
-        }
+ showBanner('Datos auto-rellenados: ' + (d.nombre_completo || d.nombre || 'Paciente') + ' (NSS: ' + d.nss + ')', '#e8f5e9', '#2e7d32');
+ refreshEstatus();
+ } catch(err) {
+ console.warn('Autofill urgencias error:', err);
+ }
+ }
 
-        function setIfEmpty(id, value) {
-            const el = byId(id);
-            if (!el || !value) return;
-            if (String(el.value || '').trim() === '' || String(el.value) === '0') {
-                el.value = value;
-            }
-        }
+ function setIfEmpty(id, value) {
+ const el = byId(id);
+ if (!el || !value) return;
+ if (String(el.value || '').trim() === '' || String(el.value) === '0') {
+ el.value = value;
+ }
+ }
 
-        function setSelectIfEmpty(id, value) {
-            const el = byId(id);
-            if (!el || !value) return;
-            if (!el.value) {
-                const upper = String(value).toUpperCase();
-                for (const opt of el.options) {
-                    if (opt.value.toUpperCase() === upper) { el.value = opt.value; break; }
-                }
-            }
-        }
+ function setSelectIfEmpty(id, value) {
+ const el = byId(id);
+ if (!el || !value) return;
+ if (!el.value) {
+ const upper = String(value).toUpperCase();
+ for (const opt of el.options) {
+ if (opt.value.toUpperCase() === upper) { el.value = opt.value; break; }
+ }
+ }
+ }
 
-        function showBanner(msg, bgColor, textColor) {
-            const banner = byId('autofill_banner');
-            const msgEl = byId('autofill_msg');
-            if (banner && msgEl) {
-                msgEl.textContent = msg;
-                msgEl.style.color = textColor;
-                banner.querySelector('div').style.background = bgColor;
-                banner.querySelector('div').style.borderColor = textColor;
-                banner.style.display = 'block';
-                setTimeout(() => { banner.style.display = 'none'; }, 8000);
-            }
-        }
+ function showBanner(msg, bgColor, textColor) {
+ const banner = byId('autofill_banner');
+ const msgEl = byId('autofill_msg');
+ if (banner && msgEl) {
+ msgEl.textContent = msg;
+ msgEl.style.color = textColor;
+ banner.querySelector('div').style.background = bgColor;
+ banner.querySelector('div').style.borderColor = textColor;
+ banner.style.display = 'block';
+ setTimeout(() => { banner.style.display = 'none'; }, 8000);
+ }
+ }
 
-        byId('nss').addEventListener('input', () => {
-            clearTimeout(_autofillTimer);
-            _autofillTimer = setTimeout(doAutofillUrgencias, 400);
-        });
-        byId('nss').addEventListener('change', doAutofillUrgencias);
-        byId('autofill_hint').style.display = 'block';
-    </script>
+ byId('nss').addEventListener('input', () => {
+ clearTimeout(_autofillTimer);
+ _autofillTimer = setTimeout(doAutofillUrgencias, 400);
+ });
+ byId('nss').addEventListener('change', doAutofillUrgencias);
+ byId('autofill_hint').style.display = 'block';
+ </script>
 <script src="/static/js/clinical_validation.js"></script>
 <script src="/static/js/patient_autofill.js"></script>
 </body>

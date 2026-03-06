@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>UROMED — Dashboard Operativo (Rotaciones y Vacaciones)</title>
+<link href="/static/css/fonts_offline.css" rel="stylesheet"/>
+<link href="/static/css/jefatura_programa_operativo.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <img class="brand-icon" src="/static/img/logooficial_header_clean.png" alt="UROMED"/>
+      <div>
+        <div class="brand-name">UROMED</div>
+        <div class="brand-sub">Plataforma Clinica Digital &bull; Dashboard Operativo (Rotaciones & Vacaciones)</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="chip">Panel local</span>
+      <span class="chip">Ciclo MAR&rarr;FEB</span>
+      <span class="chip chip-red">V = Vacaciones</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="split">
+    <div>
+      <h1>Dashboard Operativo &mdash; Rotaciones y Vacaciones</h1>
+      <div class="sub">Matriz Maestra (ciclo <b>MAR&rarr;FEB</b>). <span class="badge b-red">V</span> = vacaciones (rango dia&ndash;dia), con soporte <b>multi-mes</b>. Incluye <b>Ubicacion actual</b>, <b>Proxima rotacion</b> y <b>Estatus vacacional</b>.</div>
+    </div>
+    <div class="small right">Fuente: Matriz Maestra (HTML export) &bull; Panel 100% local</div>
+  </div>
+
+  <div class="controls">
+    <div class="card">
+      <label>Fecha de referencia (estado operativo)</label>
+      <input id="refDate" type="date"/>
+      <div class="note">Se usa para <b>Ubicacion actual</b>, <b>Proxima rotacion</b> y <b>Estatus vacacional</b>.</div>
+    </div>
+    <div class="card">
+      <label>Ano inicio del ciclo (MAR)</label>
+      <input id="startYear" type="number" min="2000" max="2100" step="1"/>
+      <div class="note">Ej: ciclo MAR 2026 &rarr; FEB 2027 &rArr; <span class="mono">2026</span>.</div>
+    </div>
+    <div class="card">
+      <label>Grado</label>
+      <select id="gdoSel"></select>
+    </div>
+    <div class="card">
+      <label>Mes</label>
+      <select id="mesSel"></select>
+    </div>
+    <div class="card">
+      <label>Buscar residente</label>
+      <input id="resSearch" type="text" placeholder="Apellido o inicial..."/>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="card kpi"><div class="t">Residentes (filtro)</div><div id="kRes" class="v">&mdash;</div></div>
+    <div class="card kpi"><div class="t">Pendientes</div><div id="kPend" class="v">&mdash;</div></div>
+    <div class="card kpi"><div class="t">En vacaciones (fecha)</div><div id="kVacNow" class="v">&mdash;</div></div>
+    <div class="card kpi"><div class="t">Dias vacacionales (mes)</div><div id="kVacDays" class="v">&mdash;</div></div>
+    <div class="card kpi"><div class="t">Rotaciones unicas (mes)</div><div id="kRot" class="v">&mdash;</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tabbtn" data-tab="rot">Rotaciones</div>
+    <div class="tabbtn active" data-tab="op">Operativo</div>
+    <div class="tabbtn" data-tab="vac">Vacaciones</div>
+    <div class="tabbtn" data-tab="cov">Cobertura</div>
+    <div class="tabbtn" data-tab="imp">Importar</div>
+  </div>
+
+  <div id="tab-rot" class="tabpanel">
+    <div class="grid2">
+      <div class="card">
+        <div><b>Cobertura por rotacion (mes)</b><div class="note">Conteo de residentes por sede/rotacion (segun filtro).</div></div>
+        <canvas id="rotChart" height="160"></canvas>
+      </div>
+      <div class="card">
+        <div><b>Top rotaciones (mes)</b><div class="note">Ayuda a detectar concentracion.</div></div>
+        <div id="topRot" style="margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div>
+          <b>Matriz (MAR&rarr;FEB)</b>
+          <div class="note">Cada celda es la asignacion mensual. Si incluye <span class="badge b-red">V</span>, ese rango corresponde a vacaciones dentro del mes.</div>
+        </div>
+        <button class="btn" id="exportMatrix">Exportar matriz (CSV)</button>
+      </div>
+      <div class="tablewrap" style="margin-top:10px;">
+        <table id="matrixTbl"></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-op" class="tabpanel active">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div>
+          <b>Estado operativo (por residente)</b>
+          <div class="note">Calcula <b>Ubicacion actual</b>, <b>Proxima rotacion</b> y <b>Estatus vacacional</b> con base en la fecha de referencia.</div>
+        </div>
+        <button class="btn" id="exportStatus">Exportar estado (CSV)</button>
+      </div>
+      <div class="tablewrap" style="margin-top:10px;">
+        <table id="statusTbl"></table>
+      </div>
+      <div class="note">Regla: <b>Ubicacion actual</b> se mantiene como la <b>rotacion/sede programada</b>. Si hay vacaciones (en el mes filtrado o en la fecha de referencia), se muestra el tag <span class="badge b-red">VACACIONES</span> dentro de la misma celda, sin alterar la rotacion.</div>
+    </div>
+  </div>
+
+  <div id="tab-vac" class="tabpanel">
+    <div class="grid2">
+      <div class="card">
+        <div><b>Vacaciones (periodos consolidados)</b><div class="note">Se consolidan segmentos <span class="badge b-red">V</span> consecutivos (p.ej., OCT 29-31 + NOV 01-11).</div></div>
+        <div class="tablewrap" style="margin-top:10px;">
+          <table id="vacTbl"></table>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+          <button class="btn" id="exportVac">Exportar vacaciones (CSV)</button>
+        </div>
+      </div>
+      <div class="card">
+        <div><b>Carga vacacional por mes</b><div class="note">Suma de dias de vacaciones por mes (segun filtro).</div></div>
+        <canvas id="vacChart" height="170"></canvas>
+        <div class="note" id="vacHint"></div>
+
+        <hr style="border:none; border-top:1px solid var(--line); margin:16px 0;">
+        <div><b>Importar vacaciones (opcional)</b></div>
+        <div class="note">El panel ya recalcula desde la matriz; si quieres anadir/ajustar periodos, puedes guardarlos en este navegador.</div>
+        <label style="margin-top:10px;">CSV: Residente,Inicio(YYYY-MM-DD),Fin(YYYY-MM-DD)</label>
+        <input id="vacPaste" type="text" placeholder="Ej: Perez Becerra J.,2026-07-01,2026-07-14" />
+        <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+          <button class="btn" id="addVacManual">Agregar periodo</button>
+          <button class="btn" id="resetVacManual">Borrar manual</button>
+        </div>
+        <div class="note">Los periodos manuales se guardan en <span class="mono">localStorage</span> y se suman a los calculados por la matriz.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-cov" class="tabpanel">
+    <div class="grid2">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+          <div>
+            <b>Alertas de cobertura</b>
+            <div class="note">Compara dotacion real vs objetivo por grado en la sede base (sin alterar el programa). Si hay deficit, sugiere candidatos desde sedes elegibles (p. ej. HGZ/HGR).</div>
+          </div>
+          <div class="row" style="gap:8px;">
+            <button class="pill pillbtn" id="planBtn" title="Planeacion: objetivos por mes" style="border-color: rgba(210,30,43,.22); background: rgba(210,30,43,.06); color: var(--red); font-weight:900;">
+              Planeacion
+            </button>
+            <div class="pill" style="border-color: rgba(30,103,214,.22); background: rgba(30,103,214,.06); color: var(--blue); font-weight:800;">
+              Cobertura
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-cov" style="margin-top:12px;">
+          <div>
+            <label>Sede base (cobertura)</label>
+            <select id="covBase"></select>
+          </div>
+          <div>
+            <label>Mes de analisis</label>
+            <select id="covMes"></select>
+          </div>
+          <div>
+            <label>Origen elegible (candidatos)</label>
+            <select id="covOrigen">
+              <option value="HGZ_HGR">HGZ / HGR (recomendado)</option>
+              <option value="TODOS">Todos (mismo grado)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="runCov">Analizar</button>
+        </div>
+
+        <div id="covObjectivesPanel" class="cov-obj hidden" style="margin-top:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
+            <div>
+              <b>Objetivos por mes</b>
+              <div class="note">Estos objetivos se guardan por mes. Al guardar, se recalcula la cobertura y se ocultan automaticamente.</div>
+            </div>
+            <div class="pill" id="objMesPill" style="border-color: rgba(11,18,32,.12); background: rgba(255,255,255,.8);">Mes: &mdash;</div>
+          </div>
+          <div class="grid-cov2">
+            <div class="mini">
+              <div class="t">Objetivo R3 (por mes)</div>
+              <input id="reqR3" type="number" min="0" step="1"/>
+            </div>
+            <div class="mini">
+              <div class="t">Objetivo R4 (por mes)</div>
+              <input id="reqR4" type="number" min="0" step="1"/>
+            </div>
+            <div class="mini">
+              <div class="t">Objetivo R5 (por mes)</div>
+              <input id="reqR5" type="number" min="0" step="1"/>
+            </div>
+            <div class="mini" style="display:flex; align-items:flex-end; gap:8px; justify-content:flex-end;">
+              <button class="btn" id="saveReq">Guardar</button>
+              <button class="btn" id="resetReq">Reset</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="note" id="covCohorteHint" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="card">
+        <div><b>Recomendacion automatica</b><div class="note">Selecciona un deficit (en la tabla) para ver candidatos priorizados. La "Ubicacion" no cambia: solo se propone cubrir la sede base en ese mes.</div></div>
+        <div id="covReco" style="margin-top:10px;"></div>
+        <div class="note" style="margin-top:10px;"><b>Tip:</b> usa <span class="mono">Grado</span> y <span class="mono">Mes</span> arriba para filtrar el universo, y aqui la cobertura de la sede base.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div>
+          <b>Tabla de cobertura por mes (sede base)</b>
+          <div class="note">Haz clic en una celda con deficit para desplegar candidatos. &Delta; negativo = falta personal.</div>
+        </div>
+        <div class="row">
+          <button class="btn" id="exportCov">Exportar CSV</button>
+        </div>
+      </div>
+      <div style="overflow:auto; margin-top:8px;">
+        <table id="covTable"></table>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:12px;">
+      <div class="card">
+        <div><b>Candidatos a cubrir</b><div class="note">Mismo grado, no asignados a la sede base en ese mes. Se marca si tienen vacaciones en ese mes.</div></div>
+        <div id="covCandidates" style="margin-top:10px;"></div>
+      </div>
+      <div class="card">
+        <div><b>Propuesta rapida</b><div class="note">Genera una lista sugerida de candidatos (sin modificar el plan). Puedes exportarla.</div></div>
+        <div id="covProposal" style="margin-top:10px;"></div>
+        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="exportProposal">Exportar propuesta CSV</button>
+          <button class="btn" id="clearProposal">Limpiar propuesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-imp" class="tabpanel">
+    <div class="grid2">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+          <div>
+            <b>Importar rotaciones</b>
+            <div class="note">Para completar R2, corregir rotaciones o actualizar el programa sin tocar el codigo. Se guarda en <span class="mono">localStorage</span>.</div>
+          </div>
+          <div class="pill" style="border-color: rgba(210,30,43,.22); background: rgba(210,30,43,.06); color: var(--red); font-weight:800;">
+            Importacion
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Archivo CSV (opcional)</label>
+          <input id="rotFile" type="file" accept=".csv,.txt"/>
+          <div class="note">Si seleccionas archivo, su contenido se cargara en el area de texto.</div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Pega aqui tu CSV</label>
+          <textarea id="rotText" rows="8" style="width:100%; border-radius: 10px; padding:10px; border:1.5px solid rgba(11,18,32,.12); background: rgba(240,244,248,.6); transition: all .25s ease;" onfocus="this.style.borderColor='#1e67d6'; this.style.boxShadow='0 0 0 4px rgba(30,103,214,.12)'" onblur="this.style.borderColor='rgba(11,18,32,.12)'; this.style.boxShadow='none'"></textarea>
+          <div class="note">
+            <b>Formato ancho:</b> <span class="mono">Residente,Gdo,MAR,ABR,...,FEB</span><br/>
+            <b>Formato largo:</b> <span class="mono">Residente,Gdo,Mes,Rotacion</span> (una fila por cambio).
+          </div>
+        </div>
+
+        <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="importWide">Importar formato ancho</button>
+          <button class="btn" id="importLong">Importar formato largo</button>
+          <button class="btn" id="downloadTemplate">Descargar plantilla</button>
+        </div>
+        <div id="importMsg" class="note" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="card">
+        <div><b>Exportar / Restaurar</b><div class="note">Util para respaldos y para compartir con jefatura.</div></div>
+
+        <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="exportAllSchedule">Exportar rotaciones actuales</button>
+          <button class="btn" id="resetSchedule">Restaurar plan original</button>
+          <button class="btn" id="clearScheduleLocal">Borrar cambios guardados</button>
+        </div>
+
+        <div class="note" style="margin-top:12px;">
+          <b>Validacion:</b> el panel inferior te muestra incoherencias frecuentes (mes vacio, grado vacio, "PENDIENTE", etc.).
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div><b>Validacion rapida (rotaciones)</b><div class="note">No bloquea; solo alerta para limpiar el plan.</div></div>
+      <div id="impValidation" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:14px;">
+    <b>Variables integradas:</b> <span class="badge b-info">Ubicacion actual</span> <span class="badge b-info">Proxima rotacion</span> <span class="badge b-info">Estatus vacacional</span>.
+  </div>
+
+  <div class="footer">
+    UROMED &bull; Plataforma Clinica Digital &bull; Dashboard Operativo &copy; 2026
+  </div>
+</div>
+
+<script src="/static/vendor/chart.min.js"></script>
+<script src="/static/js/jefatura_programa_operativo.js"></script>
+</body>
+</html>

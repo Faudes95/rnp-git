@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programa Académico | Jefatura de Urología</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root {
+      --uromed-blue-900: #0c2c66;
+      --uromed-blue-800: #1a4a95;
+      --uromed-blue-700: #2f62ba;
+      --uromed-blue-100: #eaf2ff;
+      --uromed-red-700: #bf2f45;
+      --uromed-red-100: #fdeff2;
+      --uromed-white: #ffffff;
+      --uromed-surface: #f5f9ff;
+      --uromed-border: #c8d9f4;
+      --uromed-text: #143463;
+      --uromed-muted: #48658f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--uromed-text);
+      background:
+        radial-gradient(circle at 12% -10%, rgba(47, 98, 186, 0.16), transparent 44%),
+        radial-gradient(circle at 90% 112%, rgba(191, 47, 69, 0.16), transparent 45%),
+        linear-gradient(135deg, #edf3ff 0%, #f8fbff 50%, #f3f8ff 100%);
+      padding: 20px;
+    }
+
+    .layout {
+      max-width: 1260px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--uromed-border);
+      border-radius: 20px;
+      box-shadow: 0 16px 38px rgba(8, 39, 96, 0.14);
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--uromed-border);
+      background: linear-gradient(90deg, #f7fbff 0%, #eef5ff 100%);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #b4cbed;
+      color: var(--uromed-blue-900);
+      font-size: 12px;
+      font-weight: 700;
+      background: #f4f9ff;
+      transition: transform .15s ease, background-color .15s ease;
+    }
+
+    .chip:hover {
+      transform: translateY(-1px);
+      background: #eaf3ff;
+    }
+
+    .content {
+      padding: 24px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero {
+      border: 1px solid var(--uromed-border);
+      border-radius: 16px;
+      background: linear-gradient(125deg, #f3f8ff 0%, #eef4ff 75%);
+      padding: 18px 20px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1;
+      color: var(--uromed-blue-900);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      color: var(--uromed-muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .section {
+      border: 1px solid var(--uromed-border);
+      border-radius: 16px;
+      background: var(--uromed-white);
+      padding: 18px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: 24px;
+      color: var(--uromed-blue-900);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section h2::after {
+      content: "";
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(26, 74, 149, .34), rgba(191, 47, 69, .26));
+      border-radius: 999px;
+    }
+
+    .section .hint {
+      margin: 8px 0 0;
+      color: var(--uromed-muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .directorio-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .person-card {
+      border: 1px solid #d2e0f6;
+      border-radius: 14px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #fafdff 0%, #f3f8ff 100%);
+      box-shadow: 0 8px 20px rgba(16, 66, 136, 0.10);
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .person-photo {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      object-position: center 20%;
+      background: #e7efff;
+      border-bottom: 1px solid #d2e0f6;
+    }
+
+    .person-body {
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .person-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--uromed-blue-900);
+      line-height: 1.2;
+    }
+
+    .person-role {
+      color: var(--uromed-muted);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .modules-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .module-card {
+      text-decoration: none;
+      border: 1px solid #c8d9f4;
+      border-radius: 14px;
+      background: linear-gradient(150deg, #f9fcff 0%, #eef5ff 100%);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 186px;
+      box-shadow: 0 8px 20px rgba(22, 69, 136, 0.09);
+      transition: transform .16s ease, box-shadow .16s ease;
+      color: inherit;
+    }
+
+    .module-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(22, 69, 136, 0.15);
+    }
+
+    .module-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: var(--uromed-blue-900);
+      border: 1px solid #bcd1f1;
+      background: linear-gradient(145deg, #f0f6ff 0%, #e4eeff 100%);
+    }
+
+    .module-name {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.15;
+      color: var(--uromed-blue-900);
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .module-desc {
+      margin: 0;
+      color: var(--uromed-muted);
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .module-tag {
+      margin-top: auto;
+      display: inline-flex;
+      width: fit-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      color: #8e1f33;
+      border: 1px solid #efb2bd;
+      background: var(--uromed-red-100);
+      text-transform: uppercase;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      color: white;
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, var(--uromed-blue-900), var(--uromed-blue-700));
+    }
+
+    .btn-alt {
+      background: linear-gradient(135deg, #b3253b, #8f1e31);
+    }
+
+    @media (max-width: 1180px) {
+      .directorio-grid,
+      .modules-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 10px;
+      }
+
+      .content {
+        padding: 14px;
+      }
+
+      .hero h1 {
+        font-size: 25px;
+      }
+
+      .directorio-grid,
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .person-photo {
+        aspect-ratio: 5 / 4;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="layout">
+    <header class="topbar">
+      <nav class="chip-row" aria-label="Accesos rápidos">
+        <a class="chip" href="/">Menú</a>
+        <a class="chip" href="/jefatura-urologia">Jefatura</a>
+        <a class="chip" href="/quirofano">Quirófano</a>
+        <a class="chip" href="/reporte">Reporte</a>
+      </nav>
+      <nav class="chip-row" aria-label="Navegación interna">
+        <span class="chip" aria-current="page">Programa Académico</span>
+      </nav>
+    </header>
+
+    <section class="content">
+      <section class="hero">
+        <h1>Programa Académico</h1>
+        <p>Directorio docente y submódulos académicos de Jefatura de Urología. Diseño modular para crecimiento por generaciones.</p>
+      </section>
+
+      <section class="section" aria-labelledby="directorio-heading">
+        <h2 id="directorio-heading">Directorio Académico</h2>
+        <p class="hint">Equipo responsable del programa docente y operativo del servicio.</p>
+        <div class="directorio-grid">
+          {% for persona in directorio %}
+          <article class="person-card">
+            <img class="person-photo" src="{{ persona.foto }}" alt="{{ persona.nombre }}">
+            <div class="person-body">
+              <div class="person-name">{{ persona.nombre }}</div>
+              <div class="person-role">{{ persona.cargo }}</div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="modulos-heading">
+        <h2 id="modulos-heading">Módulos del Programa</h2>
+        <p class="hint">Entradas modulares preparadas para expansión progresiva por ciclo académico.</p>
+        <div class="modules-grid">
+          {% for item in submodules %}
+          <a class="module-card" href="/jefatura-urologia/programa-academico/{{ item.slug }}">
+            <span class="module-icon" aria-hidden="true">{{ item.icono }}</span>
+            <h3 class="module-name">{{ item.nombre }}</h3>
+            <p class="module-desc">{{ item.descripcion }}</p>
+            <span class="module-tag">Módulo escalable</span>
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="actions" aria-label="Acciones">
+        <a class="btn btn-main" href="/jefatura-urologia">← Volver a Jefatura de Urología</a>
+        <a class="btn btn-alt" href="/">Ir al menú principal</a>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

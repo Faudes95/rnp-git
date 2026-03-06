@@ -2,69 +2,69 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Búsqueda Semántica</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; padding: 20px; }
-        .container { max-width: 1000px; margin: auto; background: white; border-radius: 8px; padding: 30px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
-        h1 { color: #13322B; }
-        input[type=text] { width: 70%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 20px; background: #13322B; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background: #13322B; color: white; padding: 12px; }
-        td { padding: 10px; border-bottom: 1px solid #ddd; }
-        a { color: #13322B; text-decoration: none; font-weight: bold; }
-        .btn { background: #13322B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
-        .btn-dorado { background: #B38E5D; }
-        .notice { margin-top: 15px; padding: 12px; background: #fff8e1; border-radius: 6px; border: 1px solid #f0c36d; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>Búsqueda Semántica</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; padding: 20px; }
+ .container { max-width: 1000px; margin: auto; background: white; border-radius: 8px; padding: 30px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
+ h1 { color: #0a3161; }
+ input[type=text] { width: 70%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+ button { padding: 10px 20px; background: #0a3161; color: white; border: none; border-radius: 4px; cursor: pointer; }
+ table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+ th { background: #0a3161; color: white; padding: 12px; }
+ td { padding: 10px; border-bottom: 1px solid #ddd; }
+ a { color: #0a3161; text-decoration: none; font-weight: bold; }
+ .btn { background: #0a3161; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
+ .btn-dorado { background: #c82f3f; }
+ .notice { margin-top: 15px; padding: 12px; background: #fff4f6; border-radius: 6px; border: 1px solid #ef7f8b; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔎 Búsqueda Semántica</h1>
-        <form method="get" action="/busqueda_semantica">
-            <input type="text" name="q" placeholder="Ej. dolor lumbar hematuria" value="{{ query }}">
-            <button type="submit">Buscar</button>
-        </form>
-        {% if message %}
-        <div class="notice">{{ message }}</div>
-        {% endif %}
-        {% if resultados %}
-        <h2>Resultados:</h2>
-        <table>
-            <tr>
-                <th>CURP</th>
-                <th>Nombre</th>
-                <th>Diagnóstico</th>
-                <th>Similitud</th>
-                <th>Acciones</th>
-            </tr>
-            {% for r in resultados %}
-            <tr>
-                <td>{{ r.curp }}</td>
-                <td>{{ r.nombre }}</td>
-                <td>{{ r.diagnostico_principal }}</td>
-                <td>{{ r.similitud }}</td>
-                <td><a href="/expediente?consulta_id={{ r.id }}">Ver expediente</a></td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% endif %}
-        <br><br>
-        <a href="/" class="btn btn-dorado">← Volver al Menú</a>
-    </div>
+ <div class="container">
+ <h1>🔎 Búsqueda Semántica</h1>
+ <form method="get" action="/busqueda_semantica">
+ <input type="text" name="q" placeholder="Ej. dolor lumbar hematuria" value="{{ query }}">
+ <button type="submit">Buscar</button>
+ </form>
+ {% if message %}
+ <div class="notice">{{ message }}</div>
+ {% endif %}
+ {% if resultados %}
+ <h2>Resultados:</h2>
+ <table>
+ <tr>
+ <th>CURP</th>
+ <th>Nombre</th>
+ <th>Diagnóstico</th>
+ <th>Similitud</th>
+ <th>Acciones</th>
+ </tr>
+ {% for r in resultados %}
+ <tr>
+ <td>{{ r.curp }}</td>
+ <td>{{ r.nombre }}</td>
+ <td>{{ r.diagnostico_principal }}</td>
+ <td>{{ r.similitud }}</td>
+ <td><a href="/expediente?consulta_id={{ r.id }}">Ver expediente</a></td>
+ </tr>
+ {% endfor %}
+ </table>
+ {% endif %}
+ <br><br>
+ <a href="/" class="btn btn-dorado">← Volver al Menú</a>
+ </div>
 </body>
 </html>

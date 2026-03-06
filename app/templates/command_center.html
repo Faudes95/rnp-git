@@ -1,446 +1,446 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Command Center - {{ demographics.nombre if demographics else 'Paciente' }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        body { font-family: var(--rnp-font); background: #f0f2f5; margin: 0; padding: 0; }
-        .cc-shell { display: grid; grid-template-columns: 300px 1fr 280px; grid-template-rows: auto 1fr; min-height: 100vh; }
-        .cc-topbar {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, var(--rnp-verde-700) 0%, var(--rnp-verde-800) 100%);
-            color: #fff;
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            border-bottom: 3px solid var(--rnp-dorado-500);
-        }
-        .cc-topbar .logo-area { display: flex; align-items: center; gap: 12px; }
-        .cc-topbar .logo-area .badge { width: 36px; height: 36px; border-radius: 50%; background: var(--rnp-dorado-500); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .cc-topbar .logo-area h1 { font-size: 16px; margin: 0; letter-spacing: 1px; }
-        .cc-topbar .patient-banner {
-            display: flex; align-items: center; gap: 16px;
-            background: rgba(255,255,255,0.08); border-radius: 10px; padding: 8px 18px;
-        }
-        .cc-topbar .pb-name { font-size: 18px; font-weight: 800; }
-        .cc-topbar .pb-meta { font-size: 12px; opacity: 0.85; }
-        .cc-topbar .pb-risk {
-            padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase;
-        }
-        .risk-bajo { background: #dcfce7; color: #166534; }
-        .risk-moderado { background: #fef3c7; color: #92400e; }
-        .risk-alto { background: #fed7aa; color: #9a3412; }
-        .risk-critico { background: #fecaca; color: #991b1b; animation: pulse-bg 2s infinite; }
-        @keyframes pulse-bg { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
+ <meta charset="UTF-8">
+ <title>Command Center - {{ demographics.nombre if demographics else 'Paciente' }}</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+ <style>
+ body { font-family: var(--rnp-font); background: #f0f2f5; margin: 0; padding: 0; }
+ .cc-shell { display: grid; grid-template-columns: 300px 1fr 280px; grid-template-rows: auto 1fr; min-height: 100vh; }
+ .cc-topbar {
+ grid-column: 1 / -1;
+ background: linear-gradient(135deg, var(--rnp-verde-700) 0%, var(--rnp-verde-800) 100%);
+ color: #fff;
+ padding: 12px 24px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: 16px;
+ border-bottom: 3px solid var(--rnp-dorado-500);
+ }
+ .cc-topbar .logo-area { display: flex; align-items: center; gap: 12px; }
+ .cc-topbar .logo-area .badge { width: 36px; height: 36px; border-radius: 50%; background: var(--rnp-dorado-500); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+ .cc-topbar .logo-area h1 { font-size: 16px; margin: 0; letter-spacing: 1px; }
+ .cc-topbar .patient-banner {
+ display: flex; align-items: center; gap: 16px;
+ background: rgba(255,255,255,0.08); border-radius: 10px; padding: 8px 18px;
+ }
+ .cc-topbar .pb-name { font-size: 18px; font-weight: 800; }
+ .cc-topbar .pb-meta { font-size: 12px; opacity: 0.85; }
+ .cc-topbar .pb-risk {
+ padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase;
+ }
+ .risk-bajo { background: #dcfce7; color: #166534; }
+ .risk-moderado { background: #fef3c7; color: #92400e; }
+ .risk-alto { background: #fed7aa; color: #9a3412; }
+ .risk-critico { background: #fecaca; color: #991b1b; animation: pulse-bg 2s infinite; }
+ @keyframes pulse-bg { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
 
-        .cc-topbar .nav-links { display: flex; gap: 6px; }
-        .cc-topbar .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 11px; font-weight: 700; padding: 5px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; transition: 0.2s; }
-        .cc-topbar .nav-links a:hover { background: rgba(255,255,255,0.15); color: #fff; }
+ .cc-topbar .nav-links { display: flex; gap: 6px; }
+ .cc-topbar .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 11px; font-weight: 700; padding: 5px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; transition: 0.2s; }
+ .cc-topbar .nav-links a:hover { background: rgba(255,255,255,0.15); color: #fff; }
 
-        /* LEFT SIDEBAR */
-        .cc-left {
-            background: var(--rnp-blanco);
-            border-right: 1px solid var(--rnp-gris-200);
-            padding: 16px;
-            overflow-y: auto;
-            max-height: calc(100vh - 70px);
-        }
-        .cc-left .sidebar-section { margin-bottom: 14px; }
-        .cc-left .ss-title {
-            font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px;
-            color: var(--rnp-gris-400); margin-bottom: 8px;
-            display: flex; align-items: center; gap: 6px;
-        }
-        .cc-left .ss-title .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--rnp-dorado-500); }
-        .id-row { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; color: var(--rnp-gris-600); }
-        .id-row .label { font-weight: 700; color: var(--rnp-verde-700); }
-        .dx-main { background: linear-gradient(135deg, var(--rnp-verde-50), var(--rnp-dorado-50)); border: 1px solid var(--rnp-dorado-200); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
-        .dx-main .dx-label { font-size: 10px; color: var(--rnp-gris-400); text-transform: uppercase; font-weight: 700; }
-        .dx-main .dx-text { font-size: 13px; font-weight: 800; color: var(--rnp-verde-700); margin-top: 2px; }
-        .dx-main .dx-code { font-size: 11px; color: var(--rnp-dorado-600); font-family: monospace; }
-        .device-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: var(--rnp-azul-100); color: var(--rnp-azul-500); margin: 2px; }
-        .alert-item { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px; }
-        .alert-item.critico { background: var(--rnp-rojo-100); color: #991b1b; }
-        .alert-item.alto { background: #fff7ed; color: #9a3412; }
-        .alert-item.moderado { background: var(--rnp-amarillo-100); color: #854d0e; }
-        .completeness-bar { width: 100%; height: 6px; background: var(--rnp-gris-100); border-radius: 10px; overflow: hidden; margin-top: 6px; }
-        .completeness-fill { height: 100%; border-radius: 10px; transition: width 0.6s ease; }
+ /* LEFT SIDEBAR */
+ .cc-left {
+ background: var(--rnp-blanco);
+ border-right: 1px solid var(--rnp-gris-200);
+ padding: 16px;
+ overflow-y: auto;
+ max-height: calc(100vh - 70px);
+ }
+ .cc-left .sidebar-section { margin-bottom: 14px; }
+ .cc-left .ss-title {
+ font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px;
+ color: var(--rnp-gris-400); margin-bottom: 8px;
+ display: flex; align-items: center; gap: 6px;
+ }
+ .cc-left .ss-title .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--rnp-dorado-500); }
+ .id-row { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; color: var(--rnp-gris-600); }
+ .id-row .label { font-weight: 700; color: var(--rnp-verde-700); }
+ .dx-main { background: linear-gradient(135deg, var(--rnp-verde-50), var(--rnp-dorado-50)); border: 1px solid var(--rnp-dorado-200); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+ .dx-main .dx-label { font-size: 10px; color: var(--rnp-gris-400); text-transform: uppercase; font-weight: 700; }
+ .dx-main .dx-text { font-size: 13px; font-weight: 800; color: var(--rnp-verde-700); margin-top: 2px; }
+ .dx-main .dx-code { font-size: 11px; color: var(--rnp-dorado-600); font-family: monospace; }
+ .device-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: var(--rnp-azul-100); color: var(--rnp-azul-500); margin: 2px; }
+ .alert-item { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px; }
+ .alert-item.critico { background: var(--rnp-rojo-100); color: #991b1b; }
+ .alert-item.alto { background: #fff7ed; color: #9a3412; }
+ .alert-item.moderado { background: var(--rnp-amarillo-100); color: #854d0e; }
+ .completeness-bar { width: 100%; height: 6px; background: var(--rnp-gris-100); border-radius: 10px; overflow: hidden; margin-top: 6px; }
+ .completeness-fill { height: 100%; border-radius: 10px; transition: width 0.6s ease; }
 
-        /* MAIN CONTENT */
-        .cc-main {
-            padding: 18px;
-            overflow-y: auto;
-            max-height: calc(100vh - 70px);
-            background: #f5f7fa;
-        }
-        .vitals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
-        .vital-card {
-            background: var(--rnp-blanco); border: 1px solid var(--rnp-gris-200); border-radius: 10px;
-            padding: 12px; text-align: center; position: relative;
-        }
-        .vital-card .v-label { font-size: 10px; text-transform: uppercase; color: var(--rnp-gris-400); font-weight: 700; }
-        .vital-card .v-value { font-size: 22px; font-weight: 800; color: var(--rnp-verde-700); }
-        .vital-card .v-unit { font-size: 10px; color: var(--rnp-gris-400); }
-        .vital-card.alert-val { border-color: var(--rnp-rojo-500); background: var(--rnp-rojo-100); }
-        .vital-card.alert-val .v-value { color: var(--rnp-rojo-500); }
+ /* MAIN CONTENT */
+ .cc-main {
+ padding: 18px;
+ overflow-y: auto;
+ max-height: calc(100vh - 70px);
+ background: #f5f7fa;
+ }
+ .vitals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+ .vital-card {
+ background: var(--rnp-blanco); border: 1px solid var(--rnp-gris-200); border-radius: 10px;
+ padding: 12px; text-align: center; position: relative;
+ }
+ .vital-card .v-label { font-size: 10px; text-transform: uppercase; color: var(--rnp-gris-400); font-weight: 700; }
+ .vital-card .v-value { font-size: 22px; font-weight: 800; color: var(--rnp-verde-700); }
+ .vital-card .v-unit { font-size: 10px; color: var(--rnp-gris-400); }
+ .vital-card.alert-val { border-color: var(--rnp-rojo-500); background: var(--rnp-rojo-100); }
+ .vital-card.alert-val .v-value { color: var(--rnp-rojo-500); }
 
-        .lab-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .lab-table th { background: var(--rnp-verde-700); color: #fff; padding: 7px 10px; text-align: left; font-size: 10px; text-transform: uppercase; }
-        .lab-table td { padding: 6px 10px; border-bottom: 1px solid var(--rnp-gris-100); }
-        .lab-table .flag-H { color: var(--rnp-rojo-500); font-weight: 800; }
-        .lab-table .flag-L { color: var(--rnp-azul-500); font-weight: 800; }
+ .lab-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+ .lab-table th { background: var(--rnp-verde-700); color: #fff; padding: 7px 10px; text-align: left; font-size: 10px; text-transform: uppercase; }
+ .lab-table td { padding: 6px 10px; border-bottom: 1px solid var(--rnp-gris-100); }
+ .lab-table .flag-H { color: var(--rnp-rojo-500); font-weight: 800; }
+ .lab-table .flag-L { color: var(--rnp-azul-500); font-weight: 800; }
 
-        .note-card { background: var(--rnp-blanco); border: 1px solid var(--rnp-gris-200); border-left: 4px solid var(--rnp-dorado-500); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-        .note-card .nc-date { font-size: 11px; color: var(--rnp-gris-400); font-weight: 700; }
-        .note-card .nc-section { margin-top: 6px; }
-        .note-card .nc-label { font-size: 10px; font-weight: 800; color: var(--rnp-dorado-600); text-transform: uppercase; }
-        .note-card .nc-text { font-size: 12px; color: var(--rnp-gris-600); margin-top: 2px; }
+ .note-card { background: var(--rnp-blanco); border: 1px solid var(--rnp-gris-200); border-left: 4px solid var(--rnp-dorado-500); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+ .note-card .nc-date { font-size: 11px; color: var(--rnp-gris-400); font-weight: 700; }
+ .note-card .nc-section { margin-top: 6px; }
+ .note-card .nc-label { font-size: 10px; font-weight: 800; color: var(--rnp-dorado-600); text-transform: uppercase; }
+ .note-card .nc-text { font-size: 12px; color: var(--rnp-gris-600); margin-top: 2px; }
 
-        /* RIGHT SIDEBAR */
-        .cc-right {
-            background: var(--rnp-blanco);
-            border-left: 1px solid var(--rnp-gris-200);
-            padding: 16px;
-            overflow-y: auto;
-            max-height: calc(100vh - 70px);
-        }
-        .tl-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--rnp-gris-100); }
-        .tl-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
-        .tl-body .tl-date { font-size: 10px; color: var(--rnp-gris-400); font-weight: 600; }
-        .tl-body .tl-title { font-size: 12px; font-weight: 700; color: var(--rnp-verde-700); }
-        .tl-body .tl-detail { font-size: 11px; color: var(--rnp-gris-500); }
+ /* RIGHT SIDEBAR */
+ .cc-right {
+ background: var(--rnp-blanco);
+ border-left: 1px solid var(--rnp-gris-200);
+ padding: 16px;
+ overflow-y: auto;
+ max-height: calc(100vh - 70px);
+ }
+ .tl-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--rnp-gris-100); }
+ .tl-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+ .tl-body .tl-date { font-size: 10px; color: var(--rnp-gris-400); font-weight: 600; }
+ .tl-body .tl-title { font-size: 12px; font-weight: 700; color: var(--rnp-verde-700); }
+ .tl-body .tl-detail { font-size: 11px; color: var(--rnp-gris-500); }
 
-        .surgery-item { background: var(--rnp-gris-50); border-radius: 8px; padding: 10px; margin-bottom: 6px; border: 1px solid var(--rnp-gris-200); }
-        .surgery-item .si-proc { font-size: 12px; font-weight: 700; color: var(--rnp-verde-700); }
-        .surgery-item .si-meta { font-size: 11px; color: var(--rnp-gris-500); margin-top: 2px; }
+ .surgery-item { background: var(--rnp-gris-50); border-radius: 8px; padding: 10px; margin-bottom: 6px; border: 1px solid var(--rnp-gris-200); }
+ .surgery-item .si-proc { font-size: 12px; font-weight: 700; color: var(--rnp-verde-700); }
+ .surgery-item .si-meta { font-size: 11px; color: var(--rnp-gris-500); margin-top: 2px; }
 
-        .quick-action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-        .qa-btn {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            padding: 10px 6px; border-radius: 8px; border: 1px solid var(--rnp-gris-200);
-            background: var(--rnp-blanco); text-decoration: none; color: var(--rnp-verde-700);
-            font-size: 10px; font-weight: 700; text-align: center; transition: 0.2s;
-        }
-        .qa-btn:hover { background: var(--rnp-dorado-50); border-color: var(--rnp-dorado-400); transform: translateY(-1px); }
-        .qa-btn .qa-icon { font-size: 18px; }
+ .quick-action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+ .qa-btn {
+ display: flex; flex-direction: column; align-items: center; gap: 4px;
+ padding: 10px 6px; border-radius: 8px; border: 1px solid var(--rnp-gris-200);
+ background: var(--rnp-blanco); text-decoration: none; color: var(--rnp-verde-700);
+ font-size: 10px; font-weight: 700; text-align: center; transition: 0.2s;
+ }
+ .qa-btn:hover { background: var(--rnp-dorado-50); border-color: var(--rnp-dorado-400); transform: translateY(-1px); }
+ .qa-btn .qa-icon { font-size: 18px; }
 
-        @media (max-width: 1200px) {
-            .cc-shell { grid-template-columns: 260px 1fr; }
-            .cc-right { display: none; }
-        }
-        @media (max-width: 768px) {
-            .cc-shell { grid-template-columns: 1fr; }
-            .cc-left { max-height: none; }
-            .cc-main { max-height: none; }
-            .cc-topbar .patient-banner { display: none; }
-        }
-    </style>
+ @media (max-width: 1200px) {
+ .cc-shell { grid-template-columns: 260px 1fr; }
+ .cc-right { display: none; }
+ }
+ @media (max-width: 768px) {
+ .cc-shell { grid-template-columns: 1fr; }
+ .cc-left { max-height: none; }
+ .cc-main { max-height: none; }
+ .cc-topbar .patient-banner { display: none; }
+ }
+ </style>
 </head>
 <body>
 {% if error %}
 <div style="padding:40px;text-align:center;">
-    <h2 style="color:var(--rnp-verde-700);">{{ error }}</h2>
-    <a href="/expediente" class="rnp-btn rnp-btn-primary" style="margin-top:16px;">← Ir a Expediente</a>
+ <h2 style="color:var(--rnp-verde-700);">{{ error }}</h2>
+ <a href="/expediente" class="rnp-btn rnp-btn-primary" style="margin-top:16px;">← Ir a Expediente</a>
 </div>
 {% else %}
 
 <div class="cc-shell">
-    <!-- TOP BAR -->
-    <div class="cc-topbar">
-        <div class="logo-area">
-            <div class="badge">🎯</div>
-            <div>
-                <h1>PATIENT COMMAND CENTER</h1>
-                <div style="font-size:10px;opacity:0.7;">IMSS · Urología CMNR · HES La Fraga</div>
-            </div>
-        </div>
-        <div class="patient-banner">
-            <div>
-                <div class="pb-name">{{ demographics.nombre }}</div>
-                <div class="pb-meta">{{ demographics.edad }}a · {{ demographics.sexo }} · NSS: {{ demographics.nss }} · {{ demographics.tipo_sangre }}</div>
-            </div>
-            <span class="pb-risk risk-{{ risk_profile.level }}">{{ risk_profile.level|upper }} ({{ risk_profile.score }})</span>
-        </div>
-        <div class="nav-links">
-            <a href="/">Menú</a>
-            <a href="/expediente?consulta_id={{ consulta_id }}">Expediente</a>
-            <a href="/expediente-smart?consulta_id={{ consulta_id }}">Smart</a>
-            <a href="/hospitalizacion">Hosp</a>
-        </div>
-    </div>
+ <!-- TOP BAR -->
+ <div class="cc-topbar">
+ <div class="logo-area">
+ <div class="badge">🎯</div>
+ <div>
+ <h1>PATIENT COMMAND CENTER</h1>
+ <div style="font-size:10px;opacity:0.7;">UROMED · Urología privada · HES La Fraga</div>
+ </div>
+ </div>
+ <div class="patient-banner">
+ <div>
+ <div class="pb-name">{{ demographics.nombre }}</div>
+ <div class="pb-meta">{{ demographics.edad }}a · {{ demographics.sexo }} · NSS: {{ demographics.nss }} · {{ demographics.tipo_sangre }}</div>
+ </div>
+ <span class="pb-risk risk-{{ risk_profile.level }}">{{ risk_profile.level|upper }} ({{ risk_profile.score }})</span>
+ </div>
+ <div class="nav-links">
+ <a href="/">Menú</a>
+ <a href="/expediente?consulta_id={{ consulta_id }}">Expediente</a>
+ <a href="/expediente-smart?consulta_id={{ consulta_id }}">Smart</a>
+ <a href="/hospitalizacion">Hosp</a>
+ </div>
+ </div>
 
-    <!-- LEFT SIDEBAR: Identity + Diagnosis + Alerts -->
-    <div class="cc-left">
-        <div class="sidebar-section">
-            <div class="ss-title"><span class="dot"></span>IDENTIDAD</div>
-            <div class="id-row"><span class="label">NSS</span><span>{{ demographics.nss }}</span></div>
-            <div class="id-row"><span class="label">CURP</span><span>{{ (demographics.curp or '?')[:13] }}...</span></div>
-            <div class="id-row"><span class="label">Sangre</span><span>{{ demographics.tipo_sangre or 'N/E' }}</span></div>
-            <div class="id-row"><span class="label">HGZ</span><span>{{ demographics.hgz or 'N/E' }}</span></div>
-            <div class="id-row"><span class="label">Alergias</span><span style="{% if demographics.alergias and demographics.alergias != 'Negadas' %}color:var(--rnp-rojo-500);font-weight:800;{% endif %}">{{ demographics.alergias }}</span></div>
-        </div>
+ <!-- LEFT SIDEBAR: Identity + Diagnosis + Alerts -->
+ <div class="cc-left">
+ <div class="sidebar-section">
+ <div class="ss-title"><span class="dot"></span>IDENTIDAD</div>
+ <div class="id-row"><span class="label">NSS</span><span>{{ demographics.nss }}</span></div>
+ <div class="id-row"><span class="label">CURP</span><span>{{ (demographics.curp or '?')[:13] }}...</span></div>
+ <div class="id-row"><span class="label">Sangre</span><span>{{ demographics.tipo_sangre or 'N/E' }}</span></div>
+ <div class="id-row"><span class="label">HGZ</span><span>{{ demographics.hgz or 'N/E' }}</span></div>
+ <div class="id-row"><span class="label">Alergias</span><span style="{% if demographics.alergias and demographics.alergias != 'Negadas' %}color:var(--rnp-rojo-500);font-weight:800;{% endif %}">{{ demographics.alergias }}</span></div>
+ </div>
 
-        <div class="sidebar-section">
-            <div class="ss-title"><span class="dot"></span>DIAGNÓSTICO PRINCIPAL</div>
-            <div class="dx-main">
-                <div class="dx-label">Principal</div>
-                <div class="dx-text">{{ diagnosis.principal or 'Sin diagnóstico' }}</div>
-                {% if diagnosis.cie_code %}<div class="dx-code">{{ diagnosis.cie_code }}</div>{% endif %}
-            </div>
-            {% for dx in diagnosis.secundarios[:3] %}
-            <div style="font-size:11px;color:var(--rnp-gris-500);padding:2px 0;">· {{ dx.diagnostico if dx is mapping else dx }}</div>
-            {% endfor %}
-        </div>
+ <div class="sidebar-section">
+ <div class="ss-title"><span class="dot"></span>DIAGNÓSTICO PRINCIPAL</div>
+ <div class="dx-main">
+ <div class="dx-label">Principal</div>
+ <div class="dx-text">{{ diagnosis.principal or 'Sin diagnóstico' }}</div>
+ {% if diagnosis.cie_code %}<div class="dx-code">{{ diagnosis.cie_code }}</div>{% endif %}
+ </div>
+ {% for dx in diagnosis.secundarios[:3] %}
+ <div style="font-size:11px;color:var(--rnp-gris-500);padding:2px 0;">· {{ dx.diagnostico if dx is mapping else dx }}</div>
+ {% endfor %}
+ </div>
 
-        {% if alerts %}
-        <div class="sidebar-section">
-            <div class="ss-title"><span class="dot" style="background:var(--rnp-rojo-500);"></span>ALERTAS ACTIVAS ({{ alerts|length }})</div>
-            {% for a in alerts %}
-            <div class="alert-item {{ a.severity or 'moderado' }}">
-                <span>⚠</span>
-                <div>
-                    <div style="font-weight:700;">{{ a.alert_type or 'Alerta' }}</div>
-                    <div style="font-size:11px;opacity:0.8;">{{ a.message }}</div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+ {% if alerts %}
+ <div class="sidebar-section">
+ <div class="ss-title"><span class="dot" style="background:var(--rnp-rojo-500);"></span>ALERTAS ACTIVAS ({{ alerts|length }})</div>
+ {% for a in alerts %}
+ <div class="alert-item {{ a.severity or 'moderado' }}">
+ <span>⚠</span>
+ <div>
+ <div style="font-weight:700;">{{ a.alert_type or 'Alerta' }}</div>
+ <div style="font-size:11px;opacity:0.8;">{{ a.message }}</div>
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ {% endif %}
 
-        {% if devices %}
-        <div class="sidebar-section">
-            <div class="ss-title"><span class="dot"></span>DISPOSITIVOS ACTIVOS ({{ devices|length }})</div>
-            {% for d in devices %}
-            <div class="device-chip">📌 {{ d.device_type }}: {{ d.description or '' }}</div>
-            {% endfor %}
-        </div>
-        {% endif %}
+ {% if devices %}
+ <div class="sidebar-section">
+ <div class="ss-title"><span class="dot"></span>DISPOSITIVOS ACTIVOS ({{ devices|length }})</div>
+ {% for d in devices %}
+ <div class="device-chip">📌 {{ d.device_type }}: {{ d.description or '' }}</div>
+ {% endfor %}
+ </div>
+ {% endif %}
 
-        {% if hosp %}
-        <div class="sidebar-section">
-            <div class="ss-title"><span class="dot" style="background:#16a34a;"></span>HOSPITALIZACIÓN ACTIVA</div>
-            <div style="background:var(--rnp-verde-50);border:1px solid var(--rnp-verde-100);border-radius:8px;padding:10px;">
-                <div style="font-size:20px;font-weight:800;color:var(--rnp-verde-700);">Día {{ hosp.dias_hospitalizacion or '?' }}</div>
-                <div style="font-size:11px;color:var(--rnp-gris-500);">Ingreso: {{ hosp.fecha_ingreso }}</div>
-                <div style="font-size:11px;color:var(--rnp-gris-500);">Cama: {{ hosp.cama or 'N/E' }}</div>
-                <div style="font-size:11px;color:var(--rnp-gris-500);">Estado: {{ hosp.estado_clinico or 'N/E' }}</div>
-            </div>
-        </div>
-        {% endif %}
+ {% if hosp %}
+ <div class="sidebar-section">
+ <div class="ss-title"><span class="dot" style="background:#16a34a;"></span>HOSPITALIZACIÓN ACTIVA</div>
+ <div style="background:var(--rnp-verde-50);border:1px solid var(--rnp-verde-100);border-radius:8px;padding:10px;">
+ <div style="font-size:20px;font-weight:800;color:var(--rnp-verde-700);">Día {{ hosp.dias_hospitalizacion or '?' }}</div>
+ <div style="font-size:11px;color:var(--rnp-gris-500);">Ingreso: {{ hosp.fecha_ingreso }}</div>
+ <div style="font-size:11px;color:var(--rnp-gris-500);">Cama: {{ hosp.cama or 'N/E' }}</div>
+ <div style="font-size:11px;color:var(--rnp-gris-500);">Estado: {{ hosp.estado_clinico or 'N/E' }}</div>
+ </div>
+ </div>
+ {% endif %}
 
-        <div class="sidebar-section">
-            <div class="ss-title"><span class="dot"></span>COMPLETITUD EXPEDIENTE</div>
-            <div style="font-size:20px;font-weight:800;color:var(--rnp-verde-700);">{{ completeness.pct }}%</div>
-            <div class="completeness-bar">
-                <div class="completeness-fill" style="width:{{ completeness.pct }}%;background:{% if completeness.pct >= 80 %}#16a34a{% elif completeness.pct >= 50 %}var(--rnp-dorado-500){% else %}var(--rnp-rojo-500){% endif %};"></div>
-            </div>
-            {% if completeness.missing_critical %}
-            <div style="font-size:10px;color:var(--rnp-rojo-500);margin-top:4px;">Falta: {{ completeness.missing_critical|join(', ') }}</div>
-            {% endif %}
-        </div>
+ <div class="sidebar-section">
+ <div class="ss-title"><span class="dot"></span>COMPLETITUD EXPEDIENTE</div>
+ <div style="font-size:20px;font-weight:800;color:var(--rnp-verde-700);">{{ completeness.pct }}%</div>
+ <div class="completeness-bar">
+ <div class="completeness-fill" style="width:{{ completeness.pct }}%;background:{% if completeness.pct >= 80 %}#16a34a{% elif completeness.pct >= 50 %}var(--rnp-dorado-500){% else %}var(--rnp-rojo-500){% endif %};"></div>
+ </div>
+ {% if completeness.missing_critical %}
+ <div style="font-size:10px;color:var(--rnp-rojo-500);margin-top:4px;">Falta: {{ completeness.missing_critical|join(', ') }}</div>
+ {% endif %}
+ </div>
 
-        {% if risk_profile.risks %}
-        <div class="sidebar-section">
-            <div class="ss-title"><span class="dot" style="background:{% if risk_profile.level == 'critico' %}var(--rnp-rojo-500){% elif risk_profile.level == 'alto' %}var(--rnp-naranja-500){% else %}var(--rnp-dorado-500){% endif %};"></span>PERFIL DE RIESGO</div>
-            {% for r in risk_profile.risks %}
-            <div style="font-size:11px;padding:3px 0;display:flex;justify-content:space-between;">
-                <span>{{ r.label }}</span>
-                <span class="rnp-chip rnp-chip-{% if r.level == 'critico' %}rojo{% elif r.level == 'alto' %}dorado{% else %}gris{% endif %}">{{ r.level }}</span>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>
+ {% if risk_profile.risks %}
+ <div class="sidebar-section">
+ <div class="ss-title"><span class="dot" style="background:{% if risk_profile.level == 'critico' %}var(--rnp-rojo-500){% elif risk_profile.level == 'alto' %}var(--rnp-naranja-500){% else %}var(--rnp-dorado-500){% endif %};"></span>PERFIL DE RIESGO</div>
+ {% for r in risk_profile.risks %}
+ <div style="font-size:11px;padding:3px 0;display:flex;justify-content:space-between;">
+ <span>{{ r.label }}</span>
+ <span class="rnp-chip rnp-chip-{% if r.level == 'critico' %}rojo{% elif r.level == 'alto' %}dorado{% else %}gris{% endif %}">{{ r.level }}</span>
+ </div>
+ {% endfor %}
+ </div>
+ {% endif %}
+ </div>
 
-    <!-- MAIN PANEL -->
-    <div class="cc-main">
-        <!-- Vitals Section -->
-        <div class="rnp-section rnp-animate-in">
-            <div class="rnp-section-header">
-                <h3 class="rnp-section-title"><span class="s-icon">💓</span>SIGNOS VITALES</h3>
-                {% if vitals_latest %}<span class="rnp-section-badge">Últ: {{ vitals_latest.recorded_at or 'N/E' }}</span>{% endif %}
-            </div>
-            <div class="vitals-grid">
-                <div class="vital-card {% if vitals_latest.get('sbp') and vitals_latest.sbp|int > 140 %}alert-val{% endif %}">
-                    <div class="v-label">PA Sistólica</div>
-                    <div class="v-value">{{ vitals_latest.get('sbp', '--') }}</div>
-                    <div class="v-unit">mmHg</div>
-                </div>
-                <div class="vital-card">
-                    <div class="v-label">PA Diastólica</div>
-                    <div class="v-value">{{ vitals_latest.get('dbp', '--') }}</div>
-                    <div class="v-unit">mmHg</div>
-                </div>
-                <div class="vital-card {% if vitals_latest.get('heart_rate') and vitals_latest.heart_rate|int > 100 %}alert-val{% endif %}">
-                    <div class="v-label">FC</div>
-                    <div class="v-value">{{ vitals_latest.get('heart_rate', '--') }}</div>
-                    <div class="v-unit">lpm</div>
-                </div>
-                <div class="vital-card {% if vitals_latest.get('temperature') and vitals_latest.temperature|float > 38 %}alert-val{% endif %}">
-                    <div class="v-label">Temp</div>
-                    <div class="v-value">{{ vitals_latest.get('temperature', '--') }}</div>
-                    <div class="v-unit">°C</div>
-                </div>
-                <div class="vital-card {% if vitals_latest.get('spo2') and vitals_latest.spo2|int < 92 %}alert-val{% endif %}">
-                    <div class="v-label">SpO₂</div>
-                    <div class="v-value">{{ vitals_latest.get('spo2', '--') }}</div>
-                    <div class="v-unit">%</div>
-                </div>
-                <div class="vital-card">
-                    <div class="v-label">FR</div>
-                    <div class="v-value">{{ vitals_latest.get('respiratory_rate', '--') }}</div>
-                    <div class="v-unit">rpm</div>
-                </div>
-            </div>
-            {% if vitals_trend %}
-            <div style="margin-top:14px;">
-                <canvas id="vitalsChart" height="120"></canvas>
-            </div>
-            {% endif %}
-        </div>
+ <!-- MAIN PANEL -->
+ <div class="cc-main">
+ <!-- Vitals Section -->
+ <div class="rnp-section rnp-animate-in">
+ <div class="rnp-section-header">
+ <h3 class="rnp-section-title"><span class="s-icon">💓</span>SIGNOS VITALES</h3>
+ {% if vitals_latest %}<span class="rnp-section-badge">Últ: {{ vitals_latest.recorded_at or 'N/E' }}</span>{% endif %}
+ </div>
+ <div class="vitals-grid">
+ <div class="vital-card {% if vitals_latest.get('sbp') and vitals_latest.sbp|int > 140 %}alert-val{% endif %}">
+ <div class="v-label">PA Sistólica</div>
+ <div class="v-value">{{ vitals_latest.get('sbp', '--') }}</div>
+ <div class="v-unit">mmHg</div>
+ </div>
+ <div class="vital-card">
+ <div class="v-label">PA Diastólica</div>
+ <div class="v-value">{{ vitals_latest.get('dbp', '--') }}</div>
+ <div class="v-unit">mmHg</div>
+ </div>
+ <div class="vital-card {% if vitals_latest.get('heart_rate') and vitals_latest.heart_rate|int > 100 %}alert-val{% endif %}">
+ <div class="v-label">FC</div>
+ <div class="v-value">{{ vitals_latest.get('heart_rate', '--') }}</div>
+ <div class="v-unit">lpm</div>
+ </div>
+ <div class="vital-card {% if vitals_latest.get('temperature') and vitals_latest.temperature|float > 38 %}alert-val{% endif %}">
+ <div class="v-label">Temp</div>
+ <div class="v-value">{{ vitals_latest.get('temperature', '--') }}</div>
+ <div class="v-unit">°C</div>
+ </div>
+ <div class="vital-card {% if vitals_latest.get('spo2') and vitals_latest.spo2|int < 92 %}alert-val{% endif %}">
+ <div class="v-label">SpO₂</div>
+ <div class="v-value">{{ vitals_latest.get('spo2', '--') }}</div>
+ <div class="v-unit">%</div>
+ </div>
+ <div class="vital-card">
+ <div class="v-label">FR</div>
+ <div class="v-value">{{ vitals_latest.get('respiratory_rate', '--') }}</div>
+ <div class="v-unit">rpm</div>
+ </div>
+ </div>
+ {% if vitals_trend %}
+ <div style="margin-top:14px;">
+ <canvas id="vitalsChart" height="120"></canvas>
+ </div>
+ {% endif %}
+ </div>
 
-        <!-- Labs Section -->
-        <div class="rnp-section rnp-animate-in">
-            <div class="rnp-section-header">
-                <h3 class="rnp-section-title"><span class="s-icon">🔬</span>LABORATORIOS</h3>
-                <span class="rnp-section-badge">{{ labs|length }} resultados</span>
-            </div>
-            {% if labs %}
-            <div class="rnp-table-wrap" style="max-height:300px;overflow-y:auto;">
-                <table class="lab-table">
-                    <thead><tr><th>Estudio</th><th>Valor</th><th>Unidad</th><th>Ref</th><th>Flag</th><th>Fecha</th></tr></thead>
-                    <tbody>
-                    {% for l in labs %}
-                    <tr>
-                        <td style="font-weight:700;">{{ l.test_name }}</td>
-                        <td class="{% if l.flag == 'H' %}flag-H{% elif l.flag == 'L' %}flag-L{% endif %}">{{ l.value_num or '-' }}</td>
-                        <td>{{ l.unit or '' }}</td>
-                        <td style="font-size:10px;color:var(--rnp-gris-400);">{{ l.reference_range or '' }}</td>
-                        <td>{% if l.flag %}<span class="rnp-chip {% if l.flag == 'H' %}rnp-chip-rojo{% else %}rnp-chip-azul{% endif %}">{{ l.flag }}</span>{% endif %}</td>
-                        <td style="font-size:10px;color:var(--rnp-gris-400);">{{ l.collected_at or '' }}</td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <p style="color:var(--rnp-gris-400);font-size:13px;">Sin laboratorios registrados.</p>
-            {% endif %}
-        </div>
+ <!-- Labs Section -->
+ <div class="rnp-section rnp-animate-in">
+ <div class="rnp-section-header">
+ <h3 class="rnp-section-title"><span class="s-icon">🔬</span>LABORATORIOS</h3>
+ <span class="rnp-section-badge">{{ labs|length }} resultados</span>
+ </div>
+ {% if labs %}
+ <div class="rnp-table-wrap" style="max-height:300px;overflow-y:auto;">
+ <table class="lab-table">
+ <thead><tr><th>Estudio</th><th>Valor</th><th>Unidad</th><th>Ref</th><th>Flag</th><th>Fecha</th></tr></thead>
+ <tbody>
+ {% for l in labs %}
+ <tr>
+ <td style="font-weight:700;">{{ l.test_name }}</td>
+ <td class="{% if l.flag == 'H' %}flag-H{% elif l.flag == 'L' %}flag-L{% endif %}">{{ l.value_num or '-' }}</td>
+ <td>{{ l.unit or '' }}</td>
+ <td style="font-size:10px;color:var(--rnp-gris-400);">{{ l.reference_range or '' }}</td>
+ <td>{% if l.flag %}<span class="rnp-chip {% if l.flag == 'H' %}rnp-chip-rojo{% else %}rnp-chip-azul{% endif %}">{{ l.flag }}</span>{% endif %}</td>
+ <td style="font-size:10px;color:var(--rnp-gris-400);">{{ l.collected_at or '' }}</td>
+ </tr>
+ {% endfor %}
+ </tbody>
+ </table>
+ </div>
+ {% else %}
+ <p style="color:var(--rnp-gris-400);font-size:13px;">Sin laboratorios registrados.</p>
+ {% endif %}
+ </div>
 
-        <!-- Daily Notes -->
-        <div class="rnp-section rnp-animate-in">
-            <div class="rnp-section-header">
-                <h3 class="rnp-section-title"><span class="s-icon">📝</span>NOTAS DE EVOLUCIÓN</h3>
-            </div>
-            {% if notes %}
-            {% for n in notes %}
-            <div class="note-card">
-                <div class="nc-date">{{ n.note_date }} · {{ n.author or 'N/E' }}</div>
-                {% if n.subjective %}<div class="nc-section"><div class="nc-label">S</div><div class="nc-text">{{ n.subjective }}</div></div>{% endif %}
-                {% if n.objective %}<div class="nc-section"><div class="nc-label">O</div><div class="nc-text">{{ n.objective }}</div></div>{% endif %}
-                {% if n.assessment %}<div class="nc-section"><div class="nc-label">A</div><div class="nc-text">{{ n.assessment }}</div></div>{% endif %}
-                {% if n.plan %}<div class="nc-section"><div class="nc-label">P</div><div class="nc-text">{{ n.plan }}</div></div>{% endif %}
-            </div>
-            {% endfor %}
-            {% else %}
-            <p style="color:var(--rnp-gris-400);font-size:13px;">Sin notas de evolución.</p>
-            {% endif %}
-        </div>
+ <!-- Daily Notes -->
+ <div class="rnp-section rnp-animate-in">
+ <div class="rnp-section-header">
+ <h3 class="rnp-section-title"><span class="s-icon">📝</span>NOTAS DE EVOLUCIÓN</h3>
+ </div>
+ {% if notes %}
+ {% for n in notes %}
+ <div class="note-card">
+ <div class="nc-date">{{ n.note_date }} · {{ n.author or 'N/E' }}</div>
+ {% if n.subjective %}<div class="nc-section"><div class="nc-label">S</div><div class="nc-text">{{ n.subjective }}</div></div>{% endif %}
+ {% if n.objective %}<div class="nc-section"><div class="nc-label">O</div><div class="nc-text">{{ n.objective }}</div></div>{% endif %}
+ {% if n.assessment %}<div class="nc-section"><div class="nc-label">A</div><div class="nc-text">{{ n.assessment }}</div></div>{% endif %}
+ {% if n.plan %}<div class="nc-section"><div class="nc-label">P</div><div class="nc-text">{{ n.plan }}</div></div>{% endif %}
+ </div>
+ {% endfor %}
+ {% else %}
+ <p style="color:var(--rnp-gris-400);font-size:13px;">Sin notas de evolución.</p>
+ {% endif %}
+ </div>
 
-        <!-- Treatment Plan -->
-        <div class="rnp-section rnp-animate-in">
-            <div class="rnp-section-header">
-                <h3 class="rnp-section-title"><span class="s-icon">💊</span>PLAN DE TRATAMIENTO</h3>
-            </div>
-            {% if treatment.plan %}<div style="font-size:13px;color:var(--rnp-gris-600);line-height:1.5;">{{ treatment.plan }}</div>{% endif %}
-            {% if treatment.indicaciones %}<div style="margin-top:8px;font-size:12px;color:var(--rnp-gris-500);"><strong>Indicaciones:</strong> {{ treatment.indicaciones }}</div>{% endif %}
-            {% if treatment.proxima_cita %}<div style="margin-top:6px;"><span class="rnp-chip rnp-chip-dorado">📅 Próxima cita: {{ treatment.proxima_cita }}</span></div>{% endif %}
-        </div>
-    </div>
+ <!-- Treatment Plan -->
+ <div class="rnp-section rnp-animate-in">
+ <div class="rnp-section-header">
+ <h3 class="rnp-section-title"><span class="s-icon">💊</span>PLAN DE TRATAMIENTO</h3>
+ </div>
+ {% if treatment.plan %}<div style="font-size:13px;color:var(--rnp-gris-600);line-height:1.5;">{{ treatment.plan }}</div>{% endif %}
+ {% if treatment.indicaciones %}<div style="margin-top:8px;font-size:12px;color:var(--rnp-gris-500);"><strong>Indicaciones:</strong> {{ treatment.indicaciones }}</div>{% endif %}
+ {% if treatment.proxima_cita %}<div style="margin-top:6px;"><span class="rnp-chip rnp-chip-dorado">📅 Próxima cita: {{ treatment.proxima_cita }}</span></div>{% endif %}
+ </div>
+ </div>
 
-    <!-- RIGHT SIDEBAR: Timeline + Surgeries + Quick Actions -->
-    <div class="cc-right">
-        <div class="sidebar-section">
-            <div class="ss-title"><span class="dot"></span>ACCIONES RÁPIDAS</div>
-            <div class="quick-action-grid">
-                <a href="/expediente-smart?consulta_id={{ consulta_id }}" class="qa-btn"><span class="qa-icon">🧠</span>Smart</a>
-                <a href="/ward-round" class="qa-btn"><span class="qa-icon">🏥</span>Ward Round</a>
-                <a href="/expediente?consulta_id={{ consulta_id }}" class="qa-btn"><span class="qa-icon">📁</span>Expediente</a>
-                <a href="/reporte" class="qa-btn"><span class="qa-icon">📊</span>Reportes</a>
-            </div>
-        </div>
+ <!-- RIGHT SIDEBAR: Timeline + Surgeries + Quick Actions -->
+ <div class="cc-right">
+ <div class="sidebar-section">
+ <div class="ss-title"><span class="dot"></span>ACCIONES RÁPIDAS</div>
+ <div class="quick-action-grid">
+ <a href="/expediente-smart?consulta_id={{ consulta_id }}" class="qa-btn"><span class="qa-icon">🧠</span>Smart</a>
+ <a href="/ward-round" class="qa-btn"><span class="qa-icon">🏥</span>Ward Round</a>
+ <a href="/expediente?consulta_id={{ consulta_id }}" class="qa-btn"><span class="qa-icon">📁</span>Expediente</a>
+ <a href="/reporte" class="qa-btn"><span class="qa-icon">📊</span>Reportes</a>
+ </div>
+ </div>
 
-        {% if surgeries %}
-        <div class="sidebar-section" style="margin-top:14px;">
-            <div class="ss-title"><span class="dot"></span>HISTORIAL QUIRÚRGICO</div>
-            {% for s in surgeries %}
-            <div class="surgery-item">
-                <div class="si-proc">{{ s.procedimiento_programado or 'Procedimiento' }}</div>
-                <div class="si-meta">{{ s.fecha_programacion }} · {{ s.estatus }}
-                {% if s.sangrado_estimado %} · 🩸{{ s.sangrado_estimado }}ml{% endif %}
-                {% if s.tiempo_quirurgico_min %} · ⏱{{ s.tiempo_quirurgico_min }}min{% endif %}
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+ {% if surgeries %}
+ <div class="sidebar-section" style="margin-top:14px;">
+ <div class="ss-title"><span class="dot"></span>HISTORIAL QUIRÚRGICO</div>
+ {% for s in surgeries %}
+ <div class="surgery-item">
+ <div class="si-proc">{{ s.procedimiento_programado or 'Procedimiento' }}</div>
+ <div class="si-meta">{{ s.fecha_programacion }} · {{ s.estatus }}
+ {% if s.sangrado_estimado %} · 🩸{{ s.sangrado_estimado }}ml{% endif %}
+ {% if s.tiempo_quirurgico_min %} · ⏱{{ s.tiempo_quirurgico_min }}min{% endif %}
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ {% endif %}
 
-        <div class="sidebar-section" style="margin-top:14px;">
-            <div class="ss-title"><span class="dot"></span>TIMELINE CLÍNICO</div>
-            {% for t in timeline[:12] %}
-            <div class="tl-item">
-                <span class="tl-icon">{{ t.icon }}</span>
-                <div class="tl-body">
-                    <div class="tl-date">{{ t.date }}</div>
-                    <div class="tl-title">{{ t.title }}</div>
-                    <div class="tl-detail">{{ t.detail }}</div>
-                </div>
-            </div>
-            {% endfor %}
-            {% if not timeline %}
-            <p style="font-size:12px;color:var(--rnp-gris-400);">Sin eventos registrados.</p>
-            {% endif %}
-        </div>
-    </div>
+ <div class="sidebar-section" style="margin-top:14px;">
+ <div class="ss-title"><span class="dot"></span>TIMELINE CLÍNICO</div>
+ {% for t in timeline[:12] %}
+ <div class="tl-item">
+ <span class="tl-icon">{{ t.icon }}</span>
+ <div class="tl-body">
+ <div class="tl-date">{{ t.date }}</div>
+ <div class="tl-title">{{ t.title }}</div>
+ <div class="tl-detail">{{ t.detail }}</div>
+ </div>
+ </div>
+ {% endfor %}
+ {% if not timeline %}
+ <p style="font-size:12px;color:var(--rnp-gris-400);">Sin eventos registrados.</p>
+ {% endif %}
+ </div>
+ </div>
 </div>
 
 {% if vitals_trend %}
 <script>
 (function(){
-    const data = {{ vitals_trend | tojson }};
-    if (!data.length) return;
-    const labels = data.map(v => {
-        const d = v.recorded_at || '';
-        return d.length > 10 ? d.substring(5,16).replace('T',' ') : d;
-    });
-    const ctx = document.getElementById('vitalsChart');
-    if (!ctx) return;
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                { label: 'PAS', data: data.map(v=>v.sbp), borderColor: '#dc2626', backgroundColor: 'rgba(220,38,38,0.1)', tension: 0.3, fill: false, pointRadius: 3 },
-                { label: 'FC', data: data.map(v=>v.heart_rate), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)', tension: 0.3, fill: false, pointRadius: 3 },
-                { label: 'Temp', data: data.map(v=>v.temperature), borderColor: '#ea580c', tension: 0.3, fill: false, pointRadius: 3, yAxisID: 'y1' },
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'top', labels: { font: { size: 10 } } } },
-            scales: {
-                y: { position: 'left', title: { display: true, text: 'mmHg / lpm', font: { size: 10 } } },
-                y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '°C', font: { size: 10 } } },
-            }
-        }
-    });
+ const data = {{ vitals_trend | tojson }};
+ if (!data.length) return;
+ const labels = data.map(v => {
+ const d = v.recorded_at || '';
+ return d.length > 10 ? d.substring(5,16).replace('T',' ') : d;
+ });
+ const ctx = document.getElementById('vitalsChart');
+ if (!ctx) return;
+ new Chart(ctx, {
+ type: 'line',
+ data: {
+ labels: labels,
+ datasets: [
+ { label: 'PAS', data: data.map(v=>v.sbp), borderColor: '#dc2626', backgroundColor: 'rgba(220,38,38,0.1)', tension: 0.3, fill: false, pointRadius: 3 },
+ { label: 'FC', data: data.map(v=>v.heart_rate), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)', tension: 0.3, fill: false, pointRadius: 3 },
+ { label: 'Temp', data: data.map(v=>v.temperature), borderColor: '#ea580c', tension: 0.3, fill: false, pointRadius: 3, yAxisID: 'y1' },
+ ]
+ },
+ options: {
+ responsive: true,
+ plugins: { legend: { position: 'top', labels: { font: { size: 10 } } } },
+ scales: {
+ y: { position: 'left', title: { display: true, text: 'mmHg / lpm', font: { size: 10 } } },
+ y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '°C', font: { size: 10 } } },
+ }
+ }
+ });
 })();
 </script>
 {% endif %}

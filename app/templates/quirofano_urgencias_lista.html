@@ -1,153 +1,153 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Urgencias Quirúrgicas - IMSS Urología</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
-        .container { max-width: 1300px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); padding: 30px; }
-        h1 { color: #13322B; border-bottom: 3px solid #B38E5D; padding-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background: #13322B; color: white; padding: 12px; }
-        td { padding: 10px; border-bottom: 1px solid #ddd; font-size: 13px; }
-        .btn { background: #13322B; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px; }
-        .btn:hover { background: #0e2621; }
-        .btn-dorado { background: #B38E5D; }
-        .filters { margin-top: 18px; display: grid; grid-template-columns: 220px 1fr 170px; gap: 10px; }
-        .filters select, .filters input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        .filters button { background: #13322B; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; }
-        .small { color: #5c6670; font-size: 13px; }
-        .row-actions a { display: inline-block; margin-bottom: 4px; }
-        .cancel-box { margin-top: 6px; border: 1px dashed #b38e5d; border-radius: 6px; padding: 6px; background: #faf7f1; }
-        .cancel-box summary { cursor: pointer; font-weight: 700; color: #13322B; }
-        .cancel-form { display: grid; gap: 6px; margin-top: 8px; }
-        .cancel-form select, .cancel-form input, .cancel-form textarea { width: 100%; padding: 7px; border: 1px solid #c8c8c8; border-radius: 4px; font-size: 12px; }
-        .cancel-form button { background: #7f2d2d; color: #fff; border: none; border-radius: 4px; padding: 8px; cursor: pointer; font-weight: 700; }
-        .status-cancelada { color: #7f2d2d; font-weight: 700; }
-        .cancel-note { font-size: 12px; color: #7f2d2d; margin-top: 4px; line-height: 1.25; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>Urgencias Quirúrgicas - UROMED Urología</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
+ <style>
+ body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
+ .container { max-width: 1300px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); padding: 30px; }
+ h1 { color: #0a3161; border-bottom: 3px solid #c82f3f; padding-bottom: 10px; }
+ table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+ th { background: #0a3161; color: white; padding: 12px; }
+ td { padding: 10px; border-bottom: 1px solid #ddd; font-size: 13px; }
+ .btn { background: #0a3161; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px; }
+ .btn:hover { background: #0e2621; }
+ .btn-dorado { background: #c82f3f; }
+ .filters { margin-top: 18px; display: grid; grid-template-columns: 220px 1fr 170px; gap: 10px; }
+ .filters select, .filters input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+ .filters button { background: #0a3161; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; }
+ .small { color: #5c6670; font-size: 13px; }
+ .row-actions a { display: inline-block; margin-bottom: 4px; }
+ .cancel-box { margin-top: 6px; border: 1px dashed #b38e5d; border-radius: 6px; padding: 6px; background: #faf7f1; }
+ .cancel-box summary { cursor: pointer; font-weight: 700; color: #0a3161; }
+ .cancel-form { display: grid; gap: 6px; margin-top: 8px; }
+ .cancel-form select, .cancel-form input, .cancel-form textarea { width: 100%; padding: 7px; border: 1px solid #c8c8c8; border-radius: 4px; font-size: 12px; }
+ .cancel-form button { background: #7f2d2d; color: #fff; border: none; border-radius: 4px; padding: 8px; cursor: pointer; font-weight: 700; }
+ .status-cancelada { color: #7f2d2d; font-weight: 700; }
+ .cancel-note { font-size: 12px; color: #7f2d2d; margin-top: 4px; line-height: 1.25; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body class="qf-refresh">
-    <div class="container">
-        <h1>🚨 CIRUGÍAS DE URGENCIA</h1>
-        <h2>Lista de Pacientes Programados de Urgencia</h2>
-        <p class="small">Listado desde la base de datos dedicada de urgencias quirúrgicas.</p>
+ <div class="container">
+ <h1>🚨 CIRUGÍAS DE URGENCIA</h1>
+ <h2>Lista de Pacientes Programados de Urgencia</h2>
+ <p class="small">Listado desde la base de datos dedicada de urgencias quirúrgicas.</p>
 
-        <form method="get" action="/quirofano/urgencias/lista" class="filters">
-            <select name="campo">
-                <option value="">Campo de búsqueda</option>
-                <option value="nss" {% if campo == "nss" %}selected{% endif %}>NSS</option>
-                <option value="paciente_nombre" {% if campo == "paciente_nombre" %}selected{% endif %}>Nombre</option>
-                <option value="sexo" {% if campo == "sexo" %}selected{% endif %}>Sexo</option>
-                <option value="patologia" {% if campo == "patologia" %}selected{% endif %}>Patología</option>
-                <option value="procedimiento_programado" {% if campo == "procedimiento_programado" %}selected{% endif %}>Procedimiento</option>
-                <option value="hgz" {% if campo == "hgz" %}selected{% endif %}>HGZ</option>
-                <option value="estatus" {% if campo == "estatus" %}selected{% endif %}>Estatus</option>
-            </select>
-            <input type="text" name="q" value="{{ q or '' }}" placeholder="Valor a buscar...">
-            <button type="submit">Buscar</button>
-        </form>
+ <form method="get" action="/quirofano/urgencias/lista" class="filters">
+ <select name="campo">
+ <option value="">Campo de búsqueda</option>
+ <option value="nss" {% if campo == "nss" %}selected{% endif %}>NSS</option>
+ <option value="paciente_nombre" {% if campo == "paciente_nombre" %}selected{% endif %}>Nombre</option>
+ <option value="sexo" {% if campo == "sexo" %}selected{% endif %}>Sexo</option>
+ <option value="patologia" {% if campo == "patologia" %}selected{% endif %}>Patología</option>
+ <option value="procedimiento_programado" {% if campo == "procedimiento_programado" %}selected{% endif %}>Procedimiento</option>
+ <option value="hgz" {% if campo == "hgz" %}selected{% endif %}>HGZ</option>
+ <option value="estatus" {% if campo == "estatus" %}selected{% endif %}>Estatus</option>
+ </select>
+ <input type="text" name="q" value="{{ q or '' }}" placeholder="Valor a buscar...">
+ <button type="submit">Buscar</button>
+ </form>
 
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>NSS</th>
-                <th>Paciente</th>
-                <th>Edad</th>
-                <th>Sexo</th>
-                <th>Patología</th>
-                <th>Procedimiento</th>
-                <th>Insumos</th>
-                <th>Hemoderivados</th>
-                <th>HGZ</th>
-                <th>Fecha urgencia</th>
-                <th>Estatus</th>
-                <th>Acciones</th>
-            </tr>
-            {% for q in urgencias %}
-            <tr>
-                <td>{{ q.id }}</td>
-                <td>{{ q.nss or "-" }}</td>
-                <td>{{ q.paciente_nombre }}</td>
-                <td>{{ q.edad or "-" }}</td>
-                <td>{{ q.sexo or "-" }}</td>
-                <td>{{ q.patologia or "-" }}</td>
-                <td>{{ q.procedimiento_programado or "-" }}</td>
-                <td>{{ q.insumos_solicitados or "-" }}</td>
-                <td>
-                    {% if q.solicita_hemoderivados == "SI" %}
-                    SI (PG: {{ q.hemoderivados_pg_solicitados or 0 }}, PFC: {{ q.hemoderivados_pfc_solicitados or 0 }}, CP: {{ q.hemoderivados_cp_solicitados or 0 }})
-                    {% else %}
-                    NO
-                    {% endif %}
-                </td>
-                <td>{{ q.hgz or "-" }}</td>
-                <td>{{ q.fecha_urgencia or "-" }}</td>
-                <td>
-                    {% if (q.estatus or "") == "CANCELADA" %}
-                    <span class="status-cancelada">CANCELADA</span>
-                    {% else %}
-                    {{ q.estatus }}
-                    {% endif %}
-                </td>
-                <td class="row-actions">
-                    <a href="/quirofano/urgencias/{{ q.surgical_programacion_id or q.id }}/postquirurgica">Nota postquirúrgica</a><br>
-                    {% if q.consulta_id and q.consulta_id < 2000000000 %}
-                    <a href="/expediente?consulta_id={{ q.consulta_id }}">Ver expediente</a>
-                    {% else %}
-                    <a href="/expediente?nss={{ q.nss }}&nombre={{ q.paciente_nombre|replace(' ', '%20') }}">Ver expediente</a>
-                    {% endif %}
-                    {% if q.surgical_programacion_id and (q.estatus or "") != "REALIZADA" %}
-                    <details class="cancel-box">
-                        <summary>Marcar cancelada</summary>
-                        <form method="post" action="/quirofano/urgencias/cancelar" class="cancel-form">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                            <input type="hidden" name="surgical_programacion_id" value="{{ q.surgical_programacion_id }}">
-                            <input type="hidden" name="urgencia_programacion_id" value="{{ q.id }}">
-                            <select name="cancelacion_codigo" required>
-                                <option value="">Seleccionar concepto...</option>
-                                {% for item in cancelacion_conceptos %}
-                                <option value="{{ item.codigo }}">{{ item.codigo }} · {{ item.concepto }} ({{ item.categoria }})</option>
-                                {% endfor %}
-                            </select>
-                            <textarea name="cancelacion_detalle" rows="2" placeholder="Detalle adicional (opcional)"></textarea>
-                            <button type="submit">Confirmar cancelación</button>
-                        </form>
-                    </details>
-                    {% endif %}
-                    {% if q.cancelacion_concepto %}
-                    <div class="cancel-note">
-                        {{ q.cancelacion_codigo }} · {{ q.cancelacion_concepto }}<br>
-                        {{ q.cancelacion_categoria }}{% if q.cancelacion_fecha %} · {{ q.cancelacion_fecha }}{% endif %}
-                        {% if q.cancelacion_detalle %}<br>Detalle: {{ q.cancelacion_detalle }}{% endif %}
-                    </div>
-                    {% endif %}
-                </td>
-            </tr>
-            {% else %}
-            <tr><td colspan="13" style="text-align:center;">No hay cirugías de urgencia programadas</td></tr>
-            {% endfor %}
-        </table>
+ <table>
+ <tr>
+ <th>ID</th>
+ <th>NSS</th>
+ <th>Paciente</th>
+ <th>Edad</th>
+ <th>Sexo</th>
+ <th>Patología</th>
+ <th>Procedimiento</th>
+ <th>Insumos</th>
+ <th>Hemoderivados</th>
+ <th>HGZ</th>
+ <th>Fecha urgencia</th>
+ <th>Estatus</th>
+ <th>Acciones</th>
+ </tr>
+ {% for q in urgencias %}
+ <tr>
+ <td>{{ q.id }}</td>
+ <td>{{ q.nss or "-" }}</td>
+ <td>{{ q.paciente_nombre }}</td>
+ <td>{{ q.edad or "-" }}</td>
+ <td>{{ q.sexo or "-" }}</td>
+ <td>{{ q.patologia or "-" }}</td>
+ <td>{{ q.procedimiento_programado or "-" }}</td>
+ <td>{{ q.insumos_solicitados or "-" }}</td>
+ <td>
+ {% if q.solicita_hemoderivados == "SI" %}
+ SI (PG: {{ q.hemoderivados_pg_solicitados or 0 }}, PFC: {{ q.hemoderivados_pfc_solicitados or 0 }}, CP: {{ q.hemoderivados_cp_solicitados or 0 }})
+ {% else %}
+ NO
+ {% endif %}
+ </td>
+ <td>{{ q.hgz or "-" }}</td>
+ <td>{{ q.fecha_urgencia or "-" }}</td>
+ <td>
+ {% if (q.estatus or "") == "CANCELADA" %}
+ <span class="status-cancelada">CANCELADA</span>
+ {% else %}
+ {{ q.estatus }}
+ {% endif %}
+ </td>
+ <td class="row-actions">
+ <a href="/quirofano/urgencias/{{ q.surgical_programacion_id or q.id }}/postquirurgica">Nota postquirúrgica</a><br>
+ {% if q.consulta_id and q.consulta_id < 2000000000 %}
+ <a href="/expediente?consulta_id={{ q.consulta_id }}">Ver expediente</a>
+ {% else %}
+ <a href="/expediente?nss={{ q.nss }}&nombre={{ q.paciente_nombre|replace(' ', '%20') }}">Ver expediente</a>
+ {% endif %}
+ {% if q.surgical_programacion_id and (q.estatus or "") != "REALIZADA" %}
+ <details class="cancel-box">
+ <summary>Marcar cancelada</summary>
+ <form method="post" action="/quirofano/urgencias/cancelar" class="cancel-form">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <input type="hidden" name="surgical_programacion_id" value="{{ q.surgical_programacion_id }}">
+ <input type="hidden" name="urgencia_programacion_id" value="{{ q.id }}">
+ <select name="cancelacion_codigo" required>
+ <option value="">Seleccionar concepto...</option>
+ {% for item in cancelacion_conceptos %}
+ <option value="{{ item.codigo }}">{{ item.codigo }} · {{ item.concepto }} ({{ item.categoria }})</option>
+ {% endfor %}
+ </select>
+ <textarea name="cancelacion_detalle" rows="2" placeholder="Detalle adicional (opcional)"></textarea>
+ <button type="submit">Confirmar cancelación</button>
+ </form>
+ </details>
+ {% endif %}
+ {% if q.cancelacion_concepto %}
+ <div class="cancel-note">
+ {{ q.cancelacion_codigo }} · {{ q.cancelacion_concepto }}<br>
+ {{ q.cancelacion_categoria }}{% if q.cancelacion_fecha %} · {{ q.cancelacion_fecha }}{% endif %}
+ {% if q.cancelacion_detalle %}<br>Detalle: {{ q.cancelacion_detalle }}{% endif %}
+ </div>
+ {% endif %}
+ </td>
+ </tr>
+ {% else %}
+ <tr><td colspan="13" style="text-align:center;">No hay cirugías de urgencia programadas</td></tr>
+ {% endfor %}
+ </table>
 
-        <a href="/quirofano/urgencias/solicitud" class="btn">➕ PROGRAMAR CIRUGÍA DE URGENCIA</a>
-        <br><br>
-        <a href="/quirofano/urgencias/postquirurgica" class="btn btn-dorado">🩺 Nota postquirúrgica urgencias</a>
-        <br><br>
-        <a href="/quirofano/urgencias" class="btn btn-dorado">← VOLVER</a>
-    </div>
+ <a href="/quirofano/urgencias/solicitud" class="btn">➕ PROGRAMAR CIRUGÍA DE URGENCIA</a>
+ <br><br>
+ <a href="/quirofano/urgencias/postquirurgica" class="btn btn-dorado">🩺 Nota postquirúrgica urgencias</a>
+ <br><br>
+ <a href="/quirofano/urgencias" class="btn btn-dorado">← VOLVER</a>
+ </div>
 </body>
 </html>

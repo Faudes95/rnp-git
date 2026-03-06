@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prototipo C — Elegante Institucional Premium</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+:root{
+ --verde:#0a3161;--verde2:#1f4f9f;--dorado:#c82f3f;--dorado-l:#ef7f8b;--dorado-bg:#faf6ef;
+ --bg:#f7f8fa;--card:#fff;--border:#e5e9ed;--text:#1a2e28;--muted:#7b8f87;
+ --red:#dc2626;--blue:#2563eb;--emerald:#059669;--amber:#d97706;--purple:#7c3aed;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:0}
+
+/* ─── FULL-WIDTH HEADER BAR ─── */
+.header-bar{background:linear-gradient(135deg,var(--verde) 0%,#2e6ec9 100%);padding:12px 0;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(31,79,159,0.2)}
+.header-inner{max-width:1400px;margin:auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+.hb-brand{font-size:12px;font-weight:900;color:var(--dorado-l);letter-spacing:1.5px;text-transform:uppercase}
+.hb-nav{display:flex;gap:2px}
+.hb-nav a{padding:7px 14px;border-radius:8px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;transition:all .2s}
+.hb-nav a:hover{color:#fff;background:rgba(255,255,255,0.08)}
+.hb-nav a.active{color:var(--dorado-l);background:rgba(200,47,63,0.12)}
+
+/* ─── PATIENT HERO ─── */
+.hero{background:linear-gradient(135deg,var(--verde) 0%,#2e6ec9 40%,var(--verde2) 100%);padding:0;position:sticky;top:44px;z-index:90;border-bottom:3px solid var(--dorado)}
+.hero-inner{max-width:1400px;margin:auto;padding:24px;display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center}
+.hero-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--dorado),var(--dorado-l));display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:var(--verde);border:4px solid rgba(255,255,255,0.15);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.hero-info h1{font-size:22px;font-weight:900;color:#fff;margin-bottom:6px;text-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.hero-tags{display:flex;flex-wrap:wrap;gap:6px}
+.hero-tag{padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(4px)}
+.hero-tag.gold{background:rgba(200,47,63,0.16);border-color:rgba(200,47,63,0.2);color:var(--dorado-l)}
+.hero-alerts{display:flex;flex-direction:column;gap:6px}
+.hero-alert{padding:7px 14px;border-radius:8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.hero-alert.crit{background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);color:#fca5a5;animation:pulse 2s infinite}
+.hero-alert.warn{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:#fcd34d}
+.hero-alert.info{background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);color:#93c5fd}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* ─── CONTENT ─── */
+.content{max-width:1400px;margin:auto;padding:20px 24px}
+
+/* ─── KPI RIBBON ─── */
+.kpi-ribbon{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;transition:all .3s;position:relative;overflow:hidden}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.06);border-color:var(--dorado)}
+.kpi-card .kv{font-size:28px;font-weight:900;color:var(--verde)}
+.kpi-card .kl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-top:3px}
+.kpi-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.kpi-card:nth-child(1)::after{background:var(--emerald)}
+.kpi-card:nth-child(2)::after{background:var(--blue)}
+.kpi-card:nth-child(3)::after{background:var(--amber)}
+.kpi-card:nth-child(4)::after{background:var(--purple)}
+.kpi-card:nth-child(5)::after{background:var(--red)}
+.kpi-card:nth-child(6)::after{background:var(--dorado)}
+
+/* ─── QUICK ACTIONS ─── */
+.quick-actions{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
+.qa-btn{display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-size:11px;font-weight:800;color:var(--verde);cursor:pointer;transition:all .25s;text-decoration:none;white-space:nowrap}
+.qa-btn:hover{border-color:var(--dorado);box-shadow:0 4px 16px rgba(200,47,63,0.1);transform:translateY(-2px)}
+.qa-btn .qi{font-size:16px}
+.qa-btn.featured{background:linear-gradient(135deg,var(--verde),var(--verde2));color:#fff;border-color:var(--verde)}
+.qa-btn.featured:hover{box-shadow:0 4px 16px rgba(31,79,159,0.2)}
+
+/* ─── CONTROLS ─── */
+.controls{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.ctrl{padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .2s}
+.ctrl:hover{border-color:var(--dorado);color:var(--verde)}
+.ctrl-info{font-size:11px;color:var(--muted);margin-left:8px}
+
+/* ─── ACCORDION CARDS ─── */
+.acc-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color .25s}
+.acc-card:hover{border-color:rgba(200,47,63,0.18)}
+.ac-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;transition:all .2s;user-select:none}
+.ac-head:hover{background:#f7faff}
+.ac-head.open{background:linear-gradient(90deg,#f7faff,var(--dorado-bg));border-bottom:1px solid var(--border)}
+.ac-left{display:flex;align-items:center;gap:12px}
+.ac-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;border:1.5px solid var(--border);transition:all .25s}
+.ac-head.open .ac-ico{border-color:var(--dorado);background:var(--dorado-bg)}
+.ac-name{font-size:13px;font-weight:800;color:var(--verde)}
+.ac-desc{font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
+.ac-right{display:flex;align-items:center;gap:10px}
+.ac-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:#edf3ff;color:var(--verde)}
+.ac-badge.active{background:#fef3c7;color:#92400e}
+.ac-chev{font-size:11px;color:var(--muted);transition:transform .3s}
+.ac-head.open .ac-chev{transform:rotate(180deg)}
+.ac-body{display:none;padding:18px 20px}
+.ac-body.show{display:block;animation:acOpen .3s ease}
+@keyframes acOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── TABLES ─── */
+table{width:100%;border-collapse:separate;border-spacing:0}
+th{padding:10px 14px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--dorado);background:#f7faff;border-bottom:2px solid var(--border)}
+th:first-child{border-radius:8px 0 0 0}
+th:last-child{border-radius:0 8px 0 0}
+td{padding:10px 14px;font-size:12px;border-bottom:1px solid #f4f6f5}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f7faff}
+
+/* ─── CHARTS ─── */
+.chart-duo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.chart-wrap{background:#f7faff;border:1px solid var(--border);border-radius:10px;padding:14px}
+.chart-wrap h4{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--verde);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.chart-wrap h4::before{content:'';width:4px;height:14px;border-radius:2px;background:var(--dorado)}
+
+/* ─── FLOW TRACK ─── */
+.flow-track{display:flex;gap:0;margin:14px 0}
+.ft-step{flex:1;text-align:center;padding:12px 6px;font-size:10px;font-weight:700;position:relative;background:#f4f6f5;color:var(--muted);border-top:3px solid var(--border)}
+.ft-step.done{background:#edf4ff;color:var(--emerald);border-top-color:var(--emerald)}
+.ft-step.now{background:#fefce8;color:var(--amber);border-top-color:var(--amber)}
+.ft-step:first-child{border-radius:10px 0 0 10px}
+.ft-step:last-child{border-radius:0 10px 10px 0}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px){.kpi-ribbon{grid-template-columns:repeat(3,1fr)}.chart-duo{grid-template-columns:1fr}.hero-inner{grid-template-columns:1fr;text-align:center}.hero-avatar{margin:0 auto}.hero-tags{justify-content:center}.hero-alerts{align-items:center}}
+@media(max-width:768px){.kpi-ribbon{grid-template-columns:repeat(2,1fr)}.quick-actions{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+
+<!-- HEADER BAR -->
+<div class="header-bar">
+ <div class="header-inner">
+ <div class="hb-brand">&#9879; UROMED Urologia</div>
+ <div class="hb-nav">
+ <a href="#">Menu</a>
+ <a href="#">Consulta</a>
+ <a href="#">Hospitalizacion</a>
+ <a href="#">Quirofano</a>
+ <a href="#" class="active">Expediente</a>
+ <a href="#">Reporte</a>
+ </div>
+ </div>
+</div>
+
+<!-- PATIENT HERO -->
+<div class="hero">
+ <div class="hero-inner">
+ <div class="hero-avatar">JL</div>
+ <div class="hero-info">
+ <h1>JUAN LOPEZ MARTINEZ</h1>
+ <div class="hero-tags">
+ <span class="hero-tag gold">NSS: 9800000008</span>
+ <span class="hero-tag">68 anios</span>
+ <span class="hero-tag">Masculino</span>
+ <span class="hero-tag">Dx: Hiperplasia Prostatica</span>
+ <span class="hero-tag">Flujo: HOSPITALIZADO</span>
+ <span class="hero-tag">Completitud: 82%</span>
+ </div>
+ </div>
+ <div class="hero-alerts">
+ <div class="hero-alert crit">&#128308; HOSPITALIZADO &mdash; Cama 312-B</div>
+ <div class="hero-alert warn">&#128992; 3 Alertas Clinicas</div>
+ <div class="hero-alert info">&#128309; ID #1234</div>
+ </div>
+ </div>
+</div>
+
+<div class="content">
+
+<!-- KPIs -->
+<div class="kpi-ribbon">
+ <div class="kpi-card"><div class="kv">12</div><div class="kl">Consultas</div></div>
+ <div class="kpi-card"><div class="kv">3</div><div class="kl">Hospitalizaciones</div></div>
+ <div class="kpi-card"><div class="kv">5</div><div class="kl">Notas Medicas</div></div>
+ <div class="kpi-card"><div class="kv">2</div><div class="kl">Cirugias</div></div>
+ <div class="kpi-card"><div class="kv">8</div><div class="kl">Labs Seriados</div></div>
+ <div class="kpi-card"><div class="kv">82%</div><div class="kl">Completitud</div></div>
+</div>
+
+<!-- QUICK ACTIONS -->
+<div class="quick-actions">
+ <a class="qa-btn featured" href="#"><span class="qi">&#127919;</span> Command Center</a>
+ <a class="qa-btn" href="#"><span class="qi">&#129504;</span> Expediente Inteligente</a>
+ <a class="qa-btn" href="#"><span class="qi">&#127973;</span> Pase de Visita</a>
+ <a class="qa-btn" href="#"><span class="qi">&#128221;</span> Nota Medica</a>
+ <a class="qa-btn" href="#"><span class="qi">&#9888;</span> Alertas Clinicas</a>
+ <a class="qa-btn" href="#"><span class="qi">&#128196;</span> Fase 1</a>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+ <button class="ctrl" onclick="toggleAllC(false)">Expandir todo</button>
+ <button class="ctrl" onclick="toggleAllC(true)">Colapsar todo</button>
+ <span class="ctrl-info">17 secciones clinicas</span>
+</div>
+
+<!-- SEC: Flujo -->
+<div class="acc-card">
+ <div class="ac-head open" onclick="togC(this)">
+ <div class="ac-left"><div class="ac-ico">&#128736;</div><div><div class="ac-name">Rutas Transitadas y Flujo Clinico</div><div class="ac-desc">Pipeline de atencion y seguimiento</div></div></div>
+ <div class="ac-right"><span class="ac-badge">6 eventos</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body show">
+ <div class="flow-track">
+ <div class="ft-step done">&#9989; Consulta</div>
+ <div class="ft-step done">&#9989; Protocolo</div>
+ <div class="ft-step done">&#9989; Programacion Qx</div>
+ <div class="ft-step now">&#9203; Cirugia / Postop</div>
+ <div class="ft-step">Egreso</div>
+ <div class="ft-step">Seguimiento</div>
+ </div>
+ <table style="margin-top:12px">
+ <tr><th>Fecha</th><th>Evento</th><th>Estatus</th><th>Resumen</th></tr>
+ <tr><td>2025-01-15</td><td>Consulta Primera Vez</td><td style="color:var(--emerald);font-weight:700">COMPLETADO</td><td>Valoracion inicial HPB</td></tr>
+ <tr><td>2025-01-22</td><td>Protocolo quirurgico</td><td style="color:var(--emerald);font-weight:700">COMPLETADO</td><td>RTU-P programada</td></tr>
+ <tr><td>2025-02-01</td><td>Cirugia realizada</td><td style="color:var(--amber);font-weight:700">EN CURSO</td><td>Postoperatorio dia 3</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SEC: Labs -->
+<div class="acc-card">
+ <div class="ac-head" onclick="togC(this)">
+ <div class="ac-left"><div class="ac-ico">&#129514;</div><div><div class="ac-name">Serie de Laboratorios</div><div class="ac-desc">Tendencias bioquimicas con graficas</div></div></div>
+ <div class="ac-right"><span class="ac-badge">8 registros</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div class="chart-duo">
+ <div class="chart-wrap"><h4>Creatinina + Hemoglobina</h4><canvas id="cC1" height="200"></canvas></div>
+ <div class="chart-wrap"><h4>Leucocitos, Plaquetas, Na, K</h4><canvas id="cC2" height="200"></canvas></div>
+ </div>
+ <table>
+ <tr><th>Fecha</th><th>Cr</th><th>Hb</th><th>Leu</th><th>Plt</th><th>Na</th><th>K</th></tr>
+ <tr><td>2025-02-10</td><td>1.2</td><td>13.5</td><td>7.8</td><td>245</td><td>140</td><td>4.2</td></tr>
+ <tr><td>2025-02-08</td><td>1.4</td><td>12.8</td><td>8.2</td><td>230</td><td>138</td><td>4.5</td></tr>
+ <tr><td>2025-02-06</td><td>1.6</td><td>11.9</td><td>9.1</td><td>210</td><td>136</td><td>4.8</td></tr>
+ <tr><td>2025-02-04</td><td>1.8</td><td>11.2</td><td>10.5</td><td>198</td><td>141</td><td>3.9</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SEC: Drenajes -->
+<div class="acc-card">
+ <div class="ac-head" onclick="togC(this)">
+ <div class="ac-left"><div class="ac-ico">&#129656;</div><div><div class="ac-name">Drenajes y Dispositivos</div><div class="ac-desc">Monitoreo de gastos y funcion renal</div></div></div>
+ <div class="ac-right"><span class="ac-badge active">ACTIVO</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div class="chart-duo">
+ <div class="chart-wrap"><h4>Gasto Drenaje por Dia</h4><canvas id="cC3" height="200"></canvas></div>
+ <div class="chart-wrap"><h4>Uresis Foley + Indice Urinario</h4><canvas id="cC4" height="200"></canvas></div>
+ </div>
+ <table>
+ <tr><th>Fecha</th><th>Tipo</th><th>Gasto (mL)</th><th>% Egreso</th><th>Uresis mL</th><th>Indice Urinario</th></tr>
+ <tr><td>2025-02-10</td><td>Penrose</td><td>120</td><td>8%</td><td>1800</td><td>0.9</td></tr>
+ <tr><td>2025-02-09</td><td>Penrose</td><td>180</td><td>12%</td><td>1650</td><td>0.8</td></tr>
+ <tr><td>2025-02-08</td><td>Penrose</td><td>250</td><td>16%</td><td>1500</td><td>0.7</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SEC: Notas -->
+<div class="acc-card">
+ <div class="ac-head" onclick="togC(this)">
+ <div class="ac-left"><div class="ac-ico">&#128221;</div><div><div class="ac-name">Notas Medicas Diarias</div><div class="ac-desc">Evolucion y signos vitales</div></div></div>
+ <div class="ac-right"><span class="ac-badge">5 notas</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div class="chart-duo"><div class="chart-wrap" style="grid-column:1/-1"><h4>Tendencia de Signos Vitales</h4><canvas id="cC5" height="180"></canvas></div></div>
+ <table>
+ <tr><th>Fecha</th><th>Cama</th><th>FC</th><th>TA</th><th>Temp</th><th>Nota</th></tr>
+ <tr><td>2025-02-10</td><td>312-B</td><td>72</td><td>120/80</td><td>36.5</td><td>Estable, sin fiebre, drenaje en descenso</td></tr>
+ <tr><td>2025-02-09</td><td>312-B</td><td>78</td><td>130/85</td><td>36.8</td><td>Mejoria progresiva, tolerando via oral</td></tr>
+ <tr><td>2025-02-08</td><td>312-B</td><td>84</td><td>135/90</td><td>37.2</td><td>POI dia 1, dolor controlado con ketorolaco</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SEC: Datos -->
+<div class="acc-card">
+ <div class="ac-head" onclick="togC(this)">
+ <div class="ac-left"><div class="ac-ico">&#128100;</div><div><div class="ac-name">Datos del Paciente</div><div class="ac-desc">Informacion demografica y contacto</div></div></div>
+ <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+ <table>
+ <tr><td style="font-weight:800;color:var(--verde);width:140px">Nombre</td><td>JUAN LOPEZ MARTINEZ</td></tr>
+ <tr><td style="font-weight:800;color:var(--verde)">CURP</td><td>LOMJ570315HDFRTN09</td></tr>
+ <tr><td style="font-weight:800;color:var(--verde)">NSS</td><td>9800000008</td></tr>
+ <tr><td style="font-weight:800;color:var(--verde)">Edad</td><td>68 anios</td></tr>
+ </table>
+ <table>
+ <tr><td style="font-weight:800;color:var(--verde);width:140px">Sexo</td><td>Masculino</td></tr>
+ <tr><td style="font-weight:800;color:var(--verde)">Tipo Sangre</td><td>O+</td></tr>
+ <tr><td style="font-weight:800;color:var(--verde)">Telefono</td><td>55 1234 5678</td></tr>
+ <tr><td style="font-weight:800;color:var(--verde)">Direccion</td><td>Av. Reforma 123, Col. Centro, CDMX</td></tr>
+ </table>
+ </div>
+ </div>
+</div>
+
+<!-- SEC: Diagnostico -->
+<div class="acc-card">
+ <div class="ac-head" onclick="togC(this)">
+ <div class="ac-left"><div class="ac-ico">&#128202;</div><div><div class="ac-name">Diagnostico y Protocolo</div><div class="ac-desc">Diagnostico principal y plan terapeutico</div></div></div>
+ <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <p style="margin-bottom:8px"><strong style="color:var(--verde)">Diagnostico principal:</strong> Hiperplasia Prostatica Benigna (N40)</p>
+ <p style="margin-bottom:8px"><strong style="color:var(--verde)">Estatus:</strong> Postquirurgico - RTU-P realizada</p>
+ <p style="margin-bottom:8px"><strong style="color:var(--verde)">Plan:</strong> Vigilancia postoperatoria, retiro de sonda Foley dia 5, alta condicionada</p>
+ </div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+function togC(h){h.classList.toggle('open');h.nextElementSibling.classList.toggle('show');if(h.classList.contains('open'))setTimeout(mkCharts,100)}
+function toggleAllC(c){document.querySelectorAll('.ac-head').forEach(function(h){var b=h.nextElementSibling;if(c){h.classList.remove('open');b.classList.remove('show')}else{h.classList.add('open');b.classList.add('show')}});if(!c)setTimeout(mkCharts,100)}
+var cDone=false;
+function mkCharts(){
+ if(cDone)return;cDone=true;
+ Chart.defaults.font.family="'Inter',sans-serif";
+ var c={r:'#dc2626',b:'#2563eb',g:'#059669',p:'#7c3aed',o:'#d97706',t:'#0d9488',gd:'#c82f3f',v:'#0a3161'};
+ var base={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10,weight:'bold'},usePointStyle:true,boxWidth:8,padding:12}},tooltip:{backgroundColor:c.v,cornerRadius:8,padding:10,titleFont:{size:11},bodyFont:{size:11}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'#e4edff'},ticks:{font:{size:10}}}}};
+ var d=['02-04','02-06','02-08','02-10'];
+ new Chart('cC1',{type:'line',data:{labels:d,datasets:[{label:'Cr (mg/dL)',data:[1.8,1.6,1.4,1.2],borderColor:c.r,backgroundColor:'rgba(220,38,38,0.06)',fill:true,tension:.4,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#fff',pointBorderWidth:2.5},{label:'Hb (g/dL)',data:[11.2,11.9,12.8,13.5],borderColor:c.b,backgroundColor:'rgba(37,99,235,0.06)',fill:true,tension:.4,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{position:'left',grid:{color:'#e4edff'},title:{display:true,text:'Cr mg/dL',color:c.r,font:{size:10,weight:'bold'}}},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Hb g/dL',color:c.b,font:{size:10,weight:'bold'}}}}})});
+ new Chart('cC2',{type:'line',data:{labels:d,datasets:[{label:'Leucocitos',data:[10.5,9.1,8.2,7.8],borderColor:c.g,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'Plaquetas',data:[198,210,230,245],borderColor:c.p,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'Na',data:[141,136,138,140],borderColor:c.o,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'K',data:[3.9,4.8,4.5,4.2],borderColor:c.t,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2}]},options:base});
+ new Chart('cC3',{type:'bar',data:{labels:['02-08','02-09','02-10'],datasets:[{label:'Gasto mL',data:[250,180,120],backgroundColor:['rgba(31,79,159,0.85)','rgba(31,79,159,0.6)','rgba(31,79,159,0.4)'],borderColor:c.gd,borderWidth:1,borderRadius:8,borderSkipped:false}]},options:base});
+ new Chart('cC4',{type:'line',data:{labels:['02-08','02-09','02-10'],datasets:[{label:'Uresis (mL)',data:[1500,1650,1800],borderColor:c.b,backgroundColor:'rgba(37,99,235,0.06)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5},{label:'Indice urinario',data:[0.7,0.8,0.9],borderColor:c.gd,tension:.4,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{position:'left',grid:{color:'#e4edff'},title:{display:true,text:'mL',color:c.b,font:{size:10}}},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Indice',color:c.gd,font:{size:10}}}}})});
+ new Chart('cC5',{type:'line',data:{labels:['02-08','02-09','02-10'],datasets:[{label:'FC (lpm)',data:[84,78,72],borderColor:c.r,tension:.3,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5},{label:'TA Sist',data:[135,130,120],borderColor:c.b,tension:.3,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5},{label:'TA Diast',data:[90,85,80],borderColor:'#93c5fd',borderDash:[5,3],tension:.3,pointRadius:4},{label:'Temp (C)',data:[37.2,36.8,36.5],borderColor:c.o,tension:.3,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{position:'left',grid:{color:'#e4edff'},title:{display:true,text:'FC / TA',font:{size:10}}},y1:{position:'right',min:35,max:40,grid:{drawOnChartArea:false},title:{display:true,text:'Temp C',color:c.o,font:{size:10}}}}})});
+}
+setTimeout(mkCharts,300);
+</script>
+</body>
+</html>

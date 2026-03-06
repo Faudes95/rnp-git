@@ -1,0 +1,369 @@
+:root {
+  --uromed-blue-900: #0a3161;
+  --uromed-blue-800: #0f3f82;
+  --uromed-blue-700: #1f4f9f;
+  --uromed-blue-600: #2e6ec9;
+  --uromed-blue-500: #4f93f1;
+  --uromed-blue-100: #e7f0ff;
+  --uromed-red-700: #c82f3f;
+  --uromed-red-500: #ef4f5f;
+  --uromed-red-100: #ffe9ed;
+  --uromed-white: #ffffff;
+  --uromed-ink: #1b3f76;
+  --uromed-border: #cfe0fb;
+
+  --imss-verde: var(--uromed-blue-900) !important;
+  --imss-dorado: var(--uromed-red-700) !important;
+  --verde: var(--uromed-blue-900) !important;
+  --verde2: var(--uromed-blue-700) !important;
+  --verde3: var(--uromed-blue-800) !important;
+  --dorado: var(--uromed-red-700) !important;
+  --dorado-l: #ffb1bc !important;
+  --dorado-bg: #ffeef1 !important;
+
+  --rnp-verde-900: var(--uromed-blue-900) !important;
+  --rnp-verde-800: var(--uromed-blue-800) !important;
+  --rnp-verde-700: var(--uromed-blue-700) !important;
+  --rnp-verde-600: var(--uromed-blue-600) !important;
+  --rnp-verde-500: var(--uromed-blue-500) !important;
+  --rnp-verde-400: #74abf5 !important;
+  --rnp-verde-300: #9bc2f8 !important;
+  --rnp-verde-200: #c9defb !important;
+  --rnp-verde-100: var(--uromed-blue-100) !important;
+  --rnp-verde-50: #f3f8ff !important;
+
+  --rnp-dorado-700: #8f2030 !important;
+  --rnp-dorado-600: #aa2a3b !important;
+  --rnp-dorado-500: var(--uromed-red-700) !important;
+  --rnp-dorado-400: #de4f5f !important;
+  --rnp-dorado-300: #ef7f8b !important;
+  --rnp-dorado-200: #f7c6cd !important;
+  --rnp-dorado-100: var(--uromed-red-100) !important;
+  --rnp-dorado-50: #fff4f6 !important;
+
+  --qf-verde-1: var(--uromed-blue-900) !important;
+  --qf-verde-2: var(--uromed-blue-700) !important;
+  --qf-verde-3: var(--uromed-blue-600) !important;
+  --qf-dorado: var(--uromed-red-700) !important;
+  --qf-line: var(--uromed-border) !important;
+}
+
+html,
+body {
+  background: linear-gradient(160deg, #f2f7ff 0%, #ebf3ff 55%, #e2edff 100%) !important;
+  color: var(--uromed-ink) !important;
+}
+
+body,
+p,
+span,
+label,
+small,
+td,
+li {
+  color: #1b3f76 !important;
+}
+
+header *,
+.top-bar *,
+.header-bar *,
+.hero *,
+.module-header *,
+.clinical-header *,
+.ward-header *,
+.qx-header * {
+  color: #ffffff !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+.section-title,
+.page-title,
+.rnp-page-title,
+.smart-title,
+.id-title,
+.ac-name,
+.nt-title,
+.proto-title,
+.hero-name,
+.global-title,
+.brand,
+.logo-title {
+  color: var(--uromed-blue-900) !important;
+}
+
+a,
+.nav-chip,
+.nav-pill,
+.muted-link,
+.crumb-link {
+  color: var(--uromed-blue-700) !important;
+}
+
+a:hover,
+.nav-chip:hover,
+.nav-pill:hover {
+  color: var(--uromed-blue-900) !important;
+}
+
+.nav-chip.active,
+.nav-pill.active,
+.global-nav .active,
+.hb-nav a.active {
+  background: linear-gradient(135deg, var(--uromed-red-500), var(--uromed-red-700)) !important;
+  border-color: var(--uromed-red-700) !important;
+  color: #ffffff !important;
+}
+
+.btn,
+button,
+.search-btn,
+.btn-main,
+.btn-primary,
+.mini-btn,
+.hl-btn.primary,
+.qa-btn.active,
+.ctrl.active,
+.rnp-global-nav .nav-pill.active {
+  background: linear-gradient(135deg, var(--uromed-blue-700), var(--uromed-blue-900)) !important;
+  border-color: var(--uromed-blue-700) !important;
+  color: #ffffff !important;
+}
+
+.btn-dorado,
+.btn-alt,
+.btn-gold,
+.hl-btn.gold,
+.chip.gold,
+.hero-tag.gold,
+.badge-gold,
+.quick-gold {
+  background: linear-gradient(135deg, var(--uromed-red-500), var(--uromed-red-700)) !important;
+  border-color: var(--uromed-red-700) !important;
+  color: #ffffff !important;
+}
+
+th,
+.table thead th,
+.rnp-table thead th,
+header,
+.top-bar,
+.header-bar,
+.hero,
+.hospital-header,
+.qx-header,
+.ward-header,
+.module-header {
+  background: linear-gradient(135deg, var(--uromed-blue-900), var(--uromed-blue-700)) !important;
+  color: #ffffff !important;
+}
+
+table td,
+tbody td {
+  color: #1c3f76 !important;
+}
+
+input,
+select,
+textarea {
+  color: #173b74 !important;
+  background: #ffffff !important;
+}
+
+.top-bar,
+.header-bar,
+.global-nav,
+.module-nav,
+.ac-nav,
+.rnp-global-nav {
+  background: linear-gradient(135deg, var(--uromed-blue-900), var(--uromed-blue-700)) !important;
+  border-color: #2d61b0 !important;
+}
+
+.card,
+.section,
+.smart-card,
+.module-card,
+.kpi-card,
+.ac,
+.id-col,
+.nt-pane,
+.nt-detail,
+.nt-list {
+  border-color: var(--uromed-border) !important;
+}
+
+.card:hover,
+.section:hover,
+.smart-card:hover,
+.module-card:hover,
+.kpi-card:hover {
+  border-color: var(--uromed-blue-600) !important;
+  box-shadow: 0 10px 24px rgba(31, 79, 159, 0.14) !important;
+}
+
+.kpi-value-band,
+.kpi-band,
+.metric-band,
+.value-band {
+  background: linear-gradient(135deg, var(--uromed-blue-700), var(--uromed-blue-500)) !important;
+  color: #ffffff !important;
+}
+
+.kpi-card.danger .kpi-value-band,
+.kpi-danger .kpi-value-band,
+.metric-danger .value-band,
+.status-critical,
+.badge-urgent,
+.badge-critical,
+.row-critical {
+  background: linear-gradient(135deg, var(--uromed-red-700), var(--uromed-red-500)) !important;
+  color: #ffffff !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--uromed-blue-600) !important;
+  box-shadow: 0 0 0 3px rgba(79, 147, 241, 0.2) !important;
+}
+
+.hero-tag,
+.chip,
+.badge,
+.pill,
+.rnp-shell-chip {
+  border-color: #c8d9f5 !important;
+  color: var(--uromed-blue-900) !important;
+  background: #f1f6ff !important;
+}
+
+.rnp-collapse-trigger,
+.smart-card-header,
+.section-head,
+.ac-head {
+  background: linear-gradient(135deg, #f4f8ff 0%, #edf3ff 100%) !important;
+  border-color: #d2e1fb !important;
+  color: var(--uromed-blue-900) !important;
+}
+
+.rnp-collapse-trigger:hover,
+.smart-card:hover,
+.module-card:hover,
+.ac-head.open {
+  border-color: #7cabef !important;
+  box-shadow: 0 6px 16px rgba(31, 79, 159, 0.14) !important;
+}
+
+.imss-badge,
+.badge-imss,
+.status-imss {
+  background: linear-gradient(135deg, var(--uromed-blue-700), var(--uromed-blue-900)) !important;
+  color: #fff !important;
+}
+
+.ok,
+.status-ok,
+.badge-success,
+.rnp-status-completado,
+.rnp-status-activo,
+.chip.verde,
+.chip-green {
+  background: #edf4ff !important;
+  color: var(--uromed-blue-800) !important;
+  border-color: #c7daf8 !important;
+}
+
+.warning,
+.status-warn,
+.badge-warning,
+.chip-dorado,
+.chip-gold {
+  background: #fff4f6 !important;
+  color: #aa2a3b !important;
+  border-color: #f3c2ca !important;
+}
+
+.danger,
+.status-danger,
+.badge-danger,
+.chip-red {
+  background: #fff0f2 !important;
+  color: #b32235 !important;
+  border-color: #f0bcc4 !important;
+}
+
+.clinical-header,
+.hero,
+.ward-header,
+.qx-header {
+  background: linear-gradient(135deg, #0a3161 0%, #1f4f9f 55%, #2e6ec9 100%) !important;
+  color: #ffffff !important;
+}
+
+.uromed-brand-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.uromed-brand-inline img {
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+}
+
+.uromed-private-watermark {
+  position: fixed;
+  right: 18px;
+  bottom: 14px;
+  width: 82px;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@media (max-width: 900px) {
+  .uromed-private-watermark {
+    width: 58px;
+    right: 10px;
+    bottom: 8px;
+  }
+}
+
+/* Enforce text contrast on blue/red backgrounds across legacy templates */
+.nav-chip.active,
+.nav-pill.active,
+.btn.alt,
+.btn-secondary,
+.btn-dorado,
+.subbtn.alt,
+.filters .clear,
+.tab-btn.active,
+.section-validate-btn,
+.subseq-btn-alt,
+.form-actions button[name='mode'][value='validate'] {
+  color: #ffffff !important;
+}
+
+[style*="background:#0a3161"],
+[style*="background: #0a3161"],
+[style*="background:#1f4f9f"],
+[style*="background: #1f4f9f"],
+[style*="background:#2e6ec9"],
+[style*="background: #2e6ec9"],
+[style*="background:#c82f3f"],
+[style*="background: #c82f3f"],
+[style*="background:#dc2626"],
+[style*="background: #dc2626"],
+[style*="background:#ef4444"],
+[style*="background: #ef4444"],
+[style*="linear-gradient(135deg,#0a3161"],
+[style*="linear-gradient(135deg, #0a3161"],
+[style*="linear-gradient(135deg,#c82f3f"],
+[style*="linear-gradient(135deg, #c82f3f"] {
+  color: #ffffff !important;
+}

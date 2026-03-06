@@ -9,30 +9,30 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
 :root{
-    --verde:#13322B;--verde2:#1a4a3f;--dorado:#B38E5D;--dorado-l:#d4b88a;--dorado-bg:#faf6ef;
-    --bg:#f7f8fa;--card:#fff;--border:#e5e9ed;--text:#1a2e28;--muted:#7b8f87;
-    --red:#dc2626;--blue:#2563eb;--emerald:#059669;--amber:#d97706;--purple:#7c3aed;--teal:#0d9488;
+ --verde:#0a3161;--verde2:#1f4f9f;--dorado:#c82f3f;--dorado-l:#ef7f8b;--dorado-bg:#faf6ef;
+ --bg:#f7f8fa;--card:#fff;--border:#e5e9ed;--text:#1a2e28;--muted:#7b8f87;
+ --red:#dc2626;--blue:#2563eb;--emerald:#059669;--amber:#d97706;--purple:#7c3aed;--teal:#0d9488;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(--text);padding:0}
 
 /* ─── HEADER BAR ─── */
-.header-bar{background:linear-gradient(135deg,#0d241e 0%,var(--verde) 50%,var(--verde2) 100%);padding:12px 0;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(19,50,43,0.2)}
+.header-bar{background:linear-gradient(135deg,#0a3161 0%,var(--verde) 50%,var(--verde2) 100%);padding:12px 0;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(31,79,159,0.2)}
 .header-inner{max-width:1400px;margin:auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
 .hb-brand{font-size:12px;font-weight:900;color:var(--dorado-l);letter-spacing:1.5px;text-transform:uppercase}
 .hb-nav{display:flex;gap:2px}
 .hb-nav a{padding:7px 14px;border-radius:8px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;transition:all .2s}
 .hb-nav a:hover{color:#fff;background:rgba(255,255,255,0.08)}
-.hb-nav a.active{color:var(--dorado-l);background:rgba(179,142,93,0.15)}
+.hb-nav a.active{color:var(--dorado-l);background:rgba(200,47,63,0.12)}
 
 /* ─── HERO ─── */
-.hero{background:linear-gradient(135deg,var(--verde) 0%,#1a5c4a 40%,var(--verde2) 100%);padding:0;position:sticky;top:44px;z-index:90;border-bottom:3px solid var(--dorado)}
+.hero{background:linear-gradient(135deg,var(--verde) 0%,#2e6ec9 40%,var(--verde2) 100%);padding:0;position:sticky;top:44px;z-index:90;border-bottom:3px solid var(--dorado)}
 .hero-inner{max-width:1400px;margin:auto;padding:24px;display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center}
 .hero-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--dorado),var(--dorado-l));display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:var(--verde);border:4px solid rgba(255,255,255,0.15);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
 .hero-info h1{font-size:22px;font-weight:900;color:#fff;margin-bottom:6px;text-shadow:0 1px 3px rgba(0,0,0,0.2)}
 .hero-tags{display:flex;flex-wrap:wrap;gap:6px}
 .hero-tag{padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(4px)}
-.hero-tag.gold{background:rgba(179,142,93,0.2);border-color:rgba(179,142,93,0.3);color:var(--dorado-l)}
+.hero-tag.gold{background:rgba(200,47,63,0.16);border-color:rgba(200,47,63,0.2);color:var(--dorado-l)}
 .hero-alerts{display:flex;flex-direction:column;gap:6px}
 .hero-alert{padding:7px 14px;border-radius:8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
 .hero-alert.crit{background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);color:#fca5a5;animation:pulse 2s infinite}
@@ -49,11 +49,11 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 .search-grid{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:end}
 .search-grid label{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--verde);margin-bottom:4px}
 .search-grid input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:12px;transition:all .2s}
-.search-grid input:focus{border-color:var(--dorado);outline:none;box-shadow:0 0 0 3px rgba(179,142,93,0.12)}
+.search-grid input:focus{border-color:var(--dorado);outline:none;box-shadow:0 0 0 3px rgba(200,47,63,0.1)}
 .search-btn{padding:9px 20px;border-radius:8px;border:none;background:var(--verde);color:#fff;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
 .search-btn:hover{background:var(--verde2);transform:translateY(-1px)}
 .search-alt{display:inline-block;margin-top:10px;padding:8px 16px;border-radius:8px;background:var(--dorado);color:#fff;font-size:11px;font-weight:700;text-decoration:none;transition:all .2s}
-.search-alt:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(179,142,93,0.2)}
+.search-alt:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(200,47,63,0.16)}
 
 /* ─── PROFILES TABLE ─── */
 .profiles-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
@@ -73,22 +73,22 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 
 /* ─── QUICK ACTIONS ─── */
 .quick-actions{
-    display:flex;gap:10px;margin-bottom:20px;overflow-x:auto;padding:8px;
-    background:linear-gradient(120deg,rgba(19,50,43,.05),rgba(179,142,93,.08));
-    border:1px solid rgba(19,50,43,.12);border-radius:18px
+ display:flex;gap:10px;margin-bottom:20px;overflow-x:auto;padding:8px;
+ background:linear-gradient(120deg,rgba(31,79,159,.05),rgba(200,47,63,.08));
+ border:1px solid rgba(31,79,159,.12);border-radius:18px
 }
 .quick-actions::-webkit-scrollbar{height:8px}
-.quick-actions::-webkit-scrollbar-thumb{background:rgba(19,50,43,.25);border-radius:8px}
+.quick-actions::-webkit-scrollbar-thumb{background:rgba(31,79,159,.25);border-radius:8px}
 .qa-btn{
-    display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:14px;border:1.5px solid var(--border);
-    background:linear-gradient(180deg,#fff,#f8fbfa);font-size:12px;font-weight:900;color:var(--verde);
-    cursor:pointer;transition:all .25s;text-decoration:none;white-space:nowrap;min-height:48px;letter-spacing:.2px
+ display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:14px;border:1.5px solid var(--border);
+ background:linear-gradient(180deg,#fff,#f8fbff);font-size:12px;font-weight:900;color:var(--verde);
+ cursor:pointer;transition:all .25s;text-decoration:none;white-space:nowrap;min-height:48px;letter-spacing:.2px
 }
-.qa-btn:hover{border-color:var(--dorado);box-shadow:0 8px 24px rgba(179,142,93,0.18);transform:translateY(-2px)}
+.qa-btn:hover{border-color:var(--dorado);box-shadow:0 8px 24px rgba(200,47,63,0.14);transform:translateY(-2px)}
 .qa-btn .qi{display:none}
 .qa-icon{
-    width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
-    font-size:14px;background:rgba(19,50,43,.08);border:1px solid rgba(19,50,43,.15);flex-shrink:0
+ width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
+ font-size:14px;background:rgba(31,79,159,.08);border:1px solid rgba(31,79,159,.15);flex-shrink:0
 }
 .qa-btn:nth-child(2) .qa-icon{background:rgba(37,99,235,.10);border-color:rgba(37,99,235,.25)}
 .qa-btn:nth-child(3) .qa-icon{background:rgba(5,150,105,.12);border-color:rgba(5,150,105,.25)}
@@ -96,11 +96,11 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 .qa-btn:nth-child(5) .qa-icon{background:rgba(220,38,38,.10);border-color:rgba(220,38,38,.22)}
 .qa-btn:nth-child(6) .qa-icon{background:rgba(124,58,237,.10);border-color:rgba(124,58,237,.20)}
 .qa-btn.featured{
-    background:linear-gradient(135deg,var(--verde),var(--verde2));
-    color:#fff;border-color:var(--verde);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)
+ background:linear-gradient(135deg,var(--verde),var(--verde2));
+ color:#fff;border-color:var(--verde);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)
 }
 .qa-btn.featured .qa-icon{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)}
-.qa-btn.featured:hover{box-shadow:0 8px 24px rgba(19,50,43,0.32)}
+.qa-btn.featured:hover{box-shadow:0 8px 24px rgba(31,79,159,0.32)}
 
 /* ─── CONTROLS ─── */
 .controls{display:flex;align-items:center;gap:8px;margin-bottom:16px}
@@ -119,26 +119,26 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 .id-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 .id-title-wrap{display:flex;align-items:center;gap:10px}
 .id-dot{
-    width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
-    font-size:14px;font-weight:800;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.6)
+ width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
+ font-size:14px;font-weight:800;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.6)
 }
 .id-title{font-size:13px;font-weight:900;color:var(--verde);letter-spacing:.2px}
 .id-sub{font-size:11px;color:var(--muted);font-weight:600}
 .id-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.id-item{background:rgba(255,255,255,.78);border:1px solid rgba(19,50,43,.12);border-radius:10px;padding:10px 12px}
+.id-item{background:rgba(255,255,255,.78);border:1px solid rgba(31,79,159,.12);border-radius:10px;padding:10px 12px}
 .id-item.wide{grid-column:1 / -1}
 .id-item.banner{
-    background:linear-gradient(135deg,#ffffff 0%,#f1f7f5 100%);
-    border-color:rgba(37,99,235,.25);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)
+ background:linear-gradient(135deg,#ffffff 0%,#f1f7f5 100%);
+ border-color:rgba(37,99,235,.25);
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)
 }
 .id-l{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:#54706a;font-weight:800}
 .id-v{display:block;font-size:18px;font-weight:900;color:var(--verde);line-height:1.25;word-break:break-word}
 .id-v.small{font-size:13px;font-weight:700}
 .id-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.id-metric{background:rgba(255,255,255,.82);border:1px solid rgba(19,50,43,.12);border-radius:10px;padding:10px}
+.id-metric{background:rgba(255,255,255,.82);border:1px solid rgba(31,79,159,.12);border-radius:10px;padding:10px}
 .id-metric .id-v{font-size:15px}
-.id-consistency{margin-top:12px;padding:10px;border-radius:12px;background:rgba(255,255,255,.65);border:1px solid rgba(19,50,43,.10)}
+.id-consistency{margin-top:12px;padding:10px;border-radius:12px;background:rgba(255,255,255,.65);border:1px solid rgba(31,79,159,.10)}
 .id-consistency-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .id-mini{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px}
 .id-mini .id-v{font-size:14px}
@@ -146,41 +146,41 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 /* ─── NOTAS INTRAHOSP POR TEMPORALIDAD ─── */
 .nt-wrap{display:grid;grid-template-columns:minmax(280px,.95fr) minmax(520px,1.35fr);gap:14px}
 .nt-list{
-    background:linear-gradient(145deg,#f7fbfa,#f2f7f6);
-    border:1px solid var(--border);border-radius:14px;padding:10px;max-height:560px;overflow:auto
+ background:linear-gradient(145deg,#f7fbfa,#f2f7f6);
+ border:1px solid var(--border);border-radius:14px;padding:10px;max-height:560px;overflow:auto
 }
 .nt-list::-webkit-scrollbar{width:8px}
-.nt-list::-webkit-scrollbar-thumb{background:rgba(19,50,43,.25);border-radius:8px}
+.nt-list::-webkit-scrollbar-thumb{background:rgba(31,79,159,.25);border-radius:8px}
 .nt-item{
-    width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:12px;
-    padding:12px;margin-bottom:8px;cursor:pointer;transition:all .2s
+ width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:12px;
+ padding:12px;margin-bottom:8px;cursor:pointer;transition:all .2s
 }
-.nt-item:hover{border-color:var(--dorado);box-shadow:0 6px 18px rgba(19,50,43,.08);transform:translateY(-1px)}
-.nt-item.active{border-color:var(--verde2);background:linear-gradient(135deg,#ecfdf5 0%,#f5faf8 100%);box-shadow:0 8px 20px rgba(19,50,43,.10)}
+.nt-item:hover{border-color:var(--dorado);box-shadow:0 6px 18px rgba(31,79,159,.08);transform:translateY(-1px)}
+.nt-item.active{border-color:var(--verde2);background:linear-gradient(135deg,#edf4ff 0%,#f5f9ff 100%);box-shadow:0 8px 20px rgba(31,79,159,.10)}
 .nt-item:last-child{margin-bottom:0}
 .nt-item-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .nt-date{font-size:13px;font-weight:900;color:var(--verde)}
 .nt-service{font-size:10px;font-weight:800;text-transform:uppercase;color:#56726b}
 .nt-service-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.nt-badge{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid rgba(19,50,43,.18);background:#f7faf9;color:#31584f}
+.nt-badge{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid rgba(31,79,159,.18);background:#f7faff;color:#2f5b9e}
 .nt-type{
-    display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:900;
-    border:1px solid rgba(19,50,43,.2);background:#eef6f3;color:#244940
+ display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:900;
+ border:1px solid rgba(31,79,159,.2);background:#edf3ff;color:#1e4e95
 }
 .nt-type.ward{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8}
 .nt-type.mixed{background:#f5f3ff;border-color:#c4b5fd;color:#6d28d9}
 .nt-preview{font-size:11px;color:#516860;margin-top:6px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 .nt-detail{
-    background:linear-gradient(140deg,#ffffff 0%,#fafcfb 100%);
-    border:1px solid var(--border);border-radius:14px;padding:14px;position:relative;overflow:hidden
+ background:linear-gradient(140deg,#ffffff 0%,#f7faff 100%);
+ border:1px solid var(--border);border-radius:14px;padding:14px;position:relative;overflow:hidden
 }
-.nt-detail::after{content:"";position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(179,142,93,.16) 0%,transparent 70%)}
+.nt-detail::after{content:"";position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(200,47,63,.16) 0%,transparent 70%)}
 .nt-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;position:relative;z-index:1}
 .nt-title{font-size:16px;font-weight:900;color:var(--verde);line-height:1.1}
 .nt-sub{font-size:11px;color:#5e7770;font-weight:700;margin-top:2px}
 .nt-chip-row{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 12px;position:relative;z-index:1}
-.nt-chip{padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800;background:#f1f6f4;border:1px solid rgba(19,50,43,.12);color:#2e564d}
+.nt-chip{padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800;background:#edf3ff;border:1px solid rgba(31,79,159,.12);color:#2f5b9e}
 .nt-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;position:relative;z-index:1}
 .nt-kpi{background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px}
 .nt-kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#69857d;font-weight:800}
@@ -189,20 +189,20 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 .nt-box{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px}
 .nt-box h4{font-size:11px;font-weight:900;color:var(--verde);margin-bottom:6px}
 .nt-text{
-    margin-top:10px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px;position:relative;z-index:1
+ margin-top:10px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px;position:relative;z-index:1
 }
 .nt-text h4{font-size:11px;font-weight:900;color:var(--verde);margin-bottom:6px}
 .nt-text p{font-size:12px;line-height:1.5;color:#2d423c;white-space:pre-wrap}
 .nt-empty{font-size:12px;color:var(--muted)}
 .nt-soap{
-    margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff;position:relative;z-index:1
+ margin-top:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff;position:relative;z-index:1
 }
 .nt-soap h4{font-size:11px;font-weight:900;color:var(--verde);margin-bottom:8px}
 .nt-soap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.nt-soap-box{border:1px solid var(--border);border-radius:8px;padding:8px;background:#fafcfb}
+.nt-soap-box{border:1px solid var(--border);border-radius:8px;padding:8px;background:#f7faff}
 .nt-soap-box .l{font-size:10px;font-weight:900;color:#3c5b54;text-transform:uppercase;letter-spacing:.5px}
 .nt-soap-box .v{font-size:12px;color:#2f4640;line-height:1.4;white-space:pre-wrap;margin-top:4px}
-.legacy-table-toggle{margin-top:12px;border:1px dashed rgba(19,50,43,.25);border-radius:10px;padding:8px 10px;background:#fafcfb}
+.legacy-table-toggle{margin-top:12px;border:1px dashed rgba(31,79,159,.25);border-radius:10px;padding:8px 10px;background:#f7faff}
 .legacy-table-toggle summary{cursor:pointer;font-size:11px;font-weight:800;color:var(--verde);list-style:none}
 .legacy-table-toggle summary::-webkit-details-marker{display:none}
 .legacy-table-toggle[open]{border-style:solid}
@@ -210,10 +210,10 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 /* ─── DIAGNOSTICO Y PROTOCOLO ─── */
 .proto-layout{display:grid;grid-template-columns:minmax(520px,1.4fr) minmax(340px,1fr);gap:14px}
 .proto-card{
-    border:1px solid var(--border);border-radius:14px;padding:14px;position:relative;overflow:hidden;
-    background:linear-gradient(150deg,#ffffff 0%,#f9fbfa 100%)
+ border:1px solid var(--border);border-radius:14px;padding:14px;position:relative;overflow:hidden;
+ background:linear-gradient(150deg,#ffffff 0%,#f9fbfa 100%)
 }
-.proto-card::after{content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(179,142,93,.14) 0%,transparent 70%)}
+.proto-card::after{content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(200,47,63,.14) 0%,transparent 70%)}
 .proto-head{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
 .proto-title{font-size:15px;font-weight:900;color:var(--verde)}
 .proto-sub{font-size:11px;color:#607a72;font-weight:700}
@@ -226,9 +226,9 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 .proto-item .l{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#6a857d;font-weight:800}
 .proto-item .v{display:block;margin-top:2px;font-size:12px;color:#2f4741;font-weight:700;line-height:1.35}
 .proto-wait-status{
-    display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;border:1px solid transparent
+ display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;border:1px solid transparent
 }
-.proto-wait-status.ok{background:#ecfdf5;color:#065f46;border-color:#6ee7b7}
+.proto-wait-status.ok{background:#edf4ff;color:#065f46;border-color:#6ee7b7}
 .proto-wait-status.off{background:#f3f4f6;color:#374151;border-color:#d1d5db}
 .proto-wait-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .proto-wait-box{background:#fff;border:1px solid var(--border);border-radius:9px;padding:8px 10px}
@@ -240,17 +240,17 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 
 /* ─── ACCORDION CARDS ─── */
 .acc-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color .25s}
-.acc-card:hover{border-color:rgba(179,142,93,0.25)}
+.acc-card:hover{border-color:rgba(200,47,63,0.18)}
 .ac-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;transition:all .2s;user-select:none}
-.ac-head:hover{background:#fafcfb}
-.ac-head.open{background:linear-gradient(90deg,#fafcfb,var(--dorado-bg));border-bottom:1px solid var(--border)}
+.ac-head:hover{background:#f7faff}
+.ac-head.open{background:linear-gradient(90deg,#f7faff,var(--dorado-bg));border-bottom:1px solid var(--border)}
 .ac-left{display:flex;align-items:center;gap:12px}
 .ac-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;border:1.5px solid var(--border);transition:all .25s}
 .ac-head.open .ac-ico{border-color:var(--dorado);background:var(--dorado-bg)}
 .ac-name{font-size:13px;font-weight:800;color:var(--verde)}
 .ac-desc{font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
 .ac-right{display:flex;align-items:center;gap:10px}
-.ac-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:#f0f5f3;color:var(--verde)}
+.ac-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:#edf3ff;color:var(--verde)}
 .ac-badge.active{background:#fef3c7;color:#92400e}
 .ac-badge.crit{background:#fee2e2;color:#991b1b}
 .ac-chev{font-size:11px;color:var(--muted);transition:transform .3s}
@@ -261,16 +261,16 @@ body{font-family:'Inter','Montserrat',sans-serif;background:var(--bg);color:var(
 
 /* ─── TABLES ─── */
 table{width:100%;border-collapse:separate;border-spacing:0}
-th{padding:10px 14px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--dorado);background:#fafcfb;border-bottom:2px solid var(--border)}
+th{padding:10px 14px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--dorado);background:#f7faff;border-bottom:2px solid var(--border)}
 th:first-child{border-radius:8px 0 0 0}
 th:last-child{border-radius:0 8px 0 0}
 td{padding:10px 14px;font-size:12px;border-bottom:1px solid #f4f6f5}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:#fafcfb}
+tr:hover td{background:#f7faff}
 
 /* ─── CHARTS ─── */
 .chart-duo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
-.chart-wrap{background:#fafcfb;border:1px solid var(--border);border-radius:10px;padding:14px}
+.chart-wrap{background:#f7faff;border:1px solid var(--border);border-radius:10px;padding:14px}
 .chart-wrap h4{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--verde);margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .chart-wrap h4::before{content:'';width:4px;height:14px;border-radius:2px;background:var(--dorado)}
 .chart-container{position:relative;height:240px}
@@ -278,7 +278,7 @@ tr:hover td{background:#fafcfb}
 /* ─── FLOW TRACK ─── */
 .flow-track{display:flex;gap:0;margin:14px 0}
 .ft-step{flex:1;text-align:center;padding:12px 6px;font-size:10px;font-weight:700;position:relative;background:#f4f6f5;color:var(--muted);border-top:3px solid var(--border)}
-.ft-step.done{background:#ecfdf5;color:var(--emerald);border-top-color:var(--emerald)}
+.ft-step.done{background:#edf4ff;color:var(--emerald);border-top-color:var(--emerald)}
 .ft-step.now{background:#fefce8;color:var(--amber);border-top-color:var(--amber)}
 .ft-step:first-child{border-radius:10px 0 0 10px}
 .ft-step:last-child{border-radius:0 10px 10px 0}
@@ -292,80 +292,80 @@ tr:hover td{background:#fafcfb}
 .card .cl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:10px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{padding:4px 10px;border-radius:20px;background:#f0f5f3;color:var(--verde);font-size:10px;font-weight:700;border:1px solid var(--border);transition:all .2s}
+.chip{padding:4px 10px;border-radius:20px;background:#edf3ff;color:var(--verde);font-size:10px;font-weight:700;border:1px solid var(--border);transition:all .2s}
 .chip:hover{transform:scale(1.05);background:#e0ede8}
 .alerts-box{padding:12px 16px;border-radius:10px;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;font-weight:700;font-size:12px}
 .muted{color:var(--muted);font-size:12px}
-pre{white-space:pre-wrap;background:#fafcfb;border:1px solid var(--border);padding:12px;border-radius:8px;font-size:12px}
+pre{white-space:pre-wrap;background:#f7faff;border:1px solid var(--border);padding:12px;border-radius:8px;font-size:12px}
 .small-list{margin:4px 0 0 16px;padding:0;font-size:12px}
 .btn{padding:8px 16px;border-radius:8px;border:none;background:var(--verde);color:#fff;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all .2s}
-.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(19,50,43,0.2)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(31,79,159,0.2)}
 .btn.alt{background:var(--dorado)}
 .timeline-day{margin-top:8px;border:1px solid var(--border);border-radius:10px;background:var(--card);padding:12px}
 .timeline-day .d{font-weight:800;color:var(--verde);font-size:13px}
 
 @media(max-width:1100px){.kpi-ribbon{grid-template-columns:repeat(3,1fr)}.grid-2,.grid-3,.chart-duo,.identity-layout,.id-grid,.id-metrics,.id-consistency-grid,.nt-wrap,.nt-grid,.nt-sections,.nt-soap-grid,.proto-layout,.proto-kpis,.proto-list,.proto-wait-grid{grid-template-columns:1fr}.search-grid{grid-template-columns:1fr}.hero-inner{grid-template-columns:1fr;text-align:center}.hero-avatar{margin:0 auto}.hero-tags{justify-content:center}.hero-alerts{align-items:center}}
 @media(max-width:768px){.kpi-ribbon{grid-template-columns:repeat(2,1fr)}.quick-actions{flex-wrap:wrap}}
-@media print{body{background:#fff;padding:0}.header-bar,.hero,.quick-actions,.controls{display:none}.acc-card{break-inside:avoid}.ac-body{display:block!important}.ac-head{background:#fafcfb!important}}
+@media print{body{background:#fff;padding:0}.header-bar,.hero,.quick-actions,.controls{display:none}.acc-card{break-inside:avoid}.ac-body{display:block!important}.ac-head{background:#f7faff!important}}
 </style>
 </head>
 <body>
 
 <!-- ═══════ HEADER BAR ═══════ -->
 <div class="header-bar">
-    <div class="header-inner">
-        <div class="hb-brand">&#9879; RNP Urologia IMSS</div>
-        <div class="hb-nav">
-            <a href="/">Menu</a>
-            <a href="/consulta_externa">Consulta</a>
-            <a href="/hospitalizacion">Hospitalizacion</a>
-            <a href="/quirofano">Quirofano</a>
-            <a href="/expediente" class="active">Expediente</a>
-            <a href="/reporte">Reporte</a>
-        </div>
-    </div>
+ <div class="header-inner">
+ <div class="hb-brand">&#9879; UROMED Urologia</div>
+ <div class="hb-nav">
+ <a href="/">Menu</a>
+ <a href="/consulta_externa">Consulta</a>
+ <a href="/hospitalizacion">Hospitalizacion</a>
+ <a href="/quirofano">Quirofano</a>
+ <a href="/expediente" class="active">Expediente</a>
+ <a href="/reporte">Reporte</a>
+ </div>
+ </div>
 </div>
 
 <div class="content">
 
 <!-- ═══════ BUSCADOR ═══════ -->
 <div class="search-box">
-    <h2>Buscador Inteligente (NSS / Nombre)</h2>
-    <form method="get" action="/expediente" class="search-grid">
-        <div><label>Busqueda</label><input type="text" name="q" placeholder="NSS o nombre completo" value="{{ search_q or '' }}"></div>
-        <div><label>NSS</label><input type="text" name="nss" value="{{ search_nss or '' }}" maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 digitos"></div>
-        <div><label>Nombre</label><input type="text" name="nombre" value="{{ search_nombre or '' }}"></div>
-        <div><button class="search-btn" type="submit">Buscar perfil</button></div>
-    </form>
-    <a class="search-alt" href="/expediente/contexto">Asistente de contexto clinico</a>
-    <p class="muted" style="margin-top:8px">El perfil integra datos de consultas, hospitalizacion, guardia/censo, laboratorios y quirofano.</p>
+ <h2>Buscador Inteligente (NSS / Nombre)</h2>
+ <form method="get" action="/expediente" class="search-grid">
+ <div><label>Busqueda</label><input type="text" name="q" placeholder="NSS o nombre completo" value="{{ search_q or '' }}"></div>
+ <div><label>NSS</label><input type="text" name="nss" value="{{ search_nss or '' }}" maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 digitos"></div>
+ <div><label>Nombre</label><input type="text" name="nombre" value="{{ search_nombre or '' }}"></div>
+ <div><button class="search-btn" type="submit">Buscar perfil</button></div>
+ </form>
+ <a class="search-alt" href="/expediente/contexto">Asistente de contexto clinico</a>
+ <p class="muted" style="margin-top:8px">El perfil integra datos de consultas, hospitalizacion, guardia/censo, laboratorios y quirofano.</p>
 </div>
 
 <!-- ═══════ PERFILES DETECTADOS ═══════ -->
 {% if profile_candidates %}
 <div class="profiles-card">
-    <h2 style="font-size:15px;font-weight:800;color:var(--verde);margin-bottom:12px">Perfiles detectados</h2>
-    <table>
-        <tr><th>NSS</th><th>Nombre</th><th>Sexo</th><th>HGZ</th><th>Fuentes</th><th>Accion</th></tr>
-        {% for p in profile_candidates %}
-        <tr>
-            <td>{{ p.nss or "SIN_NSS" }}</td>
-            <td>{{ p.nombre or "SIN_NOMBRE" }}</td>
-            <td>{{ p.sexo }}</td>
-            <td>{{ p.hgz }}</td>
-            <td>{{ p.sources|join(", ") }}</td>
-            <td>
-                {% if p.consulta_id %}
-                <a href="/expediente?consulta_id={{ p.consulta_id }}" class="btn">Abrir perfil</a>
-                {% elif p.nss %}
-                <a href="/expediente?nss={{ p.nss|urlencode }}&nombre={{ p.nombre|urlencode }}" class="btn">Abrir perfil</a>
-                {% else %}
-                <a href="/expediente?nombre={{ p.nombre|urlencode }}" class="btn">Abrir perfil</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+ <h2 style="font-size:15px;font-weight:800;color:var(--verde);margin-bottom:12px">Perfiles detectados</h2>
+ <table>
+ <tr><th>NSS</th><th>Nombre</th><th>Sexo</th><th>HGZ</th><th>Fuentes</th><th>Accion</th></tr>
+ {% for p in profile_candidates %}
+ <tr>
+ <td>{{ p.nss or "SIN_NSS" }}</td>
+ <td>{{ p.nombre or "SIN_NOMBRE" }}</td>
+ <td>{{ p.sexo }}</td>
+ <td>{{ p.hgz }}</td>
+ <td>{{ p.sources|join(", ") }}</td>
+ <td>
+ {% if p.consulta_id %}
+ <a href="/expediente?consulta_id={{ p.consulta_id }}" class="btn">Abrir perfil</a>
+ {% elif p.nss %}
+ <a href="/expediente?nss={{ p.nss|urlencode }}&nombre={{ p.nombre|urlencode }}" class="btn">Abrir perfil</a>
+ {% else %}
+ <a href="/expediente?nombre={{ p.nombre|urlencode }}" class="btn">Abrir perfil</a>
+ {% endif %}
+ </td>
+ </tr>
+ {% endfor %}
+ </table>
 </div>
 {% endif %}
 
@@ -374,698 +374,745 @@ pre{white-space:pre-wrap;background:#fafcfb;border:1px solid var(--border);paddi
 {% endif %}
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<!-- PACIENTE SELECCIONADO                                          -->
+<!-- PACIENTE SELECCIONADO -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 {% if consulta %}
 </div><!-- close content for hero full-width -->
 
 <!-- ═══════ PATIENT HERO STICKY ═══════ -->
 <div class="hero">
-    <div class="hero-inner">
-        <div class="hero-avatar">{{ (selected_identity.nombre or consulta.nombre or "?")[0] }}</div>
-        <div class="hero-info">
-            <h1>{{ selected_identity.nombre or consulta.nombre }}</h1>
-            <div class="hero-tags">
-                <span class="hero-tag gold">NSS: {{ selected_identity.nss or consulta.nss }}</span>
-                <span class="hero-tag">Edad: {{ consulta.edad }}</span>
-                <span class="hero-tag">Sexo: {{ consulta.sexo }}</span>
-                <span class="hero-tag">Dx: {{ consulta.diagnostico_principal or "N/E" }}</span>
-                <span class="hero-tag">Flujo: {{ profile_metrics.estado_flujo_actual or "CONSULTA" }}</span>
-            </div>
-        </div>
-        <div class="hero-alerts">
-            {% if active_hospitalizacion and active_hospitalizacion.id %}
-            <div class="hero-alert crit">&#128308; HOSPITALIZADO &mdash; Cama {{ active_hospitalizacion.cama or "N/E" }}</div>
-            {% endif %}
-            {% if profile_alertas|length > 0 %}
-            <div class="hero-alert warn">&#128992; {{ profile_alertas|length }} Alerta{{ 's' if profile_alertas|length > 1 else '' }}</div>
-            {% endif %}
-            <div class="hero-alert info">&#128309; ID #{{ selected_identity.consulta_id or consulta.id }}</div>
-        </div>
-    </div>
+ <div class="hero-inner">
+ <div class="hero-avatar">{{ (selected_identity.nombre or consulta.nombre or "?")[0] }}</div>
+ <div class="hero-info">
+ <h1>{{ selected_identity.nombre or consulta.nombre }}</h1>
+ <div class="hero-tags">
+ <span class="hero-tag gold">NSS: {{ selected_identity.nss or consulta.nss }}</span>
+ <span class="hero-tag">Edad: {{ consulta.edad }}</span>
+ <span class="hero-tag">Sexo: {{ consulta.sexo }}</span>
+ <span class="hero-tag">Dx: {{ consulta.diagnostico_principal or "N/E" }}</span>
+ <span class="hero-tag">Flujo: {{ profile_metrics.estado_flujo_actual or "CONSULTA" }}</span>
+ </div>
+ </div>
+ <div class="hero-alerts">
+ {% if active_hospitalizacion and active_hospitalizacion.id %}
+ <div class="hero-alert crit">&#128308; HOSPITALIZADO &mdash; Cama {{ active_hospitalizacion.cama or "N/E" }}</div>
+ {% endif %}
+ {% if profile_alertas|length > 0 %}
+ <div class="hero-alert warn">&#128992; {{ profile_alertas|length }} Alerta{{ 's' if profile_alertas|length > 1 else '' }}</div>
+ {% endif %}
+ <div class="hero-alert info">&#128309; ID #{{ selected_identity.consulta_id or consulta.id }}</div>
+ </div>
+ </div>
 </div>
 
 <div class="content"><!-- re-open content -->
 
 <!-- ═══════ KPI RIBBON ═══════ -->
 <div class="kpi-ribbon">
-    <div class="kpi-card"><div class="kv">{{ profile_metrics.total_consultas or 0 }}</div><div class="kl">Consultas</div></div>
-    <div class="kpi-card"><div class="kv">{{ profile_metrics.total_hospitalizaciones or 0 }}</div><div class="kl">Hospitalizaciones</div></div>
-    <div class="kpi-card"><div class="kv">{{ profile_metrics.total_notas_medicas or 0 }}</div><div class="kl">Notas Medicas</div></div>
-    <div class="kpi-card"><div class="kv">{{ profile_metrics.total_cirugias or 0 }}</div><div class="kl">Cirugias</div></div>
-    <div class="kpi-card"><div class="kv">{{ profile_metrics.total_labs_seriados or 0 }}</div><div class="kl">Labs Seriados</div></div>
+ <div class="kpi-card"><div class="kv">{{ profile_metrics.total_consultas or 0 }}</div><div class="kl">Consultas</div></div>
+ <div class="kpi-card"><div class="kv">{{ profile_metrics.total_hospitalizaciones or 0 }}</div><div class="kl">Hospitalizaciones</div></div>
+ <div class="kpi-card"><div class="kv">{{ profile_metrics.total_notas_medicas or 0 }}</div><div class="kl">Notas Medicas</div></div>
+ <div class="kpi-card"><div class="kv">{{ profile_metrics.total_cirugias or 0 }}</div><div class="kl">Cirugias</div></div>
+ <div class="kpi-card"><div class="kv">{{ profile_metrics.total_labs_seriados or 0 }}</div><div class="kl">Labs Seriados</div></div>
 </div>
 
 <!-- ═══════ QUICK ACTIONS ═══════ -->
 <div class="quick-actions">
-    <a class="qa-btn featured" href="/command-center?consulta_id={{ consulta.id }}"><span class="qa-icon">&#127919;</span><span class="qi">&#127919;</span> Command Center</a>
-    <a class="qa-btn" href="/expediente-smart?consulta_id={{ consulta.id }}"><span class="qa-icon">&#129504;</span><span class="qi">&#129504;</span> Expediente Inteligente</a>
-    <a class="qa-btn" href="/ward-round"><span class="qa-icon">&#127973;</span><span class="qi">&#127973;</span> Pase de Visita</a>
-    <a class="qa-btn" href="/expediente/inpatient-captura?consulta_id={{ consulta.id }}{% if active_hospitalizacion and active_hospitalizacion.id %}&hospitalizacion_id={{ active_hospitalizacion.id }}{% endif %}#nota-diaria"><span class="qa-icon">&#128221;</span><span class="qi">&#128221;</span> + Realizar nota médica</a>
-    <a class="qa-btn" href="/quirofano/lista-espera/ingresar?consulta_id={{ consulta.id }}&nss={{ (selected_identity.nss or consulta.nss)|urlencode }}"><span class="qa-icon">&#128203;</span><span class="qi">&#128203;</span> Ingresar a lista de espera de programación quirúrgica</a>
-    <a class="qa-btn" href="/expediente/fase1?consulta_id={{ consulta.id }}"><span class="qa-icon">&#128196;</span><span class="qi">&#128196;</span> Fase 1</a>
+ <a class="qa-btn featured" href="/command-center?consulta_id={{ consulta.id }}"><span class="qa-icon">&#127919;</span><span class="qi">&#127919;</span> Command Center</a>
+ <a class="qa-btn" href="/expediente-smart?consulta_id={{ consulta.id }}"><span class="qa-icon">&#129504;</span><span class="qi">&#129504;</span> Expediente Inteligente</a>
+ <a class="qa-btn" href="/ward-round"><span class="qa-icon">&#127973;</span><span class="qi">&#127973;</span> Pase de Visita</a>
+ <a class="qa-btn" href="/expediente/inpatient-captura?consulta_id={{ consulta.id }}{% if active_hospitalizacion and active_hospitalizacion.id %}&hospitalizacion_id={{ active_hospitalizacion.id }}{% endif %}#nota-diaria"><span class="qa-icon">&#128221;</span><span class="qi">&#128221;</span> + Realizar nota médica</a>
+ <a class="qa-btn" href="/quirofano/lista-espera/ingresar?consulta_id={{ consulta.id }}&nss={{ (selected_identity.nss or consulta.nss)|urlencode }}"><span class="qa-icon">&#128203;</span><span class="qi">&#128203;</span> Ingresar a lista de espera de programación quirúrgica</a>
+ <a class="qa-btn" href="/expediente/fase1?consulta_id={{ consulta.id }}"><span class="qa-icon">&#128196;</span><span class="qi">&#128196;</span> Fase 1</a>
 </div>
 
 <!-- ═══════ CONTROLS ═══════ -->
 <div class="controls">
-    <button class="ctrl" onclick="toggleAll(false)">Expandir todo</button>
-    <button class="ctrl" onclick="toggleAll(true)">Colapsar todo</button>
-    <span class="ctrl-info">17 secciones clinicas</span>
+ <button class="ctrl" onclick="toggleAll(false)">Expandir todo</button>
+ <button class="ctrl" onclick="toggleAll(true)">Colapsar todo</button>
+ <span class="ctrl-info">17 secciones clinicas</span>
 </div>
 
 <!-- ══════ SEC 1: Identidad + Metricas (EXPANDIDA) ══════ -->
 <div class="acc-card">
-    <div class="ac-head open" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128100;</div><div><div class="ac-name">Identidad Clinica y Metricas</div><div class="ac-desc">Resumen del perfil, consistencia y accesos rapidos</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ profile_metrics.total_consultas or 0 }} consultas &middot; {{ profile_metrics.total_hospitalizaciones or 0 }} hosp</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body show">
-        <div class="identity-layout">
-            <div class="id-panel blue">
-                <div class="id-panel-head">
-                    <div class="id-title-wrap">
-                        <span class="id-dot">&#128100;</span>
-                        <div>
-                            <div class="id-title">Datos del paciente</div>
-                            <div class="id-sub">Ficha demografica, contacto y somatometria integrada</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="id-grid">
-                    <div class="id-item wide"><span class="id-l">Nombre</span><span class="id-v small">{{ selected_identity.nombre or consulta.nombre or "N/E" }}</span></div>
-                    <div class="id-item wide banner"><span class="id-l">Perfil demográfico</span><span class="id-v small">{{ consulta.sexo or "N/E" }} &middot; {{ consulta.edad or "N/E" }} anos</span></div>
-                    <div class="id-item"><span class="id-l">NSS</span><span class="id-v">{{ selected_identity.nss or consulta.nss or "N/E" }}</span></div>
-                    <div class="id-item"><span class="id-l">CURP</span><span class="id-v small">{{ consulta.curp or "N/E" }}</span></div>
-                    <div class="id-item"><span class="id-l">Tipo de sangre</span><span class="id-v small">{{ consulta.tipo_sangre or "N/E" }}</span></div>
-                    <div class="id-item"><span class="id-l">Telefono</span><span class="id-v small">{{ consulta.telefono or "N/E" }}</span></div>
-                    <div class="id-item"><span class="id-l">Email</span><span class="id-v small">{{ consulta.email or "N/E" }}</span></div>
-                    <div class="id-item"><span class="id-l">Peso (kg)</span><span class="id-v small">{{ latest_somatometria.peso if latest_somatometria and latest_somatometria.peso is not none else "N/E" }}</span></div>
-                    <div class="id-item"><span class="id-l">Talla (cm)</span><span class="id-v small">{{ latest_somatometria.talla if latest_somatometria and latest_somatometria.talla is not none else "N/E" }}</span></div>
-                    <div class="id-item"><span class="id-l">IMC</span><span class="id-v small">{{ latest_somatometria.imc if latest_somatometria and latest_somatometria.imc is not none else "N/E" }}</span></div>
-                    <div class="id-item wide">
-                        <span class="id-l">Direccion</span>
-                        <span class="id-v small">
-                            {{ (consulta.calle or "") }} {{ (consulta.no_ext or "") }}{% if consulta.colonia %}, {{ consulta.colonia }}{% endif %}{% if consulta.alcaldia %}, {{ consulta.alcaldia }}{% endif %}{% if consulta.cp %}, CP {{ consulta.cp }}{% endif %}
-                        </span>
-                    </div>
-                </div>
-            </div>
+ <div class="ac-head open" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128100;</div><div><div class="ac-name">Identidad Clinica y Metricas</div><div class="ac-desc">Resumen del perfil, consistencia y accesos rapidos</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ profile_metrics.total_consultas or 0 }} consultas &middot; {{ profile_metrics.total_hospitalizaciones or 0 }} hosp</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body show">
+ <div class="identity-layout">
+ <div class="id-panel blue">
+ <div class="id-panel-head">
+ <div class="id-title-wrap">
+ <span class="id-dot">&#128100;</span>
+ <div>
+ <div class="id-title">Datos del paciente</div>
+ <div class="id-sub">Ficha demografica, contacto y somatometria integrada</div>
+ </div>
+ </div>
+ </div>
+ <div class="id-grid">
+ <div class="id-item wide"><span class="id-l">Nombre</span><span class="id-v small">{{ selected_identity.nombre or consulta.nombre or "N/E" }}</span></div>
+ <div class="id-item wide banner"><span class="id-l">Perfil demográfico</span><span class="id-v small">{{ consulta.sexo or "N/E" }} &middot; {{ consulta.edad or "N/E" }} anos</span></div>
+ <div class="id-item"><span class="id-l">NSS</span><span class="id-v">{{ selected_identity.nss or consulta.nss or "N/E" }}</span></div>
+ <div class="id-item"><span class="id-l">CURP</span><span class="id-v small">{{ consulta.curp or "N/E" }}</span></div>
+ <div class="id-item"><span class="id-l">Tipo de sangre</span><span class="id-v small">{{ consulta.tipo_sangre or "N/E" }}</span></div>
+ <div class="id-item"><span class="id-l">Telefono</span><span class="id-v small">{{ consulta.telefono or "N/E" }}</span></div>
+ <div class="id-item"><span class="id-l">Email</span><span class="id-v small">{{ consulta.email or "N/E" }}</span></div>
+ <div class="id-item"><span class="id-l">Peso (kg)</span><span class="id-v small">{{ latest_somatometria.peso if latest_somatometria and latest_somatometria.peso is not none else "N/E" }}</span></div>
+ <div class="id-item"><span class="id-l">Talla (cm)</span><span class="id-v small">{{ latest_somatometria.talla if latest_somatometria and latest_somatometria.talla is not none else "N/E" }}</span></div>
+ <div class="id-item"><span class="id-l">IMC</span><span class="id-v small">{{ latest_somatometria.imc if latest_somatometria and latest_somatometria.imc is not none else "N/E" }}</span></div>
+ <div class="id-item wide">
+ <span class="id-l">Direccion</span>
+ <span class="id-v small">
+ {{ (consulta.calle or "") }} {{ (consulta.no_ext or "") }}{% if consulta.colonia %}, {{ consulta.colonia }}{% endif %}{% if consulta.alcaldia %}, {{ consulta.alcaldia }}{% endif %}{% if consulta.cp %}, CP {{ consulta.cp }}{% endif %}
+ </span>
+ </div>
+ </div>
+ </div>
 
-            <div class="id-panel purple">
-                <div class="id-panel-head">
-                    <div class="id-title-wrap">
-                        <span class="id-dot">&#128200;</span>
-                        <div>
-                            <div class="id-title">Identidad clinica y metricas</div>
-                            <div class="id-sub">Continuidad longitudinal, eventos y consistencia del perfil</div>
-                        </div>
-                    </div>
-                    <span class="ac-badge">Consulta #{{ selected_identity.consulta_id or consulta.id }}</span>
-                </div>
-                <div class="id-metrics">
-                    <div class="id-metric"><span class="id-l">Hospitalizacion previa</span><span class="id-v">{{ profile_metrics.hospitalizacion_previa or "NO" }}</span></div>
-                    <div class="id-metric"><span class="id-l">Estado de flujo</span><span class="id-v small">{{ profile_metrics.estado_flujo_actual or "CONSULTA" }}</span></div>
-                    <div class="id-metric"><span class="id-l">Consistencia</span><span class="id-v">{{ profile_metrics.consistencia_longitudinal_pct if profile_metrics and profile_metrics.consistencia_longitudinal_pct is defined else 0 }}%</span></div>
-                    <div class="id-metric"><span class="id-l">Eventos guardia</span><span class="id-v">{{ profile_metrics.total_eventos_guardia or 0 }}</span></div>
-                    <div class="id-metric"><span class="id-l">Eventos flujo</span><span class="id-v">{{ profile_metrics.total_eventos_flujo or 0 }}</span></div>
-                    <div class="id-metric"><span class="id-l">Alertas perfil</span><span class="id-v">{{ profile_metrics.total_alertas_perfil or 0 }}</span></div>
-                </div>
-                {% if consistencia_longitudinal %}
-                <div class="id-consistency">
-                    <h3 style="font-size:12px;font-weight:800;color:var(--verde);margin-bottom:8px">Tablero de consistencia longitudinal</h3>
-                    <div class="id-consistency-grid">
-                        <div class="id-mini"><span class="id-l">Episodios</span><span class="id-v">{{ consistencia_longitudinal.resumen.episodios or 0 }}</span></div>
-                        <div class="id-mini"><span class="id-l">Notas intrahosp</span><span class="id-v">{{ consistencia_longitudinal.resumen.notas_intrahospitalarias or 0 }}</span></div>
-                        <div class="id-mini"><span class="id-l">Labs seriados</span><span class="id-v">{{ consistencia_longitudinal.resumen.labs_seriados or 0 }}</span></div>
-                        <div class="id-mini"><span class="id-l">Eventos Qx</span><span class="id-v">{{ consistencia_longitudinal.resumen.eventos_quirurgicos or 0 }}</span></div>
-                        <div class="id-mini"><span class="id-l">Egresos</span><span class="id-v">{{ consistencia_longitudinal.resumen.egresos_registrados or 0 }}</span></div>
-                        <div class="id-mini"><span class="id-l">Activos</span><span class="id-v">{{ consistencia_longitudinal.resumen.activos_detectados or 0 }}</span></div>
-                    </div>
-                    <table style="margin-top:8px"><tr><th>Nivel</th><th>Codigo</th><th>Detalle</th></tr>
-                    {% for inc in consistencia_longitudinal.inconsistencias %}<tr><td>{{ inc.nivel }}</td><td>{{ inc.codigo }}</td><td>{{ inc.detalle }}</td></tr>
-                    {% else %}<tr><td colspan="3">Sin inconsistencias longitudinales detectadas.</td></tr>{% endfor %}</table>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+ <div class="id-panel purple">
+ <div class="id-panel-head">
+ <div class="id-title-wrap">
+ <span class="id-dot">&#128200;</span>
+ <div>
+ <div class="id-title">Identidad clinica y metricas</div>
+ <div class="id-sub">Continuidad longitudinal, eventos y consistencia del perfil</div>
+ </div>
+ </div>
+ <span class="ac-badge">Consulta #{{ selected_identity.consulta_id or consulta.id }}</span>
+ </div>
+ <div class="id-metrics">
+ <div class="id-metric"><span class="id-l">Hospitalizacion previa</span><span class="id-v">{{ profile_metrics.hospitalizacion_previa or "NO" }}</span></div>
+ <div class="id-metric"><span class="id-l">Estado de flujo</span><span class="id-v small">{{ profile_metrics.estado_flujo_actual or "CONSULTA" }}</span></div>
+ <div class="id-metric"><span class="id-l">Consistencia</span><span class="id-v">{{ profile_metrics.consistencia_longitudinal_pct if profile_metrics and profile_metrics.consistencia_longitudinal_pct is defined else 0 }}%</span></div>
+ <div class="id-metric"><span class="id-l">Eventos guardia</span><span class="id-v">{{ profile_metrics.total_eventos_guardia or 0 }}</span></div>
+ <div class="id-metric"><span class="id-l">Eventos flujo</span><span class="id-v">{{ profile_metrics.total_eventos_flujo or 0 }}</span></div>
+ <div class="id-metric"><span class="id-l">Alertas perfil</span><span class="id-v">{{ profile_metrics.total_alertas_perfil or 0 }}</span></div>
+ </div>
+ {% if consistencia_longitudinal %}
+ <div class="id-consistency">
+ <h3 style="font-size:12px;font-weight:800;color:var(--verde);margin-bottom:8px">Tablero de consistencia longitudinal</h3>
+ <div class="id-consistency-grid">
+ <div class="id-mini"><span class="id-l">Episodios</span><span class="id-v">{{ consistencia_longitudinal.resumen.episodios or 0 }}</span></div>
+ <div class="id-mini"><span class="id-l">Notas intrahosp</span><span class="id-v">{{ consistencia_longitudinal.resumen.notas_intrahospitalarias or 0 }}</span></div>
+ <div class="id-mini"><span class="id-l">Labs seriados</span><span class="id-v">{{ consistencia_longitudinal.resumen.labs_seriados or 0 }}</span></div>
+ <div class="id-mini"><span class="id-l">Eventos Qx</span><span class="id-v">{{ consistencia_longitudinal.resumen.eventos_quirurgicos or 0 }}</span></div>
+ <div class="id-mini"><span class="id-l">Egresos</span><span class="id-v">{{ consistencia_longitudinal.resumen.egresos_registrados or 0 }}</span></div>
+ <div class="id-mini"><span class="id-l">Activos</span><span class="id-v">{{ consistencia_longitudinal.resumen.activos_detectados or 0 }}</span></div>
+ </div>
+ <table style="margin-top:8px"><tr><th>Nivel</th><th>Codigo</th><th>Detalle</th></tr>
+ {% for inc in consistencia_longitudinal.inconsistencias %}<tr><td>{{ inc.nivel }}</td><td>{{ inc.codigo }}</td><td>{{ inc.detalle }}</td></tr>
+ {% else %}<tr><td colspan="3">Sin inconsistencias longitudinales detectadas.</td></tr>{% endfor %}</table>
+ </div>
+ {% endif %}
+ </div>
+ </div>
+ </div>
 </div>
 
 <!-- ══════ SEC 2: Flujo Clinico ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128736;</div><div><div class="ac-name">Rutas Transitadas y Estado de Flujo</div><div class="ac-desc">Pipeline de atencion y seguimiento</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ (flujo_clinico.journey if flujo_clinico and flujo_clinico.journey else [])|length }} eventos</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        <div class="flow-track">
-            {% for st in (flujo_clinico.steps if flujo_clinico and flujo_clinico.steps else []) %}
-            <div class="ft-step {% if st.done %}done{% endif %}">{% if st.done %}&#9989;{% else %}&#11036;{% endif %} {{ st.label }}</div>
-            {% endfor %}
-        </div>
-        <table style="margin-top:10px"><tr><th>Fecha/Hora</th><th>Evento</th><th>Estatus</th><th>Resumen</th></tr>
-        {% for ev in (flujo_clinico.journey if flujo_clinico and flujo_clinico.journey else []) %}<tr><td>{{ ev.fecha or "N/E" }}</td><td>{{ ev.evento }}</td><td>{{ ev.estatus }}</td><td>{{ ev.summary or "N/E" }}</td></tr>
-        {% else %}<tr><td colspan="4">Sin eventos de flujo registrados.</td></tr>{% endfor %}</table>
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128736;</div><div><div class="ac-name">Rutas Transitadas y Estado de Flujo</div><div class="ac-desc">Pipeline de atencion y seguimiento</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ (flujo_clinico.journey if flujo_clinico and flujo_clinico.journey else [])|length }} eventos</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div class="flow-track">
+ {% for st in (flujo_clinico.steps if flujo_clinico and flujo_clinico.steps else []) %}
+ <div class="ft-step {% if st.done %}done{% endif %}">{% if st.done %}&#9989;{% else %}&#11036;{% endif %} {{ st.label }}</div>
+ {% endfor %}
+ </div>
+ <table style="margin-top:10px"><tr><th>Fecha/Hora</th><th>Evento</th><th>Estatus</th><th>Resumen</th></tr>
+ {% for ev in (flujo_clinico.journey if flujo_clinico and flujo_clinico.journey else []) %}<tr><td>{{ ev.fecha or "N/E" }}</td><td>{{ ev.evento }}</td><td>{{ ev.estatus }}</td><td>{{ ev.summary or "N/E" }}</td></tr>
+ {% else %}<tr><td colspan="4">Sin eventos de flujo registrados.</td></tr>{% endfor %}</table>
+ </div>
 </div>
 
 <!-- ══════ SEC 3: Hospitalizacion Activa + Alertas ══════ -->
 <div class="acc-card">
-    <div class="ac-head {% if active_hospitalizacion and active_hospitalizacion.id %}open{% endif %}" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#127973;</div><div><div class="ac-name">Hospitalizacion Activa y Alertas</div><div class="ac-desc">Estado actual y alertas del perfil</div></div></div>
-        <div class="ac-right"><span class="ac-badge {% if profile_alertas|length > 0 %}crit{% endif %}">{{ profile_alertas|length }} alertas</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body {% if active_hospitalizacion and active_hospitalizacion.id %}show{% endif %}">
-        {% if active_hospitalizacion and active_hospitalizacion.id %}
-        <div class="grid-3">
-            <div class="card"><div class="cl">Cama actual</div><div class="cv">{{ active_hospitalizacion.cama or "N/E" }}</div></div>
-            <div class="card"><div class="cl">Servicio</div><div class="cv" style="font-size:15px">{{ active_hospitalizacion.servicio or "NO_REGISTRADO" }}</div></div>
-            <div class="card"><div class="cl">Estatus / Estado</div><div class="cv" style="font-size:14px">{{ active_hospitalizacion.estatus or "N/E" }} / {{ active_hospitalizacion.estado_clinico or "N/E" }}</div></div>
-        </div>
-        {% else %}
-        <p class="muted">No hay hospitalizacion activa detectada para este perfil.</p>
-        {% endif %}
-        <table style="margin-top:10px"><tr><th>Fecha</th><th>Fuente</th><th>Severidad</th><th>Alerta</th><th>Recomendacion</th></tr>
-        {% for a in profile_alertas %}<tr><td>{{ a.fecha }}</td><td>{{ a.source }}</td><td>{{ a.severity }}</td><td>{{ a.title }} - {{ a.description }}</td><td>{{ a.recommendation or "N/E" }}</td></tr>
-        {% else %}<tr><td colspan="5">Sin alertas de perfil registradas.</td></tr>{% endfor %}</table>
-    </div>
+ <div class="ac-head {% if active_hospitalizacion and active_hospitalizacion.id %}open{% endif %}" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#127973;</div><div><div class="ac-name">Hospitalizacion Activa y Alertas</div><div class="ac-desc">Estado actual y alertas del perfil</div></div></div>
+ <div class="ac-right"><span class="ac-badge {% if profile_alertas|length > 0 %}crit{% endif %}">{{ profile_alertas|length }} alertas</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body {% if active_hospitalizacion and active_hospitalizacion.id %}show{% endif %}">
+ {% if active_hospitalizacion and active_hospitalizacion.id %}
+ <div class="grid-3">
+ <div class="card"><div class="cl">Cama actual</div><div class="cv">{{ active_hospitalizacion.cama or "N/E" }}</div></div>
+ <div class="card"><div class="cl">Servicio</div><div class="cv" style="font-size:15px">{{ active_hospitalizacion.servicio or "NO_REGISTRADO" }}</div></div>
+ <div class="card"><div class="cl">Estatus / Estado</div><div class="cv" style="font-size:14px">{{ active_hospitalizacion.estatus or "N/E" }} / {{ active_hospitalizacion.estado_clinico or "N/E" }}</div></div>
+ </div>
+ {% else %}
+ <p class="muted">No hay hospitalizacion activa detectada para este perfil.</p>
+ {% endif %}
+ <table style="margin-top:10px"><tr><th>Fecha</th><th>Fuente</th><th>Severidad</th><th>Alerta</th><th>Recomendacion</th></tr>
+ {% for a in profile_alertas %}<tr><td>{{ a.fecha }}</td><td>{{ a.source }}</td><td>{{ a.severity }}</td><td>{{ a.title }} - {{ a.description }}</td><td>{{ a.recommendation or "N/E" }}</td></tr>
+ {% else %}<tr><td colspan="5">Sin alertas de perfil registradas.</td></tr>{% endfor %}</table>
+ </div>
 </div>
 
 <!-- ══════ SEC 4: Tags / Outcomes ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#127991;</div><div><div class="ac-name">Tags / Outcomes Clinicos</div><div class="ac-desc">Etiquetas estructuradas del perfil</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ profile_metrics.total_tags_clinicos or 0 }} tags</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        {% if inpatient_tags %}<div class="chips">{% for t in inpatient_tags %}<span class="chip">{{ t.tag_type or "TAG" }}: {{ t.tag_value or "N/E" }}{% if t.laterality %} ({{ t.laterality }}){% endif %}{% if t.severity %} [{{ t.severity }}]{% endif %}</span>{% endfor %}</div>
-        {% else %}<p class="muted">Sin tags clinicos registrados.</p>{% endif %}
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#127991;</div><div><div class="ac-name">Tags / Outcomes Clinicos</div><div class="ac-desc">Etiquetas estructuradas del perfil</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ profile_metrics.total_tags_clinicos or 0 }} tags</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ {% if inpatient_tags %}<div class="chips">{% for t in inpatient_tags %}<span class="chip">{{ t.tag_type or "TAG" }}: {{ t.tag_value or "N/E" }}{% if t.laterality %} ({{ t.laterality }}){% endif %}{% if t.severity %} [{{ t.severity }}]{% endif %}</span>{% endfor %}</div>
+ {% else %}<p class="muted">Sin tags clinicos registrados.</p>{% endif %}
+ </div>
 </div>
 
 <!-- ══════ SEC 5: Notas Medicas + Chart Vitales ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128221;</div><div><div class="ac-name">Notas Medicas Diarias</div><div class="ac-desc">Evolucion clinica y signos vitales</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ notas_medicas|length }} notas</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        <div style="margin-bottom:10px"><a class="btn" href="/expediente/inpatient-captura?consulta_id={{ consulta.id }}{% if active_hospitalizacion and active_hospitalizacion.id %}&hospitalizacion_id={{ active_hospitalizacion.id }}{% endif %}#nota-diaria">+ Realizar nota médica</a></div>
-        {% if notas_medicas|length > 1 %}
-        <div class="chart-duo"><div class="chart-wrap" style="grid-column:1/-1"><h4>Tendencia de Signos Vitales</h4><div class="chart-container"><canvas id="chartVitales" data-chart-init="vitales"></canvas></div></div></div>
-        {% endif %}
-        <table><tr><th>Fecha</th><th>Cama</th><th>Servicio</th><th>CIE10</th><th>Signos vitales</th><th>Labs dia</th><th>Texto</th></tr>
-        {% for n in notas_medicas %}<tr><td>{{ n.fecha_nota }}</td><td>{{ n.cama or "N/E" }}</td><td>{{ n.servicio_nota or "N/E" }}</td><td>{{ n.cie10_codigo or "N/E" }} {{ n.diagnostico_cie10 or "" }}</td><td>HR {{ n.vitales.hr if n.vitales.hr is not none else "N/E" }}, TA {{ n.vitales.sbp if n.vitales.sbp is not none else "N/E" }}/{{ n.vitales.dbp if n.vitales.dbp is not none else "N/E" }}, T {{ n.vitales.temp if n.vitales.temp is not none else "N/E" }}</td><td>Cr {{ n.labs.creatinina if n.labs and n.labs.creatinina is defined else "N/E" }}, Hb {{ n.labs.hemoglobina if n.labs and n.labs.hemoglobina is defined else "N/E" }}, Leu {{ n.labs.leucocitos if n.labs and n.labs.leucocitos is defined else "N/E" }}, Plt {{ n.labs.plaquetas if n.labs and n.labs.plaquetas is defined else "N/E" }}</td><td>{{ n.nota_texto or n.note_text or n.free_text or "N/E" }}</td></tr>
-        {% else %}<tr><td colspan="7">Sin notas medicas diarias registradas.</td></tr>{% endfor %}</table>
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128221;</div><div><div class="ac-name">Notas Medicas Diarias</div><div class="ac-desc">Evolucion clinica y signos vitales</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ notas_medicas|length }} notas</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div style="margin-bottom:10px"><a class="btn" href="/expediente/inpatient-captura?consulta_id={{ consulta.id }}{% if active_hospitalizacion and active_hospitalizacion.id %}&hospitalizacion_id={{ active_hospitalizacion.id }}{% endif %}#nota-diaria">+ Realizar nota médica</a></div>
+ {% if notas_medicas|length > 1 %}
+ <div class="chart-duo"><div class="chart-wrap" style="grid-column:1/-1"><h4>Tendencia de Signos Vitales</h4><div class="chart-container"><canvas id="chartVitales" data-chart-init="vitales"></canvas></div></div></div>
+ {% endif %}
+ <table><tr><th>Fecha</th><th>Cama</th><th>Servicio</th><th>CIE10</th><th>Signos vitales</th><th>Labs dia</th><th>Texto</th></tr>
+ {% for n in notas_medicas %}<tr><td>{{ n.fecha_nota }}</td><td>{{ n.cama or "N/E" }}</td><td>{{ n.servicio_nota or "N/E" }}</td><td>{{ n.cie10_codigo or "N/E" }} {{ n.diagnostico_cie10 or "" }}</td><td>HR {{ n.vitales.hr if n.vitales.hr is not none else "N/E" }}, TA {{ n.vitales.sbp if n.vitales.sbp is not none else "N/E" }}/{{ n.vitales.dbp if n.vitales.dbp is not none else "N/E" }}, T {{ n.vitales.temp if n.vitales.temp is not none else "N/E" }}</td><td>Cr {{ n.labs.creatinina if n.labs and n.labs.creatinina is defined else "N/E" }}, Hb {{ n.labs.hemoglobina if n.labs and n.labs.hemoglobina is defined else "N/E" }}, Leu {{ n.labs.leucocitos if n.labs and n.labs.leucocitos is defined else "N/E" }}, Plt {{ n.labs.plaquetas if n.labs and n.labs.plaquetas is defined else "N/E" }}</td><td>{{ n.nota_texto or n.note_text or n.free_text or "N/E" }}</td></tr>
+ {% else %}<tr><td colspan="7">Sin notas medicas diarias registradas.</td></tr>{% endfor %}</table>
+ </div>
 </div>
 
 <!-- ══════ SEC 6: Episodios Intrahospitalarios ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128203;</div><div><div class="ac-name">Episodios Intrahospitalarios</div><div class="ac-desc">Historico estructurado de episodios</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ inpatient_episode_summary|length }} episodios</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        {% if active_inpatient_episode and active_inpatient_episode.id %}
-        <div class="alerts-box" style="margin-bottom:10px">Episodio activo: <strong>#{{ active_inpatient_episode.id }}</strong> | Servicio: <strong>{{ active_inpatient_episode.service or "N/E" }}</strong> | Cama: <strong>{{ active_inpatient_episode.location or "N/E" }}</strong> | Inicio: <strong>{{ active_inpatient_episode.started_on or "N/E" }}</strong></div>
-        {% endif %}
-        <table><tr><th>Episodio</th><th>Tipo</th><th>Duracion</th><th>Notas</th><th>Cirugia</th><th>Procedimientos</th><th>Cirujanos</th><th>Sangrado</th></tr>
-        {% for ep in inpatient_episode_summary %}<tr><td>#{{ ep.episode_id }}</td><td>{{ ep.tipo }}</td><td>{{ ep.duracion_dias if ep.duracion_dias is not none else "N/E" }} dias</td><td>{{ ep.note_count or 0 }}</td><td>{{ "SI" if ep.se_opero else "NO" }}</td><td>{{ ep.procedimientos|join(", ") if ep.procedimientos else "N/E" }}</td><td>{{ ep.cirujanos|join(", ") if ep.cirujanos else "N/E" }}</td><td>{{ ep.sangrado_total_ml if ep.sangrado_total_ml is not none else 0 }} mL</td></tr>
-        {% else %}<tr><td colspan="8">Sin episodios intrahospitalarios.</td></tr>{% endfor %}</table>
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128203;</div><div><div class="ac-name">Episodios Intrahospitalarios</div><div class="ac-desc">Historico estructurado de episodios</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ inpatient_episode_summary|length }} episodios</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ {% if active_inpatient_episode and active_inpatient_episode.id %}
+ <div class="alerts-box" style="margin-bottom:10px">Episodio activo: <strong>#{{ active_inpatient_episode.id }}</strong> | Servicio: <strong>{{ active_inpatient_episode.service or "N/E" }}</strong> | Cama: <strong>{{ active_inpatient_episode.location or "N/E" }}</strong> | Inicio: <strong>{{ active_inpatient_episode.started_on or "N/E" }}</strong></div>
+ {% endif %}
+ <table><tr><th>Episodio</th><th>Tipo</th><th>Duracion</th><th>Notas</th><th>Cirugia</th><th>Procedimientos</th><th>Cirujanos</th><th>Sangrado</th></tr>
+ {% for ep in inpatient_episode_summary %}<tr><td>#{{ ep.episode_id }}</td><td>{{ ep.tipo }}</td><td>{{ ep.duracion_dias if ep.duracion_dias is not none else "N/E" }} dias</td><td>{{ ep.note_count or 0 }}</td><td>{{ "SI" if ep.se_opero else "NO" }}</td><td>{{ ep.procedimientos|join(", ") if ep.procedimientos else "N/E" }}</td><td>{{ ep.cirujanos|join(", ") if ep.cirujanos else "N/E" }}</td><td>{{ ep.sangrado_total_ml if ep.sangrado_total_ml is not none else 0 }} mL</td></tr>
+ {% else %}<tr><td colspan="8">Sin episodios intrahospitalarios.</td></tr>{% endfor %}</table>
+ </div>
 </div>
 
 <!-- ══════ SEC 7: Notas Intrahospitalarias ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128197;</div><div><div class="ac-name">Notas Intrahospitalarias por Temporalidad</div><div class="ac-desc">Notas con balance y eventos por dia</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ inpatient_notes_history|length }} notas</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        {% if inpatient_notes_history %}
-        <div class="nt-wrap">
-            <div class="nt-list" id="ntList">
-                {% for n in inpatient_notes_history %}
-                <button type="button" class="nt-item{% if loop.first %} active{% endif %}" data-note-index="{{ loop.index0 }}">
-                    {% set source_lbl = n.note_source or ('PASE DE VISITA DIGITAL' if ('PASE' in (n.note_type or '')) else 'NOTA INTRAHOSPITALARIA') %}
-                    <div class="nt-item-top">
-                        <div>
-                            <div class="nt-date">{{ n.note_date or "N/E" }}</div>
-                            <div class="nt-service nt-service-line">
-                                <span>{{ n.service or "N/E" }} &middot; Cama {{ n.location or "N/E" }}</span>
-                                <span class="nt-type {% if 'PASE' in source_lbl %}ward{% endif %}{% if ' + ' in source_lbl or 'INTRAHOSPITALARIA + PASE' in source_lbl %} mixed{% endif %}">{{ source_lbl }}</span>
-                            </div>
-                        </div>
-                        <span class="nt-badge">#{{ loop.index }}</span>
-                    </div>
-                    <div class="nt-preview">{{ (n.note_text or n.free_text or "Sin texto clínico registrado")[:150] }}</div>
-                </button>
-                {% endfor %}
-            </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128197;</div><div><div class="ac-name">Notas Intrahospitalarias por Temporalidad</div><div class="ac-desc">Notas con balance y eventos por dia</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ inpatient_notes_history|length }} notas</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ {% if inpatient_notes_history %}
+ <div class="nt-wrap">
+ <div class="nt-list" id="ntList">
+ {% for n in inpatient_notes_history %}
+ <button type="button" class="nt-item{% if loop.first %} active{% endif %}" data-note-index="{{ loop.index0 }}">
+ {% set source_lbl = n.note_source or ('PASE DE VISITA DIGITAL' if ('PASE' in (n.note_type or '')) else 'NOTA INTRAHOSPITALARIA') %}
+ <div class="nt-item-top">
+ <div>
+ <div class="nt-date">{{ n.note_date or "N/E" }}</div>
+ <div class="nt-service nt-service-line">
+ <span>{{ n.service or "N/E" }} &middot; Cama {{ n.location or "N/E" }}</span>
+ <span class="nt-type {% if 'PASE' in source_lbl %}ward{% endif %}{% if ' + ' in source_lbl or 'INTRAHOSPITALARIA + PASE' in source_lbl %} mixed{% endif %}">{{ source_lbl }}</span>
+ </div>
+ </div>
+ <span class="nt-badge">#{{ loop.index }}</span>
+ </div>
+ <div class="nt-preview">{{ (n.note_text or n.free_text or "Sin texto clínico registrado")[:150] }}</div>
+ </button>
+ {% endfor %}
+ </div>
 
-            <div class="nt-detail" id="ntDetail">
-                <div class="nt-head">
-                    <div>
-                        <div class="nt-title" id="ntTitle">Nota intrahospitalaria</div>
-                        <div class="nt-sub" id="ntSub">Seleccione una nota para ver detalle resumido</div>
-                    </div>
-                    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-                        <span class="nt-type" id="ntSource">N/E</span>
-                        <span class="ac-badge" id="ntBadge">N/E</span>
-                    </div>
-                </div>
-                <div class="nt-chip-row" id="ntChips"></div>
-                <div class="nt-grid">
-                    <div class="nt-kpi"><span class="l">Frecuencia cardiaca</span><span class="v" id="ntHr">N/E</span></div>
-                    <div class="nt-kpi"><span class="l">Tension arterial</span><span class="v" id="ntTa">N/E</span></div>
-                    <div class="nt-kpi"><span class="l">Temperatura</span><span class="v" id="ntTemp">N/E</span></div>
-                </div>
-                <div class="nt-sections">
-                    <div class="nt-box">
-                        <h4>Laboratorios del dia</h4>
-                        <div id="ntLabs" class="nt-empty">N/E</div>
-                    </div>
-                    <div class="nt-box">
-                        <h4>Balance y eventos</h4>
-                        <div id="ntBalance" class="nt-empty">N/E</div>
-                    </div>
-                </div>
-                <div class="nt-text">
-                    <h4>Texto clínico resumido</h4>
-                    <p id="ntText">N/E</p>
-                </div>
-                <div class="nt-soap" id="ntSoap" style="display:none">
-                    <h4>Nota SOAP ampliada (Pase de visita digital)</h4>
-                    <div class="nt-soap-grid">
-                        <div class="nt-soap-box"><div class="l">S (Subjetivo)</div><div class="v" id="ntSoapS">N/E</div></div>
-                        <div class="nt-soap-box"><div class="l">O (Objetivo)</div><div class="v" id="ntSoapO">N/E</div></div>
-                        <div class="nt-soap-box"><div class="l">A (Análisis / Diagnóstico)</div><div class="v" id="ntSoapA">N/E</div></div>
-                        <div class="nt-soap-box"><div class="l">P (Plan)</div><div class="v" id="ntSoapP">N/E</div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+ <div class="nt-detail" id="ntDetail">
+ <div class="nt-head">
+ <div>
+ <div class="nt-title" id="ntTitle">Nota intrahospitalaria</div>
+ <div class="nt-sub" id="ntSub">Seleccione una nota para ver detalle resumido</div>
+ </div>
+ <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+ <span class="nt-type" id="ntSource">N/E</span>
+ <span class="ac-badge" id="ntBadge">N/E</span>
+ </div>
+ </div>
+ <div class="nt-chip-row" id="ntChips"></div>
+ <div class="nt-grid">
+ <div class="nt-kpi"><span class="l">Frecuencia cardiaca</span><span class="v" id="ntHr">N/E</span></div>
+ <div class="nt-kpi"><span class="l">Tension arterial</span><span class="v" id="ntTa">N/E</span></div>
+ <div class="nt-kpi"><span class="l">Temperatura</span><span class="v" id="ntTemp">N/E</span></div>
+ </div>
+ <div class="nt-sections">
+ <div class="nt-box">
+ <h4>Laboratorios del dia</h4>
+ <div id="ntLabs" class="nt-empty">N/E</div>
+ </div>
+ <div class="nt-box">
+ <h4>Balance y eventos</h4>
+ <div id="ntBalance" class="nt-empty">N/E</div>
+ </div>
+ </div>
+ <div class="nt-text">
+ <h4>Texto clínico resumido</h4>
+ <p id="ntText">N/E</p>
+ </div>
+ <div class="nt-soap" id="ntSoap" style="display:none">
+ <h4>Nota SOAP ampliada (Pase de visita digital)</h4>
+ <div class="nt-soap-grid">
+ <div class="nt-soap-box"><div class="l">S (Subjetivo)</div><div class="v" id="ntSoapS">N/E</div></div>
+ <div class="nt-soap-box"><div class="l">O (Objetivo)</div><div class="v" id="ntSoapO">N/E</div></div>
+ <div class="nt-soap-box"><div class="l">A (Análisis / Diagnóstico)</div><div class="v" id="ntSoapA">N/E</div></div>
+ <div class="nt-soap-box"><div class="l">P (Plan)</div><div class="v" id="ntSoapP">N/E</div></div>
+ </div>
+ </div>
+ </div>
+ </div>
 
-        <details class="legacy-table-toggle">
-            <summary>Ver tabla clasica</summary>
-            <table style="margin-top:8px"><tr><th>Fecha</th><th>Cama</th><th>Servicio</th><th>CIE10</th><th>Signos vitales</th><th>Labs dia</th><th>Texto</th></tr>
-            {% for n in inpatient_notes_history %}<tr><td>{{ n.note_date or "N/E" }}</td><td>{{ n.location or "N/E" }}</td><td>{{ n.service or "N/E" }}</td><td>{{ n.cie10_codigo or "N/E" }} {{ n.diagnostico or "" }}</td><td>FC {{ n.vitals.hr if n.vitals and n.vitals.hr is defined and n.vitals.hr is not none else "N/E" }}, TA {{ n.vitals.sbp if n.vitals and n.vitals.sbp is defined and n.vitals.sbp is not none else "N/E" }}/{{ n.vitals.dbp if n.vitals and n.vitals.dbp is defined and n.vitals.dbp is not none else "N/E" }}, T {{ n.vitals.temp if n.vitals and n.vitals.temp is defined and n.vitals.temp is not none else "N/E" }}</td><td>Cr {{ n.labs.creatinina if n.labs and n.labs.creatinina is defined and n.labs.creatinina is not none else "N/E" }}, Hb {{ n.labs.hemoglobina if n.labs and n.labs.hemoglobina is defined and n.labs.hemoglobina is not none else "N/E" }}, Leu {{ n.labs.leucocitos if n.labs and n.labs.leucocitos is defined and n.labs.leucocitos is not none else "N/E" }}, Plt {{ n.labs.plaquetas if n.labs and n.labs.plaquetas is defined and n.labs.plaquetas is not none else "N/E" }}, Na {{ n.labs.sodio if n.labs and n.labs.sodio is defined and n.labs.sodio is not none else "N/E" }}, K {{ n.labs.potasio if n.labs and n.labs.potasio is defined and n.labs.potasio is not none else "N/E" }}</td><td>{{ n.note_text or n.free_text or "N/E" }}<div class="muted">Balance: {{ n.io_summary.balance_ml if n.io_summary and n.io_summary.balance_ml is defined else "N/E" }} ml ({{ n.io_summary.balance_estado if n.io_summary and n.io_summary.balance_estado is defined else "N/E" }}) | Ind. urinario: {{ n.io_summary.indice_urinario_ml_kg_h if n.io_summary and n.io_summary.indice_urinario_ml_kg_h is defined and n.io_summary.indice_urinario_ml_kg_h is not none else "N/E" }} | Eventos: {{ n.events_pending.eventos_del_dia_n if n.events_pending and n.events_pending.eventos_del_dia_n is defined else "N/E" }}</div></td></tr>
-            {% else %}<tr><td colspan="7">Sin notas intrahospitalarias.</td></tr>{% endfor %}</table>
-        </details>
-        {% else %}
-        <p class="muted">Sin notas intrahospitalarias.</p>
-        {% endif %}
+ <details class="legacy-table-toggle">
+ <summary>Ver tabla clasica</summary>
+ <table style="margin-top:8px"><tr><th>Fecha</th><th>Cama</th><th>Servicio</th><th>CIE10</th><th>Signos vitales</th><th>Labs dia</th><th>Texto</th></tr>
+ {% for n in inpatient_notes_history %}<tr><td>{{ n.note_date or "N/E" }}</td><td>{{ n.location or "N/E" }}</td><td>{{ n.service or "N/E" }}</td><td>{{ n.cie10_codigo or "N/E" }} {{ n.diagnostico or "" }}</td><td>FC {{ n.vitals.hr if n.vitals and n.vitals.hr is defined and n.vitals.hr is not none else "N/E" }}, TA {{ n.vitals.sbp if n.vitals and n.vitals.sbp is defined and n.vitals.sbp is not none else "N/E" }}/{{ n.vitals.dbp if n.vitals and n.vitals.dbp is defined and n.vitals.dbp is not none else "N/E" }}, T {{ n.vitals.temp if n.vitals and n.vitals.temp is defined and n.vitals.temp is not none else "N/E" }}</td><td>Cr {{ n.labs.creatinina if n.labs and n.labs.creatinina is defined and n.labs.creatinina is not none else "N/E" }}, Hb {{ n.labs.hemoglobina if n.labs and n.labs.hemoglobina is defined and n.labs.hemoglobina is not none else "N/E" }}, Leu {{ n.labs.leucocitos if n.labs and n.labs.leucocitos is defined and n.labs.leucocitos is not none else "N/E" }}, Plt {{ n.labs.plaquetas if n.labs and n.labs.plaquetas is defined and n.labs.plaquetas is not none else "N/E" }}, Na {{ n.labs.sodio if n.labs and n.labs.sodio is defined and n.labs.sodio is not none else "N/E" }}, K {{ n.labs.potasio if n.labs and n.labs.potasio is defined and n.labs.potasio is not none else "N/E" }}</td><td>{{ n.note_text or n.free_text or "N/E" }}<div class="muted">Balance: {{ n.io_summary.balance_ml if n.io_summary and n.io_summary.balance_ml is defined else "N/E" }} ml ({{ n.io_summary.balance_estado if n.io_summary and n.io_summary.balance_estado is defined else "N/E" }}) | Ind. urinario: {{ n.io_summary.indice_urinario_ml_kg_h if n.io_summary and n.io_summary.indice_urinario_ml_kg_h is defined and n.io_summary.indice_urinario_ml_kg_h is not none else "N/E" }} | Eventos: {{ n.events_pending.eventos_del_dia_n if n.events_pending and n.events_pending.eventos_del_dia_n is defined else "N/E" }}</div></td></tr>
+ {% else %}<tr><td colspan="7">Sin notas intrahospitalarias.</td></tr>{% endfor %}</table>
+ </details>
+ {% else %}
+ <p class="muted">Sin notas intrahospitalarias.</p>
+ {% endif %}
 
-        <script id="inpatientNotesJson" type="application/json">{{ inpatient_notes_history|tojson }}</script>
-    </div>
+ <script id="inpatientNotesJson" type="application/json">{{ inpatient_notes_history|tojson }}</script>
+ </div>
 </div>
 
 <!-- ══════ SEC 8: Drenajes y Dispositivos + Charts ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#129656;</div><div><div class="ac-name">Drenajes y Dispositivos</div><div class="ac-desc">Monitoreo de gastos y funcion renal</div></div></div>
-        <div class="ac-right"><span class="ac-badge {% if inpatient_soportes and (inpatient_soportes.drenaje_activo or inpatient_soportes.dispositivo_activo) %}active{% endif %}">Drenaje: {{ "ACTIVO" if inpatient_soportes and inpatient_soportes.drenaje_activo else "NO" }} &middot; Disp: {{ "ACTIVO" if inpatient_soportes and inpatient_soportes.dispositivo_activo else "NO" }}</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        <div class="alerts-box" style="margin-bottom:12px">Drenaje activo: <strong>{{ inpatient_soportes.drenaje_activo.device_type if inpatient_soportes and inpatient_soportes.drenaje_activo else "NO" }}</strong> | Dispositivo activo: <strong>{{ inpatient_soportes.dispositivo_activo.device_type if inpatient_soportes and inpatient_soportes.dispositivo_activo else "NO" }}</strong> | Ind. urinario prom (Foley): <strong>{{ inpatient_soportes.indice_urinario_promedio if inpatient_soportes and inpatient_soportes.indice_urinario_promedio is not none else "N/E" }}</strong> | % drenaje prom: <strong>{{ inpatient_soportes.gasto_drenaje_pct_promedio if inpatient_soportes and inpatient_soportes.gasto_drenaje_pct_promedio is not none else "N/E" }}{% if inpatient_soportes and inpatient_soportes.gasto_drenaje_pct_promedio is not none %}%{% endif %}</strong> | Uresis Foley prom: <strong>{{ inpatient_soportes.uresis_foley_promedio_ml if inpatient_soportes and inpatient_soportes.uresis_foley_promedio_ml is not none else "N/E" }}{% if inpatient_soportes and inpatient_soportes.uresis_foley_promedio_ml is not none %} mL{% endif %}</strong></div>
-        <div class="chart-duo">
-            <div class="chart-wrap"><h4>Gasto Drenaje por Dia</h4><div class="chart-container"><canvas id="chartDrenajes" data-chart-init="drenajes"></canvas></div></div>
-            <div class="chart-wrap"><h4>Uresis Foley + Indice Urinario</h4><div class="chart-container"><canvas id="chartFoley" data-chart-init="foley"></canvas></div></div>
-        </div>
-        <div class="grid-2">
-            <div><table><tr><th>Fecha</th><th>Tipo</th><th>Lateralidad</th><th>Gasto (mL)</th><th>% egreso</th></tr>
-            {% for r in (inpatient_soportes.drenajes_temporalidad if inpatient_soportes and inpatient_soportes.drenajes_temporalidad else []) %}<tr><td>{{ r.fecha or "N/E" }}</td><td>{{ r.tipo or "N/E" }}</td><td>{{ r.lateralidad or "N/E" }}</td><td>{{ r.gasto_ml if r.gasto_ml is not none else "N/E" }}</td><td>{{ r.gasto_pct_egreso_dia if r.gasto_pct_egreso_dia is not none else "N/E" }}{% if r.gasto_pct_egreso_dia is not none %}%{% endif %}</td></tr>
-            {% else %}<tr><td colspan="5">Sin registros de drenaje.</td></tr>{% endfor %}</table></div>
-            <div><table><tr><th>Fecha</th><th>Uresis (mL)</th><th>Indice urinario</th><th>FR</th></tr>
-            {% for r in (inpatient_soportes.foley_temporalidad if inpatient_soportes and inpatient_soportes.foley_temporalidad else []) %}<tr><td>{{ r.fecha or "N/E" }}</td><td>{{ r.uresis_ml if r.uresis_ml is not none else "N/E" }}</td><td>{{ r.indice_urinario if r.indice_urinario is not none else "N/E" }}</td><td>{{ r.fr or "N/E" }}</td></tr>
-            {% else %}<tr><td colspan="4">Sin registros Foley.</td></tr>{% endfor %}</table></div>
-        </div>
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#129656;</div><div><div class="ac-name">Drenajes y Dispositivos</div><div class="ac-desc">Monitoreo de gastos y funcion renal</div></div></div>
+ <div class="ac-right"><span class="ac-badge {% if inpatient_soportes and (inpatient_soportes.drenaje_activo or inpatient_soportes.dispositivo_activo) %}active{% endif %}">Drenaje: {{ "ACTIVO" if inpatient_soportes and inpatient_soportes.drenaje_activo else "NO" }} &middot; Disp: {{ "ACTIVO" if inpatient_soportes and inpatient_soportes.dispositivo_activo else "NO" }}</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div class="alerts-box" style="margin-bottom:12px">Drenaje activo: <strong>{{ inpatient_soportes.drenaje_activo.device_type if inpatient_soportes and inpatient_soportes.drenaje_activo else "NO" }}</strong> | Dispositivo activo: <strong>{{ inpatient_soportes.dispositivo_activo.device_type if inpatient_soportes and inpatient_soportes.dispositivo_activo else "NO" }}</strong> | Ind. urinario prom (Foley): <strong>{{ inpatient_soportes.indice_urinario_promedio if inpatient_soportes and inpatient_soportes.indice_urinario_promedio is not none else "N/E" }}</strong> | % drenaje prom: <strong>{{ inpatient_soportes.gasto_drenaje_pct_promedio if inpatient_soportes and inpatient_soportes.gasto_drenaje_pct_promedio is not none else "N/E" }}{% if inpatient_soportes and inpatient_soportes.gasto_drenaje_pct_promedio is not none %}%{% endif %}</strong> | Uresis Foley prom: <strong>{{ inpatient_soportes.uresis_foley_promedio_ml if inpatient_soportes and inpatient_soportes.uresis_foley_promedio_ml is not none else "N/E" }}{% if inpatient_soportes and inpatient_soportes.uresis_foley_promedio_ml is not none %} mL{% endif %}</strong></div>
+ <div class="chart-duo">
+ <div class="chart-wrap"><h4>Gasto Drenaje por Dia</h4><div class="chart-container"><canvas id="chartDrenajes" data-chart-init="drenajes"></canvas></div></div>
+ <div class="chart-wrap"><h4>Uresis Foley + Indice Urinario</h4><div class="chart-container"><canvas id="chartFoley" data-chart-init="foley"></canvas></div></div>
+ </div>
+ <div class="grid-2">
+ <div><table><tr><th>Fecha</th><th>Tipo</th><th>Lateralidad</th><th>Gasto (mL)</th><th>% egreso</th></tr>
+ {% for r in (inpatient_soportes.drenajes_temporalidad if inpatient_soportes and inpatient_soportes.drenajes_temporalidad else []) %}<tr><td>{{ r.fecha or "N/E" }}</td><td>{{ r.tipo or "N/E" }}</td><td>{{ r.lateralidad or "N/E" }}</td><td>{{ r.gasto_ml if r.gasto_ml is not none else "N/E" }}</td><td>{{ r.gasto_pct_egreso_dia if r.gasto_pct_egreso_dia is not none else "N/E" }}{% if r.gasto_pct_egreso_dia is not none %}%{% endif %}</td></tr>
+ {% else %}<tr><td colspan="5">Sin registros de drenaje.</td></tr>{% endfor %}</table></div>
+ <div><table><tr><th>Fecha</th><th>Uresis (mL)</th><th>Indice urinario</th><th>FR</th></tr>
+ {% for r in (inpatient_soportes.foley_temporalidad if inpatient_soportes and inpatient_soportes.foley_temporalidad else []) %}<tr><td>{{ r.fecha or "N/E" }}</td><td>{{ r.uresis_ml if r.uresis_ml is not none else "N/E" }}</td><td>{{ r.indice_urinario if r.indice_urinario is not none else "N/E" }}</td><td>{{ r.fr or "N/E" }}</td></tr>
+ {% else %}<tr><td colspan="4">Sin registros Foley.</td></tr>{% endfor %}</table></div>
+ </div>
+ </div>
 </div>
 
 <!-- ══════ SEC 9: Datos del Paciente ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128100;</div><div><div class="ac-name">Datos del Paciente</div><div class="ac-desc">Informacion demografica y contacto</div></div></div>
-        <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        <div class="grid-2">
-            <table><tr><td style="font-weight:800;color:var(--verde);width:140px">Nombre</td><td>{{ consulta.nombre }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">CURP</td><td>{{ consulta.curp }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">NSS</td><td>{{ consulta.nss }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Edad</td><td>{{ consulta.edad }}</td></tr></table>
-            <table><tr><td style="font-weight:800;color:var(--verde);width:140px">Sexo</td><td>{{ consulta.sexo }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Tipo sangre</td><td>{{ consulta.tipo_sangre }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Telefono</td><td>{{ consulta.telefono }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Email</td><td>{{ consulta.email }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Peso (kg)</td><td>{{ latest_somatometria.peso if latest_somatometria and latest_somatometria.peso is not none else "N/E" }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Talla (cm)</td><td>{{ latest_somatometria.talla if latest_somatometria and latest_somatometria.talla is not none else "N/E" }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">IMC</td><td>{{ latest_somatometria.imc if latest_somatometria and latest_somatometria.imc is not none else "N/E" }}{% if latest_somatometria and latest_somatometria.fecha %} <span class="muted">({{ latest_somatometria.fecha }})</span>{% endif %}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Direccion</td><td>{{ consulta.calle }} {{ consulta.no_ext }}, {{ consulta.colonia }}, {{ consulta.alcaldia }}, CP {{ consulta.cp }}</td></tr></table>
-        </div>
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128100;</div><div><div class="ac-name">Datos del Paciente</div><div class="ac-desc">Informacion demografica y contacto</div></div></div>
+ <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div class="grid-2">
+ <table><tr><td style="font-weight:800;color:var(--verde);width:140px">Nombre</td><td>{{ consulta.nombre }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">CURP</td><td>{{ consulta.curp }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">NSS</td><td>{{ consulta.nss }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Edad</td><td>{{ consulta.edad }}</td></tr></table>
+ <table><tr><td style="font-weight:800;color:var(--verde);width:140px">Sexo</td><td>{{ consulta.sexo }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Tipo sangre</td><td>{{ consulta.tipo_sangre }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Telefono</td><td>{{ consulta.telefono }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Email</td><td>{{ consulta.email }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Peso (kg)</td><td>{{ latest_somatometria.peso if latest_somatometria and latest_somatometria.peso is not none else "N/E" }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Talla (cm)</td><td>{{ latest_somatometria.talla if latest_somatometria and latest_somatometria.talla is not none else "N/E" }}</td></tr><tr><td style="font-weight:800;color:var(--verde)">IMC</td><td>{{ latest_somatometria.imc if latest_somatometria and latest_somatometria.imc is not none else "N/E" }}{% if latest_somatometria and latest_somatometria.fecha %} <span class="muted">({{ latest_somatometria.fecha }})</span>{% endif %}</td></tr><tr><td style="font-weight:800;color:var(--verde)">Direccion</td><td>{{ consulta.calle }} {{ consulta.no_ext }}, {{ consulta.colonia }}, {{ consulta.alcaldia }}, CP {{ consulta.cp }}</td></tr></table>
+ </div>
+ </div>
 </div>
 
 <!-- ══════ SEC 10: Diagnostico y Protocolo ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128202;</div><div><div class="ac-name">Diagnostico y Protocolo</div><div class="ac-desc">Diagnostico principal y plan terapeutico</div></div></div>
-        <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        <div class="proto-layout">
-            <div class="proto-card">
-                <div class="proto-head">
-                    <div>
-                        <div class="proto-title">Resumen clínico de protocolo</div>
-                        <div class="proto-sub">Vista limpia sin JSON crudo, enfocada a decisión clínica.</div>
-                    </div>
-                    <span class="ac-badge">Consulta #{{ consulta.id }}</span>
-                </div>
-                <div class="proto-kpis">
-                    <div class="proto-kpi"><span class="l">Diagnóstico principal</span><span class="v">{{ consulta.diagnostico_principal or "N/E" }}</span></div>
-                    <div class="proto-kpi"><span class="l">Estatus protocolo</span><span class="v">{{ consulta.estatus_protocolo or "N/E" }}</span></div>
-                    <div class="proto-kpi"><span class="l">Plan específico</span><span class="v">{{ consulta.plan_especifico or "N/E" }}</span></div>
-                </div>
-                {% if protocolo_resumen %}
-                <div class="proto-list">
-                    {% for item in protocolo_resumen %}
-                    <div class="proto-item">
-                        <span class="l">{{ item.label }}</span>
-                        <span class="v">{{ item.value }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                {% if protocolo_alertas_aditivas %}
-                <div class="alerts-box" style="margin-top:10px"><strong>Alertas aditivas:</strong><ul class="small-list">{% for al in protocolo_alertas_aditivas %}<li>{{ al }}</li>{% endfor %}</ul></div>
-                {% endif %}
-            </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128202;</div><div><div class="ac-name">Diagnostico y Protocolo</div><div class="ac-desc">Diagnostico principal y plan terapeutico</div></div></div>
+ <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div class="proto-layout">
+ <div class="proto-card">
+ <div class="proto-head">
+ <div>
+ <div class="proto-title">Resumen clínico de protocolo</div>
+ <div class="proto-sub">Vista limpia sin JSON crudo, enfocada a decisión clínica.</div>
+ </div>
+ <span class="ac-badge">Consulta #{{ consulta.id }}</span>
+ </div>
+ <div class="proto-kpis">
+ <div class="proto-kpi"><span class="l">Diagnóstico principal</span><span class="v">{{ consulta.diagnostico_principal or "N/E" }}</span></div>
+ <div class="proto-kpi"><span class="l">Estatus protocolo</span><span class="v">{{ consulta.estatus_protocolo or "N/E" }}</span></div>
+ <div class="proto-kpi"><span class="l">Plan específico</span><span class="v">{{ consulta.plan_especifico or "N/E" }}</span></div>
+ </div>
+ {% if protocolo_resumen %}
+ <div class="proto-list">
+ {% for item in protocolo_resumen %}
+ <div class="proto-item">
+ <span class="l">{{ item.label }}</span>
+ <span class="v">{{ item.value }}</span>
+ </div>
+ {% endfor %}
+ </div>
+ {% endif %}
+ {% if protocolo_alertas_aditivas %}
+ <div class="alerts-box" style="margin-top:10px"><strong>Alertas aditivas:</strong><ul class="small-list">{% for al in protocolo_alertas_aditivas %}<li>{{ al }}</li>{% endfor %}</ul></div>
+ {% endif %}
+ </div>
 
-            <div class="proto-card">
-                <div class="proto-head">
-                    <div>
-                        <div class="proto-title">Lista de espera quirúrgica</div>
-                        <div class="proto-sub">Estado actual del paciente en programación quirúrgica.</div>
-                    </div>
-                    {% if lista_espera_qx and lista_espera_qx.en_espera %}
-                    <span class="proto-wait-status ok">&#9679; En espera</span>
-                    {% else %}
-                    <span class="proto-wait-status off">&#9679; Sin espera activa</span>
-                    {% endif %}
-                </div>
+ <div class="proto-card">
+ <div class="proto-head">
+ <div>
+ <div class="proto-title">Lista de espera quirúrgica</div>
+ <div class="proto-sub">Estado actual del paciente en programación quirúrgica.</div>
+ </div>
+ {% if lista_espera_qx and lista_espera_qx.en_espera %}
+ <span class="proto-wait-status ok">&#9679; En espera</span>
+ {% else %}
+ <span class="proto-wait-status off">&#9679; Sin espera activa</span>
+ {% endif %}
+ </div>
 
-                {% if lista_espera_qx and lista_espera_qx.en_espera %}
-                <div class="proto-wait-grid">
-                    <div class="proto-wait-box"><span class="l">Procedimiento en espera</span><span class="v">{{ lista_espera_qx.procedimiento or "N/E" }}</span></div>
-                    <div class="proto-wait-box"><span class="l">Prioridad</span><span class="v">{{ lista_espera_qx.prioridad or "NO_REGISTRADA" }}</span></div>
-                    <div class="proto-wait-box"><span class="l">Desde</span><span class="v">{{ lista_espera_qx.desde or "N/E" }}</span></div>
-                    <div class="proto-wait-box"><span class="l">Tiempo en espera</span><span class="v">{% if lista_espera_qx.dias_espera is not none %}{{ lista_espera_qx.dias_espera }} días{% else %}N/E{% endif %}</span></div>
-                </div>
-                <div class="proto-table">
-                    <table><tr><th>Procedimiento</th><th>Estatus</th><th>Desde</th><th>Días</th><th>Prioridad</th></tr>
-                    {% for it in (lista_espera_qx["items"] if lista_espera_qx and lista_espera_qx["items"] else []) %}<tr><td>{{ it.procedimiento or "N/E" }}</td><td>{{ it.estatus or "N/E" }}</td><td>{{ it.desde or "N/E" }}</td><td>{% if it.dias_espera is not none %}{{ it.dias_espera }}{% else %}N/E{% endif %}</td><td>{{ it.prioridad or "NO_REGISTRADA" }}</td></tr>
-                    {% else %}<tr><td colspan="5">Sin registros de lista de espera.</td></tr>{% endfor %}</table>
-                </div>
-                {% else %}
-                <div class="proto-wait-box" style="margin-top:8px">
-                    <span class="l">Estado actual</span>
-                    <span class="v">El paciente no tiene procedimiento pendiente en lista de espera.</span>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        <details class="legacy-table-toggle">
-            <summary>Ver detalle técnico del protocolo</summary>
-            <pre style="margin-top:8px">{{ protocolo_json }}</pre>
-        </details>
-    </div>
+ {% if lista_espera_qx and lista_espera_qx.en_espera %}
+ <div class="proto-wait-grid">
+ <div class="proto-wait-box"><span class="l">Procedimiento en espera</span><span class="v">{{ lista_espera_qx.procedimiento or "N/E" }}</span></div>
+ <div class="proto-wait-box"><span class="l">Prioridad</span><span class="v">{{ lista_espera_qx.prioridad or "NO_REGISTRADA" }}</span></div>
+ <div class="proto-wait-box"><span class="l">Desde</span><span class="v">{{ lista_espera_qx.desde or "N/E" }}</span></div>
+ <div class="proto-wait-box"><span class="l">Tiempo en espera</span><span class="v">{% if lista_espera_qx.dias_espera is not none %}{{ lista_espera_qx.dias_espera }} días{% else %}N/E{% endif %}</span></div>
+ </div>
+ <div class="proto-table">
+ <table><tr><th>Procedimiento</th><th>Estatus</th><th>Desde</th><th>Días</th><th>Prioridad</th></tr>
+ {% for it in (lista_espera_qx["items"] if lista_espera_qx and lista_espera_qx["items"] else []) %}<tr><td>{{ it.procedimiento or "N/E" }}</td><td>{{ it.estatus or "N/E" }}</td><td>{{ it.desde or "N/E" }}</td><td>{% if it.dias_espera is not none %}{{ it.dias_espera }}{% else %}N/E{% endif %}</td><td>{{ it.prioridad or "NO_REGISTRADA" }}</td></tr>
+ {% else %}<tr><td colspan="5">Sin registros de lista de espera.</td></tr>{% endfor %}</table>
+ </div>
+ {% else %}
+ <div class="proto-wait-box" style="margin-top:8px">
+ <span class="l">Estado actual</span>
+ <span class="v">El paciente no tiene procedimiento pendiente en lista de espera.</span>
+ </div>
+ {% endif %}
+ </div>
+ </div>
+ <details class="legacy-table-toggle">
+ <summary>Ver detalle técnico del protocolo</summary>
+ <pre style="margin-top:8px">{{ protocolo_json }}</pre>
+ </details>
+ </div>
 </div>
 
 <!-- ══════ SEC 11: Modulo Enriquecido ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128218;</div><div><div class="ac-name">Modulo Enriquecido (Fase 1/2/3)</div><div class="ac-desc">Farmacoterapia, calidad de vida y consentimientos</div></div></div>
-        <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        {% if expediente_enriquecido %}
-        <div class="grid-3">
-            <div class="card"><div class="cl">Consentimiento investigacion</div><div class="cv" style="font-size:14px">{{ expediente_enriquecido.consentimiento_investigacion or "PENDIENTE" }}</div></div>
-            <div class="card"><div class="cl">Consentimiento datos</div><div class="cv" style="font-size:14px">{{ expediente_enriquecido.consentimiento_uso_datos or "PENDIENTE" }}</div></div>
-            <div class="card"><div class="cl">Actualizado</div><div class="cv" style="font-size:12px">{{ expediente_enriquecido.actualizado_en or "N/A" }}</div></div>
-        </div>
-        <div class="grid-2" style="margin-top:12px">
-            <div><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Farmacoterapia</h3>
-            <table><tr><th>Medicamento</th><th>Dosis</th><th>Frecuencia</th><th>Via</th></tr>
-            {% for med in expediente_enriquecido.farmacoterapia %}<tr><td>{{ med.medicamento or "N/E" }}</td><td>{{ med.dosis or "N/E" }}</td><td>{{ med.frecuencia or "N/E" }}</td><td>{{ med.via or "N/E" }}</td></tr>{% else %}<tr><td colspan="4">Sin farmacoterapia.</td></tr>{% endfor %}</table>
-            <p class="muted" style="margin-top:6px">Adherencia: {{ expediente_enriquecido.adherencia_farmacologica or "NO_REGISTRADA" }} | Reacciones: {{ expediente_enriquecido.reacciones_adversas or "N/E" }}</p></div>
-            <div><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Calidad de vida</h3>
-            <table><tr><th>Escala</th><th>Valor</th></tr><tr><td>IPSS</td><td>{{ expediente_enriquecido.qol_ipss_score if expediente_enriquecido.qol_ipss_score is not none else "N/E" }}</td></tr><tr><td>IIEF-5</td><td>{{ expediente_enriquecido.qol_iief5_score if expediente_enriquecido.qol_iief5_score is not none else "N/E" }}</td></tr><tr><td>ICIQ-SF</td><td>{{ expediente_enriquecido.qol_iciqsf_score if expediente_enriquecido.qol_iciqsf_score is not none else "N/E" }}</td></tr></table>
-            <div style="margin-top:8px"><strong>Alertas:</strong> {% if expediente_enriquecido.alertas %}<ul class="small-list">{% for al in expediente_enriquecido.alertas %}<li>{{ al }}</li>{% endfor %}</ul>{% else %}<span class="muted">Sin alertas activas.</span>{% endif %}</div></div>
-        </div>
-        {% if expediente_enriquecido.gineco_obstetricos %}<div style="margin-top:10px"><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Antecedentes gineco-obstetricos</h3><div class="chips">{% for k, v in expediente_enriquecido.gineco_obstetricos.items() %}{% if v %}<span class="chip">{{ k }}: {{ v }}</span>{% endif %}{% endfor %}</div></div>{% endif %}
-        {% else %}<p class="muted">Sin registro enriquecido. Inicia desde "Fase 1".</p>{% endif %}
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128218;</div><div><div class="ac-name">Modulo Enriquecido (Fase 1/2/3)</div><div class="ac-desc">Farmacoterapia, calidad de vida y consentimientos</div></div></div>
+ <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ {% if expediente_enriquecido %}
+ <div class="grid-3">
+ <div class="card"><div class="cl">Consentimiento investigacion</div><div class="cv" style="font-size:14px">{{ expediente_enriquecido.consentimiento_investigacion or "PENDIENTE" }}</div></div>
+ <div class="card"><div class="cl">Consentimiento datos</div><div class="cv" style="font-size:14px">{{ expediente_enriquecido.consentimiento_uso_datos or "PENDIENTE" }}</div></div>
+ <div class="card"><div class="cl">Actualizado</div><div class="cv" style="font-size:12px">{{ expediente_enriquecido.actualizado_en or "N/A" }}</div></div>
+ </div>
+ <div class="grid-2" style="margin-top:12px">
+ <div><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Farmacoterapia</h3>
+ <table><tr><th>Medicamento</th><th>Dosis</th><th>Frecuencia</th><th>Via</th></tr>
+ {% for med in expediente_enriquecido.farmacoterapia %}<tr><td>{{ med.medicamento or "N/E" }}</td><td>{{ med.dosis or "N/E" }}</td><td>{{ med.frecuencia or "N/E" }}</td><td>{{ med.via or "N/E" }}</td></tr>{% else %}<tr><td colspan="4">Sin farmacoterapia.</td></tr>{% endfor %}</table>
+ <p class="muted" style="margin-top:6px">Adherencia: {{ expediente_enriquecido.adherencia_farmacologica or "NO_REGISTRADA" }} | Reacciones: {{ expediente_enriquecido.reacciones_adversas or "N/E" }}</p></div>
+ <div><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Calidad de vida</h3>
+ <table><tr><th>Escala</th><th>Valor</th></tr><tr><td>IPSS</td><td>{{ expediente_enriquecido.qol_ipss_score if expediente_enriquecido.qol_ipss_score is not none else "N/E" }}</td></tr><tr><td>IIEF-5</td><td>{{ expediente_enriquecido.qol_iief5_score if expediente_enriquecido.qol_iief5_score is not none else "N/E" }}</td></tr><tr><td>ICIQ-SF</td><td>{{ expediente_enriquecido.qol_iciqsf_score if expediente_enriquecido.qol_iciqsf_score is not none else "N/E" }}</td></tr></table>
+ <div style="margin-top:8px"><strong>Alertas:</strong> {% if expediente_enriquecido.alertas %}<ul class="small-list">{% for al in expediente_enriquecido.alertas %}<li>{{ al }}</li>{% endfor %}</ul>{% else %}<span class="muted">Sin alertas activas.</span>{% endif %}</div></div>
+ </div>
+ {% if expediente_enriquecido.gineco_obstetricos %}<div style="margin-top:10px"><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Antecedentes gineco-obstetricos</h3><div class="chips">{% for k, v in expediente_enriquecido.gineco_obstetricos.items() %}{% if v %}<span class="chip">{{ k }}: {{ v }}</span>{% endif %}{% endfor %}</div></div>{% endif %}
+ {% else %}<p class="muted">Sin registro enriquecido. Inicia desde "Fase 1".</p>{% endif %}
+ </div>
 </div>
 
 <!-- ══════ SEC 12: Hospitalizaciones Asociadas ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#127973;</div><div><div class="ac-name">Hospitalizaciones Asociadas</div><div class="ac-desc">Primera y previas hospitalizaciones</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ hospitalizaciones|length if hospitalizaciones else 0 }} registros</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        {% if hospitalizaciones %}<table><tr><th>Tipo</th><th>Ingreso</th><th>Egreso</th><th>Diagnostico</th><th>Ingreso tipo</th><th>Urgencia tipo</th><th>HGZ</th><th>Cama</th></tr>
-        {% for h in hospitalizaciones %}<tr><td>{{ h.tipo }}</td><td>{{ h.fecha_ingreso }}</td><td>{{ h.fecha_egreso }}</td><td>{{ h.diagnostico }}</td><td>{{ h.ingreso_tipo or "NO_REGISTRADO" }}</td><td>{{ h.urgencia_tipo or "NO_REGISTRADO" }}</td><td>{{ h.hgz_envio or "NO_REGISTRADO" }}</td><td>{{ h.cama or "N/E" }}</td></tr>{% endfor %}</table>
-        {% else %}<p class="muted">Sin hospitalizaciones registradas.</p>{% endif %}
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#127973;</div><div><div class="ac-name">Hospitalizaciones Asociadas</div><div class="ac-desc">Primera y previas hospitalizaciones</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ hospitalizaciones|length if hospitalizaciones else 0 }} registros</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ {% if hospitalizaciones %}<table><tr><th>Tipo</th><th>Ingreso</th><th>Egreso</th><th>Diagnostico</th><th>Ingreso tipo</th><th>Urgencia tipo</th><th>HGZ</th><th>Cama</th></tr>
+ {% for h in hospitalizaciones %}<tr><td>{{ h.tipo }}</td><td>{{ h.fecha_ingreso }}</td><td>{{ h.fecha_egreso }}</td><td>{{ h.diagnostico }}</td><td>{{ h.ingreso_tipo or "NO_REGISTRADO" }}</td><td>{{ h.urgencia_tipo or "NO_REGISTRADO" }}</td><td>{{ h.hgz_envio or "NO_REGISTRADO" }}</td><td>{{ h.cama or "N/E" }}</td></tr>{% endfor %}</table>
+ {% else %}<p class="muted">Sin hospitalizaciones registradas.</p>{% endif %}
+ </div>
 </div>
 
 <!-- ══════ SEC 13: Resumen Multi-Fuente ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128200;</div><div><div class="ac-name">Resumen Multi-Fuente</div><div class="ac-desc">Guardia, quirofano y laboratorios</div></div></div>
-        <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        <div class="grid-2">
-            <div><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Guardia por dataset</h3>
-            <table><tr><th>Dataset</th><th>Registros</th></tr>{% for k,v in guardia_resumen %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% else %}<tr><td colspan="2">Sin registros de guardia.</td></tr>{% endfor %}</table></div>
-            <div><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Eventos quirurgicos</h3>
-            <table><tr><th>Fecha</th><th>Origen</th><th>Estatus</th><th>Diagnostico</th><th>Procedimiento</th><th>Cirujano</th><th>Sangrado</th><th>Hallazgos</th></tr>
-            {% for q in cirugias_eventos %}<tr><td>{{ q.fecha }}</td><td>{{ q.origen }}</td><td>{{ q.estatus }}</td><td>{{ q.diagnostico }}</td><td>{{ q.procedimiento }}</td><td>{{ q.cirujano or "NO_REGISTRADO" }}</td><td>{{ q.sangrado_ml if q.sangrado_ml is not none else "N/E" }}</td><td>{{ q.hallazgos or "N/E" }}</td></tr>{% else %}<tr><td colspan="8">Sin eventos quirurgicos.</td></tr>{% endfor %}</table></div>
-        </div>
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128200;</div><div><div class="ac-name">Resumen Multi-Fuente</div><div class="ac-desc">Guardia, quirofano y laboratorios</div></div></div>
+ <div class="ac-right"><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ <div class="grid-2">
+ <div><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Guardia por dataset</h3>
+ <table><tr><th>Dataset</th><th>Registros</th></tr>{% for k,v in guardia_resumen %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% else %}<tr><td colspan="2">Sin registros de guardia.</td></tr>{% endfor %}</table></div>
+ <div><h3 style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:6px">Eventos quirurgicos</h3>
+ <table><tr><th>Fecha</th><th>Origen</th><th>Estatus</th><th>Diagnostico</th><th>Procedimiento</th><th>Cirujano</th><th>Sangrado</th><th>Hallazgos</th></tr>
+ {% for q in cirugias_eventos %}<tr><td>{{ q.fecha }}</td><td>{{ q.origen }}</td><td>{{ q.estatus }}</td><td>{{ q.diagnostico }}</td><td>{{ q.procedimiento }}</td><td>{{ q.cirujano or "NO_REGISTRADO" }}</td><td>{{ q.sangrado_ml if q.sangrado_ml is not none else "N/E" }}</td><td>{{ q.hallazgos or "N/E" }}</td></tr>{% else %}<tr><td colspan="8">Sin eventos quirurgicos.</td></tr>{% endfor %}</table></div>
+ </div>
+ </div>
 </div>
 
 <!-- ══════ SEC 14: Serie de Laboratorios + Charts ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#129514;</div><div><div class="ac-name">Serie de Laboratorios</div><div class="ac-desc">Tendencias bioquimicas con graficas</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ labs_series|length }} registros</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        {% if labs_series|length > 1 %}
-        <div class="chart-duo">
-            <div class="chart-wrap"><h4>Creatinina + Hemoglobina</h4><div class="chart-container"><canvas id="chartLabsCrHb" data-chart-init="labsCrHb"></canvas></div></div>
-            <div class="chart-wrap"><h4>Leucocitos, Plaquetas, Na, K</h4><div class="chart-container"><canvas id="chartLabsPanel" data-chart-init="labsPanel"></canvas></div></div>
-        </div>
-        {% endif %}
-        <table><tr><th>Fecha</th><th>Cr</th><th>Hb</th><th>Leucocitos</th><th>Plaquetas</th><th>Na</th><th>K</th></tr>
-        {% for row in labs_series %}<tr><td>{{ row.fecha }}</td><td>{{ row.creatinina if row.creatinina is defined else "" }}</td><td>{{ row.hemoglobina if row.hemoglobina is defined else "" }}</td><td>{{ row.leucocitos if row.leucocitos is defined else "" }}</td><td>{{ row.plaquetas if row.plaquetas is defined else "" }}</td><td>{{ row.sodio if row.sodio is defined else "" }}</td><td>{{ row.potasio if row.potasio is defined else "" }}</td></tr>
-        {% else %}<tr><td colspan="7">Sin serie de laboratorios.</td></tr>{% endfor %}</table>
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#129514;</div><div><div class="ac-name">Serie de Laboratorios</div><div class="ac-desc">Tendencias bioquimicas con graficas</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ labs_series|length }} registros</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ {% if labs_series|length > 1 %}
+ <div class="chart-duo">
+ <div class="chart-wrap"><h4>Creatinina + Hemoglobina</h4><div class="chart-container"><canvas id="chartLabsCrHb" data-chart-init="labsCrHb"></canvas></div></div>
+ <div class="chart-wrap"><h4>Leucocitos, Plaquetas, Na, K</h4><div class="chart-container"><canvas id="chartLabsPanel" data-chart-init="labsPanel"></canvas></div></div>
+ </div>
+ {% endif %}
+ <table><tr><th>Fecha</th><th>Cr</th><th>Hb</th><th>Leucocitos</th><th>Plaquetas</th><th>Na</th><th>K</th></tr>
+ {% for row in labs_series %}<tr><td>{{ row.fecha }}</td><td>{{ row.creatinina if row.creatinina is defined else "" }}</td><td>{{ row.hemoglobina if row.hemoglobina is defined else "" }}</td><td>{{ row.leucocitos if row.leucocitos is defined else "" }}</td><td>{{ row.plaquetas if row.plaquetas is defined else "" }}</td><td>{{ row.sodio if row.sodio is defined else "" }}</td><td>{{ row.potasio if row.potasio is defined else "" }}</td></tr>
+ {% else %}<tr><td colspan="7">Sin serie de laboratorios.</td></tr>{% endfor %}</table>
+ </div>
 </div>
 
 <!-- ══════ SEC 15: Linea de Tiempo Clinica ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128337;</div><div><div class="ac-name">Linea de Tiempo Clinica</div><div class="ac-desc">Cronologia por episodio y dia de estancia</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ timeline_episodes|length if timeline_episodes else (timeline_general|length if timeline_general else 0) }} registros</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        {% if timeline_episodes %}{% for ep in timeline_episodes %}
-        <div style="margin-top:10px;border:1px solid var(--border);border-radius:10px;padding:14px;background:#fafcfb">
-            <h3 style="font-size:13px;font-weight:800;color:var(--verde)">{{ ep.tipo }} | {{ ep.fecha_ingreso }} &rarr; {{ ep.fecha_egreso }} ({{ ep.dias }} dias)</h3>
-            {% for d in ep.timeline %}<div class="timeline-day"><div class="d">{{ d.fecha }} (dia {{ d.dia_estancia }})</div>{% if d.alerts %}<div class="alerts-box" style="margin:6px 0">Alertas: {{ d.alerts|join(" | ") }}</div>{% endif %}<div class="grid-3" style="margin-top:6px"><div><strong>Censo</strong><ul class="small-list">{% for x in d.censo %}<li>{{ x }}</li>{% else %}<li class="muted">Sin dato</li>{% endfor %}</ul></div><div><strong>Labs</strong><div class="chips" style="margin-top:4px">{% if d.labs.creatinina is defined %}<span class="chip">Cr {{ d.labs.creatinina }}</span>{% endif %}{% if d.labs.hemoglobina is defined %}<span class="chip">Hb {{ d.labs.hemoglobina }}</span>{% endif %}{% if d.labs.leucocitos is defined %}<span class="chip">Leu {{ d.labs.leucocitos }}</span>{% endif %}{% if d.labs.plaquetas is defined %}<span class="chip">Plt {{ d.labs.plaquetas }}</span>{% endif %}{% if d.labs.sodio is defined %}<span class="chip">Na {{ d.labs.sodio }}</span>{% endif %}{% if d.labs.potasio is defined %}<span class="chip">K {{ d.labs.potasio }}</span>{% endif %}{% if not d.labs %}<span class="muted">Sin dato</span>{% endif %}</div></div><div><strong>Qx / Hallazgos</strong><ul class="small-list">{% for x in d.hallazgos_qx %}<li>{{ x }}</li>{% endfor %}{% for x in d.valoraciones %}<li>{{ x }}</li>{% endfor %}{% for x in d.otros %}<li>{{ x }}</li>{% endfor %}{% if not d.hallazgos_qx and not d.valoraciones and not d.otros %}<li class="muted">Sin evento</li>{% endif %}</ul></div></div></div>{% endfor %}
-        </div>{% endfor %}
-        {% elif timeline_general %}<table><tr><th>Fecha</th><th>Censo</th><th>Labs</th><th>Eventos</th></tr>
-        {% for d in timeline_general %}<tr><td>{{ d.fecha }}</td><td>{{ d.censo|join(" | ") }}</td><td>{% if d.labs %}Cr {{ d.labs.creatinina if d.labs.creatinina is defined else "N/E" }}, Hb {{ d.labs.hemoglobina if d.labs.hemoglobina is defined else "N/E" }}, Leu {{ d.labs.leucocitos if d.labs.leucocitos is defined else "N/E" }}{% else %}Sin dato{% endif %}</td><td>{{ (d.hallazgos_qx + d.valoraciones + d.otros)|join(" | ") }}</td></tr>{% endfor %}</table>
-        {% else %}<p class="muted">Sin datos cronologicos.</p>{% endif %}
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128337;</div><div><div class="ac-name">Linea de Tiempo Clinica</div><div class="ac-desc">Cronologia por episodio y dia de estancia</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ timeline_episodes|length if timeline_episodes else (timeline_general|length if timeline_general else 0) }} registros</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ {% if timeline_episodes %}{% for ep in timeline_episodes %}
+ <div style="margin-top:10px;border:1px solid var(--border);border-radius:10px;padding:14px;background:#f7faff">
+ <h3 style="font-size:13px;font-weight:800;color:var(--verde)">{{ ep.tipo }} | {{ ep.fecha_ingreso }} &rarr; {{ ep.fecha_egreso }} ({{ ep.dias }} dias)</h3>
+ {% for d in ep.timeline %}<div class="timeline-day"><div class="d">{{ d.fecha }} (dia {{ d.dia_estancia }})</div>{% if d.alerts %}<div class="alerts-box" style="margin:6px 0">Alertas: {{ d.alerts|join(" | ") }}</div>{% endif %}<div class="grid-3" style="margin-top:6px"><div><strong>Censo</strong><ul class="small-list">{% for x in d.censo %}<li>{{ x }}</li>{% else %}<li class="muted">Sin dato</li>{% endfor %}</ul></div><div><strong>Labs</strong><div class="chips" style="margin-top:4px">{% if d.labs.creatinina is defined %}<span class="chip">Cr {{ d.labs.creatinina }}</span>{% endif %}{% if d.labs.hemoglobina is defined %}<span class="chip">Hb {{ d.labs.hemoglobina }}</span>{% endif %}{% if d.labs.leucocitos is defined %}<span class="chip">Leu {{ d.labs.leucocitos }}</span>{% endif %}{% if d.labs.plaquetas is defined %}<span class="chip">Plt {{ d.labs.plaquetas }}</span>{% endif %}{% if d.labs.sodio is defined %}<span class="chip">Na {{ d.labs.sodio }}</span>{% endif %}{% if d.labs.potasio is defined %}<span class="chip">K {{ d.labs.potasio }}</span>{% endif %}{% if not d.labs %}<span class="muted">Sin dato</span>{% endif %}</div></div><div><strong>Qx / Hallazgos</strong><ul class="small-list">{% for x in d.hallazgos_qx %}<li>{{ x }}</li>{% endfor %}{% for x in d.valoraciones %}<li>{{ x }}</li>{% endfor %}{% for x in d.otros %}<li>{{ x }}</li>{% endfor %}{% if not d.hallazgos_qx and not d.valoraciones and not d.otros %}<li class="muted">Sin evento</li>{% endif %}</ul></div></div></div>{% endfor %}
+ </div>{% endfor %}
+ {% elif timeline_general %}<table><tr><th>Fecha</th><th>Censo</th><th>Labs</th><th>Eventos</th></tr>
+ {% for d in timeline_general %}<tr><td>{{ d.fecha }}</td><td>{{ d.censo|join(" | ") }}</td><td>{% if d.labs %}Cr {{ d.labs.creatinina if d.labs.creatinina is defined else "N/E" }}, Hb {{ d.labs.hemoglobina if d.labs.hemoglobina is defined else "N/E" }}, Leu {{ d.labs.leucocitos if d.labs.leucocitos is defined else "N/E" }}{% else %}Sin dato{% endif %}</td><td>{{ (d.hallazgos_qx + d.valoraciones + d.otros)|join(" | ") }}</td></tr>{% endfor %}</table>
+ {% else %}<p class="muted">Sin datos cronologicos.</p>{% endif %}
+ </div>
 </div>
 
 <!-- ══════ SEC 16: Estudios de Imagen ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128248;</div><div><div class="ac-name">Estudios de Imagen / Gabinete</div><div class="ac-desc">Estudios parseados del perfil</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ estudios_paciente|length if estudios_paciente else 0 }} estudios</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        {% if estudios_paciente %}<table><tr><th>Fecha</th><th>Archivo</th><th>Parser</th><th>Estado</th><th>Resumen</th><th>Accion</th></tr>
-        {% for e in estudios_paciente %}<tr><td>{{ e.fecha }}</td><td>{{ e.nombre_archivo }}</td><td>{{ e.parser_tipo }}</td><td>{{ e.parser_estado }}</td><td>{{ e.resumen }}</td><td>{% if e.archivo_url %}<a href="{{ e.archivo_url }}" target="_blank">Ver</a>{% else %}N/E{% endif %}</td></tr>{% endfor %}</table>
-        {% else %}<p class="muted">Sin estudios parseados.</p>{% endif %}
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128248;</div><div><div class="ac-name">Estudios de Imagen / Gabinete</div><div class="ac-desc">Estudios parseados del perfil</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ estudios_paciente|length if estudios_paciente else 0 }} estudios</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ {% if estudios_paciente %}<table><tr><th>Fecha</th><th>Archivo</th><th>Parser</th><th>Estado</th><th>Resumen</th><th>Accion</th></tr>
+ {% for e in estudios_paciente %}<tr><td>{{ e.fecha }}</td><td>{{ e.nombre_archivo }}</td><td>{{ e.parser_tipo }}</td><td>{{ e.parser_estado }}</td><td>{{ e.resumen }}</td><td>{% if e.archivo_url %}<a href="{{ e.archivo_url }}" target="_blank">Ver</a>{% else %}N/E{% endif %}</td></tr>{% endfor %}</table>
+ {% else %}<p class="muted">Sin estudios parseados.</p>{% endif %}
+ </div>
 </div>
 
 <!-- ══════ SEC 17: Archivos Clinicos ══════ -->
 <div class="acc-card">
-    <div class="ac-head" onclick="togSec(this)">
-        <div class="ac-left"><div class="ac-ico">&#128193;</div><div><div class="ac-name">Archivos Clinicos Asociados</div><div class="ac-desc">Documentos y archivos del expediente</div></div></div>
-        <div class="ac-right"><span class="ac-badge">{{ archivos_paciente|length if archivos_paciente else 0 }} archivos</span><span class="ac-chev">&#9660;</span></div>
-    </div>
-    <div class="ac-body">
-        {% if archivos_paciente %}<table><tr><th>Nombre</th><th>Extension</th><th>Tamano</th><th>Fecha</th><th>Accion</th></tr>
-        {% for a in archivos_paciente %}<tr><td>{{ a.nombre_original }}</td><td>{{ a.extension }}</td><td>{{ a.tamano_legible }}</td><td>{{ a.fecha_subida }}</td><td><a href="/archivos_paciente/{{ a.id }}" target="_blank">Ver</a></td></tr>{% endfor %}</table>
-        {% else %}<p class="muted">Sin archivos asociados.</p>{% endif %}
-        <a href="/analisis/cargar-archivos?consulta_id={{ consulta.id }}" class="btn" style="margin-top:10px">Cargar archivos</a>
-    </div>
+ <div class="ac-head" onclick="togSec(this)">
+ <div class="ac-left"><div class="ac-ico">&#128193;</div><div><div class="ac-name">Archivos Clinicos Asociados</div><div class="ac-desc">Documentos y archivos del expediente</div></div></div>
+ <div class="ac-right"><span class="ac-badge">{{ archivos_paciente|length if archivos_paciente else 0 }} archivos</span><span class="ac-chev">&#9660;</span></div>
+ </div>
+ <div class="ac-body">
+ {% if archivos_paciente %}<table><tr><th>Nombre</th><th>Extension</th><th>Tamano</th><th>Fecha</th><th>Accion</th></tr>
+ {% for a in archivos_paciente %}<tr><td>{{ a.nombre_original }}</td><td>{{ a.extension }}</td><td>{{ a.tamano_legible }}</td><td>{{ a.fecha_subida }}</td><td><a href="/archivos_paciente/{{ a.id }}" target="_blank">Ver</a></td></tr>{% endfor %}</table>
+ {% else %}<p class="muted">Sin archivos asociados.</p>{% endif %}
+ <a href="/analisis/cargar-archivos?consulta_id={{ consulta.id }}" class="btn" style="margin-top:10px">Cargar archivos</a>
+ </div>
 </div>
 
 {% endif %}
 
 <div style="margin-top:20px;display:flex;gap:8px">
-    <a href="/busqueda" class="btn">&larr; Buscar paciente</a>
-    <a href="/" class="btn alt">Menu principal</a>
+ <a href="/busqueda" class="btn">&larr; Buscar paciente</a>
+ <a href="/" class="btn alt">Menu principal</a>
 </div>
 
 </div><!-- end content -->
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<!-- CHART.JS + ACCORDION LOGIC                                     -->
+<!-- CHART.JS + ACCORDION LOGIC -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <script src="/static/vendor/chart.min.js"></script>
 <script>
 /* ─── Accordion ─── */
 function togSec(h){
-    h.classList.toggle('open');
-    var b=h.nextElementSibling;
-    b.classList.toggle('show');
-    if(h.classList.contains('open')){
-        var cc=b.querySelectorAll('canvas[data-chart-init]');
-        for(var i=0;i<cc.length;i++){if(!cc[i].__done){initChart(cc[i].id,cc[i].getAttribute('data-chart-init'));cc[i].__done=true}}
-    }
+ h.classList.toggle('open');
+ var b=h.nextElementSibling;
+ b.classList.toggle('show');
+ if(h.classList.contains('open')){
+ var cc=b.querySelectorAll('canvas[data-chart-init]');
+ for(var i=0;i<cc.length;i++){if(!cc[i].__done){initChart(cc[i].id,cc[i].getAttribute('data-chart-init'));cc[i].__done=true}}
+ }
 }
 function toggleAll(collapse){
-    document.querySelectorAll('.ac-head').forEach(function(h){
-        var b=h.nextElementSibling;
-        if(collapse){h.classList.remove('open');b.classList.remove('show')}
-        else{h.classList.add('open');b.classList.add('show');
-            var cc=b.querySelectorAll('canvas[data-chart-init]');
-            for(var i=0;i<cc.length;i++){if(!cc[i].__done){initChart(cc[i].id,cc[i].getAttribute('data-chart-init'));cc[i].__done=true}}
-        }
-    });
+ document.querySelectorAll('.ac-head').forEach(function(h){
+ var b=h.nextElementSibling;
+ if(collapse){h.classList.remove('open');b.classList.remove('show')}
+ else{h.classList.add('open');b.classList.add('show');
+ var cc=b.querySelectorAll('canvas[data-chart-init]');
+ for(var i=0;i<cc.length;i++){if(!cc[i].__done){initChart(cc[i].id,cc[i].getAttribute('data-chart-init'));cc[i].__done=true}}
+ }
+ });
 }
 
-/* ─── Chart Data from Jinja2 ─── */
-var labsData=[{% for row in labs_series %}{fecha:"{{ row.fecha }}",cr:{{ row.creatinina if row.creatinina is defined and row.creatinina is not none else 'null' }},hb:{{ row.hemoglobina if row.hemoglobina is defined and row.hemoglobina is not none else 'null' }},leu:{{ row.leucocitos if row.leucocitos is defined and row.leucocitos is not none else 'null' }},plt:{{ row.plaquetas if row.plaquetas is defined and row.plaquetas is not none else 'null' }},na:{{ row.sodio if row.sodio is defined and row.sodio is not none else 'null' }},k:{{ row.potasio if row.potasio is defined and row.potasio is not none else 'null' }}},{% endfor %}];
-var vitalesData=[{% for n in notas_medicas %}{fecha:"{{ n.fecha_nota }}",hr:{{ n.vitales.hr if n.vitales.hr is not none else 'null' }},sbp:{{ n.vitales.sbp if n.vitales.sbp is not none else 'null' }},dbp:{{ n.vitales.dbp if n.vitales.dbp is not none else 'null' }},temp:{{ n.vitales.temp if n.vitales.temp is not none else 'null' }}},{% endfor %}];
-var drenajesData=[{% for r in (inpatient_soportes.drenajes_temporalidad if inpatient_soportes and inpatient_soportes.drenajes_temporalidad else []) %}{fecha:"{{ r.fecha or '' }}",tipo:"{{ r.tipo or '' }}",gasto_ml:{{ r.gasto_ml if r.gasto_ml is not none else 'null' }},pct:{{ r.gasto_pct_egreso_dia if r.gasto_pct_egreso_dia is not none else 'null' }}},{% endfor %}];
-var foleyData=[{% for r in (inpatient_soportes.foley_temporalidad if inpatient_soportes and inpatient_soportes.foley_temporalidad else []) %}{fecha:"{{ r.fecha or '' }}",uresis_ml:{{ r.uresis_ml if r.uresis_ml is not none else 'null' }},indice:{{ r.indice_urinario if r.indice_urinario is not none else 'null' }}},{% endfor %}];
+/* ─── Chart Data from Jinja2 (safe JSON serialization) ─── */
+function _safeNum(v){
+ if(v===null||v===undefined||v===''){return null}
+ if(typeof v==='number'){return Number.isFinite(v)?v:null}
+ var parsed=parseFloat(String(v).replace(',','.').trim())
+ return Number.isFinite(parsed)?parsed:null
+}
+var _labsRaw={{ (labs_series or []) | tojson }};
+var labsData=Array.isArray(_labsRaw)?_labsRaw.map(function(row){
+ row=row||{}
+ return {
+ fecha:row.fecha||'',
+ cr:_safeNum(row.creatinina),
+ hb:_safeNum(row.hemoglobina),
+ leu:_safeNum(row.leucocitos),
+ plt:_safeNum(row.plaquetas),
+ na:_safeNum(row.sodio),
+ k:_safeNum(row.potasio)
+ }
+}):[];
+var _notasRaw={{ (notas_medicas or []) | tojson }};
+var vitalesData=Array.isArray(_notasRaw)?_notasRaw.map(function(n){
+ n=n||{}
+ var vit=(n.vitales&&typeof n.vitales==='object')?n.vitales:{}
+ return {
+ fecha:n.fecha_nota||'',
+ hr:_safeNum(vit.hr),
+ sbp:_safeNum(vit.sbp),
+ dbp:_safeNum(vit.dbp),
+ temp:_safeNum(vit.temp)
+ }
+}):[];
+var _soportesRaw={{ (inpatient_soportes or {}) | tojson }};
+var _drenajesRaw=(_soportesRaw&&Array.isArray(_soportesRaw.drenajes_temporalidad))?_soportesRaw.drenajes_temporalidad:[];
+var drenajesData=_drenajesRaw.map(function(r){
+ r=r||{}
+ return {
+ fecha:r.fecha||'',
+ tipo:r.tipo||'',
+ gasto_ml:_safeNum(r.gasto_ml),
+ pct:_safeNum(r.gasto_pct_egreso_dia)
+ }
+});
+var _foleyRaw=(_soportesRaw&&Array.isArray(_soportesRaw.foley_temporalidad))?_soportesRaw.foley_temporalidad:[];
+var foleyData=_foleyRaw.map(function(r){
+ r=r||{}
+ return {
+ fecha:r.fecha||'',
+ uresis_ml:_safeNum(r.uresis_ml),
+ indice:_safeNum(r.indice_urinario)
+ }
+});
 
 /* ─── Chart config ─── */
 if(typeof Chart!=='undefined'){Chart.defaults.font.family="'Inter','Montserrat',sans-serif";Chart.defaults.font.size=10;Chart.defaults.plugins.legend.labels.usePointStyle=true}
-var co={r:'#dc2626',b:'#2563eb',g:'#059669',p:'#7c3aed',o:'#d97706',t:'#0d9488',gd:'#B38E5D',v:'#13322B'};
-var base={responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{font:{size:10,weight:'bold'},usePointStyle:true,boxWidth:8,padding:12}},tooltip:{backgroundColor:co.v,cornerRadius:8,padding:10,titleFont:{size:11},bodyFont:{size:11}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{grid:{color:'#f0f3f2'},ticks:{font:{size:10}}}}};
+var co={r:'#dc2626',b:'#2563eb',g:'#059669',p:'#7c3aed',o:'#d97706',t:'#0d9488',gd:'#c82f3f',v:'#0a3161'};
+var base={responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{font:{size:10,weight:'bold'},usePointStyle:true,boxWidth:8,padding:12}},tooltip:{backgroundColor:co.v,cornerRadius:8,padding:10,titleFont:{size:11},bodyFont:{size:11}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{grid:{color:'#e4edff'},ticks:{font:{size:10}}}}};
 
 function initChart(id,type){
-    var ctx=document.getElementById(id);if(!ctx)return;
-    if(type==='labsCrHb'&&labsData.length>1){new Chart(ctx,{type:'line',data:{labels:labsData.map(function(r){return r.fecha}),datasets:[{label:'Cr (mg/dL)',data:labsData.map(function(r){return r.cr}),borderColor:co.r,backgroundColor:'rgba(220,38,38,0.06)',fill:true,tension:.4,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y'},{label:'Hb (g/dL)',data:labsData.map(function(r){return r.hb}),borderColor:co.b,backgroundColor:'rgba(37,99,235,0.06)',fill:true,tension:.4,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{position:'left',grid:{color:'#f0f3f2'},title:{display:true,text:'Cr mg/dL',color:co.r,font:{size:10,weight:'bold'}}},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Hb g/dL',color:co.b,font:{size:10,weight:'bold'}}}}})})}
-    if(type==='labsPanel'&&labsData.length>1){new Chart(ctx,{type:'line',data:{labels:labsData.map(function(r){return r.fecha}),datasets:[{label:'Leu',data:labsData.map(function(r){return r.leu}),borderColor:co.g,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'Plt',data:labsData.map(function(r){return r.plt}),borderColor:co.p,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'Na',data:labsData.map(function(r){return r.na}),borderColor:co.o,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'K',data:labsData.map(function(r){return r.k}),borderColor:co.t,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2}]},options:base})}
-    if(type==='vitales'&&vitalesData.length>1){new Chart(ctx,{type:'line',data:{labels:vitalesData.map(function(r){return r.fecha}),datasets:[{label:'FC (lpm)',data:vitalesData.map(function(r){return r.hr}),borderColor:co.r,tension:.3,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y'},{label:'TA Sist',data:vitalesData.map(function(r){return r.sbp}),borderColor:co.b,tension:.3,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y'},{label:'TA Diast',data:vitalesData.map(function(r){return r.dbp}),borderColor:'#93c5fd',borderDash:[5,3],tension:.3,pointRadius:4,yAxisID:'y'},{label:'Temp (C)',data:vitalesData.map(function(r){return r.temp}),borderColor:co.o,tension:.3,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{position:'left',grid:{color:'#f0f3f2'},title:{display:true,text:'FC / TA',font:{size:10}}},y1:{position:'right',min:35,max:41,grid:{drawOnChartArea:false},title:{display:true,text:'Temp C',color:co.o,font:{size:10}}}}})})}
-    if(type==='drenajes'&&drenajesData.length>0){var ff=[];drenajesData.forEach(function(r){if(ff.indexOf(r.fecha)===-1)ff.push(r.fecha)});new Chart(ctx,{type:'bar',data:{labels:ff,datasets:[{label:'Gasto mL',data:ff.map(function(f){var t=0;drenajesData.forEach(function(r){if(r.fecha===f&&r.gasto_ml)t+=r.gasto_ml});return t||null}),backgroundColor:'rgba(19,50,43,0.75)',borderColor:co.gd,borderWidth:1,borderRadius:8,borderSkipped:false}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{title:{display:true,text:'mL',font:{size:10}},grid:{color:'#f0f3f2'}}}})})}
-    if(type==='foley'&&foleyData.length>0){new Chart(ctx,{type:'line',data:{labels:foleyData.map(function(r){return r.fecha}),datasets:[{label:'Uresis (mL)',data:foleyData.map(function(r){return r.uresis_ml}),borderColor:co.b,backgroundColor:'rgba(37,99,235,0.06)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y'},{label:'Indice urinario',data:foleyData.map(function(r){return r.indice}),borderColor:co.gd,tension:.4,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{position:'left',grid:{color:'#f0f3f2'},title:{display:true,text:'mL',color:co.b,font:{size:10}}},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Indice',color:co.gd,font:{size:10}}}}})})}
+ var ctx=document.getElementById(id);if(!ctx)return;
+ if(type==='labsCrHb'&&labsData.length>1){new Chart(ctx,{type:'line',data:{labels:labsData.map(function(r){return r.fecha}),datasets:[{label:'Cr (mg/dL)',data:labsData.map(function(r){return r.cr}),borderColor:co.r,backgroundColor:'rgba(220,38,38,0.06)',fill:true,tension:.4,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y'},{label:'Hb (g/dL)',data:labsData.map(function(r){return r.hb}),borderColor:co.b,backgroundColor:'rgba(37,99,235,0.06)',fill:true,tension:.4,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{position:'left',grid:{color:'#e4edff'},title:{display:true,text:'Cr mg/dL',color:co.r,font:{size:10,weight:'bold'}}},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Hb g/dL',color:co.b,font:{size:10,weight:'bold'}}}}})})}
+ if(type==='labsPanel'&&labsData.length>1){new Chart(ctx,{type:'line',data:{labels:labsData.map(function(r){return r.fecha}),datasets:[{label:'Leu',data:labsData.map(function(r){return r.leu}),borderColor:co.g,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'Plt',data:labsData.map(function(r){return r.plt}),borderColor:co.p,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'Na',data:labsData.map(function(r){return r.na}),borderColor:co.o,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'K',data:labsData.map(function(r){return r.k}),borderColor:co.t,tension:.4,pointRadius:4,pointBackgroundColor:'#fff',pointBorderWidth:2}]},options:base})}
+ if(type==='vitales'&&vitalesData.length>1){new Chart(ctx,{type:'line',data:{labels:vitalesData.map(function(r){return r.fecha}),datasets:[{label:'FC (lpm)',data:vitalesData.map(function(r){return r.hr}),borderColor:co.r,tension:.3,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y'},{label:'TA Sist',data:vitalesData.map(function(r){return r.sbp}),borderColor:co.b,tension:.3,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y'},{label:'TA Diast',data:vitalesData.map(function(r){return r.dbp}),borderColor:'#93c5fd',borderDash:[5,3],tension:.3,pointRadius:4,yAxisID:'y'},{label:'Temp (C)',data:vitalesData.map(function(r){return r.temp}),borderColor:co.o,tension:.3,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{position:'left',grid:{color:'#e4edff'},title:{display:true,text:'FC / TA',font:{size:10}}},y1:{position:'right',min:35,max:41,grid:{drawOnChartArea:false},title:{display:true,text:'Temp C',color:co.o,font:{size:10}}}}})})}
+ if(type==='drenajes'&&drenajesData.length>0){var ff=[];drenajesData.forEach(function(r){if(ff.indexOf(r.fecha)===-1)ff.push(r.fecha)});new Chart(ctx,{type:'bar',data:{labels:ff,datasets:[{label:'Gasto mL',data:ff.map(function(f){var t=0;drenajesData.forEach(function(r){if(r.fecha===f&&r.gasto_ml)t+=r.gasto_ml});return t||null}),backgroundColor:'rgba(31,79,159,0.75)',borderColor:co.gd,borderWidth:1,borderRadius:8,borderSkipped:false}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{title:{display:true,text:'mL',font:{size:10}},grid:{color:'#e4edff'}}}})})}
+ if(type==='foley'&&foleyData.length>0){new Chart(ctx,{type:'line',data:{labels:foleyData.map(function(r){return r.fecha}),datasets:[{label:'Uresis (mL)',data:foleyData.map(function(r){return r.uresis_ml}),borderColor:co.b,backgroundColor:'rgba(37,99,235,0.06)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y'},{label:'Indice urinario',data:foleyData.map(function(r){return r.indice}),borderColor:co.gd,tension:.4,pointRadius:5,pointBackgroundColor:'#fff',pointBorderWidth:2.5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:45}},y:{position:'left',grid:{color:'#e4edff'},title:{display:true,text:'mL',color:co.b,font:{size:10}}},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Indice',color:co.gd,font:{size:10}}}}})})}
 }
 
 /* ─── Notas intrahospitalarias por temporalidad (detalle dinámico) ─── */
 function _nfmt(v){
-    if(v===null||v===undefined||v===''){return 'N/E'}
-    return String(v)
+ if(v===null||v===undefined||v===''){return 'N/E'}
+ return String(v)
 }
 function _sourceLabel(n){
-    var raw=((n&&n.note_source)|| (n&&n.note_type) || '').toString().toUpperCase()
-    if(raw.indexOf('INTRAHOSPITALARIA + PASE')>=0 || raw.indexOf('MIXTA')>=0){return {label:'INTRAHOSPITALARIA + PASE DE VISITA', cls:'mixed'}}
-    if(raw.indexOf('PASE')>=0 || raw.indexOf('WARD')>=0){return {label:'PASE DE VISITA DIGITAL', cls:'ward'}}
-    return {label:'NOTA INTRAHOSPITALARIA', cls:''}
+ var raw=((n&&n.note_source)|| (n&&n.note_type) || '').toString().toUpperCase()
+ if(raw.indexOf('INTRAHOSPITALARIA + PASE')>=0 || raw.indexOf('MIXTA')>=0){return {label:'INTRAHOSPITALARIA + PASE DE VISITA', cls:'mixed'}}
+ if(raw.indexOf('PASE')>=0 || raw.indexOf('WARD')>=0){return {label:'PASE DE VISITA DIGITAL', cls:'ward'}}
+ return {label:'NOTA INTRAHOSPITALARIA', cls:''}
 }
 function _parseSoap(text){
-    var t=(text||'').replace(/\r/g,'')
-    function part(tag, next){
-        var re = next
-            ? new RegExp(tag+':\\s*([\\s\\S]*?)(?:\\n'+next+':|$)','i')
-            : new RegExp(tag+':\\s*([\\s\\S]*?)$','i')
-        var m=t.match(re)
-        return m && m[1] ? m[1].trim() : ''
-    }
-    var s=part('S','O')
-    var o=part('O','A')
-    var a=part('A','P')
-    var p=part('P',null)
-    return {s:s,o:o,a:a,p:p, ok:!!(s||o||a||p)}
+ var t=(text||'').replace(/\r/g,'')
+ function part(tag, next){
+ var re = next
+ ? new RegExp(tag+':\\s*([\\s\\S]*?)(?:\\n'+next+':|$)','i')
+ : new RegExp(tag+':\\s*([\\s\\S]*?)$','i')
+ var m=t.match(re)
+ return m && m[1] ? m[1].trim() : ''
+ }
+ var s=part('S','O')
+ var o=part('O','A')
+ var a=part('A','P')
+ var p=part('P',null)
+ return {s:s,o:o,a:a,p:p, ok:!!(s||o||a||p)}
 }
 function _notesText(n){
-    return _nfmt((n&&n.note_text)|| (n&&n.free_text) || (n&&n.payload&&n.payload.free_text) || '')
+ return _nfmt((n&&n.note_text)|| (n&&n.free_text) || (n&&n.payload&&n.payload.free_text) || '')
 }
 function _noteLabs(n){
-    var labs=(n&&n.labs&&typeof n.labs==='object')?n.labs:{}
-    return 'Cr '+_nfmt(labs.creatinina)+', Hb '+_nfmt(labs.hemoglobina)+', Leu '+_nfmt(labs.leucocitos)+', Plt '+_nfmt(labs.plaquetas)+', Na '+_nfmt(labs.sodio)+', K '+_nfmt(labs.potasio)
+ var labs=(n&&n.labs&&typeof n.labs==='object')?n.labs:{}
+ return 'Cr '+_nfmt(labs.creatinina)+', Hb '+_nfmt(labs.hemoglobina)+', Leu '+_nfmt(labs.leucocitos)+', Plt '+_nfmt(labs.plaquetas)+', Na '+_nfmt(labs.sodio)+', K '+_nfmt(labs.potasio)
 }
 function _noteBalance(n){
-    var io=(n&&n.io_summary&&typeof n.io_summary==='object')?n.io_summary:{}
-    var ep=(n&&n.events_pending&&typeof n.events_pending==='object')?n.events_pending:{}
-    return 'Balance: '+_nfmt(io.balance_ml)+' mL ('+_nfmt(io.balance_estado)+') · Índice urinario: '+_nfmt(io.indice_urinario_ml_kg_h)+' · Eventos: '+_nfmt(ep.eventos_del_dia_n)
+ var io=(n&&n.io_summary&&typeof n.io_summary==='object')?n.io_summary:{}
+ var ep=(n&&n.events_pending&&typeof n.events_pending==='object')?n.events_pending:{}
+ return 'Balance: '+_nfmt(io.balance_ml)+' mL ('+_nfmt(io.balance_estado)+') · Índice urinario: '+_nfmt(io.indice_urinario_ml_kg_h)+' · Eventos: '+_nfmt(ep.eventos_del_dia_n)
 }
 function renderTemporalNoteDetail(n){
-    if(!n){return}
-    var vit=(n.vitals&&typeof n.vitals==='object')?n.vitals:{}
-    var sourceMeta=_sourceLabel(n)
-    var chips=[]
-    chips.push('Fecha: '+_nfmt(n.note_date))
-    chips.push('Cama: '+_nfmt(n.location))
-    chips.push('Servicio: '+_nfmt(n.service))
-    chips.push('CIE10: '+_nfmt(n.cie10_codigo||'N/E')+(n.diagnostico?(' · '+n.diagnostico):''))
-    document.getElementById('ntTitle').textContent='Nota intrahospitalaria · '+_nfmt(n.note_date)
-    document.getElementById('ntSub').textContent='Autor: '+_nfmt(n.author_user_id)+' · Episodio: #'+_nfmt(n.hospitalizacion_id)
-    document.getElementById('ntBadge').textContent='Nota #'+_nfmt(n.id)
-    var sourceEl=document.getElementById('ntSource')
-    sourceEl.textContent=sourceMeta.label
-    sourceEl.className='nt-type '+sourceMeta.cls
-    document.getElementById('ntHr').textContent='FC '+_nfmt(vit.hr)
-    document.getElementById('ntTa').textContent='TA '+_nfmt(vit.sbp)+'/'+_nfmt(vit.dbp)
-    document.getElementById('ntTemp').textContent='T '+_nfmt(vit.temp)
-    document.getElementById('ntLabs').textContent=_noteLabs(n)
-    document.getElementById('ntBalance').textContent=_noteBalance(n)
-    var noteText=_notesText(n)
-    document.getElementById('ntText').textContent=noteText
-    var chipWrap=document.getElementById('ntChips')
-    chipWrap.innerHTML=chips.map(function(c){return '<span class=\"nt-chip\">'+c+'</span>'}).join('')
+ if(!n){return}
+ var vit=(n.vitals&&typeof n.vitals==='object')?n.vitals:{}
+ var sourceMeta=_sourceLabel(n)
+ var chips=[]
+ chips.push('Fecha: '+_nfmt(n.note_date))
+ chips.push('Cama: '+_nfmt(n.location))
+ chips.push('Servicio: '+_nfmt(n.service))
+ chips.push('CIE10: '+_nfmt(n.cie10_codigo||'N/E')+(n.diagnostico?(' · '+n.diagnostico):''))
+ document.getElementById('ntTitle').textContent='Nota intrahospitalaria · '+_nfmt(n.note_date)
+ document.getElementById('ntSub').textContent='Autor: '+_nfmt(n.author_user_id)+' · Episodio: #'+_nfmt(n.hospitalizacion_id)
+ document.getElementById('ntBadge').textContent='Nota #'+_nfmt(n.id)
+ var sourceEl=document.getElementById('ntSource')
+ sourceEl.textContent=sourceMeta.label
+ sourceEl.className='nt-type '+sourceMeta.cls
+ document.getElementById('ntHr').textContent='FC '+_nfmt(vit.hr)
+ document.getElementById('ntTa').textContent='TA '+_nfmt(vit.sbp)+'/'+_nfmt(vit.dbp)
+ document.getElementById('ntTemp').textContent='T '+_nfmt(vit.temp)
+ document.getElementById('ntLabs').textContent=_noteLabs(n)
+ document.getElementById('ntBalance').textContent=_noteBalance(n)
+ var noteText=_notesText(n)
+ document.getElementById('ntText').textContent=noteText
+ var chipWrap=document.getElementById('ntChips')
+ chipWrap.innerHTML=chips.map(function(c){return '<span class=\"nt-chip\">'+c+'</span>'}).join('')
 
-    var soap=_parseSoap(noteText)
-    var soapWrap=document.getElementById('ntSoap')
-    if(soap.ok){
-        document.getElementById('ntSoapS').textContent=_nfmt(soap.s)
-        document.getElementById('ntSoapO').textContent=_nfmt(soap.o)
-        document.getElementById('ntSoapA').textContent=_nfmt(soap.a)
-        document.getElementById('ntSoapP').textContent=_nfmt(soap.p)
-        soapWrap.style.display='block'
-    }else{
-        soapWrap.style.display='none'
-    }
+ var soap=_parseSoap(noteText)
+ var soapWrap=document.getElementById('ntSoap')
+ if(soap.ok){
+ document.getElementById('ntSoapS').textContent=_nfmt(soap.s)
+ document.getElementById('ntSoapO').textContent=_nfmt(soap.o)
+ document.getElementById('ntSoapA').textContent=_nfmt(soap.a)
+ document.getElementById('ntSoapP').textContent=_nfmt(soap.p)
+ soapWrap.style.display='block'
+ }else{
+ soapWrap.style.display='none'
+ }
 }
 function initTemporalNotesUI(){
-    var source=document.getElementById('inpatientNotesJson')
-    var listWrap=document.getElementById('ntList')
-    var detailWrap=document.getElementById('ntDetail')
-    if(!source || !listWrap || !detailWrap){return}
-    var notes=[]
-    try{notes=JSON.parse(source.textContent||'[]')}catch(_e){notes=[]}
-    if(!Array.isArray(notes) || !notes.length){return}
+ var source=document.getElementById('inpatientNotesJson')
+ var listWrap=document.getElementById('ntList')
+ var detailWrap=document.getElementById('ntDetail')
+ if(!source || !listWrap || !detailWrap){return}
+ var notes=[]
+ try{notes=JSON.parse(source.textContent||'[]')}catch(_e){notes=[]}
+ if(!Array.isArray(notes) || !notes.length){return}
 
-    var items=listWrap.querySelectorAll('.nt-item')
-    function activate(index){
-        items.forEach(function(el){el.classList.remove('active')})
-        var btn=listWrap.querySelector('[data-note-index=\"'+index+'\"]')
-        if(btn){btn.classList.add('active')}
-        var note=notes[index]
-        renderTemporalNoteDetail(note)
-    }
-    items.forEach(function(btn){
-        btn.addEventListener('click', function(){activate(Number(btn.getAttribute('data-note-index')||'0'))})
-    })
-    activate(0)
+ var items=listWrap.querySelectorAll('.nt-item')
+ function activate(index){
+ items.forEach(function(el){el.classList.remove('active')})
+ var btn=listWrap.querySelector('[data-note-index=\"'+index+'\"]')
+ if(btn){btn.classList.add('active')}
+ var note=notes[index]
+ renderTemporalNoteDetail(note)
+ }
+ items.forEach(function(btn){
+ btn.addEventListener('click', function(){activate(Number(btn.getAttribute('data-note-index')||'0'))})
+ })
+ activate(0)
 }
 initTemporalNotesUI()
 </script>

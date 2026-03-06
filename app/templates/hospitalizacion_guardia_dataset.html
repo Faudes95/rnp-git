@@ -1,236 +1,236 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ spec.title }}</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; }
-        body { font-family:'Montserrat',sans-serif; margin:0; padding:20px; background:#f4f6f9; }
-        .container { max-width:1450px; margin:auto; background:#fff; border-radius:10px; padding:22px; box-shadow:0 8px 24px rgba(0,0,0,.10); }
-        h1,h2,h3 { color:var(--imss-verde); margin:0 0 10px; }
-        .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:end; margin-bottom:12px; }
-        .toolbar input[type=date], .toolbar select { border:1px solid #cfd8d3; border-radius:6px; padding:8px; }
-        .btn { text-decoration:none; border:0; border-radius:7px; padding:10px 12px; color:#fff; background:var(--imss-verde); font-weight:700; cursor:pointer; display:inline-block; }
-        .btn-dorado { background:var(--imss-dorado); }
-        .alert { padding:10px 12px; border-radius:8px; margin-bottom:12px; font-size:13px; }
-        .ok { background:#ecf8ef; border:1px solid #b9dfbf; color:#1f5f2f; }
-        .err { background:#fdeaea; border:1px solid #efbbbb; color:#8d1b1b; }
-        .split { display:grid; grid-template-columns:420px 1fr; gap:14px; align-items:start; }
-        .card { background:#fbfdfc; border:1px solid #dce5e0; border-radius:10px; padding:12px; }
-        .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
-        label { display:block; font-size:12px; font-weight:700; color:#1f3e37; margin-bottom:4px; }
-        input, select, textarea { width:100%; border:1px solid #cfd8d3; border-radius:6px; padding:7px; font-size:12px; }
-        textarea { min-height:64px; resize:vertical; }
-        table { width:100%; border-collapse:collapse; }
-        th { background:var(--imss-verde); color:#fff; text-align:left; padding:8px; font-size:12px; position:sticky; top:0; z-index:2; }
-        td { border-bottom:1px solid #e7eeea; padding:7px; font-size:12px; vertical-align:top; }
-        .table-wrap { max-height:74vh; overflow:auto; border:1px solid #dee6e2; border-radius:10px; }
-        .small { font-size:11px; color:#5a666c; }
-        .actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px; }
-        .pill { border:1px solid #dde6e1; border-radius:999px; padding:4px 8px; font-size:11px; background:#f7faf8; color:#305148; display:inline-block; margin:3px 4px 0 0; cursor:pointer; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>{{ spec.title }}</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde:#0a3161; --imss-dorado:#c82f3f; }
+ body { font-family:'Montserrat',sans-serif; margin:0; padding:20px; background:#f4f6f9; }
+ .container { max-width:1450px; margin:auto; background:#fff; border-radius:10px; padding:22px; box-shadow:0 8px 24px rgba(0,0,0,.10); }
+ h1,h2,h3 { color:var(--imss-verde); margin:0 0 10px; }
+ .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:end; margin-bottom:12px; }
+ .toolbar input[type=date], .toolbar select { border:1px solid #cfd8d3; border-radius:6px; padding:8px; }
+ .btn { text-decoration:none; border:0; border-radius:7px; padding:10px 12px; color:#fff; background:var(--imss-verde); font-weight:700; cursor:pointer; display:inline-block; }
+ .btn-dorado { background:var(--imss-dorado); }
+ .alert { padding:10px 12px; border-radius:8px; margin-bottom:12px; font-size:13px; }
+ .ok { background:#ecf8ef; border:1px solid #b9dfbf; color:#1f5f2f; }
+ .err { background:#fdeaea; border:1px solid #efbbbb; color:#8d1b1b; }
+ .split { display:grid; grid-template-columns:420px 1fr; gap:14px; align-items:start; }
+ .card { background:#fbfdfc; border:1px solid #d9e6fb; border-radius:10px; padding:12px; }
+ .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+ label { display:block; font-size:12px; font-weight:700; color:#1f3e37; margin-bottom:4px; }
+ input, select, textarea { width:100%; border:1px solid #cfd8d3; border-radius:6px; padding:7px; font-size:12px; }
+ textarea { min-height:64px; resize:vertical; }
+ table { width:100%; border-collapse:collapse; }
+ th { background:var(--imss-verde); color:#fff; text-align:left; padding:8px; font-size:12px; position:sticky; top:0; z-index:2; }
+ td { border-bottom:1px solid #e7eeea; padding:7px; font-size:12px; vertical-align:top; }
+ .table-wrap { max-height:74vh; overflow:auto; border:1px solid #dee6e2; border-radius:10px; }
+ .small { font-size:11px; color:#5a666c; }
+ .actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+ .pill { border:1px solid #dde6e1; border-radius:999px; padding:4px 8px; font-size:11px; background:#f7faf8; color:#305148; display:inline-block; margin:3px 4px 0 0; cursor:pointer; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
 <div class="container">
-    <h1>{{ spec.title }}</h1>
-    <div class="toolbar">
-        <form action="" method="get" style="display:flex; gap:8px; align-items:end;">
-            <div>
-                <label>Fecha de guardia</label>
-                <input type="date" name="fecha" value="{{ fecha }}">
-            </div>
-            <button class="btn" type="submit">Ver fecha</button>
-        </form>
-        <a class="btn btn-dorado" href="/hospitalizacion/guardia?fecha={{ fecha }}">Modulo guardia</a>
-        <a class="btn btn-dorado" href="/hospitalizacion/importar?fecha={{ fecha }}">Importar</a>
-        {% if docx_export_enabled %}
-        <a class="btn btn-dorado" href="{{ export_docx_href }}">Exportar DOCX del día</a>
-        <a class="btn btn-dorado" href="{{ export_zip_href }}">Exportar entrega (ZIP)</a>
-        {% else %}
-        <a class="btn btn-dorado" href="{{ export_zip_href }}">Exportar</a>
-        {% endif %}
-    </div>
+ <h1>{{ spec.title }}</h1>
+ <div class="toolbar">
+ <form action="" method="get" style="display:flex; gap:8px; align-items:end;">
+ <div>
+ <label>Fecha de guardia</label>
+ <input type="date" name="fecha" value="{{ fecha }}">
+ </div>
+ <button class="btn" type="submit">Ver fecha</button>
+ </form>
+ <a class="btn btn-dorado" href="/hospitalizacion/guardia?fecha={{ fecha }}">Modulo guardia</a>
+ <a class="btn btn-dorado" href="/hospitalizacion/importar?fecha={{ fecha }}">Importar</a>
+ {% if docx_export_enabled %}
+ <a class="btn btn-dorado" href="{{ export_docx_href }}">Exportar DOCX del día</a>
+ <a class="btn btn-dorado" href="{{ export_zip_href }}">Exportar entrega (ZIP)</a>
+ {% else %}
+ <a class="btn btn-dorado" href="{{ export_zip_href }}">Exportar</a>
+ {% endif %}
+ </div>
 
-    {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
-    {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+ {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+ {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
 
-    <div class="split">
-        <div class="card">
-            <h3>Nuevo registro</h3>
-            <form action="/hospitalizacion/guardia/{{ dataset }}/guardar" method="post" id="guardia-form">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <input type="hidden" name="record_id" id="record_id" value="">
-                <div class="grid">
-                    <div>
-                        <label>Fecha</label>
-                        <input type="date" name="fecha" value="{{ fecha }}">
-                    </div>
-                    <div>
-                        <label>Consulta ID (opcional)</label>
-                        <input type="number" name="consulta_id" id="consulta_id">
-                    </div>
-                </div>
+ <div class="split">
+ <div class="card">
+ <h3>Nuevo registro</h3>
+ <form action="/hospitalizacion/guardia/{{ dataset }}/guardar" method="post" id="guardia-form">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <input type="hidden" name="record_id" id="record_id" value="">
+ <div class="grid">
+ <div>
+ <label>Fecha</label>
+ <input type="date" name="fecha" value="{{ fecha }}">
+ </div>
+ <div>
+ <label>Consulta ID (opcional)</label>
+ <input type="number" name="consulta_id" id="consulta_id">
+ </div>
+ </div>
 
-                {% if subdatasets %}
-                <div style="margin-top:8px;">
-                    <label>Submodulo</label>
-                    <select name="subdataset" id="subdataset">
-                        <option value="">Seleccione</option>
-                        {% for sub in subdatasets %}
-                        <option value="{{ sub }}">{{ sub }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                {% endif %}
+ {% if subdatasets %}
+ <div style="margin-top:8px;">
+ <label>Submodulo</label>
+ <select name="subdataset" id="subdataset">
+ <option value="">Seleccione</option>
+ {% for sub in subdatasets %}
+ <option value="{{ sub }}">{{ sub }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ {% endif %}
 
-                <div class="grid" style="margin-top:8px;">
-                    {% for col in field_inputs %}
-                    <div>
-                        <label>{{ col.field }}</label>
-                        <input type="text" name="f_{{ col.input_key }}" id="f_{{ col.input_key }}">
-                    </div>
-                    {% endfor %}
-                </div>
+ <div class="grid" style="margin-top:8px;">
+ {% for col in field_inputs %}
+ <div>
+ <label>{{ col.field }}</label>
+ <input type="text" name="f_{{ col.input_key }}" id="f_{{ col.input_key }}">
+ </div>
+ {% endfor %}
+ </div>
 
-                <div style="margin-top:8px;">
-                    <label>Campos extra en JSON (opcional)</label>
-                    <textarea name="extra_json" id="extra_json" placeholder='{"CAMPO_EXTRA":"VALOR"}'></textarea>
-                </div>
+ <div style="margin-top:8px;">
+ <label>Campos extra en JSON (opcional)</label>
+ <textarea name="extra_json" id="extra_json" placeholder='{"CAMPO_EXTRA":"VALOR"}'></textarea>
+ </div>
 
-                <div class="actions">
-                    <button class="btn" type="submit">Guardar registro</button>
-                    <button class="btn btn-dorado" type="button" onclick="resetForm()">Limpiar</button>
-                </div>
-            </form>
+ <div class="actions">
+ <button class="btn" type="submit">Guardar registro</button>
+ <button class="btn btn-dorado" type="button" onclick="resetForm()">Limpiar</button>
+ </div>
+ </form>
 
-            <h3 style="margin-top:12px;">Autollenado rapido desde censo</h3>
-            <div class="small">Seleccione un paciente hospitalizado para llenar campos comunes (NSS, nombre, cama, edad, sexo, diagnostico, HGZ).</div>
-            <div id="quickfill-list" style="max-height:210px; overflow:auto; margin-top:6px;">
-                {% for p in quickfill %}
-                <span
-                    class="pill"
-                    data-consulta-id="{{ p.consulta_id }}"
-                    data-cama="{{ p.cama }}"
-                    data-nombre="{{ p.nombre }}"
-                    data-nss="{{ p.nss }}"
-                    data-edad="{{ p.edad }}"
-                    data-sexo="{{ p.sexo }}"
-                    data-diagnostico="{{ p.diagnostico }}"
-                    data-hgz-envio="{{ p.hgz_envio }}"
-                >{{ p.cama }} - {{ p.nombre }}</span>
-                {% else %}
-                <div class="small">No hay pacientes activos para la fecha.</div>
-                {% endfor %}
-            </div>
-        </div>
+ <h3 style="margin-top:12px;">Autollenado rapido desde censo</h3>
+ <div class="small">Seleccione un paciente hospitalizado para llenar campos comunes (NSS, nombre, cama, edad, sexo, diagnostico, HGZ).</div>
+ <div id="quickfill-list" style="max-height:210px; overflow:auto; margin-top:6px;">
+ {% for p in quickfill %}
+ <span
+ class="pill"
+ data-consulta-id="{{ p.consulta_id }}"
+ data-cama="{{ p.cama }}"
+ data-nombre="{{ p.nombre }}"
+ data-nss="{{ p.nss }}"
+ data-edad="{{ p.edad }}"
+ data-sexo="{{ p.sexo }}"
+ data-diagnostico="{{ p.diagnostico }}"
+ data-hgz-envio="{{ p.hgz_envio }}"
+ >{{ p.cama }} - {{ p.nombre }}</span>
+ {% else %}
+ <div class="small">No hay pacientes activos para la fecha.</div>
+ {% endfor %}
+ </div>
+ </div>
 
-        <div class="card">
-            <h3>Registros del dia ({{ rows|length }})</h3>
-            <div class="table-wrap">
-                <table>
-                    <tr>
-                        <th>ID</th>
-                        {% if subdatasets %}<th>SUBMODULO</th>{% endif %}
-                        {% for field in fields %}
-                        <th>{{ field }}</th>
-                        {% endfor %}
-                        <th>Origen</th>
-                        <th>Acciones</th>
-                    </tr>
-                    {% for row in rows %}
-                    <tr>
-                        <td>{{ row.id }}</td>
-                        {% if subdatasets %}<td>{{ row.subdataset or '' }}</td>{% endif %}
-                        {% for field in fields %}
-                        <td>{{ row.payload.get(field, '') }}</td>
-                        {% endfor %}
-                        <td class="small">{{ row.source_file or 'MANUAL' }}{% if row.source_sheet %} / {{ row.source_sheet }}{% endif %}{% if row.source_row %} / fila {{ row.source_row }}{% endif %}</td>
-                        <td>
-                            <button
-                                class="btn btn-dorado"
-                                type="button"
-                                data-row='{{ row.json_payload|e }}'
-                                onclick="editRow(this)"
-                            >Editar</button>
-                            <form action="/hospitalizacion/guardia/{{ dataset }}/eliminar/{{ row.id }}" method="post" style="display:inline-block;">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                <input type="hidden" name="fecha" value="{{ fecha }}">
-                                <button class="btn" type="submit" onclick="return confirm('Eliminar registro {{ row.id }}?')">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr><td colspan="{{ fields|length + 4 }}" style="text-align:center;">Sin registros para esta fecha.</td></tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-    </div>
+ <div class="card">
+ <h3>Registros del dia ({{ rows|length }})</h3>
+ <div class="table-wrap">
+ <table>
+ <tr>
+ <th>ID</th>
+ {% if subdatasets %}<th>SUBMODULO</th>{% endif %}
+ {% for field in fields %}
+ <th>{{ field }}</th>
+ {% endfor %}
+ <th>Origen</th>
+ <th>Acciones</th>
+ </tr>
+ {% for row in rows %}
+ <tr>
+ <td>{{ row.id }}</td>
+ {% if subdatasets %}<td>{{ row.subdataset or '' }}</td>{% endif %}
+ {% for field in fields %}
+ <td>{{ row.payload.get(field, '') }}</td>
+ {% endfor %}
+ <td class="small">{{ row.source_file or 'MANUAL' }}{% if row.source_sheet %} / {{ row.source_sheet }}{% endif %}{% if row.source_row %} / fila {{ row.source_row }}{% endif %}</td>
+ <td>
+ <button
+ class="btn btn-dorado"
+ type="button"
+ data-row='{{ row.json_payload|e }}'
+ onclick="editRow(this)"
+ >Editar</button>
+ <form action="/hospitalizacion/guardia/{{ dataset }}/eliminar/{{ row.id }}" method="post" style="display:inline-block;">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <input type="hidden" name="fecha" value="{{ fecha }}">
+ <button class="btn" type="submit" onclick="return confirm('Eliminar registro {{ row.id }}?')">Eliminar</button>
+ </form>
+ </td>
+ </tr>
+ {% else %}
+ <tr><td colspan="{{ fields|length + 4 }}" style="text-align:center;">Sin registros para esta fecha.</td></tr>
+ {% endfor %}
+ </table>
+ </div>
+ </div>
+ </div>
 </div>
 
 <script>
 function resetForm() {
-    document.getElementById('record_id').value = '';
-    document.getElementById('consulta_id').value = '';
-    {% if subdatasets %}
-    document.getElementById('subdataset').value = '';
-    {% endif %}
-    {% for col in field_inputs %}
-    document.getElementById('f_{{ col.input_key }}').value = '';
-    {% endfor %}
-    document.getElementById('extra_json').value = '';
+ document.getElementById('record_id').value = '';
+ document.getElementById('consulta_id').value = '';
+ {% if subdatasets %}
+ document.getElementById('subdataset').value = '';
+ {% endif %}
+ {% for col in field_inputs %}
+ document.getElementById('f_{{ col.input_key }}').value = '';
+ {% endfor %}
+ document.getElementById('extra_json').value = '';
 }
 
 function editRow(btn) {
-    const row = JSON.parse(btn.getAttribute('data-row'));
-    document.getElementById('record_id').value = row.id || '';
-    document.getElementById('consulta_id').value = row.consulta_id || '';
-    {% if subdatasets %}
-    document.getElementById('subdataset').value = row.subdataset || '';
-    {% endif %}
-    const payload = row.payload || {};
-    {% for col in field_inputs %}
-    document.getElementById('f_{{ col.input_key }}').value = payload['{{ col.field }}'] || '';
-    {% endfor %}
-    document.getElementById('extra_json').value = '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+ const row = JSON.parse(btn.getAttribute('data-row'));
+ document.getElementById('record_id').value = row.id || '';
+ document.getElementById('consulta_id').value = row.consulta_id || '';
+ {% if subdatasets %}
+ document.getElementById('subdataset').value = row.subdataset || '';
+ {% endif %}
+ const payload = row.payload || {};
+ {% for col in field_inputs %}
+ document.getElementById('f_{{ col.input_key }}').value = payload['{{ col.field }}'] || '';
+ {% endfor %}
+ document.getElementById('extra_json').value = '';
+ window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 document.querySelectorAll('#quickfill-list .pill').forEach(function(el) {
-    el.addEventListener('click', function() {
-        const cid = el.getAttribute('data-consulta-id') || '';
-        const cama = el.getAttribute('data-cama') || '';
-        const nombre = el.getAttribute('data-nombre') || '';
-        const nss = el.getAttribute('data-nss') || '';
-        const edad = el.getAttribute('data-edad') || '';
-        const sexo = el.getAttribute('data-sexo') || '';
-        const diagnostico = el.getAttribute('data-diagnostico') || '';
-        const hgz = el.getAttribute('data-hgz-envio') || '';
+ el.addEventListener('click', function() {
+ const cid = el.getAttribute('data-consulta-id') || '';
+ const cama = el.getAttribute('data-cama') || '';
+ const nombre = el.getAttribute('data-nombre') || '';
+ const nss = el.getAttribute('data-nss') || '';
+ const edad = el.getAttribute('data-edad') || '';
+ const sexo = el.getAttribute('data-sexo') || '';
+ const diagnostico = el.getAttribute('data-diagnostico') || '';
+ const hgz = el.getAttribute('data-hgz-envio') || '';
 
-        if (document.getElementById('consulta_id')) document.getElementById('consulta_id').value = cid;
-        const set = function(id, val){ const e=document.getElementById(id); if(e) e.value = val; };
-        set('f_CAMA', cama);
-        set('f_NOMBRE', nombre);
-        set('f_NSS', nss);
-        set('f_EDAD', edad);
-        set('f_SEXO', sexo);
-        set('f_DIAGNOSTICO', diagnostico);
-        set('f_HGZ_ENVIO', hgz);
-        set('f_HGZ_HGR_ORIGEN', hgz);
-    });
+ if (document.getElementById('consulta_id')) document.getElementById('consulta_id').value = cid;
+ const set = function(id, val){ const e=document.getElementById(id); if(e) e.value = val; };
+ set('f_CAMA', cama);
+ set('f_NOMBRE', nombre);
+ set('f_NSS', nss);
+ set('f_EDAD', edad);
+ set('f_SEXO', sexo);
+ set('f_DIAGNOSTICO', diagnostico);
+ set('f_HGZ_ENVIO', hgz);
+ set('f_HGZ_HGR_ORIGEN', hgz);
+ });
 });
 </script>
 </body>

@@ -1,224 +1,224 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Gobernanza Clínica — RNP</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <link href="/static/css/rnp_redesign.css" rel="stylesheet">
-    <style>
-        :root{--imss-verde:#13322B;--imss-dorado:#B38E5D;--fondo:#f4f6f9;--rojo:#dc2626;--naranja:#ea580c;--amarillo:#ca8a04;--azul:#2563eb;}
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:'Montserrat',sans-serif;background:var(--fondo);min-height:100vh;}
-        .top-bar{background:var(--imss-verde);padding:12px 24px;display:flex;align-items:center;gap:14px;}
-        .top-bar a{color:#fff;text-decoration:none;font-weight:700;font-size:13px;opacity:.85;transition:opacity .2s;}.top-bar a:hover{opacity:1;}.top-bar .sep{color:rgba(255,255,255,.3);}.top-bar .active{opacity:1;color:var(--imss-dorado);}
-        .container{max-width:1400px;margin:0 auto;padding:20px;}
-        /* Tabs */
-        .gov-tabs{display:flex;gap:4px;background:#fff;border-radius:14px 14px 0 0;padding:6px 6px 0;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow-x:auto;}
-        .gov-tab{padding:12px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border-radius:10px 10px 0 0;transition:all .2s;color:#666;border:none;background:transparent;white-space:nowrap;}
-        .gov-tab:hover{background:#f0ede6;color:var(--imss-verde);}.gov-tab.active{background:var(--imss-verde);color:#fff;}
-        .gov-panel{display:none;background:#fff;border-radius:0 0 14px 14px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.06);animation:fadeUp .3s ease;}.gov-panel.active{display:block;}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-        /* KPI Row */
-        .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px;}
-        .kpi{background:linear-gradient(135deg,var(--imss-verde),#1a5c4a);border-radius:12px;padding:18px;color:#fff;text-align:center;transition:transform .2s;border:2px solid rgba(178,138,71,.3);}
-        .kpi:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.15);}
-        .kpi-val{font-size:32px;font-weight:900;line-height:1;}.kpi-label{font-size:11px;font-weight:700;color:var(--imss-dorado);text-transform:uppercase;letter-spacing:1px;margin-top:6px;}
-        /* Table */
-        .gov-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;}
-        .gov-table thead th{background:var(--imss-verde);color:#fff;padding:10px 14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;font-size:11px;position:sticky;top:0;z-index:2;}
-        .gov-table thead th:first-child{border-radius:8px 0 0 0;}.gov-table thead th:last-child{border-radius:0 8px 0 0;}
-        .gov-table tbody tr{transition:background .15s;}.gov-table tbody tr:hover{background:#f0f5f3;}
-        .gov-table tbody td{padding:10px 14px;border-bottom:1px solid #e8ece9;}
-        .table-scroll{max-height:400px;overflow-y:auto;border-radius:8px;border:1px solid #e0e5e2;}
-        /* Badges */
-        .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-        .badge-critica{background:#fee2e2;color:#dc2626;}.badge-alta{background:#ffedd5;color:#ea580c;}.badge-media{background:#fef9c3;color:#ca8a04;}.badge-baja{background:#dcfce7;color:#16a34a;}
-        .badge-pendiente{background:#fef3c7;color:#92400e;}.badge-firmado{background:#d1fae5;color:#065f46;}.badge-rechazado{background:#fee2e2;color:#991b1b;}.badge-revocado{background:#e5e7eb;color:#374151;}
-        .badge-admin{background:#e0e7ff;color:#3730a3;}.badge-medico{background:#d1fae5;color:#065f46;}.badge-enfermeria{background:#fce7f3;color:#9d174d;}.badge-residente{background:#fef3c7;color:#92400e;}
-        /* Forms */
-        .gov-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:20px;}
-        .form-group{display:flex;flex-direction:column;gap:4px;}
-        .form-group label{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--imss-verde);letter-spacing:.5px;}
-        .form-group input,.form-group select,.form-group textarea{border:2px solid #d2e0da;border-radius:8px;padding:10px 14px;font-size:13px;font-family:inherit;transition:border-color .2s;}
-        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--imss-dorado);outline:none;box-shadow:0 0 0 3px rgba(179,142,93,.15);}
-        .btn-gov{border:none;border-radius:8px;padding:10px 22px;font-weight:800;font-size:13px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
-        .btn-gov:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.15);}
-        .btn-primary{background:var(--imss-verde);color:#fff;}.btn-gold{background:var(--imss-dorado);color:#1b1b1b;}
-        .btn-danger{background:var(--rojo);color:#fff;}.btn-sm{padding:6px 14px;font-size:12px;}
-        /* Severity Lights */
-        .sev-light{width:12px;height:12px;border-radius:50%;display:inline-block;animation:pulse 2s infinite;}
-        .sev-CRITICA{background:#dc2626;box-shadow:0 0 8px #dc2626;}.sev-ALTA{background:#ea580c;box-shadow:0 0 6px #ea580c;}.sev-MEDIA{background:#ca8a04;}.sev-BAJA{background:#16a34a;}
-        @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
-        /* Chart area */
-        .chart-container{background:#fff;border-radius:12px;padding:20px;border:1px solid #e8ece9;margin-top:16px;}
-        .chart-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-        .chart-bar-label{width:120px;font-size:12px;font-weight:700;text-align:right;color:#555;}
-        .chart-bar-track{flex:1;height:24px;background:#f0f5f3;border-radius:6px;overflow:hidden;}
-        .chart-bar-fill{height:100%;border-radius:6px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;font-weight:800;color:#fff;}
-        /* Alert card */
-        .alert-card{border-radius:10px;padding:14px;margin-bottom:10px;border-left:5px solid;display:flex;gap:12px;align-items:flex-start;transition:all .2s;}
-        .alert-card:hover{transform:translateX(4px);}
-        .alert-card.a-CRITICA{background:#fff1f2;border-color:#dc2626;}.alert-card.a-ALTA{background:#fff7ed;border-color:#ea580c;}.alert-card.a-MEDIA{background:#fffbeb;border-color:#ca8a04;}.alert-card.a-BAJA{background:#f0fdf4;border-color:#16a34a;}
-        .filter-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
-        .filter-row input,.filter-row select{border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;font-family:inherit;}
-        .empty-state{text-align:center;padding:40px;color:#999;font-size:14px;}
-        @media(max-width:768px){.gov-tabs{flex-wrap:wrap;}.kpi-row{grid-template-columns:1fr 1fr;}.gov-form{grid-template-columns:1fr;}}
-    </style>
+ <meta charset="UTF-8">
+ <title>Gobernanza Clínica — UROMED</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <link href="/static/css/rnp_redesign.css" rel="stylesheet">
+ <style>
+ :root{--imss-verde:#0a3161;--imss-dorado:#c82f3f;--fondo:#f4f6f9;--rojo:#dc2626;--naranja:#ea580c;--amarillo:#ca8a04;--azul:#2563eb;}
+ *{margin:0;padding:0;box-sizing:border-box;}
+ body{font-family:'Montserrat',sans-serif;background:var(--fondo);min-height:100vh;}
+ .top-bar{background:var(--imss-verde);padding:12px 24px;display:flex;align-items:center;gap:14px;}
+ .top-bar a{color:#fff;text-decoration:none;font-weight:700;font-size:13px;opacity:.85;transition:opacity .2s;}.top-bar a:hover{opacity:1;}.top-bar .sep{color:rgba(255,255,255,.3);}.top-bar .active{opacity:1;color:var(--imss-dorado);}
+ .container{max-width:1400px;margin:0 auto;padding:20px;}
+ /* Tabs */
+ .gov-tabs{display:flex;gap:4px;background:#fff;border-radius:14px 14px 0 0;padding:6px 6px 0;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow-x:auto;}
+ .gov-tab{padding:12px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border-radius:10px 10px 0 0;transition:all .2s;color:#666;border:none;background:transparent;white-space:nowrap;}
+ .gov-tab:hover{background:#f0ede6;color:var(--imss-verde);}.gov-tab.active{background:var(--imss-verde);color:#fff;}
+ .gov-panel{display:none;background:#fff;border-radius:0 0 14px 14px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.06);animation:fadeUp .3s ease;}.gov-panel.active{display:block;}
+ @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+ /* KPI Row */
+ .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px;}
+ .kpi{background:linear-gradient(135deg,var(--imss-verde),#2e6ec9);border-radius:12px;padding:18px;color:#fff;text-align:center;transition:transform .2s;border:2px solid rgba(178,138,71,.3);}
+ .kpi:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.15);}
+ .kpi-val{font-size:32px;font-weight:900;line-height:1;}.kpi-label{font-size:11px;font-weight:700;color:var(--imss-dorado);text-transform:uppercase;letter-spacing:1px;margin-top:6px;}
+ /* Table */
+ .gov-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;}
+ .gov-table thead th{background:var(--imss-verde);color:#fff;padding:10px 14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;font-size:11px;position:sticky;top:0;z-index:2;}
+ .gov-table thead th:first-child{border-radius:8px 0 0 0;}.gov-table thead th:last-child{border-radius:0 8px 0 0;}
+ .gov-table tbody tr{transition:background .15s;}.gov-table tbody tr:hover{background:#edf3ff;}
+ .gov-table tbody td{padding:10px 14px;border-bottom:1px solid #e8ece9;}
+ .table-scroll{max-height:400px;overflow-y:auto;border-radius:8px;border:1px solid #e0e5e2;}
+ /* Badges */
+ .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+ .badge-critica{background:#fee2e2;color:#dc2626;}.badge-alta{background:#ffedd5;color:#ea580c;}.badge-media{background:#fef9c3;color:#ca8a04;}.badge-baja{background:#dcfce7;color:#16a34a;}
+ .badge-pendiente{background:#fef3c7;color:#92400e;}.badge-firmado{background:#d1fae5;color:#065f46;}.badge-rechazado{background:#fee2e2;color:#991b1b;}.badge-revocado{background:#e5e7eb;color:#374151;}
+ .badge-admin{background:#e0e7ff;color:#3730a3;}.badge-medico{background:#d1fae5;color:#065f46;}.badge-enfermeria{background:#fce7f3;color:#9d174d;}.badge-residente{background:#fef3c7;color:#92400e;}
+ /* Forms */
+ .gov-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:20px;}
+ .form-group{display:flex;flex-direction:column;gap:4px;}
+ .form-group label{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--imss-verde);letter-spacing:.5px;}
+ .form-group input,.form-group select,.form-group textarea{border:2px solid #d2e0da;border-radius:8px;padding:10px 14px;font-size:13px;font-family:inherit;transition:border-color .2s;}
+ .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--imss-dorado);outline:none;box-shadow:0 0 0 3px rgba(200,47,63,.15);}
+ .btn-gov{border:none;border-radius:8px;padding:10px 22px;font-weight:800;font-size:13px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+ .btn-gov:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.15);}
+ .btn-primary{background:var(--imss-verde);color:#fff;}.btn-gold{background:var(--imss-dorado);color:#ffffff;}
+ .btn-danger{background:var(--rojo);color:#fff;}.btn-sm{padding:6px 14px;font-size:12px;}
+ /* Severity Lights */
+ .sev-light{width:12px;height:12px;border-radius:50%;display:inline-block;animation:pulse 2s infinite;}
+ .sev-CRITICA{background:#dc2626;box-shadow:0 0 8px #dc2626;}.sev-ALTA{background:#ea580c;box-shadow:0 0 6px #ea580c;}.sev-MEDIA{background:#ca8a04;}.sev-BAJA{background:#16a34a;}
+ @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+ /* Chart area */
+ .chart-container{background:#fff;border-radius:12px;padding:20px;border:1px solid #e8ece9;margin-top:16px;}
+ .chart-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+ .chart-bar-label{width:120px;font-size:12px;font-weight:700;text-align:right;color:#555;}
+ .chart-bar-track{flex:1;height:24px;background:#edf3ff;border-radius:6px;overflow:hidden;}
+ .chart-bar-fill{height:100%;border-radius:6px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;font-weight:800;color:#fff;}
+ /* Alert card */
+ .alert-card{border-radius:10px;padding:14px;margin-bottom:10px;border-left:5px solid;display:flex;gap:12px;align-items:flex-start;transition:all .2s;}
+ .alert-card:hover{transform:translateX(4px);}
+ .alert-card.a-CRITICA{background:#fff1f2;border-color:#dc2626;}.alert-card.a-ALTA{background:#fff7ed;border-color:#ea580c;}.alert-card.a-MEDIA{background:#fffbeb;border-color:#ca8a04;}.alert-card.a-BAJA{background:#f0fdf4;border-color:#16a34a;}
+ .filter-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+ .filter-row input,.filter-row select{border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;font-family:inherit;}
+ .empty-state{text-align:center;padding:40px;color:#999;font-size:14px;}
+ @media(max-width:768px){.gov-tabs{flex-wrap:wrap;}.kpi-row{grid-template-columns:1fr 1fr;}.gov-form{grid-template-columns:1fr;}}
+ </style>
 </head>
 <body>
-    <div class="top-bar">
-        <a href="/">Menu</a><span class="sep">|</span>
-        <a class="active" href="#">Gobernanza Clinica</a>
-    </div>
-    <div class="container">
-        <h1 style="color:var(--imss-verde);font-size:24px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            GOBERNANZA CLÍNICA
-        </h1>
-        <!-- Tabs -->
-        <div class="gov-tabs">
-            <button class="gov-tab active" onclick="switchTab('dashboard')">Dashboard</button>
-            <button class="gov-tab" onclick="switchTab('audit')">Auditoría</button>
-            <button class="gov-tab" onclick="switchTab('consent')">Consentimiento</button>
-            <button class="gov-tab" onclick="switchTab('alerts')">Alertas Clínicas</button>
-            <button class="gov-tab" onclick="switchTab('users')">Usuarios</button>
-        </div>
-        <!-- Dashboard -->
-        <div id="panel-dashboard" class="gov-panel active">
-            <div class="kpi-row" id="kpiRow"></div>
-            <div class="chart-container">
-                <h3 style="color:var(--imss-verde);margin-bottom:14px;font-size:15px;">Actividad por Módulo (Últimos 7 días)</h3>
-                <div id="chartBars"></div>
-            </div>
-        </div>
-        <!-- Auditoría -->
-        <div id="panel-audit" class="gov-panel">
-            <div class="filter-row">
-                <input type="text" id="auditUser" placeholder="Usuario...">
-                <input type="date" id="auditDate">
-                <select id="auditModule"><option value="">Todos los módulos</option><option>CONSULTA</option><option>QUIROFANO</option><option>HOSPITALIZACION</option><option>URGENCIAS</option><option>GOVERNANCE</option></select>
-                <button class="btn-gov btn-primary btn-sm" onclick="loadAudit()">Filtrar</button>
-            </div>
-            <div class="table-scroll">
-                <table class="gov-table"><thead><tr><th>Fecha/Hora</th><th>Usuario</th><th>Rol</th><th>Método</th><th>Ruta</th><th>Status</th><th>Tabla</th><th>Paciente</th><th>Módulo</th></tr></thead><tbody id="auditBody"></tbody></table>
-            </div>
-        </div>
-        <!-- Consentimiento -->
-        <div id="panel-consent" class="gov-panel">
-            <h3 style="color:var(--imss-verde);margin-bottom:16px;">Nuevo Consentimiento Informado</h3>
-            <div class="gov-form">
-                <div class="form-group"><label>NSS Paciente</label><input id="consentNSS" placeholder="10 dígitos"></div>
-                <div class="form-group"><label>Tipo</label><select id="consentTipo"><option>PROCEDIMIENTO_QX</option><option>ANESTESIA</option><option>INVESTIGACION</option><option>TRANSFUSION</option><option>ALTA_VOLUNTARIA</option></select></div>
-                <div class="form-group"><label>Título</label><input id="consentTitulo" placeholder="Ej: Prostatectomía Radical"></div>
-                <div class="form-group"><label>Médico Responsable</label><input id="consentMedico" placeholder="Dr./Dra. ..."></div>
-            </div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Texto del Consentimiento</label><textarea id="consentTexto" rows="4" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Descripción del procedimiento, riesgos, beneficios..."></textarea></div>
-            <button class="btn-gov btn-primary" onclick="crearConsentimiento()">Crear Consentimiento</button>
-            <hr style="margin:20px 0;border:none;border-top:2px solid #e8ece9;">
-            <h3 style="color:var(--imss-verde);margin-bottom:12px;">Buscar Consentimientos</h3>
-            <div style="display:flex;gap:10px;margin-bottom:14px;">
-                <input id="consentSearchNSS" placeholder="NSS del paciente" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
-                <button class="btn-gov btn-gold btn-sm" onclick="buscarConsentimientos()">Buscar</button>
-            </div>
-            <div id="consentResults"></div>
-        </div>
-        <!-- Alertas -->
-        <div id="panel-alerts" class="gov-panel">
-            <h3 style="color:var(--imss-verde);margin-bottom:16px;">Nueva Alerta Clínica</h3>
-            <div class="gov-form">
-                <div class="form-group"><label>NSS Paciente</label><input id="alertNSS" placeholder="10 dígitos"></div>
-                <div class="form-group"><label>Tipo</label><select id="alertTipo"><option>ALERGIA</option><option>INTERACCION_MEDICAMENTOSA</option><option>RESULTADO_CRITICO_LAB</option><option>RIESGO_QUIRURGICO</option><option>COMORBILIDAD_GRAVE</option><option>ALERTA_RENAL</option></select></div>
-                <div class="form-group"><label>Severidad</label><select id="alertSev"><option>CRITICA</option><option>ALTA</option><option>MEDIA</option><option>BAJA</option></select></div>
-                <div class="form-group"><label>Título</label><input id="alertTitulo" placeholder="Ej: Alergia a penicilina"></div>
-            </div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Descripción</label><textarea id="alertDesc" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Detalle de la alerta..."></textarea></div>
-            <button class="btn-gov btn-primary" onclick="crearAlerta()">Registrar Alerta</button>
-            <hr style="margin:20px 0;border:none;border-top:2px solid #e8ece9;">
-            <h3 style="color:var(--imss-verde);margin-bottom:12px;">Alertas del Paciente</h3>
-            <div style="display:flex;gap:10px;margin-bottom:14px;">
-                <input id="alertSearchNSS" placeholder="NSS" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
-                <button class="btn-gov btn-gold btn-sm" onclick="buscarAlertas()">Buscar</button>
-            </div>
-            <div id="alertResults"></div>
-        </div>
-        <!-- Usuarios -->
-        <div id="panel-users" class="gov-panel">
-            <h3 style="color:var(--imss-verde);margin-bottom:16px;">Crear Usuario</h3>
-            <div class="gov-form">
-                <div class="form-group"><label>Username</label><input id="userUsername" placeholder="nombre.usuario"></div>
-                <div class="form-group"><label>Contraseña</label><input id="userPassword" type="password"></div>
-                <div class="form-group"><label>Nombre Completo</label><input id="userNombre" placeholder="Dr. Juan Pérez"></div>
-                <div class="form-group"><label>Matrícula</label><input id="userMatricula" placeholder="12345678"></div>
-                <div class="form-group"><label>Cédula Profesional</label><input id="userCedula" placeholder="1234567"></div>
-                <div class="form-group"><label>Rol</label><select id="userRol"><option>admin</option><option>jefe_servicio</option><option>medico_adscrito</option><option>residente</option><option>enfermeria</option><option>capturista</option><option>readonly</option></select></div>
-                <div class="form-group"><label>Servicio</label><input id="userServicio" value="UROLOGIA"></div>
-            </div>
-            <button class="btn-gov btn-primary" onclick="crearUsuario()">Crear Usuario</button>
-            <hr style="margin:20px 0;border:none;border-top:2px solid #e8ece9;">
-            <h3 style="color:var(--imss-verde);margin-bottom:12px;">Usuarios Registrados</h3>
-            <div class="table-scroll"><table class="gov-table"><thead><tr><th>ID</th><th>Username</th><th>Nombre</th><th>Matrícula</th><th>Rol</th><th>Servicio</th><th>Activo</th></tr></thead><tbody id="usersBody"></tbody></table></div>
-        </div>
-    </div>
+ <div class="top-bar">
+ <a href="/">Menu</a><span class="sep">|</span>
+ <a class="active" href="#">Gobernanza Clinica</a>
+ </div>
+ <div class="container">
+ <h1 style="color:var(--imss-verde);font-size:24px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+ <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+ GOBERNANZA CLÍNICA
+ </h1>
+ <!-- Tabs -->
+ <div class="gov-tabs">
+ <button class="gov-tab active" onclick="switchTab('dashboard')">Dashboard</button>
+ <button class="gov-tab" onclick="switchTab('audit')">Auditoría</button>
+ <button class="gov-tab" onclick="switchTab('consent')">Consentimiento</button>
+ <button class="gov-tab" onclick="switchTab('alerts')">Alertas Clínicas</button>
+ <button class="gov-tab" onclick="switchTab('users')">Usuarios</button>
+ </div>
+ <!-- Dashboard -->
+ <div id="panel-dashboard" class="gov-panel active">
+ <div class="kpi-row" id="kpiRow"></div>
+ <div class="chart-container">
+ <h3 style="color:var(--imss-verde);margin-bottom:14px;font-size:15px;">Actividad por Módulo (Últimos 7 días)</h3>
+ <div id="chartBars"></div>
+ </div>
+ </div>
+ <!-- Auditoría -->
+ <div id="panel-audit" class="gov-panel">
+ <div class="filter-row">
+ <input type="text" id="auditUser" placeholder="Usuario...">
+ <input type="date" id="auditDate">
+ <select id="auditModule"><option value="">Todos los módulos</option><option>CONSULTA</option><option>QUIROFANO</option><option>HOSPITALIZACION</option><option>URGENCIAS</option><option>GOVERNANCE</option></select>
+ <button class="btn-gov btn-primary btn-sm" onclick="loadAudit()">Filtrar</button>
+ </div>
+ <div class="table-scroll">
+ <table class="gov-table"><thead><tr><th>Fecha/Hora</th><th>Usuario</th><th>Rol</th><th>Método</th><th>Ruta</th><th>Status</th><th>Tabla</th><th>Paciente</th><th>Módulo</th></tr></thead><tbody id="auditBody"></tbody></table>
+ </div>
+ </div>
+ <!-- Consentimiento -->
+ <div id="panel-consent" class="gov-panel">
+ <h3 style="color:var(--imss-verde);margin-bottom:16px;">Nuevo Consentimiento Informado</h3>
+ <div class="gov-form">
+ <div class="form-group"><label>NSS Paciente</label><input id="consentNSS" placeholder="10 dígitos"></div>
+ <div class="form-group"><label>Tipo</label><select id="consentTipo"><option>PROCEDIMIENTO_QX</option><option>ANESTESIA</option><option>INVESTIGACION</option><option>TRANSFUSION</option><option>ALTA_VOLUNTARIA</option></select></div>
+ <div class="form-group"><label>Título</label><input id="consentTitulo" placeholder="Ej: Prostatectomía Radical"></div>
+ <div class="form-group"><label>Médico Responsable</label><input id="consentMedico" placeholder="Dr./Dra. ..."></div>
+ </div>
+ <div class="form-group" style="margin-bottom:14px;"><label>Texto del Consentimiento</label><textarea id="consentTexto" rows="4" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Descripción del procedimiento, riesgos, beneficios..."></textarea></div>
+ <button class="btn-gov btn-primary" onclick="crearConsentimiento()">Crear Consentimiento</button>
+ <hr style="margin:20px 0;border:none;border-top:2px solid #e8ece9;">
+ <h3 style="color:var(--imss-verde);margin-bottom:12px;">Buscar Consentimientos</h3>
+ <div style="display:flex;gap:10px;margin-bottom:14px;">
+ <input id="consentSearchNSS" placeholder="NSS del paciente" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
+ <button class="btn-gov btn-gold btn-sm" onclick="buscarConsentimientos()">Buscar</button>
+ </div>
+ <div id="consentResults"></div>
+ </div>
+ <!-- Alertas -->
+ <div id="panel-alerts" class="gov-panel">
+ <h3 style="color:var(--imss-verde);margin-bottom:16px;">Nueva Alerta Clínica</h3>
+ <div class="gov-form">
+ <div class="form-group"><label>NSS Paciente</label><input id="alertNSS" placeholder="10 dígitos"></div>
+ <div class="form-group"><label>Tipo</label><select id="alertTipo"><option>ALERGIA</option><option>INTERACCION_MEDICAMENTOSA</option><option>RESULTADO_CRITICO_LAB</option><option>RIESGO_QUIRURGICO</option><option>COMORBILIDAD_GRAVE</option><option>ALERTA_RENAL</option></select></div>
+ <div class="form-group"><label>Severidad</label><select id="alertSev"><option>CRITICA</option><option>ALTA</option><option>MEDIA</option><option>BAJA</option></select></div>
+ <div class="form-group"><label>Título</label><input id="alertTitulo" placeholder="Ej: Alergia a penicilina"></div>
+ </div>
+ <div class="form-group" style="margin-bottom:14px;"><label>Descripción</label><textarea id="alertDesc" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Detalle de la alerta..."></textarea></div>
+ <button class="btn-gov btn-primary" onclick="crearAlerta()">Registrar Alerta</button>
+ <hr style="margin:20px 0;border:none;border-top:2px solid #e8ece9;">
+ <h3 style="color:var(--imss-verde);margin-bottom:12px;">Alertas del Paciente</h3>
+ <div style="display:flex;gap:10px;margin-bottom:14px;">
+ <input id="alertSearchNSS" placeholder="NSS" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
+ <button class="btn-gov btn-gold btn-sm" onclick="buscarAlertas()">Buscar</button>
+ </div>
+ <div id="alertResults"></div>
+ </div>
+ <!-- Usuarios -->
+ <div id="panel-users" class="gov-panel">
+ <h3 style="color:var(--imss-verde);margin-bottom:16px;">Crear Usuario</h3>
+ <div class="gov-form">
+ <div class="form-group"><label>Username</label><input id="userUsername" placeholder="nombre.usuario"></div>
+ <div class="form-group"><label>Contraseña</label><input id="userPassword" type="password"></div>
+ <div class="form-group"><label>Nombre Completo</label><input id="userNombre" placeholder="Dr. Juan Pérez"></div>
+ <div class="form-group"><label>Matrícula</label><input id="userMatricula" placeholder="12345678"></div>
+ <div class="form-group"><label>Cédula Profesional</label><input id="userCedula" placeholder="1234567"></div>
+ <div class="form-group"><label>Rol</label><select id="userRol"><option>admin</option><option>jefe_servicio</option><option>medico_adscrito</option><option>residente</option><option>enfermeria</option><option>capturista</option><option>readonly</option></select></div>
+ <div class="form-group"><label>Servicio</label><input id="userServicio" value="UROLOGIA"></div>
+ </div>
+ <button class="btn-gov btn-primary" onclick="crearUsuario()">Crear Usuario</button>
+ <hr style="margin:20px 0;border:none;border-top:2px solid #e8ece9;">
+ <h3 style="color:var(--imss-verde);margin-bottom:12px;">Usuarios Registrados</h3>
+ <div class="table-scroll"><table class="gov-table"><thead><tr><th>ID</th><th>Username</th><th>Nombre</th><th>Matrícula</th><th>Rol</th><th>Servicio</th><th>Activo</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+ </div>
+ </div>
 <script>
 function cleanUrl(u){return u.replace(/^(https?:\/\/)([^@]+@)/,'$1');}
 async function api(url,opts={}){const r=await fetch(cleanUrl(url),opts);const t=await r.text();let d={};try{d=t?JSON.parse(t):{};}catch(e){d={raw:t};}if(!r.ok)throw new Error(d.detail||`HTTP ${r.status}`);return d;}
 function switchTab(name){document.querySelectorAll('.gov-tab').forEach((t,i)=>t.classList.toggle('active',t.textContent.toLowerCase().includes(name.substring(0,4))));document.querySelectorAll('.gov-panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='dashboard')loadDashboard();if(name==='audit')loadAudit();if(name==='users')loadUsers();}
 function rolBadge(r){const m={'admin':'badge-admin','jefe_servicio':'badge-admin','medico_adscrito':'badge-medico','residente':'badge-residente','enfermeria':'badge-enfermeria'};return `<span class="badge ${m[r]||'badge-baja'}">${r}</span>`;}
 async function loadDashboard(){
-    try{const d=await api('/api/governance/dashboard');const m=d.metrics||{};
-    document.getElementById('kpiRow').innerHTML=`
-        <div class="kpi"><div class="kpi-val">${m.users_activos||0}</div><div class="kpi-label">Usuarios Activos</div></div>
-        <div class="kpi"><div class="kpi-val">${m.accesos_hoy||0}</div><div class="kpi-label">Accesos Hoy</div></div>
-        <div class="kpi"><div class="kpi-val">${m.consentimientos_total||0}</div><div class="kpi-label">Consentimientos</div></div>
-        <div class="kpi"><div class="kpi-val">${m.consentimientos_pendientes||0}</div><div class="kpi-label">Pendientes Firma</div></div>
-        <div class="kpi"><div class="kpi-val">${m.alertas_activas||0}</div><div class="kpi-label">Alertas Activas</div></div>
-        <div class="kpi" style="background:linear-gradient(135deg,#dc2626,#ef4444);"><div class="kpi-val">${m.alertas_criticas||0}</div><div class="kpi-label">Alertas Críticas</div></div>`;
-    const modules=['CONSULTA','QUIROFANO','HOSPITALIZACION','URGENCIAS','GOVERNANCE'];
-    const colors=['#13322B','#B38E5D','#2563eb','#dc2626','#7c3aed'];
-    const max=Math.max(...modules.map(()=>Math.floor(Math.random()*50)+5));
-    document.getElementById('chartBars').innerHTML=modules.map((mod,i)=>{const v=Math.floor(Math.random()*50)+5;return `<div class="chart-bar"><div class="chart-bar-label">${mod}</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:${(v/max*100).toFixed(0)}%;background:${colors[i]};">${v}</div></div></div>`;}).join('');
-    }catch(e){console.error(e);}
+ try{const d=await api('/api/governance/dashboard');const m=d.metrics||{};
+ document.getElementById('kpiRow').innerHTML=`
+ <div class="kpi"><div class="kpi-val">${m.users_activos||0}</div><div class="kpi-label">Usuarios Activos</div></div>
+ <div class="kpi"><div class="kpi-val">${m.accesos_hoy||0}</div><div class="kpi-label">Accesos Hoy</div></div>
+ <div class="kpi"><div class="kpi-val">${m.consentimientos_total||0}</div><div class="kpi-label">Consentimientos</div></div>
+ <div class="kpi"><div class="kpi-val">${m.consentimientos_pendientes||0}</div><div class="kpi-label">Pendientes Firma</div></div>
+ <div class="kpi"><div class="kpi-val">${m.alertas_activas||0}</div><div class="kpi-label">Alertas Activas</div></div>
+ <div class="kpi" style="background:linear-gradient(135deg,#dc2626,#ef4444);"><div class="kpi-val">${m.alertas_criticas||0}</div><div class="kpi-label">Alertas Críticas</div></div>`;
+ const modules=['CONSULTA','QUIROFANO','HOSPITALIZACION','URGENCIAS','GOVERNANCE'];
+ const colors=['#0a3161','#c82f3f','#2563eb','#dc2626','#7c3aed'];
+ const max=Math.max(...modules.map(()=>Math.floor(Math.random()*50)+5));
+ document.getElementById('chartBars').innerHTML=modules.map((mod,i)=>{const v=Math.floor(Math.random()*50)+5;return `<div class="chart-bar"><div class="chart-bar-label">${mod}</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:${(v/max*100).toFixed(0)}%;background:${colors[i]};">${v}</div></div></div>`;}).join('');
+ }catch(e){console.error(e);}
 }
 async function loadAudit(){
-    try{const u=document.getElementById('auditUser').value;const d=document.getElementById('auditDate').value;const m=document.getElementById('auditModule').value;
-    let url='/api/governance/audit-log?limit=100';if(u)url+=`&username=${u}`;if(m)url+=`&modulo=${m}`;
-    const data=await api(url);const logs=data.logs||[];
-    document.getElementById('auditBody').innerHTML=logs.length?logs.map(l=>`<tr><td style="white-space:nowrap;">${(l.timestamp||'').replace('T',' ').substring(0,19)}</td><td><strong>${l.username||'-'}</strong></td><td>${rolBadge(l.rol||'-')}</td><td><span class="badge badge-baja">${l.method||'-'}</span></td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${l.path||'-'}</td><td>${l.status_code||'-'}</td><td>${l.tabla_afectada||'-'}</td><td>${l.nss||'-'}</td><td>${l.modulo||'-'}</td></tr>`).join(''):'<tr><td colspan="9" class="empty-state">No hay registros de auditoría</td></tr>';
-    }catch(e){document.getElementById('auditBody').innerHTML=`<tr><td colspan="9" class="empty-state">Error: ${e.message}</td></tr>`;}
+ try{const u=document.getElementById('auditUser').value;const d=document.getElementById('auditDate').value;const m=document.getElementById('auditModule').value;
+ let url='/api/governance/audit-log?limit=100';if(u)url+=`&username=${u}`;if(m)url+=`&modulo=${m}`;
+ const data=await api(url);const logs=data.logs||[];
+ document.getElementById('auditBody').innerHTML=logs.length?logs.map(l=>`<tr><td style="white-space:nowrap;">${(l.timestamp||'').replace('T',' ').substring(0,19)}</td><td><strong>${l.username||'-'}</strong></td><td>${rolBadge(l.rol||'-')}</td><td><span class="badge badge-baja">${l.method||'-'}</span></td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${l.path||'-'}</td><td>${l.status_code||'-'}</td><td>${l.tabla_afectada||'-'}</td><td>${l.nss||'-'}</td><td>${l.modulo||'-'}</td></tr>`).join(''):'<tr><td colspan="9" class="empty-state">No hay registros de auditoría</td></tr>';
+ }catch(e){document.getElementById('auditBody').innerHTML=`<tr><td colspan="9" class="empty-state">Error: ${e.message}</td></tr>`;}
 }
 async function crearConsentimiento(){
-    const body={nss:document.getElementById('consentNSS').value,tipo_consentimiento:document.getElementById('consentTipo').value,titulo:document.getElementById('consentTitulo').value,texto_consentimiento:document.getElementById('consentTexto').value,medico_responsable:document.getElementById('consentMedico').value};
-    try{const r=await api('/api/governance/consent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Consentimiento creado ID: '+r.consent_id);document.getElementById('consentNSS').value='';document.getElementById('consentTitulo').value='';document.getElementById('consentTexto').value='';}catch(e){alert('Error: '+e.message);}
+ const body={nss:document.getElementById('consentNSS').value,tipo_consentimiento:document.getElementById('consentTipo').value,titulo:document.getElementById('consentTitulo').value,texto_consentimiento:document.getElementById('consentTexto').value,medico_responsable:document.getElementById('consentMedico').value};
+ try{const r=await api('/api/governance/consent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Consentimiento creado ID: '+r.consent_id);document.getElementById('consentNSS').value='';document.getElementById('consentTitulo').value='';document.getElementById('consentTexto').value='';}catch(e){alert('Error: '+e.message);}
 }
 async function buscarConsentimientos(){
-    const nss=document.getElementById('consentSearchNSS').value;if(!nss){alert('Ingrese NSS');return;}
-    try{const d=await api(`/api/governance/consent/patient/${nss}`);const items=d.consents||[];
-    document.getElementById('consentResults').innerHTML=items.length?items.map(c=>`<div style="background:#fff;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid #e8ece9;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;"><div><strong>${c.titulo||c.tipo_consentimiento}</strong><br><span style="font-size:12px;color:#666;">${c.tipo_consentimiento} — ${(c.creado_en||'').substring(0,10)}</span></div><div style="display:flex;gap:8px;align-items:center;"><span class="badge badge-${(c.estatus||'').toLowerCase()}">${c.estatus}</span>${c.estatus==='PENDIENTE'?`<button class="btn-gov btn-gold btn-sm" onclick="firmarConsentimiento(${c.id})">Firmar</button>`:''}</div></div>`).join(''):'<div class="empty-state">No hay consentimientos para este paciente</div>';
-    }catch(e){document.getElementById('consentResults').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
+ const nss=document.getElementById('consentSearchNSS').value;if(!nss){alert('Ingrese NSS');return;}
+ try{const d=await api(`/api/governance/consent/patient/${nss}`);const items=d.consents||[];
+ document.getElementById('consentResults').innerHTML=items.length?items.map(c=>`<div style="background:#fff;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid #e8ece9;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;"><div><strong>${c.titulo||c.tipo_consentimiento}</strong><br><span style="font-size:12px;color:#666;">${c.tipo_consentimiento} — ${(c.creado_en||'').substring(0,10)}</span></div><div style="display:flex;gap:8px;align-items:center;"><span class="badge badge-${(c.estatus||'').toLowerCase()}">${c.estatus}</span>${c.estatus==='PENDIENTE'?`<button class="btn-gov btn-gold btn-sm" onclick="firmarConsentimiento(${c.id})">Firmar</button>`:''}</div></div>`).join(''):'<div class="empty-state">No hay consentimientos para este paciente</div>';
+ }catch(e){document.getElementById('consentResults').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
 }
 async function firmarConsentimiento(id){
-    const firma=prompt('Ingrese texto de firma (nombre completo del paciente):');if(!firma)return;
-    try{await api(`/api/governance/consent/${id}/sign`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({firma_paciente_text:firma})});alert('Consentimiento firmado');buscarConsentimientos();}catch(e){alert('Error: '+e.message);}
+ const firma=prompt('Ingrese texto de firma (nombre completo del paciente):');if(!firma)return;
+ try{await api(`/api/governance/consent/${id}/sign`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({firma_paciente_text:firma})});alert('Consentimiento firmado');buscarConsentimientos();}catch(e){alert('Error: '+e.message);}
 }
 async function crearAlerta(){
-    const body={nss:document.getElementById('alertNSS').value,tipo_alerta:document.getElementById('alertTipo').value,severidad:document.getElementById('alertSev').value,titulo:document.getElementById('alertTitulo').value,descripcion:document.getElementById('alertDesc').value};
-    try{const r=await api('/api/governance/alerts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Alerta registrada ID: '+r.alert_id);document.getElementById('alertTitulo').value='';document.getElementById('alertDesc').value='';}catch(e){alert('Error: '+e.message);}
+ const body={nss:document.getElementById('alertNSS').value,tipo_alerta:document.getElementById('alertTipo').value,severidad:document.getElementById('alertSev').value,titulo:document.getElementById('alertTitulo').value,descripcion:document.getElementById('alertDesc').value};
+ try{const r=await api('/api/governance/alerts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Alerta registrada ID: '+r.alert_id);document.getElementById('alertTitulo').value='';document.getElementById('alertDesc').value='';}catch(e){alert('Error: '+e.message);}
 }
 async function buscarAlertas(){
-    const nss=document.getElementById('alertSearchNSS').value;if(!nss){alert('Ingrese NSS');return;}
-    try{const d=await api(`/api/governance/alerts/patient/${nss}`);const items=d.alerts||[];
-    document.getElementById('alertResults').innerHTML=items.length?items.map(a=>`<div class="alert-card a-${a.severidad}"><div><span class="sev-light sev-${a.severidad}"></span></div><div style="flex:1;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;"><strong>${a.titulo}</strong><span class="badge badge-${a.severidad.toLowerCase()}">${a.severidad}</span></div><div style="font-size:12px;color:#555;margin-top:4px;">${a.descripcion||''}</div><div style="font-size:11px;color:#888;margin-top:4px;">${a.tipo_alerta} — ${(a.creado_en||'').substring(0,10)}</div></div></div>`).join(''):'<div class="empty-state">No hay alertas para este paciente</div>';
-    }catch(e){document.getElementById('alertResults').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
+ const nss=document.getElementById('alertSearchNSS').value;if(!nss){alert('Ingrese NSS');return;}
+ try{const d=await api(`/api/governance/alerts/patient/${nss}`);const items=d.alerts||[];
+ document.getElementById('alertResults').innerHTML=items.length?items.map(a=>`<div class="alert-card a-${a.severidad}"><div><span class="sev-light sev-${a.severidad}"></span></div><div style="flex:1;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;"><strong>${a.titulo}</strong><span class="badge badge-${a.severidad.toLowerCase()}">${a.severidad}</span></div><div style="font-size:12px;color:#555;margin-top:4px;">${a.descripcion||''}</div><div style="font-size:11px;color:#888;margin-top:4px;">${a.tipo_alerta} — ${(a.creado_en||'').substring(0,10)}</div></div></div>`).join(''):'<div class="empty-state">No hay alertas para este paciente</div>';
+ }catch(e){document.getElementById('alertResults').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
 }
 async function crearUsuario(){
-    const body={username:document.getElementById('userUsername').value,password:document.getElementById('userPassword').value,nombre_completo:document.getElementById('userNombre').value,matricula:document.getElementById('userMatricula').value,cedula_profesional:document.getElementById('userCedula').value,rol:document.getElementById('userRol').value,servicio:document.getElementById('userServicio').value};
-    try{const r=await api('/api/governance/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Usuario creado ID: '+r.user_id);loadUsers();}catch(e){alert('Error: '+e.message);}
+ const body={username:document.getElementById('userUsername').value,password:document.getElementById('userPassword').value,nombre_completo:document.getElementById('userNombre').value,matricula:document.getElementById('userMatricula').value,cedula_profesional:document.getElementById('userCedula').value,rol:document.getElementById('userRol').value,servicio:document.getElementById('userServicio').value};
+ try{const r=await api('/api/governance/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Usuario creado ID: '+r.user_id);loadUsers();}catch(e){alert('Error: '+e.message);}
 }
 async function loadUsers(){
-    try{const d=await api('/api/governance/users');const users=d.users||[];
-    document.getElementById('usersBody').innerHTML=users.length?users.map(u=>`<tr><td>${u.id}</td><td><strong>${u.username}</strong></td><td>${u.nombre_completo||'-'}</td><td>${u.matricula||'-'}</td><td>${rolBadge(u.rol)}</td><td>${u.servicio||'-'}</td><td>${u.activo?'<span class="badge badge-baja">Activo</span>':'<span class="badge badge-rechazado">Inactivo</span>'}</td></tr>`).join(''):'<tr><td colspan="7" class="empty-state">No hay usuarios registrados</td></tr>';
-    }catch(e){document.getElementById('usersBody').innerHTML=`<tr><td colspan="7" class="empty-state">Error: ${e.message}</td></tr>`;}
+ try{const d=await api('/api/governance/users');const users=d.users||[];
+ document.getElementById('usersBody').innerHTML=users.length?users.map(u=>`<tr><td>${u.id}</td><td><strong>${u.username}</strong></td><td>${u.nombre_completo||'-'}</td><td>${u.matricula||'-'}</td><td>${rolBadge(u.rol)}</td><td>${u.servicio||'-'}</td><td>${u.activo?'<span class="badge badge-baja">Activo</span>':'<span class="badge badge-rechazado">Inactivo</span>'}</td></tr>`).join(''):'<tr><td colspan="7" class="empty-state">No hay usuarios registrados</td></tr>';
+ }catch(e){document.getElementById('usersBody').innerHTML=`<tr><td colspan="7" class="empty-state">Error: ${e.message}</td></tr>`;}
 }
 loadDashboard();
 </script>

@@ -1,1019 +1,1019 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ page_title }}</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; --fondo:#f4f6f9; }
-        body { margin:0; padding:20px; font-family:'Montserrat',sans-serif; background:var(--fondo); }
-        .container { max-width:1280px; margin:auto; background:#fff; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.1); padding:22px; }
-        .global-nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
-        .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:var(--imss-verde); background:#fff; }
-        .nav-chip.active { background:var(--imss-dorado); border-color:#9e7a4c; color:#13322B; }
-        h1 { color:var(--imss-verde); margin:0 0 6px 0; }
-        .sub { color:#4f635c; font-size:13px; margin-bottom:12px; }
-        .toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
-        .btn { border:none; border-radius:7px; padding:10px 14px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; }
-        .btn-main { background:var(--imss-verde); color:#fff; }
-        .btn-alt { background:var(--imss-dorado); color:#1b1b1b; }
-        .draft-id { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; background:#f7faf8; border:1px solid #d2e0da; border-radius:6px; padding:7px 10px; }
-        .section { border:1px solid #e2e9e5; border-left:6px solid var(--imss-dorado); border-radius:8px; padding:14px; margin:12px 0; background:#fbfdfc; }
-        .section-head { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
-        .section-title { font-weight:800; color:var(--imss-verde); }
-        .section-toggle { border:1px solid #cfdbd5; background:#fff; color:var(--imss-verde); border-radius:8px; padding:7px 10px; font-weight:800; cursor:pointer; font-size:13px; }
-        .section-toggle:hover { background:#f2f7f5; }
-        .section-body { margin-top:8px; }
-        .section.collapsed .section-body { display:none; }
-        .status-chip { border-radius:999px; padding:2px 10px; font-size:11px; font-weight:700; border:1px solid #cdd; }
-        .status-pending { background:#fff8e1; color:#7a5a00; border-color:#efd79a; }
-        .status-ok { background:#e8f5e9; color:#1b5e20; border-color:#b7dcbc; }
-        .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:10px; }
-        .field-wrap.hidden-by-rule { display:none !important; }
-        label { display:block; font-size:11px; color:#4f615b; font-weight:700; text-transform:uppercase; margin-bottom:5px; }
-        input,select,textarea { width:100%; border:1px solid #cfd9d4; border-radius:6px; padding:9px; font-family:inherit; font-size:13px; }
-        textarea { min-height:90px; resize:vertical; }
-        .actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-        .msg { margin-top:10px; border-radius:6px; padding:8px 10px; font-size:12px; display:none; }
-        .msg.ok { display:block; background:#e8f5e9; border:1px solid #b7dcbc; color:#1b5e20; }
-        .msg.err { display:block; background:#ffebee; border:1px solid #f3c3c7; color:#8b1e22; }
-        .msg.warn { display:block; background:#fff8e1; border:1px solid #efd79a; color:#7a5a00; }
-        .footer-note { margin-top:14px; color:#5d6d67; font-size:12px; }
-        .capture-helper { margin-top:8px; background:#f6fbf9; border:1px dashed #cadfd5; border-radius:8px; padding:10px; }
-        .capture-helper .helper-top { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }
-        .capture-helper .mini { border:1px solid #b9cfc5; background:#fff; border-radius:6px; padding:6px 9px; font-size:12px; font-weight:700; cursor:pointer; color:#1f3e35; }
-        .capture-helper .mini.alt { background:#eef5f2; }
-        .capture-helper .tiny-note { font-size:11px; color:#4b635a; }
-        .capture-helper .json-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; margin:8px 0; }
-        .capture-helper .json-grid label { font-size:10px; margin-bottom:2px; }
-        .capture-helper .json-grid input { font-size:12px; padding:6px 7px; }
-        .capture-helper .rows { display:grid; grid-template-columns:1fr; gap:8px; margin-top:8px; }
-        .capture-helper .row-card { border:1px solid #d8e5de; border-radius:8px; background:#fff; padding:8px; }
-        .capture-helper .row-meta { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:6px; }
-        .capture-helper .row-meta div { font-size:12px; color:#1f3e35; }
-        .capture-helper .row-actions { margin-top:8px; display:flex; gap:6px; }
-        .capture-helper .empty { font-size:12px; color:#5f746d; font-style:italic; }
-        .capture-helper .hidden-json { display:none; }
-        .compact-block { grid-column:1 / -1; border:1px solid #d9e4de; border-radius:10px; background:#f8fbfa; }
-        .compact-head { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; cursor:pointer; background:#eef4f1; border-radius:10px 10px 0 0; }
-        .compact-title { font-size:12px; font-weight:800; color:#1f3e35; text-transform:uppercase; letter-spacing:.2px; }
-        .compact-state { font-size:11px; font-weight:700; color:#4f635c; }
-        .compact-controls { padding:10px; border-top:1px solid #dce7e1; background:#fbfdfc; }
-        .compact-body { padding:10px; border-top:1px solid #dce7e1; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-        .compact-body .field-wrap { margin:0; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>{{ page_title }}</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde:#0a3161; --imss-dorado:#c82f3f; --fondo:#f4f6f9; }
+ body { margin:0; padding:20px; font-family:'Montserrat',sans-serif; background:var(--fondo); }
+ .container { max-width:1280px; margin:auto; background:#fff; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.1); padding:22px; }
+ .global-nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+ .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #c7d9f7; color:var(--imss-verde); background:#fff; }
+ .nav-chip.active { background:var(--imss-dorado); border-color:#aa2a3b; color:#ffffff; }
+ h1 { color:var(--imss-verde); margin:0 0 6px 0; }
+ .sub { color:#4f635c; font-size:13px; margin-bottom:12px; }
+ .toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
+ .btn { border:none; border-radius:7px; padding:10px 14px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; }
+ .btn-main { background:var(--imss-verde); color:#fff; }
+ .btn-alt { background:var(--imss-dorado); color:#ffffff; }
+ .draft-id { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; background:#f7faf8; border:1px solid #d2e0da; border-radius:6px; padding:7px 10px; }
+ .section { border:1px solid #e2e9e5; border-left:6px solid var(--imss-dorado); border-radius:8px; padding:14px; margin:12px 0; background:#fbfdfc; }
+ .section-head { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+ .section-title { font-weight:800; color:var(--imss-verde); }
+ .section-toggle { border:1px solid #cfdbd5; background:#fff; color:var(--imss-verde); border-radius:8px; padding:7px 10px; font-weight:800; cursor:pointer; font-size:13px; }
+ .section-toggle:hover { background:#f2f7f5; }
+ .section-body { margin-top:8px; }
+ .section.collapsed .section-body { display:none; }
+ .status-chip { border-radius:999px; padding:2px 10px; font-size:11px; font-weight:700; border:1px solid #cdd; }
+ .status-pending { background:#fff4f6; color:#7a5a00; border-color:#efd79a; }
+ .status-ok { background:#e8f5e9; color:#1b5e20; border-color:#b7dcbc; }
+ .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:10px; }
+ .field-wrap.hidden-by-rule { display:none !important; }
+ label { display:block; font-size:11px; color:#4f615b; font-weight:700; text-transform:uppercase; margin-bottom:5px; }
+ input,select,textarea { width:100%; border:1px solid #c7d9f7; border-radius:6px; padding:9px; font-family:inherit; font-size:13px; }
+ textarea { min-height:90px; resize:vertical; }
+ .actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+ .msg { margin-top:10px; border-radius:6px; padding:8px 10px; font-size:12px; display:none; }
+ .msg.ok { display:block; background:#e8f5e9; border:1px solid #b7dcbc; color:#1b5e20; }
+ .msg.err { display:block; background:#ffebee; border:1px solid #f3c3c7; color:#8b1e22; }
+ .msg.warn { display:block; background:#fff4f6; border:1px solid #efd79a; color:#7a5a00; }
+ .footer-note { margin-top:14px; color:#5d6d67; font-size:12px; }
+ .capture-helper { margin-top:8px; background:#f6fbf9; border:1px dashed #cadfd5; border-radius:8px; padding:10px; }
+ .capture-helper .helper-top { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }
+ .capture-helper .mini { border:1px solid #b9cfc5; background:#fff; border-radius:6px; padding:6px 9px; font-size:12px; font-weight:700; cursor:pointer; color:#1f3e35; }
+ .capture-helper .mini.alt { background:#edf3ff; }
+ .capture-helper .tiny-note { font-size:11px; color:#4b635a; }
+ .capture-helper .json-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; margin:8px 0; }
+ .capture-helper .json-grid label { font-size:10px; margin-bottom:2px; }
+ .capture-helper .json-grid input { font-size:12px; padding:6px 7px; }
+ .capture-helper .rows { display:grid; grid-template-columns:1fr; gap:8px; margin-top:8px; }
+ .capture-helper .row-card { border:1px solid #d8e5de; border-radius:8px; background:#fff; padding:8px; }
+ .capture-helper .row-meta { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:6px; }
+ .capture-helper .row-meta div { font-size:12px; color:#1f3e35; }
+ .capture-helper .row-actions { margin-top:8px; display:flex; gap:6px; }
+ .capture-helper .empty { font-size:12px; color:#5f746d; font-style:italic; }
+ .capture-helper .hidden-json { display:none; }
+ .compact-block { grid-column:1 / -1; border:1px solid #d9e4de; border-radius:10px; background:#f8fbff; }
+ .compact-head { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; cursor:pointer; background:#eef4f1; border-radius:10px 10px 0 0; }
+ .compact-title { font-size:12px; font-weight:800; color:#1f3e35; text-transform:uppercase; letter-spacing:.2px; }
+ .compact-state { font-size:11px; font-weight:700; color:#4f635c; }
+ .compact-controls { padding:10px; border-top:1px solid #dce7e1; background:#fbfdfc; }
+ .compact-body { padding:10px; border-top:1px solid #dce7e1; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+ .compact-body .field-wrap { margin:0; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 <link href="/static/css/rnp_redesign.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <div class="global-nav">
-            <a class="nav-chip" href="/">Menú</a>
-            <a class="nav-chip" href="{{ classic_url }}">Vista clásica</a>
-            <a class="nav-chip active" href="{{ pilot_url }}">Metadata por secciones</a>
-            <a class="nav-chip" href="/expediente">Expediente</a>
-            <a class="nav-chip" href="/reporte">Reporte</a>
-        </div>
+ <div class="container">
+ <div class="global-nav">
+ <a class="nav-chip" href="/">Menú</a>
+ <a class="nav-chip" href="{{ classic_url }}">Vista clásica</a>
+ <a class="nav-chip active" href="{{ pilot_url }}">Metadata por secciones</a>
+ <a class="nav-chip" href="/expediente">Expediente</a>
+ <a class="nav-chip" href="/reporte">Reporte</a>
+ </div>
 
-        <h1>{{ page_title }}</h1>
-        <div class="sub">Captura por diccionario de datos (aditiva), sin afectar el formulario clásico.</div>
+ <h1>{{ page_title }}</h1>
+ <div class="sub">Captura por diccionario de datos (aditiva), sin afectar el formulario clásico.</div>
 
-        <div class="toolbar">
-            <button class="btn btn-main" type="button" onclick="reloadSchema()">Recargar diccionario</button>
-            <a class="btn btn-alt" id="openSubsecuente" href="/consulta?tab=subsecuente" style="display:inline-flex;align-items:center;gap:6px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                Consulta Subsecuente
-            </a>
-            <button class="btn btn-expediente" type="button" id="btnGuardarExpediente" onclick="guardarEnExpediente()" disabled style="display:inline-flex;align-items:center;gap:6px;background:#1b5e20;color:#fff;opacity:0.5;cursor:not-allowed;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                Guardar en Expediente Cl\u00ednico \u00danico
-            </button>
-            <button class="btn" type="button" id="btnImprimirNota" onclick="imprimirNota()" disabled style="display:inline-flex;align-items:center;gap:6px;background:#0d47a1;color:#fff;opacity:0.5;cursor:not-allowed;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                Imprimir Nota
-            </button>
-            {% if urgencias_finalize_mode %}
-            <button class="btn btn-main" type="button" id="btn-finalizar-urgencias">Finalizar urgencias e ir a hospitalizaci\u00f3n</button>
-            {% endif %}
-            <span class="draft-id">Draft ID: <strong id="draftId">(sin guardar)</strong></span>
-        </div>
-        <div id="expedienteMsg" class="msg" style="margin-bottom:10px;"></div>
-        {% if urgencias_finalize_mode %}
-        <div class="sub" style="margin-top:-8px;margin-bottom:10px;">
-            Al finalizar, se crea la consulta desde el draft y se redirige al ingreso hospitalario con <code>consulta_id</code>.
-        </div>
-        {% endif %}
+ <div class="toolbar">
+ <button class="btn btn-main" type="button" onclick="reloadSchema()">Recargar diccionario</button>
+ <a class="btn btn-alt" id="openSubsecuente" href="/consulta?tab=subsecuente" style="display:inline-flex;align-items:center;gap:6px;">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+ Consulta Subsecuente
+ </a>
+ <button class="btn btn-expediente" type="button" id="btnGuardarExpediente" onclick="guardarEnExpediente()" disabled style="display:inline-flex;align-items:center;gap:6px;background:#1b5e20;color:#fff;opacity:0.5;cursor:not-allowed;">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+ Guardar en Expediente Cl\u00ednico \u00danico
+ </button>
+ <button class="btn" type="button" id="btnImprimirNota" onclick="imprimirNota()" disabled style="display:inline-flex;align-items:center;gap:6px;background:#0d47a1;color:#fff;opacity:0.5;cursor:not-allowed;">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+ Imprimir Nota
+ </button>
+ {% if urgencias_finalize_mode %}
+ <button class="btn btn-main" type="button" id="btn-finalizar-urgencias">Finalizar urgencias e ir a hospitalizaci\u00f3n</button>
+ {% endif %}
+ <span class="draft-id">Draft ID: <strong id="draftId">(sin guardar)</strong></span>
+ </div>
+ <div id="expedienteMsg" class="msg" style="margin-bottom:10px;"></div>
+ {% if urgencias_finalize_mode %}
+ <div class="sub" style="margin-top:-8px;margin-bottom:10px;">
+ Al finalizar, se crea la consulta desde el draft y se redirige al ingreso hospitalario con <code>consulta_id</code>.
+ </div>
+ {% endif %}
 
-        <div id="sectionsRoot"></div>
+ <div id="sectionsRoot"></div>
 
-        <div class="footer-note">
-            Este piloto guarda por sección usando rutas existentes de validación/captura para evitar regresiones.
-        </div>
-    </div>
+ <div class="footer-note">
+ Este piloto guarda por sección usando rutas existentes de validación/captura para evitar regresiones.
+ </div>
+ </div>
 
-    <script>
-        const CSRF_TOKEN = "{{ csrf_token }}";
-        const FORM_CODE = "{{ form_code }}";
-        const SECTION_SAVE_URL = "{{ section_save_url }}";
-        const URGENCIAS_FINALIZE_MODE = {{ 'true' if urgencias_finalize_mode else 'false' }};
-        const URGENCIAS_FINALIZE_URL = "{{ urgencias_finalize_url or '' }}";
-        let draftId = "";
+ <script>
+ const CSRF_TOKEN = "{{ csrf_token }}";
+ const FORM_CODE = "{{ form_code }}";
+ const SECTION_SAVE_URL = "{{ section_save_url }}";
+ const URGENCIAS_FINALIZE_MODE = {{ 'true' if urgencias_finalize_mode else 'false' }};
+ const URGENCIAS_FINALIZE_URL = "{{ urgencias_finalize_url or '' }}";
+ let draftId = "";
 
-        async function apiJson(url, options = {}) {
-            const res = await fetch(url, options);
-            const txt = await res.text();
-            let data = {};
-            try { data = txt ? JSON.parse(txt) : {}; } catch(_) { data = { raw: txt }; }
-            if (!res.ok) {
-                throw new Error(data.detail || data.message || `HTTP ${res.status}`);
-            }
-            return data;
-        }
+ async function apiJson(url, options = {}) {
+ const res = await fetch(url, options);
+ const txt = await res.text();
+ let data = {};
+ try { data = txt ? JSON.parse(txt) : {}; } catch(_) { data = { raw: txt }; }
+ if (!res.ok) {
+ throw new Error(data.detail || data.message || `HTTP ${res.status}`);
+ }
+ return data;
+ }
 
-        function setDraftId(value) {
-            draftId = value || draftId || "";
-            document.getElementById("draftId").textContent = draftId || "(sin guardar)";
-            const link = document.getElementById("openClassicWithDraft");
-            if (link) {
-                link.href = draftId ? `{{ classic_url }}?draft_id=${encodeURIComponent(draftId)}` : `{{ classic_url }}`;
-            }
-        }
+ function setDraftId(value) {
+ draftId = value || draftId || "";
+ document.getElementById("draftId").textContent = draftId || "(sin guardar)";
+ const link = document.getElementById("openClassicWithDraft");
+ if (link) {
+ link.href = draftId ? `{{ classic_url }}?draft_id=${encodeURIComponent(draftId)}` : `{{ classic_url }}`;
+ }
+ }
 
-        async function finalizarUrgenciasIngreso() {
-            if (!URGENCIAS_FINALIZE_MODE) return;
-            if (!draftId) {
-                alert('Primero guarda al menos una sección para generar el draft_id.');
-                return;
-            }
-            try {
-                const result = await apiJson(URGENCIAS_FINALIZE_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ csrf_token: CSRF_TOKEN, draft_id: draftId })
-                });
-                const redirect = String((result || {}).redirect_url || '');
-                if (!redirect) throw new Error('No se recibió URL de redirección.');
-                window.location.href = redirect;
-            } catch (e) {
-                alert(`No se pudo finalizar urgencias: ${e.message}`);
-            }
-        }
+ async function finalizarUrgenciasIngreso() {
+ if (!URGENCIAS_FINALIZE_MODE) return;
+ if (!draftId) {
+ alert('Primero guarda al menos una sección para generar el draft_id.');
+ return;
+ }
+ try {
+ const result = await apiJson(URGENCIAS_FINALIZE_URL, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ csrf_token: CSRF_TOKEN, draft_id: draftId })
+ });
+ const redirect = String((result || {}).redirect_url || '');
+ if (!redirect) throw new Error('No se recibió URL de redirección.');
+ window.location.href = redirect;
+ } catch (e) {
+ alert(`No se pudo finalizar urgencias: ${e.message}`);
+ }
+ }
 
-        function fieldHtml(sectionCode, field) {
-            const id = `f_${sectionCode}_${field.field_name}`;
-            const gynLabelMap = {
-                gyn_gestas: 'Gestas',
-                gyn_partos: 'Partos',
-                gyn_abortos: 'Abortos',
-                gyn_cesareas: 'Cesáreas',
-                gyn_menopausia: 'Menopausia',
-                gyn_fum: 'FUM',
-                gyn_terapia_hormonal: 'Terapia hormonal',
-            };
-            const forcedLabel = (FORM_CODE === 'consulta_externa') ? gynLabelMap[String(field.field_name || '')] : null;
-            const label = forcedLabel || field.field_label || field.field_name;
-            const req = field.required ? ' required' : '';
-            const ph = field.placeholder ? ` placeholder="${String(field.placeholder).replace(/"/g,'&quot;')}"` : '';
-            const val = field.default_value ? String(field.default_value).replace(/"/g,'&quot;') : '';
-            const ui = field.ui || {};
-            const vw = ui.visible_when || null;
-            const visibleFieldAttr = vw && vw.field ? ` data-visible-field="${String(vw.field).replace(/"/g,'&quot;')}"` : '';
-            const visibleIn = vw && Array.isArray(vw.in) ? vw.in.map(v => String(v)).join('|') : '';
-            const visibleInAttr = visibleIn ? ` data-visible-in="${visibleIn.replace(/"/g,'&quot;')}"` : '';
-            const readonlyAttr = ui.readonly ? ' readonly' : '';
-            const widget = String(ui.widget || '');
-            const widgetAttr = widget ? ` data-widget="${widget.replace(/"/g,'&quot;')}"` : '';
-            const wrapStart = `<div class="field-wrap"${visibleFieldAttr}${visibleInAttr}${widgetAttr} data-field-name="${String(field.field_name).replace(/"/g,'&quot;')}">`;
-            const wrapEnd = `</div>`;
-            if ((field.field_type || '').toLowerCase() === 'select') {
-                const defaultVal = String((field.default_value ?? '')).trim();
-                const opts = (field.options || []).map(o => {
-                    const v = String(o.value ?? o.label ?? '');
-                    const l = String(o.label ?? o.value ?? '');
-                    const isSelected = defaultVal && v.trim() === defaultVal;
-                    return `<option value="${v.replace(/"/g,'&quot;')}"${isSelected ? ' selected' : ''}>${l}</option>`;
-                }).join('');
-                return `${wrapStart}<label for="${id}">${label}${field.required ? ' *' : ''}</label><select id="${id}" name="${field.field_name}"${req}${readonlyAttr}>${opts}</select>${wrapEnd}`;
-            }
-            if ((field.field_type || '').toLowerCase() === 'textarea') {
-                return `<div class="field-wrap" style="grid-column:1 / -1;"${visibleFieldAttr}${visibleInAttr}${widgetAttr} data-field-name="${String(field.field_name).replace(/"/g,'&quot;')}"><label for="${id}">${label}${field.required ? ' *' : ''}</label><textarea id="${id}" name="${field.field_name}"${req}${ph}${readonlyAttr}>${val}</textarea></div>`;
-            }
-            if ((field.field_type || '').toLowerCase() === 'file') {
-                const accept = String((ui.accept || '.doc,.docx,.pdf,.png,.pgn,.jpg,.jpeg,.dcm,.dicom')).replace(/"/g,'&quot;');
-                const multiple = ui.multiple ? ' multiple' : '';
-                return `${wrapStart}<label for="${id}">${label}${field.required ? ' *' : ''}</label><input id="${id}" type="file" name="${field.field_name}" accept="${accept}"${multiple}><div class="sub" style="margin:6px 0 0 0;">Formatos permitidos: ${accept}</div>${wrapEnd}`;
-            }
-            const typeMap = { number: 'number', date: 'date' };
-            const type = typeMap[(field.field_type || '').toLowerCase()] || 'text';
-            return `${wrapStart}<label for="${id}">${label}${field.required ? ' *' : ''}</label><input id="${id}" type="${type}" name="${field.field_name}" value="${val}"${req}${ph}${readonlyAttr}>${wrapEnd}`;
-        }
+ function fieldHtml(sectionCode, field) {
+ const id = `f_${sectionCode}_${field.field_name}`;
+ const gynLabelMap = {
+ gyn_gestas: 'Gestas',
+ gyn_partos: 'Partos',
+ gyn_abortos: 'Abortos',
+ gyn_cesareas: 'Cesáreas',
+ gyn_menopausia: 'Menopausia',
+ gyn_fum: 'FUM',
+ gyn_terapia_hormonal: 'Terapia hormonal',
+ };
+ const forcedLabel = (FORM_CODE === 'consulta_externa') ? gynLabelMap[String(field.field_name || '')] : null;
+ const label = forcedLabel || field.field_label || field.field_name;
+ const req = field.required ? ' required' : '';
+ const ph = field.placeholder ? ` placeholder="${String(field.placeholder).replace(/"/g,'&quot;')}"` : '';
+ const val = field.default_value ? String(field.default_value).replace(/"/g,'&quot;') : '';
+ const ui = field.ui || {};
+ const vw = ui.visible_when || null;
+ const visibleFieldAttr = vw && vw.field ? ` data-visible-field="${String(vw.field).replace(/"/g,'&quot;')}"` : '';
+ const visibleIn = vw && Array.isArray(vw.in) ? vw.in.map(v => String(v)).join('|') : '';
+ const visibleInAttr = visibleIn ? ` data-visible-in="${visibleIn.replace(/"/g,'&quot;')}"` : '';
+ const readonlyAttr = ui.readonly ? ' readonly' : '';
+ const widget = String(ui.widget || '');
+ const widgetAttr = widget ? ` data-widget="${widget.replace(/"/g,'&quot;')}"` : '';
+ const wrapStart = `<div class="field-wrap"${visibleFieldAttr}${visibleInAttr}${widgetAttr} data-field-name="${String(field.field_name).replace(/"/g,'&quot;')}">`;
+ const wrapEnd = `</div>`;
+ if ((field.field_type || '').toLowerCase() === 'select') {
+ const defaultVal = String((field.default_value ?? '')).trim();
+ const opts = (field.options || []).map(o => {
+ const v = String(o.value ?? o.label ?? '');
+ const l = String(o.label ?? o.value ?? '');
+ const isSelected = defaultVal && v.trim() === defaultVal;
+ return `<option value="${v.replace(/"/g,'&quot;')}"${isSelected ? ' selected' : ''}>${l}</option>`;
+ }).join('');
+ return `${wrapStart}<label for="${id}">${label}${field.required ? ' *' : ''}</label><select id="${id}" name="${field.field_name}"${req}${readonlyAttr}>${opts}</select>${wrapEnd}`;
+ }
+ if ((field.field_type || '').toLowerCase() === 'textarea') {
+ return `<div class="field-wrap" style="grid-column:1 / -1;"${visibleFieldAttr}${visibleInAttr}${widgetAttr} data-field-name="${String(field.field_name).replace(/"/g,'&quot;')}"><label for="${id}">${label}${field.required ? ' *' : ''}</label><textarea id="${id}" name="${field.field_name}"${req}${ph}${readonlyAttr}>${val}</textarea></div>`;
+ }
+ if ((field.field_type || '').toLowerCase() === 'file') {
+ const accept = String((ui.accept || '.doc,.docx,.pdf,.png,.pgn,.jpg,.jpeg,.dcm,.dicom')).replace(/"/g,'&quot;');
+ const multiple = ui.multiple ? ' multiple' : '';
+ return `${wrapStart}<label for="${id}">${label}${field.required ? ' *' : ''}</label><input id="${id}" type="file" name="${field.field_name}" accept="${accept}"${multiple}><div class="sub" style="margin:6px 0 0 0;">Formatos permitidos: ${accept}</div>${wrapEnd}`;
+ }
+ const typeMap = { number: 'number', date: 'date' };
+ const type = typeMap[(field.field_type || '').toLowerCase()] || 'text';
+ return `${wrapStart}<label for="${id}">${label}${field.required ? ' *' : ''}</label><input id="${id}" type="${type}" name="${field.field_name}" value="${val}"${req}${ph}${readonlyAttr}>${wrapEnd}`;
+ }
 
-        function shouldHideDuplicateField(sectionCode, fieldName) {
-            if (FORM_CODE !== 'consulta_externa') return false;
-            const name = String(fieldName || '');
-            const hidden = new Set([
-                // AHF: se captura en bloque múltiple ahf_json
-                'ahf_estatus', 'ahf_linea', 'ahf_padecimiento',
-                // APP crónicos: se captura en bloque múltiple app_patologias_json
-                'app_patologia', 'app_evolucion', 'app_tratamiento', 'app_complicaciones', 'app_desc_complicacion', 'app_ultima_consulta', 'app_seguimiento',
-                // Alergias: se captura en bloque múltiple alergias_json
-                'alergeno', 'alergia_reaccion', 'alergia_fecha',
-                // Hospitalizaciones previas: se captura en bloque múltiple hosp_previas_json
-                'hosp_motivo', 'hosp_dias', 'hosp_uci', 'hosp_dias_uci',
-                // Antecedentes quirúrgicos: se captura en bloque múltiple aqx_json
-                'aqx_fecha', 'aqx_procedimiento', 'aqx_hallazgos', 'aqx_medico',
-                // Transfusiones previas: se captura en bloque múltiple transfusiones_json
-                'trans_fecha', 'trans_reacciones',
-                // Subsecuente libre (se excluye en metadata visual)
-                'subsecuente_analisis', 'subsecuente_objetivo', 'subsecuente_plan', 'subsecuente_subjetivo',
-                // Solicitados para ocultar en metadata
-                'alcoholismo', 'aqx_complicaciones_status', 'aqx_desc_complicacion', 'otro_detalles',
-                // Toxicología legacy no usada en interfaz metadata compacta
-                'droga_manual', 'otras_drogas',
-            ]);
-            if (!hidden.has(name)) return false;
-            if (name.startsWith('subsecuente_')) return true;
-            // Seguridad: solo ocultar en secciones clínicas esperadas.
-            return ['3', '4', '5'].includes(String(sectionCode || ''));
-        }
+ function shouldHideDuplicateField(sectionCode, fieldName) {
+ if (FORM_CODE !== 'consulta_externa') return false;
+ const name = String(fieldName || '');
+ const hidden = new Set([
+ // AHF: se captura en bloque múltiple ahf_json
+ 'ahf_estatus', 'ahf_linea', 'ahf_padecimiento',
+ // APP crónicos: se captura en bloque múltiple app_patologias_json
+ 'app_patologia', 'app_evolucion', 'app_tratamiento', 'app_complicaciones', 'app_desc_complicacion', 'app_ultima_consulta', 'app_seguimiento',
+ // Alergias: se captura en bloque múltiple alergias_json
+ 'alergeno', 'alergia_reaccion', 'alergia_fecha',
+ // Hospitalizaciones previas: se captura en bloque múltiple hosp_previas_json
+ 'hosp_motivo', 'hosp_dias', 'hosp_uci', 'hosp_dias_uci',
+ // Antecedentes quirúrgicos: se captura en bloque múltiple aqx_json
+ 'aqx_fecha', 'aqx_procedimiento', 'aqx_hallazgos', 'aqx_medico',
+ // Transfusiones previas: se captura en bloque múltiple transfusiones_json
+ 'trans_fecha', 'trans_reacciones',
+ // Subsecuente libre (se excluye en metadata visual)
+ 'subsecuente_analisis', 'subsecuente_objetivo', 'subsecuente_plan', 'subsecuente_subjetivo',
+ // Solicitados para ocultar en metadata
+ 'alcoholismo', 'aqx_complicaciones_status', 'aqx_desc_complicacion', 'otro_detalles',
+ // Toxicología legacy no usada en interfaz metadata compacta
+ 'droga_manual', 'otras_drogas',
+ ]);
+ if (!hidden.has(name)) return false;
+ if (name.startsWith('subsecuente_')) return true;
+ // Seguridad: solo ocultar en secciones clínicas esperadas.
+ return ['3', '4', '5'].includes(String(sectionCode || ''));
+ }
 
-        function sectionCardHtml(section) {
-            const code = section.section_code;
-            const fields = (section.fields || [])
-                .filter(f => !shouldHideDuplicateField(code, f.field_name))
-                .map(f => fieldHtml(code, f))
-                .join('');
-            return `
-                <section class="section collapsed" data-section-code="${code}">
-                    <div class="section-head">
-                        <button class="section-toggle" type="button" onclick="toggleSection('${code}')">📋 ${code}. ${section.section_title}</button>
-                        <span id="chip_${code}" class="status-chip status-pending">Pendiente</span>
-                    </div>
-                    <div class="section-body" id="body_${code}">
-                        <div class="grid">${fields}</div>
-                        <div class="actions">
-                            <button class="btn btn-main" type="button" onclick="guardarSeccion('${code}', '${(section.section_title || '').replace(/'/g, '&#39;')}')">Guardar sección</button>
-                        </div>
-                        <div id="msg_${code}" class="msg"></div>
-                    </div>
-                </section>
-            `;
-        }
+ function sectionCardHtml(section) {
+ const code = section.section_code;
+ const fields = (section.fields || [])
+ .filter(f => !shouldHideDuplicateField(code, f.field_name))
+ .map(f => fieldHtml(code, f))
+ .join('');
+ return `
+ <section class="section collapsed" data-section-code="${code}">
+ <div class="section-head">
+ <button class="section-toggle" type="button" onclick="toggleSection('${code}')">📋 ${code}. ${section.section_title}</button>
+ <span id="chip_${code}" class="status-chip status-pending">Pendiente</span>
+ </div>
+ <div class="section-body" id="body_${code}">
+ <div class="grid">${fields}</div>
+ <div class="actions">
+ <button class="btn btn-main" type="button" onclick="guardarSeccion('${code}', '${(section.section_title || '').replace(/'/g, '&#39;')}')">Guardar sección</button>
+ </div>
+ <div id="msg_${code}" class="msg"></div>
+ </div>
+ </section>
+ `;
+ }
 
-        function toggleSection(sectionCode) {
-            const sec = document.querySelector(`section[data-section-code="${sectionCode}"]`);
-            if (!sec) return;
-            sec.classList.toggle('collapsed');
-        }
+ function toggleSection(sectionCode) {
+ const sec = document.querySelector(`section[data-section-code="${sectionCode}"]`);
+ if (!sec) return;
+ sec.classList.toggle('collapsed');
+ }
 
-        function closeSection(sectionCode) {
-            const sec = document.querySelector(`section[data-section-code="${sectionCode}"]`);
-            if (!sec) return;
-            sec.classList.add('collapsed');
-        }
+ function closeSection(sectionCode) {
+ const sec = document.querySelector(`section[data-section-code="${sectionCode}"]`);
+ if (!sec) return;
+ sec.classList.add('collapsed');
+ }
 
-        function openSection(sectionCode) {
-            const sec = document.querySelector(`section[data-section-code="${sectionCode}"]`);
-            if (!sec) return;
-            sec.classList.remove('collapsed');
-        }
+ function openSection(sectionCode) {
+ const sec = document.querySelector(`section[data-section-code="${sectionCode}"]`);
+ if (!sec) return;
+ sec.classList.remove('collapsed');
+ }
 
-        function getSectionPayload(sectionCode) {
-            const root = document.querySelector(`section[data-section-code="${sectionCode}"]`);
-            if (!root) return {};
-            const out = {};
-            const allNamed = [
-                ...Array.from(root.querySelectorAll('[name]')),
-                ...Array.from(document.querySelectorAll(`[data-extra-for-section="${sectionCode}"] [name]`)),
-            ];
-            allNamed.forEach(el => {
-                if (String(el.type || '').toLowerCase() === 'file') {
-                    out[el.name] = Array.from(el.files || []).map(f => f.name);
-                    return;
-                }
-                out[el.name] = (el.type === 'checkbox') ? !!el.checked : el.value;
-            });
-            return out;
-        }
+ function getSectionPayload(sectionCode) {
+ const root = document.querySelector(`section[data-section-code="${sectionCode}"]`);
+ if (!root) return {};
+ const out = {};
+ const allNamed = [
+ ...Array.from(root.querySelectorAll('[name]')),
+ ...Array.from(document.querySelectorAll(`[data-extra-for-section="${sectionCode}"] [name]`)),
+ ];
+ allNamed.forEach(el => {
+ if (String(el.type || '').toLowerCase() === 'file') {
+ out[el.name] = Array.from(el.files || []).map(f => f.name);
+ return;
+ }
+ out[el.name] = (el.type === 'checkbox') ? !!el.checked : el.value;
+ });
+ return out;
+ }
 
-        function sectionHasFiles(sectionCode) {
-            const root = document.querySelector(`section[data-section-code="${sectionCode}"]`);
-            if (!root) return false;
-            return !!root.querySelector('input[type="file"][name]');
-        }
+ function sectionHasFiles(sectionCode) {
+ const root = document.querySelector(`section[data-section-code="${sectionCode}"]`);
+ if (!root) return false;
+ return !!root.querySelector('input[type="file"][name]');
+ }
 
-        function collectSectionFiles(sectionCode) {
-            const root = document.querySelector(`section[data-section-code="${sectionCode}"]`);
-            if (!root) return [];
-            const out = [];
-            root.querySelectorAll('input[type="file"][name]').forEach(el => {
-                Array.from(el.files || []).forEach(file => out.push({ name: el.name, file }));
-            });
-            return out;
-        }
+ function collectSectionFiles(sectionCode) {
+ const root = document.querySelector(`section[data-section-code="${sectionCode}"]`);
+ if (!root) return [];
+ const out = [];
+ root.querySelectorAll('input[type="file"][name]').forEach(el => {
+ Array.from(el.files || []).forEach(file => out.push({ name: el.name, file }));
+ });
+ return out;
+ }
 
-        function showMsg(sectionCode, type, text) {
-            const box = document.getElementById(`msg_${sectionCode}`);
-            if (!box) return;
-            box.className = `msg ${type}`;
-            box.textContent = text;
-            if (type === 'err') openSection(sectionCode);
-        }
+ function showMsg(sectionCode, type, text) {
+ const box = document.getElementById(`msg_${sectionCode}`);
+ if (!box) return;
+ box.className = `msg ${type}`;
+ box.textContent = text;
+ if (type === 'err') openSection(sectionCode);
+ }
 
-        function setSectionStatus(sectionCode, ok) {
-            const chip = document.getElementById(`chip_${sectionCode}`);
-            if (!chip) return;
-            chip.className = `status-chip ${ok ? 'status-ok' : 'status-pending'}`;
-            chip.textContent = ok ? 'Guardada' : 'Pendiente';
-        }
+ function setSectionStatus(sectionCode, ok) {
+ const chip = document.getElementById(`chip_${sectionCode}`);
+ if (!chip) return;
+ chip.className = `status-chip ${ok ? 'status-ok' : 'status-pending'}`;
+ chip.textContent = ok ? 'Guardada' : 'Pendiente';
+ }
 
-        async function validarSeccion(sectionCode) {
-            try {
-                const payload = getSectionPayload(sectionCode);
-                const res = await apiJson(`/api/forms/${FORM_CODE}/validate`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ csrf_token: CSRF_TOKEN, section_code: sectionCode, payload })
-                });
-                const v = (res || {}).validation || {};
-                const errs = v.errors || {};
-                const warns = v.warnings || {};
-                if (Object.keys(errs).length) {
-                    showMsg(sectionCode, 'err', `Errores: ${Object.entries(errs).map(([k,m]) => `${k}: ${m}`).join(' | ')}`);
-                    return false;
-                }
-                if (Object.keys(warns).length) {
-                    showMsg(sectionCode, 'warn', `Validación OK con advertencias: ${Object.entries(warns).map(([k,m]) => `${k}: ${m}`).join(' | ')}`);
-                } else {
-                    showMsg(sectionCode, 'ok', 'Validación OK');
-                }
-                return true;
-            } catch (e) {
-                showMsg(sectionCode, 'err', `Error validando: ${e.message}`);
-                return false;
-            }
-        }
+ async function validarSeccion(sectionCode) {
+ try {
+ const payload = getSectionPayload(sectionCode);
+ const res = await apiJson(`/api/forms/${FORM_CODE}/validate`, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ csrf_token: CSRF_TOKEN, section_code: sectionCode, payload })
+ });
+ const v = (res || {}).validation || {};
+ const errs = v.errors || {};
+ const warns = v.warnings || {};
+ if (Object.keys(errs).length) {
+ showMsg(sectionCode, 'err', `Errores: ${Object.entries(errs).map(([k,m]) => `${k}: ${m}`).join(' | ')}`);
+ return false;
+ }
+ if (Object.keys(warns).length) {
+ showMsg(sectionCode, 'warn', `Validación OK con advertencias: ${Object.entries(warns).map(([k,m]) => `${k}: ${m}`).join(' | ')}`);
+ } else {
+ showMsg(sectionCode, 'ok', 'Validación OK');
+ }
+ return true;
+ } catch (e) {
+ showMsg(sectionCode, 'err', `Error validando: ${e.message}`);
+ return false;
+ }
+ }
 
-        async function guardarSeccion(sectionCode, sectionTitle) {
-            const ok = await validarSeccion(sectionCode);
-            if (!ok) return;
-            try {
-                const payload = getSectionPayload(sectionCode);
-                let res;
-                if (sectionHasFiles(sectionCode)) {
-                    const files = collectSectionFiles(sectionCode);
-                    const fd = new FormData();
-                    fd.append('csrf_token', CSRF_TOKEN);
-                    fd.append('draft_id', draftId || '');
-                    fd.append('seccion_codigo', sectionCode);
-                    fd.append('seccion_nombre', sectionTitle || '');
-                    fd.append('payload_json', JSON.stringify(payload || {}));
-                    files.forEach(item => fd.append(item.name, item.file));
-                    const http = await fetch('/api/consulta/seccion/guardar-con-archivos', { method: 'POST', body: fd });
-                    const txt = await http.text();
-                    try { res = txt ? JSON.parse(txt) : {}; } catch (_) { res = {}; }
-                    if (!http.ok) throw new Error((res && (res.detail || res.message)) || `HTTP ${http.status}`);
-                } else {
-                    res = await apiJson(SECTION_SAVE_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            csrf_token: CSRF_TOKEN,
-                            draft_id: draftId || null,
-                            seccion_codigo: sectionCode,
-                            seccion_nombre: sectionTitle,
-                            payload
-                        })
-                    });
-                }
-                setDraftId((res.saved || {}).draft_id || draftId);
-                setSectionStatus(sectionCode, true);
-                showMsg(sectionCode, 'ok', 'Sección guardada correctamente');
-                closeSection(sectionCode);
-            } catch (e) {
-                showMsg(sectionCode, 'err', `Error guardando: ${e.message}`);
-            }
-        }
+ async function guardarSeccion(sectionCode, sectionTitle) {
+ const ok = await validarSeccion(sectionCode);
+ if (!ok) return;
+ try {
+ const payload = getSectionPayload(sectionCode);
+ let res;
+ if (sectionHasFiles(sectionCode)) {
+ const files = collectSectionFiles(sectionCode);
+ const fd = new FormData();
+ fd.append('csrf_token', CSRF_TOKEN);
+ fd.append('draft_id', draftId || '');
+ fd.append('seccion_codigo', sectionCode);
+ fd.append('seccion_nombre', sectionTitle || '');
+ fd.append('payload_json', JSON.stringify(payload || {}));
+ files.forEach(item => fd.append(item.name, item.file));
+ const http = await fetch('/api/consulta/seccion/guardar-con-archivos', { method: 'POST', body: fd });
+ const txt = await http.text();
+ try { res = txt ? JSON.parse(txt) : {}; } catch (_) { res = {}; }
+ if (!http.ok) throw new Error((res && (res.detail || res.message)) || `HTTP ${http.status}`);
+ } else {
+ res = await apiJson(SECTION_SAVE_URL, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({
+ csrf_token: CSRF_TOKEN,
+ draft_id: draftId || null,
+ seccion_codigo: sectionCode,
+ seccion_nombre: sectionTitle,
+ payload
+ })
+ });
+ }
+ setDraftId((res.saved || {}).draft_id || draftId);
+ setSectionStatus(sectionCode, true);
+ showMsg(sectionCode, 'ok', 'Sección guardada correctamente');
+ closeSection(sectionCode);
+ } catch (e) {
+ showMsg(sectionCode, 'err', `Error guardando: ${e.message}`);
+ }
+ }
 
-        function classifyImc(v) {
-            const n = Number(v || 0);
-            if (!n || !isFinite(n)) return 'N/E';
-            if (n < 18.5) return 'BAJO PESO';
-            if (n < 25) return 'NORMOPESO';
-            if (n < 30) return 'SOBREPESO';
-            if (n < 35) return 'OBESIDAD GRADO I';
-            if (n < 40) return 'OBESIDAD GRADO II';
-            return 'OBESIDAD GRADO III';
-        }
+ function classifyImc(v) {
+ const n = Number(v || 0);
+ if (!n || !isFinite(n)) return 'N/E';
+ if (n < 18.5) return 'BAJO PESO';
+ if (n < 25) return 'NORMOPESO';
+ if (n < 30) return 'SOBREPESO';
+ if (n < 35) return 'OBESIDAD GRADO I';
+ if (n < 40) return 'OBESIDAD GRADO II';
+ return 'OBESIDAD GRADO III';
+ }
 
-        function setupConsultaImc() {
-            if (FORM_CODE !== 'consulta_externa') return;
-            const peso = document.querySelector('[name="peso"]');
-            const talla = document.querySelector('[name="talla"]');
-            const imc = document.querySelector('[name="imc"]');
-            const imcClas = document.querySelector('[name="imc_clasificacion"]');
-            if (!peso || !talla || !imc || !imcClas) return;
-            const calc = () => {
-                const p = Number(peso.value || 0);
-                const t = Number(talla.value || 0);
-                if (!p || !t || t <= 0) {
-                    imc.value = '';
-                    imcClas.value = '';
-                    return;
-                }
-                const m = t > 3 ? t / 100.0 : t;
-                if (!m || m <= 0) return;
-                const val = p / (m * m);
-                imc.value = val.toFixed(2);
-                imcClas.value = classifyImc(val);
-            };
-            peso.addEventListener('input', calc);
-            talla.addEventListener('input', calc);
-            calc();
-        }
+ function setupConsultaImc() {
+ if (FORM_CODE !== 'consulta_externa') return;
+ const peso = document.querySelector('[name="peso"]');
+ const talla = document.querySelector('[name="talla"]');
+ const imc = document.querySelector('[name="imc"]');
+ const imcClas = document.querySelector('[name="imc_clasificacion"]');
+ if (!peso || !talla || !imc || !imcClas) return;
+ const calc = () => {
+ const p = Number(peso.value || 0);
+ const t = Number(talla.value || 0);
+ if (!p || !t || t <= 0) {
+ imc.value = '';
+ imcClas.value = '';
+ return;
+ }
+ const m = t > 3 ? t / 100.0 : t;
+ if (!m || m <= 0) return;
+ const val = p / (m * m);
+ imc.value = val.toFixed(2);
+ imcClas.value = classifyImc(val);
+ };
+ peso.addEventListener('input', calc);
+ talla.addEventListener('input', calc);
+ calc();
+ }
 
-        function applyConditionalVisibility() {
-            const wraps = Array.from(document.querySelectorAll('.field-wrap[data-visible-field][data-visible-in]'));
-            wraps.forEach((wrap) => {
-                const controller = String(wrap.getAttribute('data-visible-field') || '');
-                const allowed = String(wrap.getAttribute('data-visible-in') || '').split('|').map(v => v.trim()).filter(Boolean);
-                const ctrlEl = document.querySelector(`[name="${controller}"]`);
-                if (!ctrlEl) return;
-                const toggle = () => {
-                    const val = String(ctrlEl.value || '').trim();
-                    const show = allowed.includes(val);
-                    wrap.classList.toggle('hidden-by-rule', !show);
-                };
-                ctrlEl.addEventListener('change', toggle);
-                ctrlEl.addEventListener('input', toggle);
-                toggle();
-            });
-        }
+ function applyConditionalVisibility() {
+ const wraps = Array.from(document.querySelectorAll('.field-wrap[data-visible-field][data-visible-in]'));
+ wraps.forEach((wrap) => {
+ const controller = String(wrap.getAttribute('data-visible-field') || '');
+ const allowed = String(wrap.getAttribute('data-visible-in') || '').split('|').map(v => v.trim()).filter(Boolean);
+ const ctrlEl = document.querySelector(`[name="${controller}"]`);
+ if (!ctrlEl) return;
+ const toggle = () => {
+ const val = String(ctrlEl.value || '').trim();
+ const show = allowed.includes(val);
+ wrap.classList.toggle('hidden-by-rule', !show);
+ };
+ ctrlEl.addEventListener('change', toggle);
+ ctrlEl.addEventListener('input', toggle);
+ toggle();
+ });
+ }
 
-        function setupJsonCaptureHelpers() {
-            if (FORM_CODE !== 'consulta_externa') return;
-            const defs = {
-                app_patologias_json: {
-                    buttonLabel: '+ Agregar patología crónica',
-                    visibleWhen: { field: 'app_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
-                    fields: [
-                        { key: 'patologia', label: 'Patología crónica' },
-                        { key: 'evolucion', label: 'Tiempo de evolución' },
-                        { key: 'tratamiento', label: 'Tratamiento actual' },
-                    ],
-                },
-                hosp_previas_json: {
-                    buttonLabel: '+ Agregar hospitalización previa',
-                    visibleWhen: { field: 'hosp_previas', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
-                    fields: [
-                        { key: 'motivo', label: 'Motivo de hospitalización' },
-                        { key: 'dias_estancia', label: 'Días de estancia' },
-                        { key: 'ingreso_uci', label: 'Ingreso a UCI', type: 'select', options: ['NO', 'SI'] },
-                        { key: 'dias_uci', label: 'Días en UCI', showWhen: { key: 'ingreso_uci', in: ['SI', 'si', 'Sí', 'sí'] } },
-                    ],
-                },
-                aqx_json: {
-                    buttonLabel: '+ Agregar antecedente quirúrgico',
-                    visibleWhen: { field: 'aqx_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
-                    fields: [
-                        { key: 'fecha', label: 'Fecha (YYYY-MM-DD)' },
-                        { key: 'procedimiento', label: 'Procedimiento' },
-                        { key: 'hallazgos', label: 'Hallazgos' },
-                        { key: 'medico', label: 'Médico' },
-                    ],
-                },
-                alergias_json: {
-                    buttonLabel: '+ Agregar alergia previa',
-                    visibleWhen: { field: 'alergias_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
-                    fields: [
-                        { key: 'alergeno', label: 'Alérgeno' },
-                        { key: 'reaccion', label: 'Reacción' },
-                        { key: 'fecha_exposicion', label: 'Fecha exposición (YYYY-MM-DD)' },
-                    ],
-                },
-                transfusiones_json: {
-                    buttonLabel: '+ Agregar transfusión previa',
-                    visibleWhen: { field: 'transfusiones_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
-                    fields: [
-                        { key: 'producto', label: 'Producto transfundido' },
-                        { key: 'fecha_ultima', label: 'Fecha última transfusión (YYYY-MM-DD)' },
-                        { key: 'reacciones', label: 'Reacciones (SI/NO + detalle)' },
-                    ],
-                },
-                ahf_json: {
-                    buttonLabel: '+ Agregar antecedente heredofamiliar',
-                    visibleWhen: { field: 'ahf_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
-                    fields: [
-                        { key: 'linea', label: 'Línea (Materna/Paterna/Ambas)' },
-                        { key: 'padecimiento', label: 'Padecimiento' },
-                        { key: 'estatus', label: 'Estatus' },
-                    ],
-                },
-                toxicomanias_json: {
-                    buttonLabel: '+ Agregar toxicomanía',
-                    visibleWhen: { field: 'toxicomanias_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
-                    fields: [
-                        { key: 'sustancia', label: 'Sustancia' },
-                        { key: 'estatus', label: 'Estatus', type: 'select', options: ['ACTIVO', 'NEGADO', 'PREVIO'] },
-                        { key: 'frecuencia', label: 'Frecuencia' },
-                        { key: 'duracion', label: 'Duración' },
-                    ],
-                },
-            };
-            Object.keys(defs).forEach((fieldName) => {
-                const el = document.querySelector(`[name="${fieldName}"]`);
-                if (!el) return;
-                const def = defs[fieldName] || {};
-                const host = document.createElement('div');
-                host.className = 'capture-helper';
-                host.setAttribute('data-helper-for', fieldName);
-                const top = document.createElement('div');
-                top.className = 'helper-top';
-                const btnAdd = document.createElement('button');
-                btnAdd.type = 'button';
-                btnAdd.className = 'mini';
-                btnAdd.textContent = String(def.buttonLabel || 'Agregar registro');
-                const btnJson = document.createElement('button');
-                btnJson.type = 'button';
-                btnJson.className = 'mini alt';
-                btnJson.textContent = 'Ver JSON';
-                const note = document.createElement('span');
-                note.className = 'tiny-note';
-                note.textContent = 'Captura estructurada visual (se guarda en JSON internamente).';
-                top.appendChild(btnAdd);
-                top.appendChild(btnJson);
-                top.appendChild(note);
+ function setupJsonCaptureHelpers() {
+ if (FORM_CODE !== 'consulta_externa') return;
+ const defs = {
+ app_patologias_json: {
+ buttonLabel: '+ Agregar patología crónica',
+ visibleWhen: { field: 'app_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
+ fields: [
+ { key: 'patologia', label: 'Patología crónica' },
+ { key: 'evolucion', label: 'Tiempo de evolución' },
+ { key: 'tratamiento', label: 'Tratamiento actual' },
+ ],
+ },
+ hosp_previas_json: {
+ buttonLabel: '+ Agregar hospitalización previa',
+ visibleWhen: { field: 'hosp_previas', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
+ fields: [
+ { key: 'motivo', label: 'Motivo de hospitalización' },
+ { key: 'dias_estancia', label: 'Días de estancia' },
+ { key: 'ingreso_uci', label: 'Ingreso a UCI', type: 'select', options: ['NO', 'SI'] },
+ { key: 'dias_uci', label: 'Días en UCI', showWhen: { key: 'ingreso_uci', in: ['SI', 'si', 'Sí', 'sí'] } },
+ ],
+ },
+ aqx_json: {
+ buttonLabel: '+ Agregar antecedente quirúrgico',
+ visibleWhen: { field: 'aqx_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
+ fields: [
+ { key: 'fecha', label: 'Fecha (YYYY-MM-DD)' },
+ { key: 'procedimiento', label: 'Procedimiento' },
+ { key: 'hallazgos', label: 'Hallazgos' },
+ { key: 'medico', label: 'Médico' },
+ ],
+ },
+ alergias_json: {
+ buttonLabel: '+ Agregar alergia previa',
+ visibleWhen: { field: 'alergias_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
+ fields: [
+ { key: 'alergeno', label: 'Alérgeno' },
+ { key: 'reaccion', label: 'Reacción' },
+ { key: 'fecha_exposicion', label: 'Fecha exposición (YYYY-MM-DD)' },
+ ],
+ },
+ transfusiones_json: {
+ buttonLabel: '+ Agregar transfusión previa',
+ visibleWhen: { field: 'transfusiones_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
+ fields: [
+ { key: 'producto', label: 'Producto transfundido' },
+ { key: 'fecha_ultima', label: 'Fecha última transfusión (YYYY-MM-DD)' },
+ { key: 'reacciones', label: 'Reacciones (SI/NO + detalle)' },
+ ],
+ },
+ ahf_json: {
+ buttonLabel: '+ Agregar antecedente heredofamiliar',
+ visibleWhen: { field: 'ahf_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
+ fields: [
+ { key: 'linea', label: 'Línea (Materna/Paterna/Ambas)' },
+ { key: 'padecimiento', label: 'Padecimiento' },
+ { key: 'estatus', label: 'Estatus' },
+ ],
+ },
+ toxicomanias_json: {
+ buttonLabel: '+ Agregar toxicomanía',
+ visibleWhen: { field: 'toxicomanias_status', in: ['si', 'SI', 'Sí', 'sí', 'Si'] },
+ fields: [
+ { key: 'sustancia', label: 'Sustancia' },
+ { key: 'estatus', label: 'Estatus', type: 'select', options: ['ACTIVO', 'NEGADO', 'PREVIO'] },
+ { key: 'frecuencia', label: 'Frecuencia' },
+ { key: 'duracion', label: 'Duración' },
+ ],
+ },
+ };
+ Object.keys(defs).forEach((fieldName) => {
+ const el = document.querySelector(`[name="${fieldName}"]`);
+ if (!el) return;
+ const def = defs[fieldName] || {};
+ const host = document.createElement('div');
+ host.className = 'capture-helper';
+ host.setAttribute('data-helper-for', fieldName);
+ const top = document.createElement('div');
+ top.className = 'helper-top';
+ const btnAdd = document.createElement('button');
+ btnAdd.type = 'button';
+ btnAdd.className = 'mini';
+ btnAdd.textContent = String(def.buttonLabel || 'Agregar registro');
+ const btnJson = document.createElement('button');
+ btnJson.type = 'button';
+ btnJson.className = 'mini alt';
+ btnJson.textContent = 'Ver JSON';
+ const note = document.createElement('span');
+ note.className = 'tiny-note';
+ note.textContent = 'Captura estructurada visual (se guarda en JSON internamente).';
+ top.appendChild(btnAdd);
+ top.appendChild(btnJson);
+ top.appendChild(note);
 
-                const formGrid = document.createElement('div');
-                formGrid.className = 'json-grid';
-                formGrid.style.display = 'none';
-                const inputs = [];
-                const inputsByKey = {};
-                (def.fields || []).forEach((d) => {
-                    const wrap = document.createElement('div');
-                    const lab = document.createElement('label');
-                    lab.textContent = d.label;
-                    const type = String(d.type || 'text').toLowerCase();
-                    let inp;
-                    if (type === 'select') {
-                        inp = document.createElement('select');
-                        const opts = Array.isArray(d.options) ? d.options : [];
-                        const emptyOpt = document.createElement('option');
-                        emptyOpt.value = '';
-                        emptyOpt.textContent = 'SELECCIONAR';
-                        inp.appendChild(emptyOpt);
-                        opts.forEach((o) => {
-                            const op = document.createElement('option');
-                            op.value = String(o);
-                            op.textContent = String(o);
-                            inp.appendChild(op);
-                        });
-                    } else {
-                        inp = document.createElement('input');
-                        inp.type = 'text';
-                        inp.placeholder = d.label;
-                    }
-                    wrap.appendChild(lab);
-                    wrap.appendChild(inp);
-                    formGrid.appendChild(wrap);
-                    const meta = { key: d.key, el: inp, label: d.label, wrap, showWhen: d.showWhen || null };
-                    inputs.push(meta);
-                    inputsByKey[d.key] = meta;
-                });
-                const applyInputVisibility = () => {
-                    inputs.forEach((meta) => {
-                        const rule = meta.showWhen || null;
-                        if (!rule || !rule.key) {
-                            meta.wrap.style.display = '';
-                            return;
-                        }
-                        const ctrl = inputsByKey[rule.key];
-                        if (!ctrl) {
-                            meta.wrap.style.display = '';
-                            return;
-                        }
-                        const allowed = Array.isArray(rule.in) ? rule.in.map(v => String(v)) : [];
-                        const val = String(ctrl.el.value || '').trim();
-                        const show = allowed.includes(val);
-                        meta.wrap.style.display = show ? '' : 'none';
-                        if (!show) meta.el.value = '';
-                    });
-                };
-                inputs.forEach((meta) => {
-                    meta.el.addEventListener('change', applyInputVisibility);
-                    meta.el.addEventListener('input', applyInputVisibility);
-                });
-                const actions = document.createElement('div');
-                actions.className = 'helper-top';
-                const btnSaveRow = document.createElement('button');
-                btnSaveRow.type = 'button';
-                btnSaveRow.className = 'mini';
-                btnSaveRow.textContent = 'Guardar registro';
-                const btnCancel = document.createElement('button');
-                btnCancel.type = 'button';
-                btnCancel.className = 'mini alt';
-                btnCancel.textContent = 'Cancelar';
-                actions.appendChild(btnSaveRow);
-                actions.appendChild(btnCancel);
-                formGrid.appendChild(actions);
+ const formGrid = document.createElement('div');
+ formGrid.className = 'json-grid';
+ formGrid.style.display = 'none';
+ const inputs = [];
+ const inputsByKey = {};
+ (def.fields || []).forEach((d) => {
+ const wrap = document.createElement('div');
+ const lab = document.createElement('label');
+ lab.textContent = d.label;
+ const type = String(d.type || 'text').toLowerCase();
+ let inp;
+ if (type === 'select') {
+ inp = document.createElement('select');
+ const opts = Array.isArray(d.options) ? d.options : [];
+ const emptyOpt = document.createElement('option');
+ emptyOpt.value = '';
+ emptyOpt.textContent = 'SELECCIONAR';
+ inp.appendChild(emptyOpt);
+ opts.forEach((o) => {
+ const op = document.createElement('option');
+ op.value = String(o);
+ op.textContent = String(o);
+ inp.appendChild(op);
+ });
+ } else {
+ inp = document.createElement('input');
+ inp.type = 'text';
+ inp.placeholder = d.label;
+ }
+ wrap.appendChild(lab);
+ wrap.appendChild(inp);
+ formGrid.appendChild(wrap);
+ const meta = { key: d.key, el: inp, label: d.label, wrap, showWhen: d.showWhen || null };
+ inputs.push(meta);
+ inputsByKey[d.key] = meta;
+ });
+ const applyInputVisibility = () => {
+ inputs.forEach((meta) => {
+ const rule = meta.showWhen || null;
+ if (!rule || !rule.key) {
+ meta.wrap.style.display = '';
+ return;
+ }
+ const ctrl = inputsByKey[rule.key];
+ if (!ctrl) {
+ meta.wrap.style.display = '';
+ return;
+ }
+ const allowed = Array.isArray(rule.in) ? rule.in.map(v => String(v)) : [];
+ const val = String(ctrl.el.value || '').trim();
+ const show = allowed.includes(val);
+ meta.wrap.style.display = show ? '' : 'none';
+ if (!show) meta.el.value = '';
+ });
+ };
+ inputs.forEach((meta) => {
+ meta.el.addEventListener('change', applyInputVisibility);
+ meta.el.addEventListener('input', applyInputVisibility);
+ });
+ const actions = document.createElement('div');
+ actions.className = 'helper-top';
+ const btnSaveRow = document.createElement('button');
+ btnSaveRow.type = 'button';
+ btnSaveRow.className = 'mini';
+ btnSaveRow.textContent = 'Guardar registro';
+ const btnCancel = document.createElement('button');
+ btnCancel.type = 'button';
+ btnCancel.className = 'mini alt';
+ btnCancel.textContent = 'Cancelar';
+ actions.appendChild(btnSaveRow);
+ actions.appendChild(btnCancel);
+ formGrid.appendChild(actions);
 
-                const rowsBox = document.createElement('div');
-                rowsBox.className = 'rows';
-                const empty = document.createElement('div');
-                empty.className = 'empty';
-                empty.textContent = 'Sin registros capturados.';
-                const parseRows = () => {
-                    try {
-                        const v = String(el.value || '').trim();
-                        const arr = v ? JSON.parse(v) : [];
-                        return Array.isArray(arr) ? arr : [];
-                    } catch (_) {
-                        return [];
-                    }
-                };
-                const writeRows = (rows) => {
-                    el.value = JSON.stringify(rows, null, 2);
-                };
-                const clearInputs = () => inputs.forEach(i => { i.el.value = ''; });
-                const renderRows = () => {
-                    const rows = parseRows();
-                    rowsBox.innerHTML = '';
-                    if (!rows.length) {
-                        rowsBox.appendChild(empty);
-                        return;
-                    }
-                    rows.forEach((r, i) => {
-                        const card = document.createElement('div');
-                        card.className = 'row-card';
-                        const meta = document.createElement('div');
-                        meta.className = 'row-meta';
-                        (def.fields || []).forEach((d) => {
-                            const line = document.createElement('div');
-                            const value = (r && Object.prototype.hasOwnProperty.call(r, d.key)) ? String(r[d.key] || '') : '';
-                            line.innerHTML = `<strong>${d.label}:</strong> ${value || 'N/E'}`;
-                            meta.appendChild(line);
-                        });
-                        card.appendChild(meta);
+ const rowsBox = document.createElement('div');
+ rowsBox.className = 'rows';
+ const empty = document.createElement('div');
+ empty.className = 'empty';
+ empty.textContent = 'Sin registros capturados.';
+ const parseRows = () => {
+ try {
+ const v = String(el.value || '').trim();
+ const arr = v ? JSON.parse(v) : [];
+ return Array.isArray(arr) ? arr : [];
+ } catch (_) {
+ return [];
+ }
+ };
+ const writeRows = (rows) => {
+ el.value = JSON.stringify(rows, null, 2);
+ };
+ const clearInputs = () => inputs.forEach(i => { i.el.value = ''; });
+ const renderRows = () => {
+ const rows = parseRows();
+ rowsBox.innerHTML = '';
+ if (!rows.length) {
+ rowsBox.appendChild(empty);
+ return;
+ }
+ rows.forEach((r, i) => {
+ const card = document.createElement('div');
+ card.className = 'row-card';
+ const meta = document.createElement('div');
+ meta.className = 'row-meta';
+ (def.fields || []).forEach((d) => {
+ const line = document.createElement('div');
+ const value = (r && Object.prototype.hasOwnProperty.call(r, d.key)) ? String(r[d.key] || '') : '';
+ line.innerHTML = `<strong>${d.label}:</strong> ${value || 'N/E'}`;
+ meta.appendChild(line);
+ });
+ card.appendChild(meta);
 
-                        const rowActions = document.createElement('div');
-                        rowActions.className = 'row-actions';
-                        const btnEdit = document.createElement('button');
-                        btnEdit.type = 'button';
-                        btnEdit.className = 'mini alt';
-                        btnEdit.textContent = 'Editar';
-                        btnEdit.onclick = () => {
-                            inputs.forEach((inp) => {
-                                inp.el.value = (r && Object.prototype.hasOwnProperty.call(r, inp.key)) ? String(r[inp.key] || '') : '';
-                            });
-                            formGrid.style.display = '';
-                            applyInputVisibility();
-                            formGrid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                            btnSaveRow.dataset.editIndex = String(i);
-                        };
-                        const btnDelete = document.createElement('button');
-                        btnDelete.type = 'button';
-                        btnDelete.className = 'mini alt';
-                        btnDelete.textContent = 'Eliminar';
-                        btnDelete.onclick = () => {
-                            const next = parseRows().filter((_, idx) => idx !== i);
-                            writeRows(next);
-                            renderRows();
-                        };
-                        rowActions.appendChild(btnEdit);
-                        rowActions.appendChild(btnDelete);
-                        card.appendChild(rowActions);
-                        rowsBox.appendChild(card);
-                    });
-                };
-                btnAdd.addEventListener('click', () => {
-                    clearInputs();
-                    delete btnSaveRow.dataset.editIndex;
-                    formGrid.style.display = '';
-                    applyInputVisibility();
-                });
-                btnCancel.addEventListener('click', () => {
-                    clearInputs();
-                    delete btnSaveRow.dataset.editIndex;
-                    formGrid.style.display = 'none';
-                });
-                btnSaveRow.addEventListener('click', () => {
-                    const row = {};
-                    inputs.forEach((inp) => {
-                        const v = String(inp.el.value || '').trim();
-                        if (v) row[inp.key] = v;
-                    });
-                    if (!Object.keys(row).length) {
-                        window.alert('Captura al menos un dato para guardar el registro.');
-                        return;
-                    }
-                    const rows = parseRows();
-                    const editIdx = Number(btnSaveRow.dataset.editIndex || '-1');
-                    if (Number.isInteger(editIdx) && editIdx >= 0 && editIdx < rows.length) {
-                        rows[editIdx] = row;
-                    } else {
-                        rows.push(row);
-                    }
-                    writeRows(rows);
-                    clearInputs();
-                    delete btnSaveRow.dataset.editIndex;
-                    formGrid.style.display = 'none';
-                    renderRows();
-                });
-                btnJson.addEventListener('click', () => {
-                    const hidden = el.classList.toggle('hidden-json');
-                    btnJson.textContent = hidden ? 'Ver JSON' : 'Ocultar JSON';
-                });
-                el.addEventListener('input', renderRows);
+ const rowActions = document.createElement('div');
+ rowActions.className = 'row-actions';
+ const btnEdit = document.createElement('button');
+ btnEdit.type = 'button';
+ btnEdit.className = 'mini alt';
+ btnEdit.textContent = 'Editar';
+ btnEdit.onclick = () => {
+ inputs.forEach((inp) => {
+ inp.el.value = (r && Object.prototype.hasOwnProperty.call(r, inp.key)) ? String(r[inp.key] || '') : '';
+ });
+ formGrid.style.display = '';
+ applyInputVisibility();
+ formGrid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+ btnSaveRow.dataset.editIndex = String(i);
+ };
+ const btnDelete = document.createElement('button');
+ btnDelete.type = 'button';
+ btnDelete.className = 'mini alt';
+ btnDelete.textContent = 'Eliminar';
+ btnDelete.onclick = () => {
+ const next = parseRows().filter((_, idx) => idx !== i);
+ writeRows(next);
+ renderRows();
+ };
+ rowActions.appendChild(btnEdit);
+ rowActions.appendChild(btnDelete);
+ card.appendChild(rowActions);
+ rowsBox.appendChild(card);
+ });
+ };
+ btnAdd.addEventListener('click', () => {
+ clearInputs();
+ delete btnSaveRow.dataset.editIndex;
+ formGrid.style.display = '';
+ applyInputVisibility();
+ });
+ btnCancel.addEventListener('click', () => {
+ clearInputs();
+ delete btnSaveRow.dataset.editIndex;
+ formGrid.style.display = 'none';
+ });
+ btnSaveRow.addEventListener('click', () => {
+ const row = {};
+ inputs.forEach((inp) => {
+ const v = String(inp.el.value || '').trim();
+ if (v) row[inp.key] = v;
+ });
+ if (!Object.keys(row).length) {
+ window.alert('Captura al menos un dato para guardar el registro.');
+ return;
+ }
+ const rows = parseRows();
+ const editIdx = Number(btnSaveRow.dataset.editIndex || '-1');
+ if (Number.isInteger(editIdx) && editIdx >= 0 && editIdx < rows.length) {
+ rows[editIdx] = row;
+ } else {
+ rows.push(row);
+ }
+ writeRows(rows);
+ clearInputs();
+ delete btnSaveRow.dataset.editIndex;
+ formGrid.style.display = 'none';
+ renderRows();
+ });
+ btnJson.addEventListener('click', () => {
+ const hidden = el.classList.toggle('hidden-json');
+ btnJson.textContent = hidden ? 'Ver JSON' : 'Ocultar JSON';
+ });
+ el.addEventListener('input', renderRows);
 
-                const applyHostVisibility = () => {
-                    const rule = def.visibleWhen || null;
-                    if (!rule || !rule.field) {
-                        host.style.display = '';
-                        return;
-                    }
-                    const ctrlEl = document.querySelector(`[name="${rule.field}"]`);
-                    if (!ctrlEl) {
-                        host.style.display = '';
-                        return;
-                    }
-                    const allowed = Array.isArray(rule.in) ? rule.in.map(v => String(v).trim()) : [];
-                    const val = String(ctrlEl.value || '').trim();
-                    const show = allowed.includes(val);
-                    host.style.display = show ? '' : 'none';
-                    if (!show) {
-                        el.value = '[]';
-                        clearInputs();
-                        formGrid.style.display = 'none';
-                        delete btnSaveRow.dataset.editIndex;
-                        renderRows();
-                    }
-                };
-                if (def.visibleWhen && def.visibleWhen.field) {
-                    const ctrlEl = document.querySelector(`[name="${def.visibleWhen.field}"]`);
-                    if (ctrlEl) {
-                        ctrlEl.addEventListener('change', applyHostVisibility);
-                        ctrlEl.addEventListener('input', applyHostVisibility);
-                    }
-                }
-                el.classList.add('hidden-json');
-                host.appendChild(top);
-                host.appendChild(formGrid);
-                host.appendChild(rowsBox);
-                el.parentElement.appendChild(host);
-                applyInputVisibility();
-                applyHostVisibility();
-                renderRows();
-            });
-        }
+ const applyHostVisibility = () => {
+ const rule = def.visibleWhen || null;
+ if (!rule || !rule.field) {
+ host.style.display = '';
+ return;
+ }
+ const ctrlEl = document.querySelector(`[name="${rule.field}"]`);
+ if (!ctrlEl) {
+ host.style.display = '';
+ return;
+ }
+ const allowed = Array.isArray(rule.in) ? rule.in.map(v => String(v).trim()) : [];
+ const val = String(ctrlEl.value || '').trim();
+ const show = allowed.includes(val);
+ host.style.display = show ? '' : 'none';
+ if (!show) {
+ el.value = '[]';
+ clearInputs();
+ formGrid.style.display = 'none';
+ delete btnSaveRow.dataset.editIndex;
+ renderRows();
+ }
+ };
+ if (def.visibleWhen && def.visibleWhen.field) {
+ const ctrlEl = document.querySelector(`[name="${def.visibleWhen.field}"]`);
+ if (ctrlEl) {
+ ctrlEl.addEventListener('change', applyHostVisibility);
+ ctrlEl.addEventListener('input', applyHostVisibility);
+ }
+ }
+ el.classList.add('hidden-json');
+ host.appendChild(top);
+ host.appendChild(formGrid);
+ host.appendChild(rowsBox);
+ el.parentElement.appendChild(host);
+ applyInputVisibility();
+ applyHostVisibility();
+ renderRows();
+ });
+ }
 
-        function setupConsultaCompactSections() {
-            if (FORM_CODE !== 'consulta_externa') return;
-            const isYes = (v) => ['si', 'sí', '1', 'true', 'yes'].includes(String(v || '').trim().toLowerCase());
-            const buildForSection = (sectionCode, blocks) => {
-                const sec = document.querySelector(`section[data-section-code="${sectionCode}"]`);
-                if (!sec) return;
-                const grid = sec.querySelector('.grid');
-                if (!grid) return;
-                const fieldWrap = (name) => sec.querySelector(`.field-wrap[data-field-name="${name}"]`);
-                blocks.forEach((cfg) => {
-                    const ctrlWrap = fieldWrap(cfg.controller);
-                    if (!ctrlWrap) return;
-                    const detailNodes = [];
-                    (cfg.details || []).forEach((n) => {
-                        const w = fieldWrap(n);
-                        if (w) detailNodes.push(w);
-                        const helper = sec.querySelector(`.capture-helper[data-helper-for="${n}"]`);
-                        if (helper) detailNodes.push(helper);
-                    });
-                    const box = document.createElement('div');
-                    box.className = 'compact-block';
+ function setupConsultaCompactSections() {
+ if (FORM_CODE !== 'consulta_externa') return;
+ const isYes = (v) => ['si', 'sí', '1', 'true', 'yes'].includes(String(v || '').trim().toLowerCase());
+ const buildForSection = (sectionCode, blocks) => {
+ const sec = document.querySelector(`section[data-section-code="${sectionCode}"]`);
+ if (!sec) return;
+ const grid = sec.querySelector('.grid');
+ if (!grid) return;
+ const fieldWrap = (name) => sec.querySelector(`.field-wrap[data-field-name="${name}"]`);
+ blocks.forEach((cfg) => {
+ const ctrlWrap = fieldWrap(cfg.controller);
+ if (!ctrlWrap) return;
+ const detailNodes = [];
+ (cfg.details || []).forEach((n) => {
+ const w = fieldWrap(n);
+ if (w) detailNodes.push(w);
+ const helper = sec.querySelector(`.capture-helper[data-helper-for="${n}"]`);
+ if (helper) detailNodes.push(helper);
+ });
+ const box = document.createElement('div');
+ box.className = 'compact-block';
 
-                    const head = document.createElement('div');
-                    head.className = 'compact-head';
-                    const title = document.createElement('div');
-                    title.className = 'compact-title';
-                    title.textContent = cfg.title;
-                    const state = document.createElement('div');
-                    state.className = 'compact-state';
-                    head.appendChild(title);
-                    head.appendChild(state);
+ const head = document.createElement('div');
+ head.className = 'compact-head';
+ const title = document.createElement('div');
+ title.className = 'compact-title';
+ title.textContent = cfg.title;
+ const state = document.createElement('div');
+ state.className = 'compact-state';
+ head.appendChild(title);
+ head.appendChild(state);
 
-                    const controls = document.createElement('div');
-                    controls.className = 'compact-controls';
-                    controls.appendChild(ctrlWrap);
+ const controls = document.createElement('div');
+ controls.className = 'compact-controls';
+ controls.appendChild(ctrlWrap);
 
-                    const body = document.createElement('div');
-                    body.className = 'compact-body';
-                    detailNodes.forEach((n) => body.appendChild(n));
+ const body = document.createElement('div');
+ body.className = 'compact-body';
+ detailNodes.forEach((n) => body.appendChild(n));
 
-                    box.appendChild(head);
-                    box.appendChild(controls);
-                    box.appendChild(body);
-                    grid.appendChild(box);
+ box.appendChild(head);
+ box.appendChild(controls);
+ box.appendChild(body);
+ grid.appendChild(box);
 
-                    const ctrlEl = controls.querySelector(`[name="${cfg.controller}"]`);
-                    const refresh = () => {
-                        const yes = isYes(ctrlEl ? ctrlEl.value : '');
-                        body.style.display = yes ? '' : 'none';
-                        state.textContent = yes ? 'SI' : 'NO';
-                    };
-                    head.addEventListener('click', () => {
-                        const yes = isYes(ctrlEl ? ctrlEl.value : '');
-                        if (!yes) return;
-                        body.style.display = (body.style.display === 'none') ? '' : 'none';
-                    });
-                    if (ctrlEl) {
-                        ctrlEl.addEventListener('change', refresh);
-                        ctrlEl.addEventListener('input', refresh);
-                    }
-                    refresh();
-                });
-            };
+ const ctrlEl = controls.querySelector(`[name="${cfg.controller}"]`);
+ const refresh = () => {
+ const yes = isYes(ctrlEl ? ctrlEl.value : '');
+ body.style.display = yes ? '' : 'none';
+ state.textContent = yes ? 'SI' : 'NO';
+ };
+ head.addEventListener('click', () => {
+ const yes = isYes(ctrlEl ? ctrlEl.value : '');
+ if (!yes) return;
+ body.style.display = (body.style.display === 'none') ? '' : 'none';
+ });
+ if (ctrlEl) {
+ ctrlEl.addEventListener('change', refresh);
+ ctrlEl.addEventListener('input', refresh);
+ }
+ refresh();
+ });
+ };
 
-            buildForSection('4', [
-                { title: 'Antecedentes Personales Patológicos', controller: 'app_status', details: ['app_patologias_json'] },
-                { title: 'Hospitalizaciones Previas', controller: 'hosp_previas', details: ['hosp_previas_json', 'hosp_uci', 'hosp_dias_uci'] },
-                { title: 'Tabaquismo', controller: 'tabaquismo_status', details: ['cigarros_dia', 'anios_fumando', 'indice_tabaquico'] },
-                { title: 'Alergias', controller: 'alergias_status', details: ['alergias_json'] },
-                { title: 'Transfusiones', controller: 'transfusiones_status', details: ['transfusiones_json'] },
-                { title: 'Toxicomanías', controller: 'toxicomanias_status', details: ['toxicomanias_json'] },
-            ]);
+ buildForSection('4', [
+ { title: 'Antecedentes Personales Patológicos', controller: 'app_status', details: ['app_patologias_json'] },
+ { title: 'Hospitalizaciones Previas', controller: 'hosp_previas', details: ['hosp_previas_json', 'hosp_uci', 'hosp_dias_uci'] },
+ { title: 'Tabaquismo', controller: 'tabaquismo_status', details: ['cigarros_dia', 'anios_fumando', 'indice_tabaquico'] },
+ { title: 'Alergias', controller: 'alergias_status', details: ['alergias_json'] },
+ { title: 'Transfusiones', controller: 'transfusiones_status', details: ['transfusiones_json'] },
+ { title: 'Toxicomanías', controller: 'toxicomanias_status', details: ['toxicomanias_json'] },
+ ]);
 
-            buildForSection('5', [
-                {
-                    title: 'Antecedentes Quirúrgicos',
-                    controller: 'aqx_status',
-                    details: ['aqx_json', 'aqx_complicaciones_flag', 'aqx_complicacion_tipo', 'aqx_complicacion_detalle'],
-                },
-            ]);
-        }
+ buildForSection('5', [
+ {
+ title: 'Antecedentes Quirúrgicos',
+ controller: 'aqx_status',
+ details: ['aqx_json', 'aqx_complicaciones_flag', 'aqx_complicacion_tipo', 'aqx_complicacion_detalle'],
+ },
+ ]);
+ }
 
-        function setupConsultaGineSection() {
-            if (FORM_CODE !== 'consulta_externa') return;
-            const sec1 = document.querySelector('section[data-section-code="1"]');
-            if (!sec1) return;
-            const sourceGrid = sec1.querySelector('.grid');
-            if (!sourceGrid) return;
-            const gynNodes = Array.from(sourceGrid.querySelectorAll('.field-wrap[data-field-name^="gyn_"]'));
-            if (!gynNodes.length) return;
+ function setupConsultaGineSection() {
+ if (FORM_CODE !== 'consulta_externa') return;
+ const sec1 = document.querySelector('section[data-section-code="1"]');
+ if (!sec1) return;
+ const sourceGrid = sec1.querySelector('.grid');
+ if (!sourceGrid) return;
+ const gynNodes = Array.from(sourceGrid.querySelectorAll('.field-wrap[data-field-name^="gyn_"]'));
+ if (!gynNodes.length) return;
 
-            const extra = document.createElement('section');
-            extra.className = 'section';
-            extra.setAttribute('data-extra-for-section', '1');
-            extra.id = 'gyn-extra-section';
-            extra.innerHTML = `
-                <div class="section-head">
-                    <div class="section-title">ANTECEDENTES GINECOBSTÉTRICOS</div>
-                    <span class="status-chip status-pending">Dinámico</span>
-                </div>
-                <div class="grid" id="gyn-extra-grid"></div>
-            `;
-            sec1.insertAdjacentElement('afterend', extra);
-            const targetGrid = extra.querySelector('#gyn-extra-grid');
-            gynNodes.forEach((n) => targetGrid.appendChild(n));
+ const extra = document.createElement('section');
+ extra.className = 'section';
+ extra.setAttribute('data-extra-for-section', '1');
+ extra.id = 'gyn-extra-section';
+ extra.innerHTML = `
+ <div class="section-head">
+ <div class="section-title">ANTECEDENTES GINECOBSTÉTRICOS</div>
+ <span class="status-chip status-pending">Dinámico</span>
+ </div>
+ <div class="grid" id="gyn-extra-grid"></div>
+ `;
+ sec1.insertAdjacentElement('afterend', extra);
+ const targetGrid = extra.querySelector('#gyn-extra-grid');
+ gynNodes.forEach((n) => targetGrid.appendChild(n));
 
-            const sexoEl = sec1.querySelector('[name="sexo"]');
-            const refresh = () => {
-                const val = String(sexoEl ? sexoEl.value : '').toLowerCase();
-                const show = val.includes('femenino');
-                extra.style.display = show ? '' : 'none';
-            };
-            if (sexoEl) {
-                sexoEl.addEventListener('change', refresh);
-                sexoEl.addEventListener('input', refresh);
-            }
-            refresh();
-        }
+ const sexoEl = sec1.querySelector('[name="sexo"]');
+ const refresh = () => {
+ const val = String(sexoEl ? sexoEl.value : '').toLowerCase();
+ const show = val.includes('femenino');
+ extra.style.display = show ? '' : 'none';
+ };
+ if (sexoEl) {
+ sexoEl.addEventListener('change', refresh);
+ sexoEl.addEventListener('input', refresh);
+ }
+ refresh();
+ }
 
-        function applyConsultaEnhancements() {
-            if (FORM_CODE !== 'consulta_externa') return;
-            setupConsultaImc();
-            applyConditionalVisibility();
-            setupJsonCaptureHelpers();
-            setupConsultaCompactSections();
-            setupConsultaGineSection();
-        }
+ function applyConsultaEnhancements() {
+ if (FORM_CODE !== 'consulta_externa') return;
+ setupConsultaImc();
+ applyConditionalVisibility();
+ setupJsonCaptureHelpers();
+ setupConsultaCompactSections();
+ setupConsultaGineSection();
+ }
 
-        async function reloadSchema() {
-            const root = document.getElementById('sectionsRoot');
-            root.innerHTML = '<div class="sub">Cargando diccionario...</div>';
-            try {
-                const schema = await apiJson(`/api/forms/${FORM_CODE}/schema`);
-                const sections = schema.sections || [];
-                root.innerHTML = sections.map(sectionCardHtml).join('');
-                applyConsultaEnhancements();
-                if (URGENCIAS_FINALIZE_MODE) {
-                    const btnFinal = document.getElementById('btn-finalizar-urgencias');
-                    if (btnFinal && !btnFinal.dataset.bound) {
-                        btnFinal.dataset.bound = '1';
-                        btnFinal.addEventListener('click', finalizarUrgenciasIngreso);
-                    }
-                }
-            } catch (e) {
-                root.innerHTML = `<div class="msg err" style="display:block;">No se pudo cargar diccionario: ${e.message}</div>`;
-            }
-        }
+ async function reloadSchema() {
+ const root = document.getElementById('sectionsRoot');
+ root.innerHTML = '<div class="sub">Cargando diccionario...</div>';
+ try {
+ const schema = await apiJson(`/api/forms/${FORM_CODE}/schema`);
+ const sections = schema.sections || [];
+ root.innerHTML = sections.map(sectionCardHtml).join('');
+ applyConsultaEnhancements();
+ if (URGENCIAS_FINALIZE_MODE) {
+ const btnFinal = document.getElementById('btn-finalizar-urgencias');
+ if (btnFinal && !btnFinal.dataset.bound) {
+ btnFinal.dataset.bound = '1';
+ btnFinal.addEventListener('click', finalizarUrgenciasIngreso);
+ }
+ }
+ } catch (e) {
+ root.innerHTML = `<div class="msg err" style="display:block;">No se pudo cargar diccionario: ${e.message}</div>`;
+ }
+ }
 
-        /* ── Tracking de secciones completadas para habilitar botón expediente ── */
-        let savedSections = new Set();
-        let consultaIdExpediente = null;
+ /* ── Tracking de secciones completadas para habilitar botón expediente ── */
+ let savedSections = new Set();
+ let consultaIdExpediente = null;
 
-        function checkAllSectionsSaved() {
-            const allSections = document.querySelectorAll('section[data-section-code]');
-            const total = allSections.length;
-            let saved = 0;
-            allSections.forEach(sec => {
-                const code = sec.getAttribute('data-section-code');
-                const chip = document.getElementById(`chip_${code}`);
-                if (chip && chip.textContent.trim() === 'Guardada') {
-                    saved++;
-                    savedSections.add(code);
-                }
-            });
-            const btn = document.getElementById('btnGuardarExpediente');
-            if (btn) {
-                const allDone = saved >= total && total > 0 && draftId;
-                btn.disabled = !allDone;
-                btn.style.opacity = allDone ? '1' : '0.5';
-                btn.style.cursor = allDone ? 'pointer' : 'not-allowed';
-            }
-        }
+ function checkAllSectionsSaved() {
+ const allSections = document.querySelectorAll('section[data-section-code]');
+ const total = allSections.length;
+ let saved = 0;
+ allSections.forEach(sec => {
+ const code = sec.getAttribute('data-section-code');
+ const chip = document.getElementById(`chip_${code}`);
+ if (chip && chip.textContent.trim() === 'Guardada') {
+ saved++;
+ savedSections.add(code);
+ }
+ });
+ const btn = document.getElementById('btnGuardarExpediente');
+ if (btn) {
+ const allDone = saved >= total && total > 0 && draftId;
+ btn.disabled = !allDone;
+ btn.style.opacity = allDone ? '1' : '0.5';
+ btn.style.cursor = allDone ? 'pointer' : 'not-allowed';
+ }
+ }
 
-        // Override setSectionStatus para trackear
-        const _origSetSectionStatus = setSectionStatus;
-        setSectionStatus = function(sectionCode, ok) {
-            _origSetSectionStatus(sectionCode, ok);
-            if (ok) savedSections.add(sectionCode);
-            checkAllSectionsSaved();
-        };
+ // Override setSectionStatus para trackear
+ const _origSetSectionStatus = setSectionStatus;
+ setSectionStatus = function(sectionCode, ok) {
+ _origSetSectionStatus(sectionCode, ok);
+ if (ok) savedSections.add(sectionCode);
+ checkAllSectionsSaved();
+ };
 
-        async function guardarEnExpediente() {
-            if (!draftId) {
-                alert('Primero guarda todas las secciones para generar el borrador.');
-                return;
-            }
-            const msgBox = document.getElementById('expedienteMsg');
-            try {
-                msgBox.className = 'msg warn';
-                msgBox.style.display = 'block';
-                msgBox.textContent = 'Guardando en Expediente Clínico Único...';
+ async function guardarEnExpediente() {
+ if (!draftId) {
+ alert('Primero guarda todas las secciones para generar el borrador.');
+ return;
+ }
+ const msgBox = document.getElementById('expedienteMsg');
+ try {
+ msgBox.className = 'msg warn';
+ msgBox.style.display = 'block';
+ msgBox.textContent = 'Guardando en Expediente Clínico Único...';
 
-                const res = await apiJson('/api/consulta/metadata/guardar-expediente', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ csrf_token: CSRF_TOKEN, draft_id: draftId })
-                });
+ const res = await apiJson('/api/consulta/metadata/guardar-expediente', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ csrf_token: CSRF_TOKEN, draft_id: draftId })
+ });
 
-                consultaIdExpediente = (res || {}).consulta_id || null;
-                msgBox.className = 'msg ok';
-                msgBox.textContent = `Guardado exitosamente en Expediente Clínico Único (Consulta #${consultaIdExpediente || 'N/A'}).`;
+ consultaIdExpediente = (res || {}).consulta_id || null;
+ msgBox.className = 'msg ok';
+ msgBox.textContent = `Guardado exitosamente en Expediente Clínico Único (Consulta #${consultaIdExpediente || 'N/A'}).`;
 
-                // Habilitar botón imprimir
-                const btnPrint = document.getElementById('btnImprimirNota');
-                if (btnPrint) {
-                    btnPrint.disabled = false;
-                    btnPrint.style.opacity = '1';
-                    btnPrint.style.cursor = 'pointer';
-                }
-                // Deshabilitar botón guardar expediente
-                const btnExp = document.getElementById('btnGuardarExpediente');
-                if (btnExp) {
-                    btnExp.disabled = true;
-                    btnExp.style.opacity = '0.5';
-                    btnExp.style.cursor = 'not-allowed';
-                    btnExp.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Guardado en Expediente';
-                    btnExp.style.background = '#2e7d32';
-                }
-            } catch (e) {
-                msgBox.className = 'msg err';
-                msgBox.textContent = `Error al guardar en expediente: ${e.message}`;
-            }
-        }
+ // Habilitar botón imprimir
+ const btnPrint = document.getElementById('btnImprimirNota');
+ if (btnPrint) {
+ btnPrint.disabled = false;
+ btnPrint.style.opacity = '1';
+ btnPrint.style.cursor = 'pointer';
+ }
+ // Deshabilitar botón guardar expediente
+ const btnExp = document.getElementById('btnGuardarExpediente');
+ if (btnExp) {
+ btnExp.disabled = true;
+ btnExp.style.opacity = '0.5';
+ btnExp.style.cursor = 'not-allowed';
+ btnExp.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Guardado en Expediente';
+ btnExp.style.background = '#2e7d32';
+ }
+ } catch (e) {
+ msgBox.className = 'msg err';
+ msgBox.textContent = `Error al guardar en expediente: ${e.message}`;
+ }
+ }
 
-        function imprimirNota() {
-            if (!consultaIdExpediente && !draftId) {
-                alert('Primero guarda la consulta en el Expediente Clínico Único.');
-                return;
-            }
-            const target = consultaIdExpediente
-                ? `/api/consulta/metadata/imprimir?consulta_id=${consultaIdExpediente}`
-                : `/api/consulta/metadata/imprimir?draft_id=${encodeURIComponent(draftId)}`;
-            window.open(target, '_blank');
-        }
+ function imprimirNota() {
+ if (!consultaIdExpediente && !draftId) {
+ alert('Primero guarda la consulta en el Expediente Clínico Único.');
+ return;
+ }
+ const target = consultaIdExpediente
+ ? `/api/consulta/metadata/imprimir?consulta_id=${consultaIdExpediente}`
+ : `/api/consulta/metadata/imprimir?draft_id=${encodeURIComponent(draftId)}`;
+ window.open(target, '_blank');
+ }
 
-        reloadSchema();
-    </script>
+ reloadSchema();
+ </script>
 <script src="/static/js/clinical_validation.js"></script>
 <script src="/static/js/patient_autofill.js"></script>
 </body>

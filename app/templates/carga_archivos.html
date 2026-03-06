@@ -2,140 +2,140 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Cargar Archivos - Análisis de Datos</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; }
-        body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
-        .container { max-width: 1100px; margin: auto; background: #fff; border-radius: 10px; padding: 26px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-        h1 { color: var(--imss-verde); margin-bottom: 10px; }
-        h2 { color: var(--imss-verde); margin-top: 24px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 14px; }
-        .card { border: 1px solid #e6e6e6; border-radius: 8px; padding: 14px; background: #fafafa; }
-        label { font-size: 12px; color: #354; font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
-        .btn { display: inline-block; margin-top: 12px; border: none; border-radius: 6px; padding: 10px 16px; background: var(--imss-verde); color: #fff; text-decoration: none; cursor: pointer; }
-        .btn-secondary { background: var(--imss-dorado); color: #1d1d1d; }
-        table { width: 100%; border-collapse: collapse; margin-top: 14px; }
-        th { background: var(--imss-verde); color: #fff; padding: 10px; font-size: 12px; text-align: left; }
-        td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
-        .alert { margin-top: 12px; border-radius: 6px; padding: 10px 12px; }
-        .ok { background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
-        .err { background: #fdecea; color: #8a1c1c; border: 1px solid #f5c6cb; }
-        .hint { color: #555; font-size: 12px; margin-top: 6px; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>Cargar Archivos - Análisis de Datos</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde: #0a3161; --imss-dorado: #c82f3f; }
+ body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
+ .container { max-width: 1100px; margin: auto; background: #fff; border-radius: 10px; padding: 26px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+ h1 { color: var(--imss-verde); margin-bottom: 10px; }
+ h2 { color: var(--imss-verde); margin-top: 24px; }
+ .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 14px; }
+ .card { border: 1px solid #e6e6e6; border-radius: 8px; padding: 14px; background: #fafafa; }
+ label { font-size: 12px; color: #354; font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; }
+ input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+ .btn { display: inline-block; margin-top: 12px; border: none; border-radius: 6px; padding: 10px 16px; background: var(--imss-verde); color: #fff; text-decoration: none; cursor: pointer; }
+ .btn-secondary { background: var(--imss-dorado); color: #ffffff; }
+ table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+ th { background: var(--imss-verde); color: #fff; padding: 10px; font-size: 12px; text-align: left; }
+ td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+ .alert { margin-top: 12px; border-radius: 6px; padding: 10px 12px; }
+ .ok { background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
+ .err { background: #fdecea; color: #8a1c1c; border: 1px solid #f5c6cb; }
+ .hint { color: #555; font-size: 12px; margin-top: 6px; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📂 Cargar Archivos</h1>
-        <p>Módulo de análisis de datos. Suba archivos clínicos y asócielos a un paciente por <strong>Consulta ID</strong> o <strong>CURP</strong>.</p>
+ <div class="container">
+ <h1>📂 Cargar Archivos</h1>
+ <p>Módulo de análisis de datos. Suba archivos clínicos y asócielos a un paciente por <strong>Consulta ID</strong> o <strong>CURP</strong>.</p>
 
-        {% if message %}
-        <div class="alert ok">{{ message }}</div>
-        {% endif %}
-        {% if error %}
-        <div class="alert err">{{ error }}</div>
-        {% endif %}
-        {% if errores and errores|length %}
-        <div class="alert err">
-            {% for e in errores %}
-            <div>{{ e }}</div>
-            {% endfor %}
-        </div>
-        {% endif %}
+ {% if message %}
+ <div class="alert ok">{{ message }}</div>
+ {% endif %}
+ {% if error %}
+ <div class="alert err">{{ error }}</div>
+ {% endif %}
+ {% if errores and errores|length %}
+ <div class="alert err">
+ {% for e in errores %}
+ <div>{{ e }}</div>
+ {% endfor %}
+ </div>
+ {% endif %}
 
-        <div class="card">
-            <h2>Adjuntar a paciente</h2>
-            <form action="/analisis/cargar-archivos" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <div class="grid">
-                    <div>
-                        <label>Consulta ID</label>
-                        <input type="number" name="consulta_id" value="{{ consulta_id or '' }}" placeholder="Ej. 1254">
-                    </div>
-                    <div>
-                        <label>CURP (alternativo)</label>
-                        <input type="text" name="curp" value="{{ curp or '' }}" placeholder="Ej. ABCD001122HDFXXX09">
-                    </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label>Descripción</label>
-                        <textarea name="descripcion" rows="2" placeholder="Descripción corta del archivo (opcional)"></textarea>
-                    </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label>Archivos (Excel, DOC, PDF, PNG/PGN, DICOM)</label>
-                        <input type="file" name="files" multiple accept=".xlsx,.xls,.doc,.docx,.pdf,.png,.jpg,.jpeg,.pgn,.dcm,.dicom" required>
-                        <div class="hint">Tamaño máximo por archivo: {{ max_size_mb }} MB.</div>
-                    </div>
-                </div>
-                <button class="btn" type="submit">Guardar archivos</button>
-            </form>
-        </div>
+ <div class="card">
+ <h2>Adjuntar a paciente</h2>
+ <form action="/analisis/cargar-archivos" method="post" enctype="multipart/form-data">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <div class="grid">
+ <div>
+ <label>Consulta ID</label>
+ <input type="number" name="consulta_id" value="{{ consulta_id or '' }}" placeholder="Ej. 1254">
+ </div>
+ <div>
+ <label>CURP (alternativo)</label>
+ <input type="text" name="curp" value="{{ curp or '' }}" placeholder="Ej. ABCD001122HDFXXX09">
+ </div>
+ <div style="grid-column: 1 / -1;">
+ <label>Descripción</label>
+ <textarea name="descripcion" rows="2" placeholder="Descripción corta del archivo (opcional)"></textarea>
+ </div>
+ <div style="grid-column: 1 / -1;">
+ <label>Archivos (Excel, DOC, PDF, PNG/PGN, DICOM)</label>
+ <input type="file" name="files" multiple accept=".xlsx,.xls,.doc,.docx,.pdf,.png,.jpg,.jpeg,.pgn,.dcm,.dicom" required>
+ <div class="hint">Tamaño máximo por archivo: {{ max_size_mb }} MB.</div>
+ </div>
+ </div>
+ <button class="btn" type="submit">Guardar archivos</button>
+ </form>
+ </div>
 
-        <div class="card" style="margin-top: 18px;">
-            <h2>Carga masiva de pacientes (Excel)</h2>
-            <form action="/carga_masiva_excel" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <label>Archivo Excel (.xlsx/.xls)</label>
-                <input type="file" name="file" accept=".xlsx,.xls" required>
-                <button class="btn btn-secondary" type="submit">Procesar carga masiva</button>
-            </form>
-        </div>
+ <div class="card" style="margin-top: 18px;">
+ <h2>Carga masiva de pacientes (Excel)</h2>
+ <form action="/carga_masiva_excel" method="post" enctype="multipart/form-data">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <label>Archivo Excel (.xlsx/.xls)</label>
+ <input type="file" name="file" accept=".xlsx,.xls" required>
+ <button class="btn btn-secondary" type="submit">Procesar carga masiva</button>
+ </form>
+ </div>
 
-        {% if consulta %}
-        <div class="card" style="margin-top: 18px;">
-            <h2>Paciente seleccionado</h2>
-            <p><strong>ID:</strong> {{ consulta.id }} &nbsp; <strong>Nombre:</strong> {{ consulta.nombre }} &nbsp; <strong>CURP:</strong> {{ consulta.curp }}</p>
-            <a href="/expediente?consulta_id={{ consulta.id }}" class="btn">Ver expediente</a>
-        </div>
-        {% endif %}
+ {% if consulta %}
+ <div class="card" style="margin-top: 18px;">
+ <h2>Paciente seleccionado</h2>
+ <p><strong>ID:</strong> {{ consulta.id }} &nbsp; <strong>Nombre:</strong> {{ consulta.nombre }} &nbsp; <strong>CURP:</strong> {{ consulta.curp }}</p>
+ <a href="/expediente?consulta_id={{ consulta.id }}" class="btn">Ver expediente</a>
+ </div>
+ {% endif %}
 
-        <div class="card" style="margin-top: 18px;">
-            <h2>Archivos asociados</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Consulta</th>
-                        <th>Nombre</th>
-                        <th>Tipo</th>
-                        <th>Tamaño</th>
-                        <th>Fecha</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for a in archivos_paciente %}
-                    <tr>
-                        <td>{{ a.id }}</td>
-                        <td>{{ a.consulta_id }}</td>
-                        <td>{{ a.nombre_original }}</td>
-                        <td>{{ a.extension }}</td>
-                        <td>{{ a.tamano_legible }}</td>
-                        <td>{{ a.fecha_subida }}</td>
-                        <td><a href="/archivos_paciente/{{ a.id }}" target="_blank">Abrir</a></td>
-                    </tr>
-                    {% else %}
-                    <tr><td colspan="7" style="text-align:center;">Sin archivos cargados.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+ <div class="card" style="margin-top: 18px;">
+ <h2>Archivos asociados</h2>
+ <table>
+ <thead>
+ <tr>
+ <th>ID</th>
+ <th>Consulta</th>
+ <th>Nombre</th>
+ <th>Tipo</th>
+ <th>Tamaño</th>
+ <th>Fecha</th>
+ <th>Acción</th>
+ </tr>
+ </thead>
+ <tbody>
+ {% for a in archivos_paciente %}
+ <tr>
+ <td>{{ a.id }}</td>
+ <td>{{ a.consulta_id }}</td>
+ <td>{{ a.nombre_original }}</td>
+ <td>{{ a.extension }}</td>
+ <td>{{ a.tamano_legible }}</td>
+ <td>{{ a.fecha_subida }}</td>
+ <td><a href="/archivos_paciente/{{ a.id }}" target="_blank">Abrir</a></td>
+ </tr>
+ {% else %}
+ <tr><td colspan="7" style="text-align:center;">Sin archivos cargados.</td></tr>
+ {% endfor %}
+ </tbody>
+ </table>
+ </div>
 
-        <a href="/dashboard" class="btn" style="margin-top:18px;">← Volver a análisis</a>
-        <a href="/" class="btn btn-secondary" style="margin-top:18px;">Menú principal</a>
-    </div>
+ <a href="/dashboard" class="btn" style="margin-top:18px;">← Volver a análisis</a>
+ <a href="/" class="btn btn-secondary" style="margin-top:18px;">Menú principal</a>
+ </div>
 </body>
 </html>

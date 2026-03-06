@@ -1,420 +1,420 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Censo Diario - Hospitalización</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; }
-        body { font-family:'Montserrat',sans-serif; margin:0; padding:18px; background:#f4f6f9; }
-        .container { max-width:1360px; margin:auto; background:#fff; border-radius:10px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.10); }
-        h1,h2,h3 { color:var(--imss-verde); margin:0 0 10px; }
-        .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:end; margin-bottom:14px; }
-        .toolbar input[type=date] { padding:8px; border:1px solid #cfd8d3; border-radius:6px; }
-        .btn { background:var(--imss-verde); color:#fff; border:none; text-decoration:none; border-radius:7px; padding:9px 12px; font-weight:700; cursor:pointer; }
-        .btn-dorado { background:var(--imss-dorado); }
-        .alert { padding:10px 12px; border-radius:8px; margin-bottom:10px; }
-        .error { background:#fdeaea; border:1px solid #efb9b9; color:#8d1b1b; }
-        .ok { background:#ebf8ef; border:1px solid #b6dfc0; color:#1f5f2f; }
-        .summary { display:grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin-bottom:16px; }
-        .card { border:1px solid #dfe7e2; border-left:4px solid var(--imss-dorado); border-radius:8px; background:#fafcfa; padding:10px 12px; }
-        .card .v { font-size:22px; font-weight:800; color:var(--imss-verde); }
-        .split { display:grid; grid-template-columns: 1fr 360px; gap:14px; align-items:start; }
-        .calendar { border:1px solid #dce4e0; border-radius:10px; overflow:hidden; }
-        .calendar table { width:100%; border-collapse:collapse; font-size:12px; }
-        .calendar th { background:#eef4f1; color:#2b4e45; padding:7px; }
-        .calendar td { border-top:1px solid #edf1ef; border-right:1px solid #edf1ef; vertical-align:top; min-height:56px; height:56px; padding:5px; }
-        .calendar .muted { opacity:.45; }
-        .day-link { color:#17352f; text-decoration:none; font-weight:700; }
-        .badge { display:block; font-size:10px; color:#24584f; margin-top:2px; }
-        .selected-day { outline:2px solid var(--imss-dorado); border-radius:6px; }
-        .panel { border:1px solid #dde4e1; border-radius:8px; background:#fbfdfc; padding:10px; margin-top:12px; }
-        .panel img { max-width:100%; border:1px solid #e3e8e5; border-radius:8px; }
-        table { width:100%; border-collapse:collapse; margin-top:10px; }
-        th { background:var(--imss-verde); color:#fff; padding:8px; font-size:12px; text-align:left; }
-        td { border-bottom:1px solid #e6ece9; padding:7px; font-size:12px; }
-        input,select,textarea { width:100%; border:1px solid #cfd8d3; border-radius:6px; padding:6px; font-size:12px; }
-        textarea { min-height:42px; }
-        .guardia-grid { display:grid; grid-template-columns: repeat(4, minmax(120px,1fr)); gap:8px; }
+ <meta charset="UTF-8">
+ <title>Censo Diario - Hospitalización</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde:#0a3161; --imss-dorado:#c82f3f; }
+ body { font-family:'Montserrat',sans-serif; margin:0; padding:18px; background:#f4f6f9; }
+ .container { max-width:1360px; margin:auto; background:#fff; border-radius:10px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.10); }
+ h1,h2,h3 { color:var(--imss-verde); margin:0 0 10px; }
+ .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:end; margin-bottom:14px; }
+ .toolbar input[type=date] { padding:8px; border:1px solid #cfd8d3; border-radius:6px; }
+ .btn { background:var(--imss-verde); color:#fff; border:none; text-decoration:none; border-radius:7px; padding:9px 12px; font-weight:700; cursor:pointer; }
+ .btn-dorado { background:var(--imss-dorado); }
+ .alert { padding:10px 12px; border-radius:8px; margin-bottom:10px; }
+ .error { background:#fdeaea; border:1px solid #efb9b9; color:#8d1b1b; }
+ .ok { background:#ebf8ef; border:1px solid #b6dfc0; color:#1f5f2f; }
+ .summary { display:grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin-bottom:16px; }
+ .card { border:1px solid #dfe7e2; border-left:4px solid var(--imss-dorado); border-radius:8px; background:#fafcfa; padding:10px 12px; }
+ .card .v { font-size:22px; font-weight:800; color:var(--imss-verde); }
+ .split { display:grid; grid-template-columns: 1fr 360px; gap:14px; align-items:start; }
+ .calendar { border:1px solid #dce4e0; border-radius:10px; overflow:hidden; }
+ .calendar table { width:100%; border-collapse:collapse; font-size:12px; }
+ .calendar th { background:#eef4f1; color:#2b4e45; padding:7px; }
+ .calendar td { border-top:1px solid #edf1ef; border-right:1px solid #edf1ef; vertical-align:top; min-height:56px; height:56px; padding:5px; }
+ .calendar .muted { opacity:.45; }
+ .day-link { color:#17352f; text-decoration:none; font-weight:700; }
+ .badge { display:block; font-size:10px; color:#24584f; margin-top:2px; }
+ .selected-day { outline:2px solid var(--imss-dorado); border-radius:6px; }
+ .panel { border:1px solid #dde4e1; border-radius:8px; background:#fbfdfc; padding:10px; margin-top:12px; }
+ .panel img { max-width:100%; border:1px solid #e3e8e5; border-radius:8px; }
+ table { width:100%; border-collapse:collapse; margin-top:10px; }
+ th { background:var(--imss-verde); color:#fff; padding:8px; font-size:12px; text-align:left; }
+ td { border-bottom:1px solid #e6ece9; padding:7px; font-size:12px; }
+ input,select,textarea { width:100%; border:1px solid #cfd8d3; border-radius:6px; padding:6px; font-size:12px; }
+ textarea { min-height:42px; }
+ .guardia-grid { display:grid; grid-template-columns: repeat(4, minmax(120px,1fr)); gap:8px; }
 
-        /* ========== ADDITIVE ENHANCEMENTS ========== */
+ /* ========== ADDITIVE ENHANCEMENTS ========== */
 
-        /* Top gradient border effect on container */
-        .container {
-            position: relative;
-            border-top: 4px solid transparent;
-            border-image: linear-gradient(90deg, var(--imss-verde), var(--imss-dorado)) 1;
-        }
+ /* Top gradient border effect on container */
+ .container {
+ position: relative;
+ border-top: 4px solid transparent;
+ border-image: linear-gradient(90deg, var(--imss-verde), var(--imss-dorado)) 1;
+ }
 
-        /* Institutional header band below page title */
-        .institutional-band {
-            background: linear-gradient(90deg, var(--imss-verde), #1c4c42);
-            color: #fff;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            padding: 6px 16px;
-            border-radius: 6px;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            opacity: 0.92;
-        }
-        .institutional-band span.band-dot {
-            width: 7px; height: 7px; border-radius: 50%;
-            background: var(--imss-dorado);
-            display: inline-block;
-        }
+ /* Institutional header band below page title */
+ .institutional-band {
+ background: linear-gradient(90deg, var(--imss-verde), #1c4c42);
+ color: #fff;
+ font-size: 11px;
+ font-weight: 600;
+ letter-spacing: 1.2px;
+ text-transform: uppercase;
+ padding: 6px 16px;
+ border-radius: 6px;
+ margin-bottom: 14px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ opacity: 0.92;
+ }
+ .institutional-band span.band-dot {
+ width: 7px; height: 7px; border-radius: 50%;
+ background: var(--imss-dorado);
+ display: inline-block;
+ }
 
-        /* Summary card enhancements - animated hover with gradient left border */
-        .card {
-            transition: transform 0.22s ease, box-shadow 0.22s ease, border-left-color 0.22s ease;
-            border-left: 4px solid;
-            border-image: linear-gradient(180deg, var(--imss-dorado), var(--imss-verde)) 1;
-        }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(19,50,43,0.13);
-            border-left-color: var(--imss-verde);
-        }
+ /* Summary card enhancements - animated hover with gradient left border */
+ .card {
+ transition: transform 0.22s ease, box-shadow 0.22s ease, border-left-color 0.22s ease;
+ border-left: 4px solid;
+ border-image: linear-gradient(180deg, var(--imss-dorado), var(--imss-verde)) 1;
+ }
+ .card:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 6px 18px rgba(31,79,159,0.13);
+ border-left-color: var(--imss-verde);
+ }
 
-        /* Summary card fadeInUp animation on load */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(22px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .summary .card {
-            animation: fadeInUp 0.5s ease both;
-        }
-        .summary .card:nth-child(1) { animation-delay: 0.03s; }
-        .summary .card:nth-child(2) { animation-delay: 0.07s; }
-        .summary .card:nth-child(3) { animation-delay: 0.11s; }
-        .summary .card:nth-child(4) { animation-delay: 0.15s; }
-        .summary .card:nth-child(5) { animation-delay: 0.19s; }
-        .summary .card:nth-child(6) { animation-delay: 0.23s; }
-        .summary .card:nth-child(7) { animation-delay: 0.27s; }
-        .summary .card:nth-child(8) { animation-delay: 0.31s; }
-        .summary .card:nth-child(9) { animation-delay: 0.35s; }
-        .summary .card:nth-child(10) { animation-delay: 0.39s; }
+ /* Summary card fadeInUp animation on load */
+ @keyframes fadeInUp {
+ from {
+ opacity: 0;
+ transform: translateY(22px);
+ }
+ to {
+ opacity: 1;
+ transform: translateY(0);
+ }
+ }
+ .summary .card {
+ animation: fadeInUp 0.5s ease both;
+ }
+ .summary .card:nth-child(1) { animation-delay: 0.03s; }
+ .summary .card:nth-child(2) { animation-delay: 0.07s; }
+ .summary .card:nth-child(3) { animation-delay: 0.11s; }
+ .summary .card:nth-child(4) { animation-delay: 0.15s; }
+ .summary .card:nth-child(5) { animation-delay: 0.19s; }
+ .summary .card:nth-child(6) { animation-delay: 0.23s; }
+ .summary .card:nth-child(7) { animation-delay: 0.27s; }
+ .summary .card:nth-child(8) { animation-delay: 0.31s; }
+ .summary .card:nth-child(9) { animation-delay: 0.35s; }
+ .summary .card:nth-child(10) { animation-delay: 0.39s; }
 
-        /* Table row hover and alternating colors */
-        table tbody tr:nth-child(even) {
-            background: #f8faf9;
-        }
-        table tbody tr:hover {
-            background: rgba(179,142,93,0.08);
-            transition: background 0.18s ease;
-        }
+ /* Table row hover and alternating colors */
+ table tbody tr:nth-child(even) {
+ background: #f8fbff;
+ }
+ table tbody tr:hover {
+ background: rgba(200,47,63,0.06);
+ transition: background 0.18s ease;
+ }
 
-        /* Sticky table headers */
-        thead th, table tr:first-child th {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 2px 4px rgba(19,50,43,0.10);
-        }
+ /* Sticky table headers */
+ thead th, table tr:first-child th {
+ position: sticky;
+ top: 0;
+ z-index: 10;
+ box-shadow: 0 2px 4px rgba(31,79,159,0.10);
+ }
 
-        /* Enhanced calendar section */
-        .calendar {
-            border: 2px solid var(--imss-dorado);
-            box-shadow: 0 4px 16px rgba(19,50,43,0.10);
-            transition: box-shadow 0.22s ease;
-        }
-        .calendar:hover {
-            box-shadow: 0 6px 22px rgba(179,142,93,0.18);
-        }
-        .calendar th {
-            background: linear-gradient(135deg, var(--imss-verde), #1c4c42);
-            color: #fff;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            padding: 9px 7px;
-        }
-        .calendar td {
-            transition: background 0.15s ease;
-        }
-        .calendar td:hover {
-            background: rgba(179,142,93,0.10);
-        }
-        .calendar .selected-day {
-            background: linear-gradient(135deg, rgba(179,142,93,0.12), rgba(19,50,43,0.06));
-            outline: 2px solid var(--imss-dorado);
-            border-radius: 6px;
-        }
-        .day-link {
-            transition: color 0.15s ease;
-        }
-        .day-link:hover {
-            color: var(--imss-dorado);
-        }
-        .calendar .badge {
-            background: rgba(19,50,43,0.06);
-            border-radius: 3px;
-            padding: 1px 4px;
-            margin-top: 3px;
-            font-size: 9px;
-        }
+ /* Enhanced calendar section */
+ .calendar {
+ border: 2px solid var(--imss-dorado);
+ box-shadow: 0 4px 16px rgba(31,79,159,0.10);
+ transition: box-shadow 0.22s ease;
+ }
+ .calendar:hover {
+ box-shadow: 0 6px 22px rgba(200,47,63,0.14);
+ }
+ .calendar th {
+ background: linear-gradient(135deg, var(--imss-verde), #1c4c42);
+ color: #fff;
+ font-weight: 700;
+ letter-spacing: 0.5px;
+ text-transform: uppercase;
+ padding: 9px 7px;
+ }
+ .calendar td {
+ transition: background 0.15s ease;
+ }
+ .calendar td:hover {
+ background: rgba(200,47,63,0.10);
+ }
+ .calendar .selected-day {
+ background: linear-gradient(135deg, rgba(200,47,63,0.1), rgba(31,79,159,0.06));
+ outline: 2px solid var(--imss-dorado);
+ border-radius: 6px;
+ }
+ .day-link {
+ transition: color 0.15s ease;
+ }
+ .day-link:hover {
+ color: var(--imss-dorado);
+ }
+ .calendar .badge {
+ background: rgba(31,79,159,0.06);
+ border-radius: 3px;
+ padding: 1px 4px;
+ margin-top: 3px;
+ font-size: 9px;
+ }
 
-        /* Calendar title enhancement */
-        .calendar-title-enhanced {
-            background: linear-gradient(90deg, var(--imss-verde), #1c4c42);
-            color: #fff;
-            padding: 8px 14px;
-            border-radius: 8px 8px 0 0;
-            margin: 0 0 0 0;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 0.6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .calendar-title-enhanced .cal-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            background: var(--imss-dorado);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-        }
+ /* Calendar title enhancement */
+ .calendar-title-enhanced {
+ background: linear-gradient(90deg, var(--imss-verde), #1c4c42);
+ color: #fff;
+ padding: 8px 14px;
+ border-radius: 8px 8px 0 0;
+ margin: 0 0 0 0;
+ font-size: 14px;
+ font-weight: 700;
+ letter-spacing: 0.6px;
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ }
+ .calendar-title-enhanced .cal-icon {
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ background: var(--imss-dorado);
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 13px;
+ }
 
-        /* Panel enhancement */
-        .panel {
-            transition: box-shadow 0.2s ease;
-        }
-        .panel:hover {
-            box-shadow: 0 4px 14px rgba(19,50,43,0.08);
-        }
+ /* Panel enhancement */
+ .panel {
+ transition: box-shadow 0.2s ease;
+ }
+ .panel:hover {
+ box-shadow: 0 4px 14px rgba(31,79,159,0.08);
+ }
 
-        /* ========== END ADDITIVE ENHANCEMENTS ========== */
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ /* ========== END ADDITIVE ENHANCEMENTS ========== */
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
 <div class="container">
-    <h1>📋 2. CENSO DIARIO</h1>
+ <h1>📋 2. CENSO DIARIO</h1>
 
-    <!-- ADDITIVE: Institutional header band -->
-    <div class="institutional-band">
-        <span class="band-dot"></span>
-        Instituto Mexicano del Seguro Social &mdash; Censo Hospitalario Diario &mdash; Servicio de Urologia
-        <span class="band-dot"></span>
-    </div>
+ <!-- ADDITIVE: Institutional header band -->
+ <div class="institutional-band">
+ <span class="band-dot"></span>
+ UROMED Plataforma Clínica Privada &mdash; Censo Hospitalario Diario &mdash; Servicio de Urologia
+ <span class="band-dot"></span>
+ </div>
 
-    {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
-    {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+ {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+ {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
 
-    <div class="toolbar">
-        <form action="/hospitalizacion/censo" method="get" style="display:flex; gap:8px; align-items:end;">
-            <div>
-                <label>Fecha de censo</label>
-                <input type="date" name="fecha" value="{{ fecha }}">
-            </div>
-            <button class="btn" type="submit">Ver dia</button>
-        </form>
-        <a href="/hospitalizacion/ingresar" class="btn btn-dorado">+ Ingresar paciente</a>
-        <a href="/hospitalizacion" class="btn btn-dorado">← Hospitalizacion</a>
-    </div>
+ <div class="toolbar">
+ <form action="/hospitalizacion/censo" method="get" style="display:flex; gap:8px; align-items:end;">
+ <div>
+ <label>Fecha de censo</label>
+ <input type="date" name="fecha" value="{{ fecha }}">
+ </div>
+ <button class="btn" type="submit">Ver dia</button>
+ </form>
+ <a href="/hospitalizacion/ingresar" class="btn btn-dorado">+ Ingresar paciente</a>
+ <a href="/hospitalizacion" class="btn btn-dorado">← Hospitalizacion</a>
+ </div>
 
-    <div class="summary">
-        <div class="card"><div>Hospitalizados</div><div class="v">{{ metrics.hospitalizados }}</div></div>
-        <div class="card"><div>Ocupacion camas</div><div class="v">{{ metrics.ocupacion_pct }}%</div></div>
-        <div class="card"><div>Ingresos del dia</div><div class="v">{{ metrics.ingresos }}</div></div>
-        <div class="card"><div>Operados del dia</div><div class="v">{{ metrics.operados }}</div></div>
-        <div class="card"><div>Altas del dia</div><div class="v">{{ metrics.altas }}</div></div>
-        <div class="card"><div>Guardia registrada</div><div class="v">{{ metrics.guardia }}</div></div>
-        <div class="card"><div>Delicados + Graves</div><div class="v">{{ metrics.delicados + metrics.graves }}</div></div>
-        <div class="card"><div>Estancia &gt;5 dias</div><div class="v">{{ metrics.estancia_prolongada }}</div></div>
-        <div class="card"><div>Pend. incapacidad</div><div class="v">{{ metrics.incapacidad_pendiente }}</div></div>
-        <div class="card"><div>Pacientes UCI</div><div class="v">{{ metrics.uci }}</div></div>
-    </div>
+ <div class="summary">
+ <div class="card"><div>Hospitalizados</div><div class="v">{{ metrics.hospitalizados }}</div></div>
+ <div class="card"><div>Ocupacion camas</div><div class="v">{{ metrics.ocupacion_pct }}%</div></div>
+ <div class="card"><div>Ingresos del dia</div><div class="v">{{ metrics.ingresos }}</div></div>
+ <div class="card"><div>Operados del dia</div><div class="v">{{ metrics.operados }}</div></div>
+ <div class="card"><div>Altas del dia</div><div class="v">{{ metrics.altas }}</div></div>
+ <div class="card"><div>Guardia registrada</div><div class="v">{{ metrics.guardia }}</div></div>
+ <div class="card"><div>Delicados + Graves</div><div class="v">{{ metrics.delicados + metrics.graves }}</div></div>
+ <div class="card"><div>Estancia &gt;5 dias</div><div class="v">{{ metrics.estancia_prolongada }}</div></div>
+ <div class="card"><div>Pend. incapacidad</div><div class="v">{{ metrics.incapacidad_pendiente }}</div></div>
+ <div class="card"><div>Pacientes UCI</div><div class="v">{{ metrics.uci }}</div></div>
+ </div>
 
-    <div class="split">
-        <div>
-            <div class="panel">
-                <h3>Guardia del dia</h3>
-                <table>
-                    <tr><th>R5</th><th>R4</th><th>R3</th><th>R2</th></tr>
-                    <tr>
-                        <td>{{ guardia_roles.R5 or '' }}</td>
-                        <td>{{ guardia_roles.R4 or '' }}</td>
-                        <td>{{ guardia_roles.R3 or '' }}</td>
-                        <td>{{ guardia_roles.R2 or '' }}</td>
-                    </tr>
-                </table>
+ <div class="split">
+ <div>
+ <div class="panel">
+ <h3>Guardia del dia</h3>
+ <table>
+ <tr><th>R5</th><th>R4</th><th>R3</th><th>R2</th></tr>
+ <tr>
+ <td>{{ guardia_roles.R5 or '' }}</td>
+ <td>{{ guardia_roles.R4 or '' }}</td>
+ <td>{{ guardia_roles.R3 or '' }}</td>
+ <td>{{ guardia_roles.R2 or '' }}</td>
+ </tr>
+ </table>
 
-                <form action="/hospitalizacion/guardia/guardar" method="post" style="margin-top:10px;">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <input type="hidden" name="fecha" value="{{ fecha }}">
-                    <div class="guardia-grid">
-                        <div>
-                            <label>R5</label>
-                            <input name="guardia_r5" value="{{ guardia_roles.R5 or '' }}">
-                        </div>
-                        <div>
-                            <label>R4</label>
-                            <input name="guardia_r4" value="{{ guardia_roles.R4 or '' }}">
-                        </div>
-                        <div>
-                            <label>R3</label>
-                            <input name="guardia_r3" value="{{ guardia_roles.R3 or '' }}">
-                        </div>
-                        <div>
-                            <label>R2</label>
-                            <input name="guardia_r2" value="{{ guardia_roles.R2 or '' }}">
-                        </div>
-                    </div>
-                    <div style="margin-top:8px;"><button type="submit" class="btn btn-dorado">+ Guardar guardia</button></div>
-                </form>
-            </div>
+ <form action="/hospitalizacion/guardia/guardar" method="post" style="margin-top:10px;">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <input type="hidden" name="fecha" value="{{ fecha }}">
+ <div class="guardia-grid">
+ <div>
+ <label>R5</label>
+ <input name="guardia_r5" value="{{ guardia_roles.R5 or '' }}">
+ </div>
+ <div>
+ <label>R4</label>
+ <input name="guardia_r4" value="{{ guardia_roles.R4 or '' }}">
+ </div>
+ <div>
+ <label>R3</label>
+ <input name="guardia_r3" value="{{ guardia_roles.R3 or '' }}">
+ </div>
+ <div>
+ <label>R2</label>
+ <input name="guardia_r2" value="{{ guardia_roles.R2 or '' }}">
+ </div>
+ </div>
+ <div style="margin-top:8px;"><button type="submit" class="btn btn-dorado">+ Guardar guardia</button></div>
+ </form>
+ </div>
 
-            <h2 style="margin-top:14px;">Censo hospitalario del {{ fecha }}</h2>
-            {% if not guardia_habilitada %}
-            <div class="alert error">Para habilitar el guardado del censo primero debe registrar al menos un medico en la seccion <b>Guardia del dia</b>.</div>
-            {% endif %}
-            <form action="/hospitalizacion/censo/guardar" method="post">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <input type="hidden" name="fecha" value="{{ fecha }}">
-                <fieldset {% if not guardia_habilitada %}disabled{% endif %} style="border:0; margin:0; padding:0;">
-                    <table>
-                        <tr>
-                            <th>Cama</th>
-                            <th>Paciente</th>
-                            <th>NSS</th>
-                            <th>Dx</th>
-                            <th>Dias hosp.</th>
-                            <th>Dias postqx</th>
-                            <th>Estado</th>
-                            <th>UCI</th>
-                            <th>Incapacidad</th>
-                            <th>Emitida</th>
-                            <th>Estatus</th>
-                            <th>Egreso hoy</th>
-                        </tr>
-                        {% for p in hospitalizados %}
-                        <tr>
-                            <input type="hidden" name="hosp_ids" value="{{ p.id }}">
-                            <td><input name="cama_{{ p.id }}" value="{{ p.cama or '' }}"></td>
-                            <td>{{ p.nombre_completo }}</td>
-                            <td>{{ p.nss }}</td>
-                            <td>{{ p.diagnostico }}</td>
-                            <td><input type="number" min="0" name="dias_hospitalizacion_{{ p.id }}" value="{{ p.dias_hospitalizacion if p.dias_hospitalizacion is not none else 0 }}"></td>
-                            <td><input type="number" min="0" name="dias_postquirurgicos_{{ p.id }}" value="{{ p.dias_postquirurgicos if p.dias_postquirurgicos is not none else 0 }}"></td>
-                            <td>
-                                <select name="estado_clinico_{{ p.id }}">
-                                    {% for st in estados_clinicos %}
-                                    <option value="{{ st }}" {% if p.estado_clinico == st %}selected{% endif %}>{{ st }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <select name="uci_{{ p.id }}">
-                                    {% for yn in yes_no %}
-                                    <option value="{{ yn }}" {% if p.uci == yn %}selected{% endif %}>{{ yn }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <select name="incapacidad_{{ p.id }}">
-                                    {% for yn in yes_no %}
-                                    <option value="{{ yn }}" {% if p.incapacidad == yn %}selected{% endif %}>{{ yn }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <select name="incapacidad_emitida_{{ p.id }}">
-                                    {% for yn in yes_no %}
-                                    <option value="{{ yn }}" {% if p.incapacidad_emitida == yn %}selected{% endif %}>{{ yn }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <select name="estatus_{{ p.id }}">
-                                    {% for st in estatus_global %}
-                                    <option value="{{ st }}" {% if p.estatus == st %}selected{% endif %}>{{ st }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <select name="marcar_egreso_{{ p.id }}">
-                                    {% for yn in yes_no %}
-                                    <option value="{{ yn }}">{{ yn }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="12"><textarea name="observaciones_{{ p.id }}" placeholder="Observaciones">{{ p.observaciones or '' }}</textarea></td>
-                        </tr>
-                        {% else %}
-                        <tr><td colspan="12" style="text-align:center;">No hay pacientes para esta fecha.</td></tr>
-                        {% endfor %}
-                    </table>
-                </fieldset>
-                <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
-                    <button type="submit" class="btn" {% if not guardia_habilitada %}disabled{% endif %}>💾 Guardar cambios de censo</button>
-                    {% if can_print_censo %}
-                    <a href="/hospitalizacion/censo/imprimir?fecha={{ fecha }}" class="btn btn-dorado">🖨️ Imprimir censo</a>
-                    {% endif %}
-                </div>
-            </form>
+ <h2 style="margin-top:14px;">Censo hospitalario del {{ fecha }}</h2>
+ {% if not guardia_habilitada %}
+ <div class="alert error">Para habilitar el guardado del censo primero debe registrar al menos un medico en la seccion <b>Guardia del dia</b>.</div>
+ {% endif %}
+ <form action="/hospitalizacion/censo/guardar" method="post">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <input type="hidden" name="fecha" value="{{ fecha }}">
+ <fieldset {% if not guardia_habilitada %}disabled{% endif %} style="border:0; margin:0; padding:0;">
+ <table>
+ <tr>
+ <th>Cama</th>
+ <th>Paciente</th>
+ <th>NSS</th>
+ <th>Dx</th>
+ <th>Dias hosp.</th>
+ <th>Dias postqx</th>
+ <th>Estado</th>
+ <th>UCI</th>
+ <th>Incapacidad</th>
+ <th>Emitida</th>
+ <th>Estatus</th>
+ <th>Egreso hoy</th>
+ </tr>
+ {% for p in hospitalizados %}
+ <tr>
+ <input type="hidden" name="hosp_ids" value="{{ p.id }}">
+ <td><input name="cama_{{ p.id }}" value="{{ p.cama or '' }}"></td>
+ <td>{{ p.nombre_completo }}</td>
+ <td>{{ p.nss }}</td>
+ <td>{{ p.diagnostico }}</td>
+ <td><input type="number" min="0" name="dias_hospitalizacion_{{ p.id }}" value="{{ p.dias_hospitalizacion if p.dias_hospitalizacion is not none else 0 }}"></td>
+ <td><input type="number" min="0" name="dias_postquirurgicos_{{ p.id }}" value="{{ p.dias_postquirurgicos if p.dias_postquirurgicos is not none else 0 }}"></td>
+ <td>
+ <select name="estado_clinico_{{ p.id }}">
+ {% for st in estados_clinicos %}
+ <option value="{{ st }}" {% if p.estado_clinico == st %}selected{% endif %}>{{ st }}</option>
+ {% endfor %}
+ </select>
+ </td>
+ <td>
+ <select name="uci_{{ p.id }}">
+ {% for yn in yes_no %}
+ <option value="{{ yn }}" {% if p.uci == yn %}selected{% endif %}>{{ yn }}</option>
+ {% endfor %}
+ </select>
+ </td>
+ <td>
+ <select name="incapacidad_{{ p.id }}">
+ {% for yn in yes_no %}
+ <option value="{{ yn }}" {% if p.incapacidad == yn %}selected{% endif %}>{{ yn }}</option>
+ {% endfor %}
+ </select>
+ </td>
+ <td>
+ <select name="incapacidad_emitida_{{ p.id }}">
+ {% for yn in yes_no %}
+ <option value="{{ yn }}" {% if p.incapacidad_emitida == yn %}selected{% endif %}>{{ yn }}</option>
+ {% endfor %}
+ </select>
+ </td>
+ <td>
+ <select name="estatus_{{ p.id }}">
+ {% for st in estatus_global %}
+ <option value="{{ st }}" {% if p.estatus == st %}selected{% endif %}>{{ st }}</option>
+ {% endfor %}
+ </select>
+ </td>
+ <td>
+ <select name="marcar_egreso_{{ p.id }}">
+ {% for yn in yes_no %}
+ <option value="{{ yn }}">{{ yn }}</option>
+ {% endfor %}
+ </select>
+ </td>
+ </tr>
+ <tr>
+ <td colspan="12"><textarea name="observaciones_{{ p.id }}" placeholder="Observaciones">{{ p.observaciones or '' }}</textarea></td>
+ </tr>
+ {% else %}
+ <tr><td colspan="12" style="text-align:center;">No hay pacientes para esta fecha.</td></tr>
+ {% endfor %}
+ </table>
+ </fieldset>
+ <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+ <button type="submit" class="btn" {% if not guardia_habilitada %}disabled{% endif %}>💾 Guardar cambios de censo</button>
+ {% if can_print_censo %}
+ <a href="/hospitalizacion/censo/imprimir?fecha={{ fecha }}" class="btn btn-dorado">🖨️ Imprimir censo</a>
+ {% endif %}
+ </div>
+ </form>
 
-            {% if metrics.chart_panel %}
-            <div class="panel">
-                <h3>Panel dinamico del dia actual</h3>
-                <img src="data:image/png;base64,{{ metrics.chart_panel }}" alt="Panel diario">
-            </div>
-            {% endif %}
-        </div>
+ {% if metrics.chart_panel %}
+ <div class="panel">
+ <h3>Panel dinamico del dia actual</h3>
+ <img src="data:image/png;base64,{{ metrics.chart_panel }}" alt="Panel diario">
+ </div>
+ {% endif %}
+ </div>
 
-        <div>
-            <!-- ADDITIVE: Enhanced calendar title bar -->
-            <div class="calendar-title-enhanced">
-                <span class="cal-icon">📅</span>
-                Calendario - {{ month_label }}
-            </div>
-            <div class="calendar">
-                <table>
-                    <tr>
-                        <th>Lun</th><th>Mar</th><th>Mie</th><th>Jue</th><th>Vie</th><th>Sab</th><th>Dom</th>
-                    </tr>
-                    {% for week in calendar_weeks %}
-                    <tr>
-                        {% for day in week %}
-                        <td class="{% if not day.is_current_month %}muted{% endif %} {% if day.is_selected %}selected-day{% endif %}">
-                            <a class="day-link" href="/hospitalizacion/censo?fecha={{ day.date }}">{{ day.day }}</a>
-                            <span class="badge">Ing: {{ day.ingresos }}</span>
-                            <span class="badge">Hosp: {{ day.hospitalizados }}</span>
-                        </td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-    </div>
+ <div>
+ <!-- ADDITIVE: Enhanced calendar title bar -->
+ <div class="calendar-title-enhanced">
+ <span class="cal-icon">📅</span>
+ Calendario - {{ month_label }}
+ </div>
+ <div class="calendar">
+ <table>
+ <tr>
+ <th>Lun</th><th>Mar</th><th>Mie</th><th>Jue</th><th>Vie</th><th>Sab</th><th>Dom</th>
+ </tr>
+ {% for week in calendar_weeks %}
+ <tr>
+ {% for day in week %}
+ <td class="{% if not day.is_current_month %}muted{% endif %} {% if day.is_selected %}selected-day{% endif %}">
+ <a class="day-link" href="/hospitalizacion/censo?fecha={{ day.date }}">{{ day.day }}</a>
+ <span class="badge">Ing: {{ day.ingresos }}</span>
+ <span class="badge">Hosp: {{ day.hospitalizados }}</span>
+ </td>
+ {% endfor %}
+ </tr>
+ {% endfor %}
+ </table>
+ </div>
+ </div>
+ </div>
 </div>
 </body>
 </html>

@@ -1,193 +1,193 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Lista de Espera de Programación Quirúrgica</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
-    <style>
-        :root { --verde:#13322B; --verde2:#1a4a3f; --dorado:#B38E5D; --borde:#dfe7e4; --bg:#f6f8f9; }
-        *{box-sizing:border-box}
-        body{margin:0;padding:20px;background:var(--bg);font-family:'Montserrat',sans-serif;color:#13322B}
-        .wrap{max-width:1220px;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:14px;box-shadow:0 6px 24px rgba(19,50,43,.08);overflow:hidden}
-        .head{padding:18px 22px;background:linear-gradient(135deg,var(--verde) 0%,var(--verde2) 100%);color:#fff;border-bottom:3px solid var(--dorado)}
-        .head h1{margin:0;font-size:26px;line-height:1.1}
-        .head p{margin:8px 0 0;font-size:13px;opacity:.9}
-        .toolbar{display:flex;gap:10px;flex-wrap:wrap;padding:14px 22px;border-bottom:1px solid var(--borde);background:#f9fbfa}
-        .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:800;font-size:12px;border:1px solid transparent;cursor:pointer}
-        .btn.main{background:var(--verde);color:#fff}
-        .btn.alt{background:#fff;color:var(--verde);border-color:#cddad6}
-        .btn.warn{background:#f3eee6;color:#8a6b3d;border-color:#dcc8a8}
-        .content{padding:18px 22px 22px}
-        .msg{padding:11px 13px;border-radius:10px;font-size:12px;font-weight:700;margin-bottom:12px}
-        .ok{background:#e8f7ee;color:#196b3a;border:1px solid #9dd9b4}
-        .err{background:#fff2f2;color:#8e1b1b;border:1px solid #efb5b5}
-        .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-        .field label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#395850;margin-bottom:6px}
-        .field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #ced9d5;border-radius:9px;font-family:inherit}
-        .field textarea{min-height:88px;resize:vertical}
-        .section{border:1px solid var(--borde);border-radius:12px;padding:14px;margin-top:14px;background:#fcfefd}
-        .section h3{margin:0 0 10px;font-size:14px;color:#1f473e}
-        .muted{font-size:11px;color:#607c74}
-        .span-2{grid-column:span 2}
-        .span-4{grid-column:span 4}
-        .hidden{display:none}
-        .submit-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-        @media (max-width:1000px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))} .span-4{grid-column:span 2} }
-        @media (max-width:640px){ body{padding:10px}.grid{grid-template-columns:1fr}.span-2,.span-4{grid-column:span 1}.head h1{font-size:22px} }
-    </style>
+ <meta charset="UTF-8">
+ <title>Lista de Espera de Programación Quirúrgica</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
+ <style>
+ :root { --verde:#0a3161; --verde2:#1f4f9f; --dorado:#c82f3f; --borde:#d9e6fb; --bg:#f6f8f9; }
+ *{box-sizing:border-box}
+ body{margin:0;padding:20px;background:var(--bg);font-family:'Montserrat',sans-serif;color:#0a3161}
+ .wrap{max-width:1220px;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:14px;box-shadow:0 6px 24px rgba(31,79,159,.08);overflow:hidden}
+ .head{padding:18px 22px;background:linear-gradient(135deg,var(--verde) 0%,var(--verde2) 100%);color:#fff;border-bottom:3px solid var(--dorado)}
+ .head h1{margin:0;font-size:26px;line-height:1.1}
+ .head p{margin:8px 0 0;font-size:13px;opacity:.9}
+ .toolbar{display:flex;gap:10px;flex-wrap:wrap;padding:14px 22px;border-bottom:1px solid var(--borde);background:#f9fbfa}
+ .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:800;font-size:12px;border:1px solid transparent;cursor:pointer}
+ .btn.main{background:var(--verde);color:#fff}
+ .btn.alt{background:#fff;color:var(--verde);border-color:#c7d9f7}
+ .btn.warn{background:#f3eee6;color:#8a6b3d;border-color:#dcc8a8}
+ .content{padding:18px 22px 22px}
+ .msg{padding:11px 13px;border-radius:10px;font-size:12px;font-weight:700;margin-bottom:12px}
+ .ok{background:#e8f7ee;color:#196b3a;border:1px solid #9dd9b4}
+ .err{background:#fff2f2;color:#8e1b1b;border:1px solid #efb5b5}
+ .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+ .field label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#395850;margin-bottom:6px}
+ .field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #ced9d5;border-radius:9px;font-family:inherit}
+ .field textarea{min-height:88px;resize:vertical}
+ .section{border:1px solid var(--borde);border-radius:12px;padding:14px;margin-top:14px;background:#fcfefd}
+ .section h3{margin:0 0 10px;font-size:14px;color:#1f473e}
+ .muted{font-size:11px;color:#607c74}
+ .span-2{grid-column:span 2}
+ .span-4{grid-column:span 4}
+ .hidden{display:none}
+ .submit-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+ @media (max-width:1000px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))} .span-4{grid-column:span 2} }
+ @media (max-width:640px){ body{padding:10px}.grid{grid-template-columns:1fr}.span-2,.span-4{grid-column:span 1}.head h1{font-size:22px} }
+ </style>
 </head>
 <body class="qf-refresh">
-    <div class="wrap">
-        <div class="head">
-            <h1>Ingresar a Lista de Espera de Programación Quirúrgica</h1>
-            <p>Captura aditiva para cola total quirúrgica de urología. Mantiene trazabilidad clínica y prioridad institucional.</p>
-        </div>
-        <div class="toolbar">
-            <a class="btn alt" href="/expediente?consulta_id={{ prefill.consulta_id if prefill and prefill.consulta_id else '' }}&nss={{ prefill.nss|urlencode if prefill and prefill.nss else '' }}">Volver al expediente</a>
-            <a class="btn warn" href="/quirofano/lista-espera">Lista de espera de procedimientos</a>
-            <a class="btn alt" href="/quirofano/nuevo">Programar cirugía (ruta clásica)</a>
-        </div>
-        <div class="content">
-            {% if saved %}
-            <div class="msg ok">Paciente registrado en lista de espera correctamente ({{ saved }}).</div>
-            {% endif %}
-            {% if error %}
-            <div class="msg err">{{ error }}</div>
-            {% endif %}
+ <div class="wrap">
+ <div class="head">
+ <h1>Ingresar a Lista de Espera de Programación Quirúrgica</h1>
+ <p>Captura aditiva para cola total quirúrgica de urología. Mantiene trazabilidad clínica y prioridad institucional.</p>
+ </div>
+ <div class="toolbar">
+ <a class="btn alt" href="/expediente?consulta_id={{ prefill.consulta_id if prefill and prefill.consulta_id else '' }}&nss={{ prefill.nss|urlencode if prefill and prefill.nss else '' }}">Volver al expediente</a>
+ <a class="btn warn" href="/quirofano/lista-espera">Lista de espera de procedimientos</a>
+ <a class="btn alt" href="/quirofano/nuevo">Programar cirugía (ruta clásica)</a>
+ </div>
+ <div class="content">
+ {% if saved %}
+ <div class="msg ok">Paciente registrado en lista de espera correctamente ({{ saved }}).</div>
+ {% endif %}
+ {% if error %}
+ <div class="msg err">{{ error }}</div>
+ {% endif %}
 
-            <form method="post" action="/quirofano/lista-espera/ingresar">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <input type="hidden" name="consulta_id" value="{{ prefill.consulta_id if prefill else '' }}">
+ <form method="post" action="/quirofano/lista-espera/ingresar">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <input type="hidden" name="consulta_id" value="{{ prefill.consulta_id if prefill else '' }}">
 
-                <div class="section">
-                    <h3>Datos base del paciente</h3>
-                    <div class="grid">
-                        <div class="field"><label>NSS</label><input name="nss" maxlength="10" value="{{ prefill.nss if prefill else '' }}" required></div>
-                        <div class="field"><label>Nombre</label><input name="nombre" value="{{ prefill.nombre if prefill else '' }}" required></div>
-                        <div class="field"><label>Edad</label><input type="number" min="0" max="120" name="edad" value="{{ prefill.edad if prefill and prefill.edad is not none else '' }}" required></div>
-                        <div class="field"><label>Sexo</label>
-                            <select name="sexo" required>
-                                <option value="">Seleccionar</option>
-                                {% for sx in sexo_options %}
-                                <option value="{{ sx }}" {% if prefill and prefill.sexo == sx %}selected{% endif %}>{{ sx }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="field span-2"><label>Diagnóstico principal</label>
-                            <select id="patologia" name="patologia" required>
-                                <option value="">Seleccionar</option>
-                                {% for p in patologia_options %}
-                                <option value="{{ p }}" {% if prefill and prefill.patologia == p %}selected{% endif %}>{{ p }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="field span-2"><label>Procedimiento en espera</label>
-                            <select name="procedimiento_programado" required>
-                                <option value="">Seleccionar</option>
-                                {% for proc in procedimiento_options %}
-                                <option value="{{ proc }}" {% if prefill and prefill.procedimiento_programado == proc %}selected{% endif %}>{{ proc }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="field"><label>HGZ</label><input name="hgz" value="{{ prefill.hgz if prefill else '' }}" required></div>
-                        <div class="field"><label>Médico responsable</label><input name="agregado_medico" value="{{ prefill.agregado_medico if prefill else '' }}"></div>
-                        <div class="field"><label>Prioridad clínica</label>
-                            <select name="prioridad_clinica">
-                                {% set pr = (prefill.prioridad_clinica if prefill else 'MEDIA') %}
-                                <option value="MUY ALTA" {% if pr == 'MUY ALTA' %}selected{% endif %}>MUY ALTA</option>
-                                <option value="ALTA" {% if pr == 'ALTA' %}selected{% endif %}>ALTA</option>
-                                <option value="MEDIA" {% if pr == 'MEDIA' %}selected{% endif %}>MEDIA</option>
-                                <option value="BAJA" {% if pr == 'BAJA' %}selected{% endif %}>BAJA</option>
-                            </select>
-                        </div>
-                        <div class="field"><label>Motivo prioridad</label><input name="motivo_prioridad" value="{{ prefill.motivo_prioridad if prefill else '' }}"></div>
-                    </div>
-                </div>
+ <div class="section">
+ <h3>Datos base del paciente</h3>
+ <div class="grid">
+ <div class="field"><label>NSS</label><input name="nss" maxlength="10" value="{{ prefill.nss if prefill else '' }}" required></div>
+ <div class="field"><label>Nombre</label><input name="nombre" value="{{ prefill.nombre if prefill else '' }}" required></div>
+ <div class="field"><label>Edad</label><input type="number" min="0" max="120" name="edad" value="{{ prefill.edad if prefill and prefill.edad is not none else '' }}" required></div>
+ <div class="field"><label>Sexo</label>
+ <select name="sexo" required>
+ <option value="">Seleccionar</option>
+ {% for sx in sexo_options %}
+ <option value="{{ sx }}" {% if prefill and prefill.sexo == sx %}selected{% endif %}>{{ sx }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="field span-2"><label>Diagnóstico principal</label>
+ <select id="patologia" name="patologia" required>
+ <option value="">Seleccionar</option>
+ {% for p in patologia_options %}
+ <option value="{{ p }}" {% if prefill and prefill.patologia == p %}selected{% endif %}>{{ p }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="field span-2"><label>Procedimiento en espera</label>
+ <select name="procedimiento_programado" required>
+ <option value="">Seleccionar</option>
+ {% for proc in procedimiento_options %}
+ <option value="{{ proc }}" {% if prefill and prefill.procedimiento_programado == proc %}selected{% endif %}>{{ proc }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="field"><label>HGZ</label><input name="hgz" value="{{ prefill.hgz if prefill else '' }}" required></div>
+ <div class="field"><label>Médico responsable</label><input name="agregado_medico" value="{{ prefill.agregado_medico if prefill else '' }}"></div>
+ <div class="field"><label>Prioridad clínica</label>
+ <select name="prioridad_clinica">
+ {% set pr = (prefill.prioridad_clinica if prefill else 'MEDIA') %}
+ <option value="MUY ALTA" {% if pr == 'MUY ALTA' %}selected{% endif %}>MUY ALTA</option>
+ <option value="ALTA" {% if pr == 'ALTA' %}selected{% endif %}>ALTA</option>
+ <option value="MEDIA" {% if pr == 'MEDIA' %}selected{% endif %}>MEDIA</option>
+ <option value="BAJA" {% if pr == 'BAJA' %}selected{% endif %}>BAJA</option>
+ </select>
+ </div>
+ <div class="field"><label>Motivo prioridad</label><input name="motivo_prioridad" value="{{ prefill.motivo_prioridad if prefill else '' }}"></div>
+ </div>
+ </div>
 
-                <div class="section hidden" id="oncoBox">
-                    <h3>Ventana dinámica oncológica</h3>
-                    <div class="grid">
-                        <div class="field"><label>TNM</label><input name="tnm" value="{{ prefill.tnm if prefill else '' }}"></div>
-                        <div class="field"><label>ECOG</label><input id="ecogField" name="ecog" value="{{ prefill.ecog if prefill else '' }}"></div>
-                        <div class="field"><label>Charlson</label><input name="charlson" value="{{ prefill.charlson if prefill else '' }}"></div>
-                        <div class="field"><label>Etapa clínica</label><input name="etapa_clinica" value="{{ prefill.etapa_clinica if prefill else '' }}"></div>
-                        <div class="field"><label>IPSS</label><input name="ipss" value="{{ prefill.ipss if prefill else '' }}"></div>
-                        <div class="field"><label>Gleason</label><input name="gleason" value="{{ prefill.gleason if prefill else '' }}"></div>
-                        <div class="field"><label>APE</label><input name="ape" value="{{ prefill.ape if prefill else '' }}"></div>
-                        <div class="field"><label>Tacto rectal</label><input name="tacto_rectal" value="{{ prefill.tacto_rectal if prefill else '' }}"></div>
-                        <div class="field span-2"><label>Historial de APE</label><input name="historial_ape" value="{{ prefill.historial_ape if prefill else '' }}"></div>
-                    </div>
-                </div>
+ <div class="section hidden" id="oncoBox">
+ <h3>Ventana dinámica oncológica</h3>
+ <div class="grid">
+ <div class="field"><label>TNM</label><input name="tnm" value="{{ prefill.tnm if prefill else '' }}"></div>
+ <div class="field"><label>ECOG</label><input id="ecogField" name="ecog" value="{{ prefill.ecog if prefill else '' }}"></div>
+ <div class="field"><label>Charlson</label><input name="charlson" value="{{ prefill.charlson if prefill else '' }}"></div>
+ <div class="field"><label>Etapa clínica</label><input name="etapa_clinica" value="{{ prefill.etapa_clinica if prefill else '' }}"></div>
+ <div class="field"><label>IPSS</label><input name="ipss" value="{{ prefill.ipss if prefill else '' }}"></div>
+ <div class="field"><label>Gleason</label><input name="gleason" value="{{ prefill.gleason if prefill else '' }}"></div>
+ <div class="field"><label>APE</label><input name="ape" value="{{ prefill.ape if prefill else '' }}"></div>
+ <div class="field"><label>Tacto rectal</label><input name="tacto_rectal" value="{{ prefill.tacto_rectal if prefill else '' }}"></div>
+ <div class="field span-2"><label>Historial de APE</label><input name="historial_ape" value="{{ prefill.historial_ape if prefill else '' }}"></div>
+ </div>
+ </div>
 
-                <div class="section hidden" id="litiasisBox">
-                    <h3>Ventana dinámica litiasis</h3>
-                    <div class="grid">
-                        <div class="field"><label>UH (Hounsfield)</label><input name="uh_rango" value="{{ prefill.uh_rango if prefill else '' }}" placeholder="Ej. 1000 A 1200 UH"></div>
-                        <div class="field"><label>Tamaño litiasis</label>
-                            <select id="litiasisTamano" name="litiasis_tamano_rango">
-                                <option value="">Seleccionar</option>
-                                <option value="< 20 MM" {% if prefill and prefill.litiasis_tamano_rango == '< 20 MM' %}selected{% endif %}>&lt; 20 MM</option>
-                                <option value="> 20 MM" {% if prefill and prefill.litiasis_tamano_rango == '> 20 MM' %}selected{% endif %}>&gt; 20 MM</option>
-                            </select>
-                        </div>
-                        <div class="field hidden" id="litiasisSubtipoWrap"><label>Subtipo >20mm</label><input name="litiasis_subtipo_20" value="{{ prefill.litiasis_subtipo_20 if prefill else '' }}"></div>
-                        <div class="field"><label>Ubicación</label><input name="litiasis_ubicacion" value="{{ prefill.litiasis_ubicacion if prefill else '' }}"></div>
-                        <div class="field"><label>Ubicación múltiple</label><input name="litiasis_ubicacion_multiple" value="{{ prefill.litiasis_ubicacion_multiple if prefill else '' }}"></div>
-                        <div class="field"><label>Hidronefrosis</label><input name="hidronefrosis" value="{{ prefill.hidronefrosis if prefill else '' }}"></div>
-                    </div>
-                </div>
+ <div class="section hidden" id="litiasisBox">
+ <h3>Ventana dinámica litiasis</h3>
+ <div class="grid">
+ <div class="field"><label>UH (Hounsfield)</label><input name="uh_rango" value="{{ prefill.uh_rango if prefill else '' }}" placeholder="Ej. 1000 A 1200 UH"></div>
+ <div class="field"><label>Tamaño litiasis</label>
+ <select id="litiasisTamano" name="litiasis_tamano_rango">
+ <option value="">Seleccionar</option>
+ <option value="< 20 MM" {% if prefill and prefill.litiasis_tamano_rango == '< 20 MM' %}selected{% endif %}>&lt; 20 MM</option>
+ <option value="> 20 MM" {% if prefill and prefill.litiasis_tamano_rango == '> 20 MM' %}selected{% endif %}>&gt; 20 MM</option>
+ </select>
+ </div>
+ <div class="field hidden" id="litiasisSubtipoWrap"><label>Subtipo >20mm</label><input name="litiasis_subtipo_20" value="{{ prefill.litiasis_subtipo_20 if prefill else '' }}"></div>
+ <div class="field"><label>Ubicación</label><input name="litiasis_ubicacion" value="{{ prefill.litiasis_ubicacion if prefill else '' }}"></div>
+ <div class="field"><label>Ubicación múltiple</label><input name="litiasis_ubicacion_multiple" value="{{ prefill.litiasis_ubicacion_multiple if prefill else '' }}"></div>
+ <div class="field"><label>Hidronefrosis</label><input name="hidronefrosis" value="{{ prefill.hidronefrosis if prefill else '' }}"></div>
+ </div>
+ </div>
 
-                <div class="section">
-                    <h3>Notas clínicas de lista de espera</h3>
-                    <div class="grid">
-                        <div class="field span-4">
-                            <label>Notas</label>
-                            <textarea name="notas" placeholder="Justificación clínica, pendientes preoperatorios, estudios faltantes">{{ prefill.notas if prefill else '' }}</textarea>
-                            <div class="muted">Estas notas acompañan la priorización y la trazabilidad en lista de espera.</div>
-                        </div>
-                    </div>
-                </div>
+ <div class="section">
+ <h3>Notas clínicas de lista de espera</h3>
+ <div class="grid">
+ <div class="field span-4">
+ <label>Notas</label>
+ <textarea name="notas" placeholder="Justificación clínica, pendientes preoperatorios, estudios faltantes">{{ prefill.notas if prefill else '' }}</textarea>
+ <div class="muted">Estas notas acompañan la priorización y la trazabilidad en lista de espera.</div>
+ </div>
+ </div>
+ </div>
 
-                <div class="submit-row">
-                    <button class="btn main" type="submit">Ingresar al paciente a la lista de espera</button>
-                    <a class="btn warn" href="/quirofano/lista-espera">Lista de espera de procedimientos</a>
-                </div>
-            </form>
-        </div>
-    </div>
+ <div class="submit-row">
+ <button class="btn main" type="submit">Ingresar al paciente a la lista de espera</button>
+ <a class="btn warn" href="/quirofano/lista-espera">Lista de espera de procedimientos</a>
+ </div>
+ </form>
+ </div>
+ </div>
 
-    <script>
-        (function(){
-            var oncoSet = new Set({{ patologias_onco|tojson }});
-            var litiasisSet = new Set({{ patologias_litiasis|tojson }});
-            var pathSel = document.getElementById('patologia');
-            var oncoBox = document.getElementById('oncoBox');
-            var litiasisBox = document.getElementById('litiasisBox');
-            var ecog = document.getElementById('ecogField');
-            var tamSel = document.getElementById('litiasisTamano');
-            var subWrap = document.getElementById('litiasisSubtipoWrap');
+ <script>
+ (function(){
+ var oncoSet = new Set({{ patologias_onco|tojson }});
+ var litiasisSet = new Set({{ patologias_litiasis|tojson }});
+ var pathSel = document.getElementById('patologia');
+ var oncoBox = document.getElementById('oncoBox');
+ var litiasisBox = document.getElementById('litiasisBox');
+ var ecog = document.getElementById('ecogField');
+ var tamSel = document.getElementById('litiasisTamano');
+ var subWrap = document.getElementById('litiasisSubtipoWrap');
 
-            function refreshDiag(){
-                if (!pathSel) return;
-                var p = (pathSel.value || '').toUpperCase();
-                var isOnco = oncoSet.has(p);
-                var isLit = litiasisSet.has(p) || p === 'CALCULO DEL RIÑON';
-                if (oncoBox) oncoBox.classList.toggle('hidden', !isOnco);
-                if (litiasisBox) litiasisBox.classList.toggle('hidden', !isLit);
-                if (ecog) ecog.required = !!isOnco;
-            }
-            function refreshLitiasisSubtype(){
-                if (!tamSel || !subWrap) return;
-                var show = (tamSel.value || '').trim() === '> 20 MM';
-                subWrap.classList.toggle('hidden', !show);
-            }
-            if (pathSel) pathSel.addEventListener('change', refreshDiag);
-            if (tamSel) tamSel.addEventListener('change', refreshLitiasisSubtype);
-            refreshDiag();
-            refreshLitiasisSubtype();
-        })();
-    </script>
+ function refreshDiag(){
+ if (!pathSel) return;
+ var p = (pathSel.value || '').toUpperCase();
+ var isOnco = oncoSet.has(p);
+ var isLit = litiasisSet.has(p) || p === 'CALCULO DEL RIÑON';
+ if (oncoBox) oncoBox.classList.toggle('hidden', !isOnco);
+ if (litiasisBox) litiasisBox.classList.toggle('hidden', !isLit);
+ if (ecog) ecog.required = !!isOnco;
+ }
+ function refreshLitiasisSubtype(){
+ if (!tamSel || !subWrap) return;
+ var show = (tamSel.value || '').trim() === '> 20 MM';
+ subWrap.classList.toggle('hidden', !show);
+ }
+ if (pathSel) pathSel.addEventListener('change', refreshDiag);
+ if (tamSel) tamSel.addEventListener('change', refreshLitiasisSubtype);
+ refreshDiag();
+ refreshLitiasisSubtype();
+ })();
+ </script>
 </body>
 </html>

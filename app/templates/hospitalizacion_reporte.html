@@ -1,227 +1,227 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Reporte Estadístico - Hospitalización</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; }
-        body { font-family:'Montserrat',sans-serif; background:#f4f6f9; margin:0; padding:20px; }
-        .container { max-width:1320px; margin:auto; background:#fff; border-radius:10px; padding:24px; box-shadow:0 8px 24px rgba(0,0,0,0.10); }
-        h1,h2,h3 { color:var(--imss-verde); margin:0 0 10px; }
-        .meta { color:#59666c; font-size:13px; margin-bottom:12px; }
-        .summary { display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-bottom:16px; }
-        .card { border:1px solid #dbe4df; border-left:4px solid var(--imss-dorado); border-radius:8px; background:#fafcfb; padding:10px; }
-        .card .v { font-size:22px; color:var(--imss-verde); font-weight:800; }
-        .split { display:grid; grid-template-columns: repeat(auto-fit,minmax(360px,1fr)); gap:14px; }
-        img { width:100%; border-radius:8px; border:1px solid #e2e8e5; }
-        .icon-actions { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin:10px 0 14px; }
-        .icon-card { border:1px solid #dbe4df; border-radius:8px; background:#fbfcfc; padding:12px; text-decoration:none; color:var(--imss-verde); display:block; }
-        .icon-card strong { font-size:14px; display:block; margin-bottom:4px; }
-        .icon-card .v { font-size:22px; font-weight:800; color:var(--imss-verde); }
-        table { width:100%; border-collapse:collapse; margin-top:8px; }
-        th { background:var(--imss-verde); color:#fff; padding:8px; font-size:12px; text-align:left; }
-        td { border-bottom:1px solid #e6ece9; padding:7px; font-size:12px; }
-        .btn { display:inline-block; text-decoration:none; color:#fff; background:var(--imss-verde); padding:10px 14px; border-radius:7px; margin-top:14px; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>Reporte Estadístico - Hospitalización</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde:#0a3161; --imss-dorado:#c82f3f; }
+ body { font-family:'Montserrat',sans-serif; background:#f4f6f9; margin:0; padding:20px; }
+ .container { max-width:1320px; margin:auto; background:#fff; border-radius:10px; padding:24px; box-shadow:0 8px 24px rgba(0,0,0,0.10); }
+ h1,h2,h3 { color:var(--imss-verde); margin:0 0 10px; }
+ .meta { color:#59666c; font-size:13px; margin-bottom:12px; }
+ .summary { display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-bottom:16px; }
+ .card { border:1px solid #d9e6fb; border-left:4px solid var(--imss-dorado); border-radius:8px; background:#f7faff; padding:10px; }
+ .card .v { font-size:22px; color:var(--imss-verde); font-weight:800; }
+ .split { display:grid; grid-template-columns: repeat(auto-fit,minmax(360px,1fr)); gap:14px; }
+ img { width:100%; border-radius:8px; border:1px solid #e2e8e5; }
+ .icon-actions { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin:10px 0 14px; }
+ .icon-card { border:1px solid #d9e6fb; border-radius:8px; background:#fbfcfc; padding:12px; text-decoration:none; color:var(--imss-verde); display:block; }
+ .icon-card strong { font-size:14px; display:block; margin-bottom:4px; }
+ .icon-card .v { font-size:22px; font-weight:800; color:var(--imss-verde); }
+ table { width:100%; border-collapse:collapse; margin-top:8px; }
+ th { background:var(--imss-verde); color:#fff; padding:8px; font-size:12px; text-align:left; }
+ td { border-bottom:1px solid #e6ece9; padding:7px; font-size:12px; }
+ .btn { display:inline-block; text-decoration:none; color:#fff; background:var(--imss-verde); padding:10px 14px; border-radius:7px; margin-top:14px; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
 <div class="container">
-    <h1>📊 4. REPORTE ESTADÍSTICO HOSPITALARIO</h1>
-    <p class="meta">Generado: {{ fecha }}</p>
+ <h1>📊 4. REPORTE ESTADÍSTICO HOSPITALARIO</h1>
+ <p class="meta">Generado: {{ fecha }}</p>
 
-    <div class="summary">
-        <div class="card"><div>Ingresos del mes</div><div class="v">{{ total_mes }}</div></div>
-        <div class="card"><div>Programados</div><div class="v">{{ programados_mes }}</div></div>
-        <div class="card"><div>Urgencias</div><div class="v">{{ urgencias_mes }}</div></div>
-        <div class="card"><div>Urgencia quirúrgica</div><div class="v">{{ urg_qx }}</div></div>
-        <div class="card"><div>Complementación diagnóstica</div><div class="v">{{ urg_comp }}</div></div>
-        <div class="card"><div>No realizó trámite adm.</div><div class="v">{{ urg_admin }}</div></div>
-        <div class="card"><div>Pacientes activos</div><div class="v">{{ activos }}</div></div>
-        <div class="card"><div>UCI activos</div><div class="v">{{ uci_activos }}</div></div>
-        <div class="card"><div>Estancia prolongada</div><div class="v">{{ prolongada_activos }}</div></div>
-        <div class="card"><div>Pend. incapacidad</div><div class="v">{{ incapacidad_pendiente }}</div></div>
-        <div class="card"><div>IRA (mes)</div><div class="v">{{ ira_mes }}</div></div>
-        <div class="card"><div>Hb &lt; 8 (mes)</div><div class="v">{{ hb_baja_mes }}</div></div>
-        <div class="card"><div>Leucos &gt; 10,000 (mes)</div><div class="v">{{ leuco_altos_mes }}</div></div>
-        <div class="card"><div>Ingresos integrados (hospitalización+censo)</div><div class="v">{{ ingresos_integrados_total or 0 }}</div></div>
-    </div>
+ <div class="summary">
+ <div class="card"><div>Ingresos del mes</div><div class="v">{{ total_mes }}</div></div>
+ <div class="card"><div>Programados</div><div class="v">{{ programados_mes }}</div></div>
+ <div class="card"><div>Urgencias</div><div class="v">{{ urgencias_mes }}</div></div>
+ <div class="card"><div>Urgencia quirúrgica</div><div class="v">{{ urg_qx }}</div></div>
+ <div class="card"><div>Complementación diagnóstica</div><div class="v">{{ urg_comp }}</div></div>
+ <div class="card"><div>No realizó trámite adm.</div><div class="v">{{ urg_admin }}</div></div>
+ <div class="card"><div>Pacientes activos</div><div class="v">{{ activos }}</div></div>
+ <div class="card"><div>UCI activos</div><div class="v">{{ uci_activos }}</div></div>
+ <div class="card"><div>Estancia prolongada</div><div class="v">{{ prolongada_activos }}</div></div>
+ <div class="card"><div>Pend. incapacidad</div><div class="v">{{ incapacidad_pendiente }}</div></div>
+ <div class="card"><div>IRA (mes)</div><div class="v">{{ ira_mes }}</div></div>
+ <div class="card"><div>Hb &lt; 8 (mes)</div><div class="v">{{ hb_baja_mes }}</div></div>
+ <div class="card"><div>Leucos &gt; 10,000 (mes)</div><div class="v">{{ leuco_altos_mes }}</div></div>
+ <div class="card"><div>Ingresos integrados (hospitalización+censo)</div><div class="v">{{ ingresos_integrados_total or 0 }}</div></div>
+ </div>
 
-    <h2>Egresos Hospitalarios</h2>
-    <div class="icon-actions">
-        <a class="icon-card" href="/hospitalizacion/reporte/egresos">
-            <strong>Número de altas realizadas en el mes</strong>
-            <span class="v">{{ total_egresos_mes or 0 }}</span>
-        </a>
-        <a class="icon-card" href="/hospitalizacion/reporte/egresos">
-            <strong>Gráfica y desglose de egresos hospitalarios</strong>
-            <span>Ver lista por NSS, nombre, sexo, edad, cama, diagnóstico, procedimiento, estancia y médico.</span>
-        </a>
-    </div>
+ <h2>Egresos Hospitalarios</h2>
+ <div class="icon-actions">
+ <a class="icon-card" href="/hospitalizacion/reporte/egresos">
+ <strong>Número de altas realizadas en el mes</strong>
+ <span class="v">{{ total_egresos_mes or 0 }}</span>
+ </a>
+ <a class="icon-card" href="/hospitalizacion/reporte/egresos">
+ <strong>Gráfica y desglose de egresos hospitalarios</strong>
+ <span>Ver lista por NSS, nombre, sexo, edad, cama, diagnóstico, procedimiento, estancia y médico.</span>
+ </a>
+ </div>
 
-    <h2>Pacientes ingresados a hospitalización (lista dinámica)</h2>
-    <form method="get" action="/hospitalizacion/reporte" style="display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin:8px 0 10px 0;">
-        <div>
-            <label style="font-size:12px; font-weight:700; color:var(--imss-verde);">Alcance</label>
-            <select name="scope">
-                <option value="MES" {% if scope_actual == "MES" %}selected{% endif %}>MES</option>
-                <option value="SEMANA" {% if scope_actual == "SEMANA" %}selected{% endif %}>SEMANA</option>
-                <option value="DIA" {% if scope_actual == "DIA" %}selected{% endif %}>DÍA</option>
-            </select>
-        </div>
-        <div>
-            <label style="font-size:12px; font-weight:700; color:var(--imss-verde);">Periodo</label>
-            <select name="periodo">
-                {% for p in periodos_disponibles %}
-                <option value="{{ p }}" {% if p == periodo_actual %}selected{% endif %}>{{ p }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div>
-            <label style="font-size:12px; font-weight:700; color:var(--imss-verde);">Tipo de ingreso</label>
-            <select name="ingreso_tipo">
-                <option value="TODOS" {% if ingreso_tipo_actual == "TODOS" %}selected{% endif %}>TODOS</option>
-                <option value="PROGRAMADO" {% if ingreso_tipo_actual == "PROGRAMADO" %}selected{% endif %}>PROGRAMADO</option>
-                <option value="URGENCIA" {% if ingreso_tipo_actual == "URGENCIA" %}selected{% endif %}>URGENCIA</option>
-            </select>
-        </div>
-        <div><button class="btn" type="submit" style="margin-top:0;">Aplicar filtro</button></div>
-    </form>
-    <div class="summary" style="margin-top:0;">
-        <div class="card"><div>Total filtrado</div><div class="v">{{ ingresos_filtrados_total or 0 }}</div></div>
-        <div class="card"><div>Programados filtrados</div><div class="v">{{ ingresos_filtrados_programados or 0 }}</div></div>
-        <div class="card"><div>Urgencias filtradas</div><div class="v">{{ ingresos_filtrados_urgencias or 0 }}</div></div>
-    </div>
-    <table>
-        <tr>
-            <th>Fecha</th>
-            <th>NSS</th>
-            <th>Nombre</th>
-            <th>Médico a cargo</th>
-            <th>Sexo</th>
-            <th>Diagnóstico</th>
-            <th>Ingreso</th>
-            <th>Urgencia tipo</th>
-            <th>HGZ</th>
-            <th>Fuente</th>
-            <th>Expediente</th>
-        </tr>
-        {% for r in ingresos_filtrados %}
-        <tr>
-            <td>{{ r.fecha_key }}</td>
-            <td>{{ r.nss }}</td>
-            <td>{{ r.nombre_completo }}</td>
-            <td>{{ r.medico_a_cargo or "NO_REGISTRADO" }}</td>
-            <td>{{ r.sexo }}</td>
-            <td>{{ r.diagnostico }}</td>
-            <td>{{ r.ingreso_tipo }}</td>
-            <td>{{ r.urgencia_tipo }}</td>
-            <td>{{ r.hgz_envio }}</td>
-            <td>{{ r.source }}</td>
-            <td><a href="/expediente?nss={{ r.nss }}&nombre={{ r.nombre_completo|replace(' ', '%20') }}">Ver perfil</a></td>
-        </tr>
-        {% else %}
-        <tr><td colspan="11">Sin pacientes para el filtro seleccionado.</td></tr>
-        {% endfor %}
-    </table>
+ <h2>Pacientes ingresados a hospitalización (lista dinámica)</h2>
+ <form method="get" action="/hospitalizacion/reporte" style="display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin:8px 0 10px 0;">
+ <div>
+ <label style="font-size:12px; font-weight:700; color:var(--imss-verde);">Alcance</label>
+ <select name="scope">
+ <option value="MES" {% if scope_actual == "MES" %}selected{% endif %}>MES</option>
+ <option value="SEMANA" {% if scope_actual == "SEMANA" %}selected{% endif %}>SEMANA</option>
+ <option value="DIA" {% if scope_actual == "DIA" %}selected{% endif %}>DÍA</option>
+ </select>
+ </div>
+ <div>
+ <label style="font-size:12px; font-weight:700; color:var(--imss-verde);">Periodo</label>
+ <select name="periodo">
+ {% for p in periodos_disponibles %}
+ <option value="{{ p }}" {% if p == periodo_actual %}selected{% endif %}>{{ p }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div>
+ <label style="font-size:12px; font-weight:700; color:var(--imss-verde);">Tipo de ingreso</label>
+ <select name="ingreso_tipo">
+ <option value="TODOS" {% if ingreso_tipo_actual == "TODOS" %}selected{% endif %}>TODOS</option>
+ <option value="PROGRAMADO" {% if ingreso_tipo_actual == "PROGRAMADO" %}selected{% endif %}>PROGRAMADO</option>
+ <option value="URGENCIA" {% if ingreso_tipo_actual == "URGENCIA" %}selected{% endif %}>URGENCIA</option>
+ </select>
+ </div>
+ <div><button class="btn" type="submit" style="margin-top:0;">Aplicar filtro</button></div>
+ </form>
+ <div class="summary" style="margin-top:0;">
+ <div class="card"><div>Total filtrado</div><div class="v">{{ ingresos_filtrados_total or 0 }}</div></div>
+ <div class="card"><div>Programados filtrados</div><div class="v">{{ ingresos_filtrados_programados or 0 }}</div></div>
+ <div class="card"><div>Urgencias filtradas</div><div class="v">{{ ingresos_filtrados_urgencias or 0 }}</div></div>
+ </div>
+ <table>
+ <tr>
+ <th>Fecha</th>
+ <th>NSS</th>
+ <th>Nombre</th>
+ <th>Médico a cargo</th>
+ <th>Sexo</th>
+ <th>Diagnóstico</th>
+ <th>Ingreso</th>
+ <th>Urgencia tipo</th>
+ <th>HGZ</th>
+ <th>Fuente</th>
+ <th>Expediente</th>
+ </tr>
+ {% for r in ingresos_filtrados %}
+ <tr>
+ <td>{{ r.fecha_key }}</td>
+ <td>{{ r.nss }}</td>
+ <td>{{ r.nombre_completo }}</td>
+ <td>{{ r.medico_a_cargo or "NO_REGISTRADO" }}</td>
+ <td>{{ r.sexo }}</td>
+ <td>{{ r.diagnostico }}</td>
+ <td>{{ r.ingreso_tipo }}</td>
+ <td>{{ r.urgencia_tipo }}</td>
+ <td>{{ r.hgz_envio }}</td>
+ <td>{{ r.source }}</td>
+ <td><a href="/expediente?nss={{ r.nss }}&nombre={{ r.nombre_completo|replace(' ', '%20') }}">Ver perfil</a></td>
+ </tr>
+ {% else %}
+ <tr><td colspan="11">Sin pacientes para el filtro seleccionado.</td></tr>
+ {% endfor %}
+ </table>
 
-    <div class="split">
-        {% if chart_ingresos_dia %}<div><h3>Ingresos por día</h3><img src="data:image/png;base64,{{ chart_ingresos_dia }}" alt="Ingresos por día"></div>{% endif %}
-        {% if chart_ingresos_semana %}<div><h3>Ingresos por semana</h3><img src="data:image/png;base64,{{ chart_ingresos_semana }}" alt="Ingresos por semana"></div>{% endif %}
-        {% if chart_ingresos_mes %}<div><h3>Ingresos por mes</h3><img src="data:image/png;base64,{{ chart_ingresos_mes }}" alt="Ingresos por mes"></div>{% endif %}
-        {% if chart_medico_mes %}<div><h3>Pacientes por médico (mes actual)</h3><img src="data:image/png;base64,{{ chart_medico_mes }}" alt="Pacientes por médico"></div>{% endif %}
-        {% if chart_urgencia_subtipo %}<div><h3>Subtipos de urgencia</h3><img src="data:image/png;base64,{{ chart_urgencia_subtipo }}" alt="Urgencias subtipo"></div>{% endif %}
-    </div>
+ <div class="split">
+ {% if chart_ingresos_dia %}<div><h3>Ingresos por día</h3><img src="data:image/png;base64,{{ chart_ingresos_dia }}" alt="Ingresos por día"></div>{% endif %}
+ {% if chart_ingresos_semana %}<div><h3>Ingresos por semana</h3><img src="data:image/png;base64,{{ chart_ingresos_semana }}" alt="Ingresos por semana"></div>{% endif %}
+ {% if chart_ingresos_mes %}<div><h3>Ingresos por mes</h3><img src="data:image/png;base64,{{ chart_ingresos_mes }}" alt="Ingresos por mes"></div>{% endif %}
+ {% if chart_medico_mes %}<div><h3>Pacientes por médico (mes actual)</h3><img src="data:image/png;base64,{{ chart_medico_mes }}" alt="Pacientes por médico"></div>{% endif %}
+ {% if chart_urgencia_subtipo %}<div><h3>Subtipos de urgencia</h3><img src="data:image/png;base64,{{ chart_urgencia_subtipo }}" alt="Urgencias subtipo"></div>{% endif %}
+ </div>
 
-    <h2>Desglose epidemiológico y operativo</h2>
-    <div class="split">
-        <div>
-            <h3>Por sexo</h3>
-            <table><tr><th>Sexo</th><th>Cantidad</th></tr>{% for k,v in desglose_sexo %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
-        </div>
-        <div>
-            <h3>Por HGZ</h3>
-            <table><tr><th>HGZ</th><th>Cantidad</th></tr>{% for k,v in desglose_hgz %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
-        </div>
-        <div>
-            <h3>Por diagnóstico</h3>
-            <table><tr><th>Diagnóstico</th><th>Cantidad</th></tr>{% for k,v in desglose_diag %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
-        </div>
-        <div>
-            <h3>Por médico a cargo</h3>
-            <table><tr><th>Médico</th><th>Cantidad</th></tr>{% for k,v in desglose_medico %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
-        </div>
-        <div>
-            <h3>Urgencias por subtipo</h3>
-            <table><tr><th>Subtipo</th><th>Cantidad</th></tr>{% for k,v in desglose_urgencia_tipo %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
-        </div>
-    </div>
+ <h2>Desglose epidemiológico y operativo</h2>
+ <div class="split">
+ <div>
+ <h3>Por sexo</h3>
+ <table><tr><th>Sexo</th><th>Cantidad</th></tr>{% for k,v in desglose_sexo %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+ </div>
+ <div>
+ <h3>Por HGZ</h3>
+ <table><tr><th>HGZ</th><th>Cantidad</th></tr>{% for k,v in desglose_hgz %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+ </div>
+ <div>
+ <h3>Por diagnóstico</h3>
+ <table><tr><th>Diagnóstico</th><th>Cantidad</th></tr>{% for k,v in desglose_diag %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+ </div>
+ <div>
+ <h3>Por médico a cargo</h3>
+ <table><tr><th>Médico</th><th>Cantidad</th></tr>{% for k,v in desglose_medico %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+ </div>
+ <div>
+ <h3>Urgencias por subtipo</h3>
+ <table><tr><th>Subtipo</th><th>Cantidad</th></tr>{% for k,v in desglose_urgencia_tipo %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}</table>
+ </div>
+ </div>
 
-    <h2>Pacientes asignados por médico (mes actual)</h2>
-    <table>
-        <tr><th>Médico</th><th>Total pacientes</th></tr>
-        {% for group in asignacion_medico_mes %}
-        <tr>
-            <td>{{ group.medico }}</td>
-            <td>{{ group.total }}</td>
-        </tr>
-        {% else %}
-        <tr><td colspan="2">Sin pacientes asignados en el mes actual.</td></tr>
-        {% endfor %}
-    </table>
-    {% for group in asignacion_medico_mes %}
-    <h3 style="margin-top:14px;">{{ group.medico }} ({{ group.total }})</h3>
-    <table>
-        <tr>
-            <th>Fecha ingreso</th>
-            <th>NSS</th>
-            <th>Nombre</th>
-            <th>Edad</th>
-            <th>Sexo</th>
-            <th>Diagnóstico</th>
-            <th>Ingreso</th>
-        </tr>
-        {% for p in group.pacientes %}
-        <tr>
-            <td>{{ p.fecha_ingreso }}</td>
-            <td>{{ p.nss }}</td>
-            <td>{{ p.nombre_completo }}</td>
-            <td>{{ p.edad }}</td>
-            <td>{{ p.sexo }}</td>
-            <td>{{ p.diagnostico }}</td>
-            <td>{{ p.ingreso_tipo }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% endfor %}
+ <h2>Pacientes asignados por médico (mes actual)</h2>
+ <table>
+ <tr><th>Médico</th><th>Total pacientes</th></tr>
+ {% for group in asignacion_medico_mes %}
+ <tr>
+ <td>{{ group.medico }}</td>
+ <td>{{ group.total }}</td>
+ </tr>
+ {% else %}
+ <tr><td colspan="2">Sin pacientes asignados en el mes actual.</td></tr>
+ {% endfor %}
+ </table>
+ {% for group in asignacion_medico_mes %}
+ <h3 style="margin-top:14px;">{{ group.medico }} ({{ group.total }})</h3>
+ <table>
+ <tr>
+ <th>Fecha ingreso</th>
+ <th>NSS</th>
+ <th>Nombre</th>
+ <th>Edad</th>
+ <th>Sexo</th>
+ <th>Diagnóstico</th>
+ <th>Ingreso</th>
+ </tr>
+ {% for p in group.pacientes %}
+ <tr>
+ <td>{{ p.fecha_ingreso }}</td>
+ <td>{{ p.nss }}</td>
+ <td>{{ p.nombre_completo }}</td>
+ <td>{{ p.edad }}</td>
+ <td>{{ p.sexo }}</td>
+ <td>{{ p.diagnostico }}</td>
+ <td>{{ p.ingreso_tipo }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ {% endfor %}
 
-    <h2>Serie diaria del mes actual</h2>
-    <table>
-        <tr><th>Día</th><th>Total</th><th>Programados</th><th>Urgencias</th></tr>
-        {% for k,v in by_day_total %}
-        <tr>
-            <td>{{ k }}</td>
-            <td>{{ v }}</td>
-            <td>{% for d,c in by_day_prog %}{% if d == k %}{{ c }}{% endif %}{% endfor %}</td>
-            <td>{% for d,c in by_day_urg %}{% if d == k %}{{ c }}{% endif %}{% endfor %}</td>
-        </tr>
-        {% endfor %}
-    </table>
+ <h2>Serie diaria del mes actual</h2>
+ <table>
+ <tr><th>Día</th><th>Total</th><th>Programados</th><th>Urgencias</th></tr>
+ {% for k,v in by_day_total %}
+ <tr>
+ <td>{{ k }}</td>
+ <td>{{ v }}</td>
+ <td>{% for d,c in by_day_prog %}{% if d == k %}{{ c }}{% endif %}{% endfor %}</td>
+ <td>{% for d,c in by_day_urg %}{% if d == k %}{{ c }}{% endif %}{% endfor %}</td>
+ </tr>
+ {% endfor %}
+ </table>
 
-    <a href="/hospitalizacion" class="btn">← Volver al módulo hospitalización</a>
-    <a href="/hospitalizacion/reporte/guardia" class="btn" style="margin-left:8px; background:var(--imss-dorado);">Ver reporte guardia</a>
+ <a href="/hospitalizacion" class="btn">← Volver al módulo hospitalización</a>
+ <a href="/hospitalizacion/reporte/guardia" class="btn" style="margin-left:8px; background:var(--imss-dorado);">Ver reporte guardia</a>
 </div>
 </body>
 </html>

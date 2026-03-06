@@ -198,38 +198,82 @@ def inject_ui_shell(html_text: str, *, request: Any, context: Optional[Dict[str,
     suggest = _suggested_actions(path, patient_ctx)
     patient_links = _patient_links(patient_ctx)
 
+    crumbs_html = "".join(
+        f'<a href="{html.escape(c.get("href", "/"))}">{html.escape(c.get("label", ""))}</a><span class="sep">›</span>'
+        for c in crumbs[:-1]
+    )
+    quick_html = "".join(
+        f'<a class="chip" href="{html.escape(x["href"])}">{html.escape(x["label"])}</a>'
+        for x in quick_links
+    )
+    patient_links_html = "".join(
+        f'<a class="chip action" href="{html.escape(x["href"])}">{html.escape(x["label"])}</a>'
+        for x in patient_links
+    )
+    suggest_html = "".join(
+        f'<a class="chip" href="{html.escape(x["href"])}">{html.escape(x["label"])}</a>'
+        for x in suggest
+    )
+
     nav_html = f"""
-<section id="rnp-ui-shell" data-rnp-shell="1">
+<section id="rnp-ui-shell" data-uromed-shell="1">
+  <link rel="stylesheet" href="/static/css/uromed_private_theme.css">
   <style>
-    #rnp-ui-shell {{ font-family:'Montserrat',sans-serif; margin:0 0 12px 0; border:1px solid #dbe5df; border-radius:12px; background:linear-gradient(180deg,#f7fbf9 0%,#ffffff 100%); box-shadow:0 4px 14px rgba(0,0,0,.06); }}
+    #rnp-ui-shell {{
+      font-family:'Montserrat',sans-serif;
+      margin:0 0 12px 0;
+      border:1px solid #cfe0fb;
+      border-radius:12px;
+      background:linear-gradient(180deg,#f5f9ff 0%,#ffffff 100%);
+      box-shadow:0 4px 14px rgba(10,49,97,.09);
+    }}
     #rnp-ui-shell .row {{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:10px 12px; }}
-    #rnp-ui-shell .top {{ border-bottom:1px solid #e5ece8; }}
-    #rnp-ui-shell .brand {{ font-weight:800; color:#13322B; margin-right:8px; }}
-    #rnp-ui-shell .chip {{ display:inline-flex; align-items:center; padding:5px 9px; border-radius:999px; font-size:11px; font-weight:700; border:1px solid #d6e0da; background:#fff; color:#13322B; text-decoration:none; }}
-    #rnp-ui-shell .chip.gold {{ background:#B38E5D; color:#fff; border-color:#a07f52; }}
-    #rnp-ui-shell .crumbs a {{ color:#13322B; text-decoration:none; font-weight:600; font-size:12px; }}
+    #rnp-ui-shell .top {{ border-bottom:1px solid #d8e5fa; background:linear-gradient(90deg,#ffffff,#f0f6ff); }}
+    #rnp-ui-shell .brand {{ display:inline-flex; align-items:center; gap:8px; margin-right:8px; }}
+    #rnp-ui-shell .brand img {{ width:116px; height:auto; object-fit:contain; display:block; }}
+    #rnp-ui-shell .brand b {{ font-weight:800; color:#0a3161; letter-spacing:.2px; }}
+    #rnp-ui-shell .chip {{
+      display:inline-flex; align-items:center; padding:5px 9px; border-radius:999px;
+      font-size:11px; font-weight:700; border:1px solid #c7d9f7; background:#fff; color:#0a3161; text-decoration:none;
+    }}
+    #rnp-ui-shell .chip.action {{
+      background:linear-gradient(135deg,#ef4f5f,#c82f3f);
+      border-color:#c82f3f; color:#fff;
+    }}
+    #rnp-ui-shell .crumbs a {{ color:#0a3161; text-decoration:none; font-weight:600; font-size:12px; }}
     #rnp-ui-shell .crumbs span.sep {{ opacity:.5; margin:0 4px; }}
-    #rnp-ui-shell .muted {{ font-size:11px; color:#4b5563; }}
+    #rnp-ui-shell .muted {{ font-size:11px; color:#4e6694; }}
     #rnp-ui-shell .links a {{ text-decoration:none; }}
-    #rnp-ui-shell .toggle {{ margin-left:auto; border:1px solid #d6e0da; background:#fff; color:#13322B; border-radius:7px; padding:5px 8px; cursor:pointer; font-weight:700; font-size:11px; }}
-    #rnp-ui-shell .mini-input {{ border:1px solid #cfd8d3; border-radius:7px; padding:6px 8px; font-size:12px; min-width:120px; }}
-    #rnp-ui-shell .mini-btn {{ border:1px solid #a07f52; background:#B38E5D; color:#fff; border-radius:7px; padding:6px 9px; cursor:pointer; font-weight:700; font-size:12px; }}
-    #rnp-ui-shell[data-collapsed=\"1\"] .collapsible {{ display:none; }}
-    @media (max-width:900px) {{ #rnp-ui-shell .brand {{ width:100%; }} }}
+    #rnp-ui-shell .toggle {{
+      margin-left:auto; border:1px solid #bfd2f3; background:#fff; color:#0a3161;
+      border-radius:7px; padding:5px 8px; cursor:pointer; font-weight:700; font-size:11px;
+    }}
+    #rnp-ui-shell .mini-input {{
+      border:1px solid #c5d7f6; border-radius:7px; padding:6px 8px; font-size:12px; min-width:120px;
+    }}
+    #rnp-ui-shell .mini-btn {{
+      border:1px solid #1f4f9f; background:linear-gradient(135deg,#2e6ec9,#1f4f9f);
+      color:#fff; border-radius:7px; padding:6px 9px; cursor:pointer; font-weight:700; font-size:12px;
+    }}
+    #rnp-ui-shell[data-collapsed="1"] .collapsible {{ display:none; }}
+    @media (max-width:900px) {{
+      #rnp-ui-shell .brand {{ width:100%; justify-content:flex-start; }}
+    }}
   </style>
   <div class="row top">
-    <div class="brand">RNP Navegación Clínica</div>
-    <div class="crumbs">
-      {"".join(f'<a href=\"{html.escape(c.get("href","/"))}\">{html.escape(c.get("label",""))}</a><span class=\"sep\">›</span>' for c in crumbs[:-1])}
-      <strong style="font-size:12px;color:#13322B;">{html.escape(crumbs[-1].get("label","Inicio"))}</strong>
+    <div class="brand">
+      <img src="/static/img/logooficial_header_clean.png" alt="UROMED" onerror="this.onerror=null;this.src='/static/img/logooficial.png';">
+      <b>UROMED Navegación Clínica</b>
     </div>
-    <button class="toggle" type="button" onclick="(function(b){{var s=document.getElementById('rnp-ui-shell');if(!s)return;var n=s.getAttribute('data-collapsed')==='1'?'0':'1';s.setAttribute('data-collapsed',n);try{{localStorage.setItem('rnp_shell_collapsed',n);}}catch(e){{}}}})(this)">Mostrar/Ocultar</button>
+    <div class="crumbs">
+      {crumbs_html}
+      <strong style="font-size:12px;color:#0a3161;">{html.escape(crumbs[-1].get("label", "Inicio"))}</strong>
+    </div>
+    <button class="toggle" type="button" onclick="(function(){{var s=document.getElementById('rnp-ui-shell');if(!s)return;var n=s.getAttribute('data-collapsed')==='1'?'0':'1';s.setAttribute('data-collapsed',n);try{{localStorage.setItem('uromed_shell_collapsed',n);}}catch(e){{}}}})()">Mostrar/Ocultar</button>
   </div>
   <div class="row collapsible">
     <span class="muted">Accesos rápidos:</span>
-    <span class="links">
-      {"".join(f'<a class=\"chip\" href=\"{html.escape(x["href"])}\">{html.escape(x["label"])}</a>' for x in quick_links)}
-    </span>
+    <span class="links">{quick_html}</span>
   </div>
   <div class="row collapsible">
     <span class="muted">Paciente en contexto:</span>
@@ -237,10 +281,10 @@ def inject_ui_shell(html_text: str, *, request: Any, context: Optional[Dict[str,
     <span class="chip" id="rnp-shell-nombre">Nombre: {html.escape(patient_ctx.get("nombre") or "N/E")}</span>
     <span class="chip" id="rnp-shell-consulta">Consulta: {html.escape(patient_ctx.get("consulta_id") or "N/E")}</span>
     <span class="chip" id="rnp-shell-hosp">Hospitalización: {html.escape(patient_ctx.get("hospitalizacion_id") or "N/E")}</span>
-    {"".join(f'<a class=\"chip gold\" href=\"{html.escape(x["href"])}\">{html.escape(x["label"])}</a>' for x in patient_links)}
+    {patient_links_html}
   </div>
   <div class="row collapsible">
-    <span class="muted">Wizard de contexto:</span>
+    <span class="muted">Asistente de contexto:</span>
     <input class="mini-input" id="rnp-ctx-nss" placeholder="NSS (10 dígitos)" value="{html.escape(patient_ctx.get("nss") or "")}">
     <input class="mini-input" id="rnp-ctx-nombre" placeholder="Nombre" value="{html.escape(patient_ctx.get("nombre") or "")}">
     <input class="mini-input" id="rnp-ctx-consulta" placeholder="Consulta ID" value="{html.escape(patient_ctx.get("consulta_id") or "")}">
@@ -249,157 +293,198 @@ def inject_ui_shell(html_text: str, *, request: Any, context: Optional[Dict[str,
   </div>
   <div class="row collapsible">
     <span class="muted">Siguiente paso sugerido:</span>
-    {"".join(f'<a class=\"chip\" href=\"{html.escape(x["href"])}\">{html.escape(x["label"])}</a>' for x in suggest)}
+    {suggest_html}
   </div>
   <script>
-    (function(){{
-      var shell=document.getElementById('rnp-ui-shell');
-      if(!shell) return;
+    (function() {{
+      var shell = document.getElementById('rnp-ui-shell');
+      if (!shell) return;
       try {{
-        var stored=localStorage.getItem('rnp_shell_collapsed');
-        if(stored==='1') shell.setAttribute('data-collapsed','1');
-      }} catch(e) {{}}
+        var collapsed = localStorage.getItem('uromed_shell_collapsed');
+        if (collapsed === '1') shell.setAttribute('data-collapsed', '1');
+      }} catch (e) {{}}
+
+      var saveCtx = function(ctxObj) {{
+        try {{
+          localStorage.setItem('rnp_patient_context', JSON.stringify(ctxObj || {{}}));
+          localStorage.setItem('uromed_patient_context', JSON.stringify(ctxObj || {{}}));
+          document.cookie = 'rnp_patient_context=' + encodeURIComponent(JSON.stringify(ctxObj || {{}})) + '; path=/; max-age=' + (60*60*24*30) + '; SameSite=Lax';
+        }} catch (e) {{}}
+        try {{
+          fetch('/api/v1/contexto-activo', {{
+            method: 'POST',
+            headers: {{ 'Content-Type': 'application/json' }},
+            keepalive: true,
+            body: JSON.stringify({{
+              actor: 'ui_shell',
+              context: ctxObj || {{}},
+              source_route: (window.location && window.location.pathname) ? window.location.pathname : '/'
+            }})
+          }}).catch(function(){{}});
+        }} catch (e) {{}}
+      }};
+
       try {{
-        var saveCtx=function(ctxObj){{
-          try {{
-            localStorage.setItem('rnp_patient_context', JSON.stringify(ctxObj||{{}}));
-            document.cookie='rnp_patient_context='+encodeURIComponent(JSON.stringify(ctxObj||{{}}))+'; path=/; max-age='+(60*60*24*30)+'; SameSite=Lax';
-          }} catch(e) {{}}
-          try {{
-            fetch('/api/v1/contexto-activo', {{
-              method:'POST',
-              headers: {{'Content-Type':'application/json'}},
-              keepalive:true,
-              body: JSON.stringify({{
-                actor:'ui_shell',
-                context:ctxObj||{{}},
-                source_route:(window.location && window.location.pathname) ? window.location.pathname : '/'
-              }})
-            }}).catch(function(){{}});
-          }} catch(e) {{}}
-        }};
-        var ctx={json.dumps(patient_ctx, ensure_ascii=False)};
-        var hasAny=ctx && (ctx.nss||ctx.nombre||ctx.consulta_id||ctx.hospitalizacion_id);
-        if(hasAny) saveCtx(ctx);
-        if(!hasAny) {{
-          var storedRaw=localStorage.getItem('rnp_patient_context');
-          if(storedRaw) {{
-            var stored=JSON.parse(storedRaw);
-            if(stored) {{
-              var eN=document.getElementById('rnp-shell-nss'); if(eN) eN.textContent='NSS: '+(stored.nss||'N/E');
-              var eNm=document.getElementById('rnp-shell-nombre'); if(eNm) eNm.textContent='Nombre: '+(stored.nombre||'N/E');
-              var eC=document.getElementById('rnp-shell-consulta'); if(eC) eC.textContent='Consulta: '+(stored.consulta_id||'N/E');
-              var eH=document.getElementById('rnp-shell-hosp'); if(eH) eH.textContent='Hospitalización: '+(stored.hospitalizacion_id||'N/E');
-              var iN=document.getElementById('rnp-ctx-nss'); if(iN && !iN.value) iN.value=(stored.nss||'');
-              var iNm=document.getElementById('rnp-ctx-nombre'); if(iNm && !iNm.value) iNm.value=(stored.nombre||'');
-              var iC=document.getElementById('rnp-ctx-consulta'); if(iC && !iC.value) iC.value=(stored.consulta_id||'');
-              var iH=document.getElementById('rnp-ctx-hosp'); if(iH && !iH.value) iH.value=(stored.hospitalizacion_id||'');
+        var ctx = {json.dumps(patient_ctx, ensure_ascii=False)};
+        var hasAny = ctx && (ctx.nss || ctx.nombre || ctx.consulta_id || ctx.hospitalizacion_id);
+        if (hasAny) saveCtx(ctx);
+        if (!hasAny) {{
+          var storedRaw = localStorage.getItem('rnp_patient_context');
+          if (storedRaw) {{
+            var stored = JSON.parse(storedRaw);
+            if (stored) {{
+              var eN=document.getElementById('rnp-shell-nss'); if(eN) eN.textContent='NSS: ' + (stored.nss || 'N/E');
+              var eNm=document.getElementById('rnp-shell-nombre'); if(eNm) eNm.textContent='Nombre: ' + (stored.nombre || 'N/E');
+              var eC=document.getElementById('rnp-shell-consulta'); if(eC) eC.textContent='Consulta: ' + (stored.consulta_id || 'N/E');
+              var eH=document.getElementById('rnp-shell-hosp'); if(eH) eH.textContent='Hospitalización: ' + (stored.hospitalizacion_id || 'N/E');
+              var iN=document.getElementById('rnp-ctx-nss'); if(iN && !iN.value) iN.value = (stored.nss || '');
+              var iNm=document.getElementById('rnp-ctx-nombre'); if(iNm && !iNm.value) iNm.value = (stored.nombre || '');
+              var iC=document.getElementById('rnp-ctx-consulta'); if(iC && !iC.value) iC.value = (stored.consulta_id || '');
+              var iH=document.getElementById('rnp-ctx-hosp'); if(iH && !iH.value) iH.value = (stored.hospitalizacion_id || '');
             }}
           }}
         }}
-        var saveBtn=document.getElementById('rnp-ctx-save');
-        if(saveBtn){{
-          saveBtn.addEventListener('click', function(){{
-            var next={{
-              nss:(document.getElementById('rnp-ctx-nss')||{{}}).value||'',
-              nombre:(document.getElementById('rnp-ctx-nombre')||{{}}).value||'',
-              consulta_id:(document.getElementById('rnp-ctx-consulta')||{{}}).value||'',
-              hospitalizacion_id:(document.getElementById('rnp-ctx-hosp')||{{}}).value||'',
-              source:'wizard'
-            }};
-            var eN=document.getElementById('rnp-shell-nss'); if(eN) eN.textContent='NSS: '+(next.nss||'N/E');
-            var eNm=document.getElementById('rnp-shell-nombre'); if(eNm) eNm.textContent='Nombre: '+(next.nombre||'N/E');
-            var eC=document.getElementById('rnp-shell-consulta'); if(eC) eC.textContent='Consulta: '+(next.consulta_id||'N/E');
-            var eH=document.getElementById('rnp-shell-hosp'); if(eH) eH.textContent='Hospitalización: '+(next.hospitalizacion_id||'N/E');
-            saveCtx(next);
-          }});
-        }}
-      }} catch(e) {{}}
-      try {{
-        var path=window.location.pathname||'/';
-        var key='rnp_ui_nav_sent:'+path;
-        var uiErrKey='rnp_ui_err_hooked';
-        var sendUiError=function(payload){{
+      }} catch (e) {{}}
+
+      var saveBtn = document.getElementById('rnp-ctx-save');
+      if (saveBtn) {{
+        saveBtn.addEventListener('click', function() {{
+          var next = {{
+            nss: (document.getElementById('rnp-ctx-nss') || {{}}).value || '',
+            nombre: (document.getElementById('rnp-ctx-nombre') || {{}}).value || '',
+            consulta_id: (document.getElementById('rnp-ctx-consulta') || {{}}).value || '',
+            hospitalizacion_id: (document.getElementById('rnp-ctx-hosp') || {{}}).value || '',
+            source: 'wizard'
+          }};
+          var eN=document.getElementById('rnp-shell-nss'); if(eN) eN.textContent='NSS: ' + (next.nss || 'N/E');
+          var eNm=document.getElementById('rnp-shell-nombre'); if(eNm) eNm.textContent='Nombre: ' + (next.nombre || 'N/E');
+          var eC=document.getElementById('rnp-shell-consulta'); if(eC) eC.textContent='Consulta: ' + (next.consulta_id || 'N/E');
+          var eH=document.getElementById('rnp-shell-hosp'); if(eH) eH.textContent='Hospitalización: ' + (next.hospitalizacion_id || 'N/E');
+          saveCtx(next);
+        }});
+      }}
+
+      var path = window.location.pathname || '/';
+      var key = 'uromed_ui_nav_sent:' + path;
+      var uiErrKey = 'uromed_ui_err_hooked';
+      var sendUiError = function(payload) {{
+        try {{
+          var body = Object.assign({{
+            path: path,
+            actor: 'ui_shell',
+            severity: 'ERROR'
+          }}, payload || {{}});
+          fetch('/api/v1/ui/error-event', {{
+            method: 'POST',
+            headers: {{ 'Content-Type': 'application/json' }},
+            keepalive: true,
+            body: JSON.stringify(body)
+          }}).catch(function(){{}});
+        }} catch (e) {{}}
+      }};
+
+      if (!window[uiErrKey]) {{
+        window[uiErrKey] = true;
+        window.addEventListener('error', function(ev) {{
           try {{
-            var body=Object.assign({{
-              path:path,
-              actor:'ui_shell',
-              severity:'ERROR'
-            }}, payload||{{}});
-            fetch('/api/v1/ui/error-event', {{
-              method:'POST',
-              headers: {{'Content-Type':'application/json'}},
-              keepalive:true,
-              body: JSON.stringify(body)
-            }}).catch(function(){{}});
-          }} catch(e) {{}}
-        }};
-        if(!window[uiErrKey]) {{
-          window[uiErrKey]=true;
-          window.addEventListener('error', function(ev){{
-            try {{
-              var target=ev && ev.target ? ev.target : null;
-              var isResource=target && (target.tagName==='IMG' || target.tagName==='SCRIPT' || target.tagName==='LINK');
-              if(isResource) {{
-                sendUiError({{
-                  event_type:'RESOURCE_ERROR',
-                  message:'Error cargando recurso UI',
-                  source:(target.tagName||'')+':'+(target.src||target.href||''),
-                  context:{{ tag: target.tagName||'', src: target.src||target.href||'' }}
-                }});
-                return;
-              }}
+            var target = ev && ev.target ? ev.target : null;
+            var isResource = target && (target.tagName === 'IMG' || target.tagName === 'SCRIPT' || target.tagName === 'LINK');
+            if (isResource) {{
               sendUiError({{
-                event_type:'JS_ERROR',
-                message:String((ev && ev.message) || 'JS error'),
-                source:String((ev && ev.filename) || ''),
-                stack:String((ev && ev.error && ev.error.stack) || '')
+                event_type: 'RESOURCE_ERROR',
+                message: 'Error cargando recurso UI',
+                source: (target.tagName || '') + ':' + (target.src || target.href || ''),
+                context: {{ tag: target.tagName || '', src: target.src || target.href || '' }}
               }});
-            }} catch(inner) {{}}
-          }}, true);
-          window.addEventListener('unhandledrejection', function(ev){{
-            try {{
-              var reason=ev ? ev.reason : null;
-              var msg=(reason && reason.message) ? reason.message : String(reason || 'Unhandled rejection');
-              var stk=(reason && reason.stack) ? reason.stack : '';
-              sendUiError({{
-                event_type:'UNHANDLED_REJECTION',
-                message:msg,
-                stack:String(stk||'')
-              }});
-            }} catch(inner) {{}}
-          }});
-        }}
-        if(!sessionStorage.getItem(key)) {{
-          sessionStorage.setItem(key,'1');
-          var ctxRaw=localStorage.getItem('rnp_patient_context')||'{{}}';
-          var ctxObj={{}};
-          try {{ ctxObj=JSON.parse(ctxRaw)||{{}}; }} catch(err) {{ ctxObj={{}}; }}
-          fetch('/api/v1/ui/nav-event', {{
-            method:'POST',
-            headers: {{'Content-Type':'application/json'}},
-            keepalive:true,
-            body: JSON.stringify({{
-              event_type:'PAGE_VIEW',
-              path:path,
-              referrer:document.referrer||'',
-              stage:'page_load',
-              context:{{
-                consulta_id: ctxObj.consulta_id || '',
-                hospitalizacion_id: ctxObj.hospitalizacion_id || '',
-                has_nss: !!ctxObj.nss
-              }}
-            }})
-          }}).catch(function(err){{
+              return;
+            }}
             sendUiError({{
-              event_type:'FETCH_ERROR',
-              message:'Error enviando evento de navegación',
-              source:'/api/v1/ui/nav-event',
-              stack:String((err && err.message) || err || '')
+              event_type: 'JS_ERROR',
+              message: String((ev && ev.message) || 'JS error'),
+              source: String((ev && ev.filename) || ''),
+              stack: String((ev && ev.error && ev.error.stack) || '')
             }});
+          }} catch (inner) {{}}
+        }}, true);
+        window.addEventListener('unhandledrejection', function(ev) {{
+          try {{
+            var reason = ev ? ev.reason : null;
+            var msg = (reason && reason.message) ? reason.message : String(reason || 'Unhandled rejection');
+            var stk = (reason && reason.stack) ? reason.stack : '';
+            sendUiError({{
+              event_type: 'UNHANDLED_REJECTION',
+              message: msg,
+              stack: String(stk || '')
+            }});
+          }} catch (inner) {{}}
+        }});
+      }}
+
+      if (!sessionStorage.getItem(key)) {{
+        sessionStorage.setItem(key, '1');
+        var ctxRaw = localStorage.getItem('rnp_patient_context') || '{{}}';
+        var ctxObj = {{}};
+        try {{ ctxObj = JSON.parse(ctxRaw) || {{}}; }} catch(err) {{ ctxObj = {{}}; }}
+        fetch('/api/v1/ui/nav-event', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          keepalive: true,
+          body: JSON.stringify({{
+            event_type: 'PAGE_VIEW',
+            path: path,
+            referrer: document.referrer || '',
+            stage: 'page_load',
+            context: {{
+              consulta_id: ctxObj.consulta_id || '',
+              hospitalizacion_id: ctxObj.hospitalizacion_id || '',
+              has_nss: !!ctxObj.nss
+            }}
+          }})
+        }}).catch(function(err) {{
+          sendUiError({{
+            event_type:'FETCH_ERROR',
+            message:'Error enviando evento de navegación',
+            source:'/api/v1/ui/nav-event',
+            stack:String((err && err.message) || err || '')
           }});
+        }});
+      }}
+
+      var swapBrandText = function(rootNode) {{
+        if (!rootNode || rootNode.nodeType !== 1) return;
+        var walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT, null);
+        var node = null;
+        while ((node = walker.nextNode())) {{
+          var parent = node.parentNode;
+          if (!parent) continue;
+          var tag = (parent.tagName || '').toUpperCase();
+          if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT' || tag === 'TEXTAREA') continue;
+          var raw = node.nodeValue || '';
+          if (!raw.trim()) continue;
+          var replaced = raw
+            .replace(/\\bRNP\\b/gi, 'UROMED')
+            .replace(/\\bIMSS\\b/gi, '')
+            .replace(/\\s{{2,}}/g, ' ');
+          if (replaced !== raw) node.nodeValue = replaced;
         }}
-      }} catch(e) {{}}
+      }};
+
+      try {{
+        document.title = (document.title || '')
+          .replace(/\\bRNP\\b/gi, 'UROMED')
+          .replace(/\\bIMSS\\b/gi, '')
+          .replace(/\\s{{2,}}/g, ' ');
+        swapBrandText(document.body);
+        var observer = new MutationObserver(function(mutations) {{
+          for (var i = 0; i < mutations.length; i++) {{
+            var nodes = mutations[i].addedNodes || [];
+            for (var j = 0; j < nodes.length; j++) {{
+              if (nodes[j] && nodes[j].nodeType === 1) swapBrandText(nodes[j]);
+            }}
+          }}
+        }});
+        observer.observe(document.body, {{ childList: true, subtree: true }});
+      }} catch (e) {{}}
     }})();
   </script>
 </section>

@@ -1,803 +1,803 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Ingresar Paciente - Hospitalización</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root {
-            --imss-verde: #13322B;
-            --imss-dorado: #B38E5D;
-        }
-        body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
-        .container { max-width: 1180px; margin: auto; background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 8px 26px rgba(0,0,0,0.11); }
-        h1 { color: var(--imss-verde); margin: 0 0 12px 0; }
-        .alert { padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
-        .alert.error { background: #fdeaea; border: 1px solid #efb9b9; color: #8d1b1b; }
-        .alert.ok { background: #ebf8ef; border: 1px solid #b6dfc0; color: #1f5f2f; }
-        .card { background: #fbfcfc; border: 1px solid #d9e2dd; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
-        .collapsible-card summary {
-            list-style: none;
-            cursor: pointer;
-            font-weight: 700;
-            color: var(--imss-verde);
-            margin: -2px 0 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .collapsible-card summary::-webkit-details-marker { display: none; }
-        .collapsible-card summary::after {
-            content: "▾";
-            font-size: 16px;
-            color: var(--imss-dorado);
-        }
-        .collapsible-card:not([open]) summary::after { content: "▸"; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
-        .grid .w2 { grid-column: span 2; }
-        .grid .w3 { grid-column: span 3; }
-        label { font-size: 13px; font-weight: 700; color: #17352f; display: block; margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 9px; border-radius: 6px; border: 1px solid #cfd8d3; font-size: 13px; }
-        textarea { min-height: 72px; resize: vertical; }
-        .busqueda { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
-        .btn { background: var(--imss-verde); color: #fff; text-decoration: none; border: none; border-radius: 7px; padding: 11px 14px; font-weight: 700; cursor: pointer; }
-        .btn-dorado { background: var(--imss-dorado); }
-        .row-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-        .dynamic { border: 1px dashed #b8c7c0; border-radius: 8px; padding: 10px; background: #f8faf9; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ <meta charset="UTF-8">
+ <title>Ingresar Paciente - Hospitalización</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root {
+ --imss-verde: #0a3161;
+ --imss-dorado: #c82f3f;
+ }
+ body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
+ .container { max-width: 1180px; margin: auto; background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 8px 26px rgba(0,0,0,0.11); }
+ h1 { color: var(--imss-verde); margin: 0 0 12px 0; }
+ .alert { padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
+ .alert.error { background: #fdeaea; border: 1px solid #efb9b9; color: #8d1b1b; }
+ .alert.ok { background: #ebf8ef; border: 1px solid #b6dfc0; color: #1f5f2f; }
+ .card { background: #fbfcfc; border: 1px solid #d9e2dd; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+ .collapsible-card summary {
+ list-style: none;
+ cursor: pointer;
+ font-weight: 700;
+ color: var(--imss-verde);
+ margin: -2px 0 10px;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ }
+ .collapsible-card summary::-webkit-details-marker { display: none; }
+ .collapsible-card summary::after {
+ content: "▾";
+ font-size: 16px;
+ color: var(--imss-dorado);
+ }
+ .collapsible-card:not([open]) summary::after { content: "▸"; }
+ .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+ .grid .w2 { grid-column: span 2; }
+ .grid .w3 { grid-column: span 3; }
+ label { font-size: 13px; font-weight: 700; color: #17352f; display: block; margin-bottom: 5px; }
+ input, select, textarea { width: 100%; padding: 9px; border-radius: 6px; border: 1px solid #cfd8d3; font-size: 13px; }
+ textarea { min-height: 72px; resize: vertical; }
+ .busqueda { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+ .btn { background: var(--imss-verde); color: #fff; text-decoration: none; border: none; border-radius: 7px; padding: 11px 14px; font-weight: 700; cursor: pointer; }
+ .btn-dorado { background: var(--imss-dorado); }
+ .row-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+ .dynamic { border: 1px dashed #b8c7c0; border-radius: 8px; padding: 10px; background: #f8fbff; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
 
-    /* === Hospitalizacion Nuevo - additive enhancements === */
-    .container { position:relative; overflow:hidden; }
-    .container::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, #13322B, #B38E5D, #13322B); z-index:5; }
-    .card { transition:all 0.22s ease; }
-    .card:hover { box-shadow:0 4px 14px rgba(19,50,43,0.10); }
-    .collapsible-card { transition:all 0.22s ease; }
-    .collapsible-card[open] { box-shadow:0 4px 14px rgba(19,50,43,0.08); border-color:#B38E5D; }
-    @keyframes fadeInUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
-    .card { animation:fadeInUp 0.4s ease both; }
-    h1 { border-bottom:3px solid #B38E5D; padding-bottom:8px; }
-    </style>
+ /* === Hospitalizacion Nuevo - additive enhancements === */
+ .container { position:relative; overflow:hidden; }
+ .container::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, #0a3161, #c82f3f, #0a3161); z-index:5; }
+ .card { transition:all 0.22s ease; }
+ .card:hover { box-shadow:0 4px 14px rgba(31,79,159,0.10); }
+ .collapsible-card { transition:all 0.22s ease; }
+ .collapsible-card[open] { box-shadow:0 4px 14px rgba(31,79,159,0.08); border-color:#c82f3f; }
+ @keyframes fadeInUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+ .card { animation:fadeInUp 0.4s ease both; }
+ h1 { border-bottom:3px solid #c82f3f; padding-bottom:8px; }
+ </style>
 <link href="/static/css/rnp_redesign.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>🏥 1. INGRESAR PACIENTE</h1>
+ <div class="container">
+ <h1>🏥 1. INGRESAR PACIENTE</h1>
 
-        {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
-        {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
+ {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+ {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
 
-        <form action="/hospitalizacion/nuevo" method="post" id="form-ingreso">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <input type="hidden" name="origen_flujo" value="{{ prefill.origen_flujo or '' }}">
-            <input type="hidden" name="surgical_programacion_id" value="{{ prefill.surgical_programacion_id or '' }}">
-            <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
+ <form action="/hospitalizacion/nuevo" method="post" id="form-ingreso">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <input type="hidden" name="origen_flujo" value="{{ prefill.origen_flujo or '' }}">
+ <input type="hidden" name="surgical_programacion_id" value="{{ prefill.surgical_programacion_id or '' }}">
+ <input type="hidden" name="hospitalizacion_id" value="{{ hospitalizacion_id or '' }}">
 
-            {% if prefill.origen_flujo == 'URGENCIA' %}
-            <div class="card" style="border-left:6px solid var(--imss-dorado);">
-                <label>Handoff detectado</label>
-                <div style="font-size:13px;color:#27413a;">
-                    Registro precargado desde <strong>Cirugía de Urgencia</strong>.
-                    {% if prefill.surgical_programacion_id %}
-                    Programación quirúrgica ID: <strong>{{ prefill.surgical_programacion_id }}</strong>.
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
+ {% if prefill.origen_flujo == 'URGENCIA' %}
+ <div class="card" style="border-left:6px solid var(--imss-dorado);">
+ <label>Handoff detectado</label>
+ <div style="font-size:13px;color:#27413a;">
+ Registro precargado desde <strong>Cirugía de Urgencia</strong>.
+ {% if prefill.surgical_programacion_id %}
+ Programación quirúrgica ID: <strong>{{ prefill.surgical_programacion_id }}</strong>.
+ {% endif %}
+ </div>
+ </div>
+ {% endif %}
 
-            <div class="card">
-                <label>Buscar paciente por CURP / NSS / Nombre</label>
-                <div class="busqueda">
-                    <input type="text" name="busqueda" placeholder="CURP, NSS o nombre" required>
-                    <button type="submit" formaction="/hospitalizacion/buscar" class="btn btn-dorado">Buscar</button>
-                </div>
-                <div class="row-actions" style="margin-top:8px;">
-                    <button type="button" class="btn" id="btn-context-autofill">Autocompletar desde Consulta</button>
-                    <span id="context-autofill-msg" style="font-size:12px;color:#22443d;"></span>
-                </div>
-                <div id="autofill-indicator" style="display:none; margin-top:8px; padding:8px 12px; background:#ebf8ef; border:1px solid #b6dfc0; border-radius:6px; font-size:12px; color:#1f5f2f;">
-                    <strong>Datos pre-cargados desde consulta previa.</strong> Los campos de identidad, diagnóstico y antecedentes se llenaron automáticamente para evitar re-captura.
-                </div>
-                {% if patient_context and patient_context.suggestions %}
-                <div class="dynamic" style="margin-top:10px;">
-                    <label>Sugerencias clínicas detectadas</label>
-                    <div style="font-size:12px;color:#2b3f39;">
-                        Procedimiento: <strong>{{ patient_context.suggestions.procedimiento_text or "N/E" }}</strong> |
-                        Cirujano: <strong>{{ patient_context.suggestions.cirujano_text or "N/E" }}</strong> |
-                        Fecha cirugía: <strong>{{ patient_context.suggestions.fecha_cirugia or "N/E" }}</strong>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
+ <div class="card">
+ <label>Buscar paciente por CURP / NSS / Nombre</label>
+ <div class="busqueda">
+ <input type="text" name="busqueda" placeholder="CURP, NSS o nombre" required>
+ <button type="submit" formaction="/hospitalizacion/buscar" class="btn btn-dorado">Buscar</button>
+ </div>
+ <div class="row-actions" style="margin-top:8px;">
+ <button type="button" class="btn" id="btn-context-autofill">Autocompletar desde Consulta</button>
+ <span id="context-autofill-msg" style="font-size:12px;color:#22443d;"></span>
+ </div>
+ <div id="autofill-indicator" style="display:none; margin-top:8px; padding:8px 12px; background:#ebf8ef; border:1px solid #b6dfc0; border-radius:6px; font-size:12px; color:#1f5f2f;">
+ <strong>Datos pre-cargados desde consulta previa.</strong> Los campos de identidad, diagnóstico y antecedentes se llenaron automáticamente para evitar re-captura.
+ </div>
+ {% if patient_context and patient_context.suggestions %}
+ <div class="dynamic" style="margin-top:10px;">
+ <label>Sugerencias clínicas detectadas</label>
+ <div style="font-size:12px;color:#2b3f39;">
+ Procedimiento: <strong>{{ patient_context.suggestions.procedimiento_text or "N/E" }}</strong> |
+ Cirujano: <strong>{{ patient_context.suggestions.cirujano_text or "N/E" }}</strong> |
+ Fecha cirugía: <strong>{{ patient_context.suggestions.fecha_cirugia or "N/E" }}</strong>
+ </div>
+ </div>
+ {% endif %}
+ </div>
 
-            <div class="card">
-                <div class="grid">
-                    <div>
-                        <label>Guardrail de episodio activo previo</label>
-                        <select name="cerrar_activa_previa">
-                            <option value="NO" {% if (prefill.cerrar_activa_previa or 'NO') == 'NO' %}selected{% endif %}>NO</option>
-                            <option value="SI" {% if prefill.cerrar_activa_previa == 'SI' %}selected{% endif %}>SI</option>
-                        </select>
-                    </div>
-                    <div class="w2">
-                        <label>Motivo de cierre forzado previo (si aplica)</label>
-                        <input type="text" name="motivo_cierre_previo" value="{{ prefill.motivo_cierre_previo or '' }}" placeholder="Ej. Reingreso por nuevo evento clínico">
-                    </div>
-                </div>
-                <div class="row-actions" style="margin-top:8px;">
-                    <button type="button" class="btn btn-dorado" id="btn-precheck-ingreso">Precheck episodio activo</button>
-                    <span id="precheck-ingreso-msg" style="font-size:12px;color:#22443d;"></span>
-                </div>
-            </div>
+ <div class="card">
+ <div class="grid">
+ <div>
+ <label>Guardrail de episodio activo previo</label>
+ <select name="cerrar_activa_previa">
+ <option value="NO" {% if (prefill.cerrar_activa_previa or 'NO') == 'NO' %}selected{% endif %}>NO</option>
+ <option value="SI" {% if prefill.cerrar_activa_previa == 'SI' %}selected{% endif %}>SI</option>
+ </select>
+ </div>
+ <div class="w2">
+ <label>Motivo de cierre forzado previo (si aplica)</label>
+ <input type="text" name="motivo_cierre_previo" value="{{ prefill.motivo_cierre_previo or '' }}" placeholder="Ej. Reingreso por nuevo evento clínico">
+ </div>
+ </div>
+ <div class="row-actions" style="margin-top:8px;">
+ <button type="button" class="btn btn-dorado" id="btn-precheck-ingreso">Precheck episodio activo</button>
+ <span id="precheck-ingreso-msg" style="font-size:12px;color:#22443d;"></span>
+ </div>
+ </div>
 
-            <div class="card">
-                <div class="grid">
-                    <div>
-                        <label>Consulta ID</label>
-                        <input type="number" name="consulta_id" value="{{ prefill.consulta_id }}" readonly>
-                    </div>
-                    <div>
-                        <label>Fecha de ingreso</label>
-                        <input type="date" name="fecha_ingreso" value="{{ prefill.fecha_ingreso }}">
-                    </div>
-                    <div>
-                        <label>Cama</label>
-                        <input type="text" name="cama" value="{{ prefill.cama }}" required>
-                    </div>
-                    <div>
-                        <label>Nombre completo</label>
-                        <input type="text" name="nombre_completo" value="{{ prefill.nombre_completo }}" required>
-                    </div>
-                    <div>
-                        <label>NSS</label>
-                        <input type="text" name="nss" value="{{ prefill.nss }}" required maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 dígitos">
-                    </div>
-                    <div>
-                        <label>Agregado médico</label>
-                        <input type="text" name="agregado_medico" value="{{ prefill.agregado_medico }}" required>
-                    </div>
-                    <div>
-                        <label>Médico a cargo del paciente</label>
-                        <input type="text" name="medico_a_cargo" value="{{ prefill.medico_a_cargo }}" required>
-                    </div>
-                    <div>
-                        <label>Edad</label>
-                        <input type="number" name="edad" value="{{ prefill.edad }}" min="0" max="120" required>
-                    </div>
-                    <div>
-                        <label>Sexo</label>
-                        <select name="sexo" required>
-                            {% for sx in sexos %}
-                            <option value="{{ sx }}" {% if prefill.sexo == sx %}selected{% endif %}>{{ sx }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="w2">
-                        <label>Diagnóstico</label>
-                        <input type="text" name="diagnostico" value="{{ prefill.diagnostico }}" required>
-                    </div>
-                    <div>
-                        <label>HGZ de envío</label>
-                        <input type="text" name="hgz_envio" value="{{ prefill.hgz_envio }}" required>
-                    </div>
-                    <div>
-                        <label>Estatus clínico</label>
-                        <select name="estatus_detalle" required>
-                            {% for st in estados_clinicos %}
-                            <option value="{{ st }}" {% if prefill.estatus_detalle == st %}selected{% endif %}>{{ st }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Días de hospitalización</label>
-                        <input type="number" name="dias_hospitalizacion" value="{{ prefill.dias_hospitalizacion }}" min="0" required>
-                    </div>
-                    <div>
-                        <label>Días posquirúrgicos</label>
-                        <input type="number" name="dias_postquirurgicos" value="{{ prefill.dias_postquirurgicos }}" min="0" required>
-                    </div>
-                    <div>
-                        <label>Incapacidad</label>
-                        <select name="incapacidad" id="incapacidad">
-                            {% for yn in yes_no %}
-                            <option value="{{ yn }}" {% if prefill.incapacidad == yn %}selected{% endif %}>{{ yn }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div id="incapacidad_emitida_box">
-                        <label>Incapacidad emitida</label>
-                        <select name="incapacidad_emitida">
-                            {% for yn in yes_no %}
-                            <option value="{{ yn }}" {% if prefill.incapacidad_emitida == yn %}selected{% endif %}>{{ yn }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
+ <div class="card">
+ <div class="grid">
+ <div>
+ <label>Consulta ID</label>
+ <input type="number" name="consulta_id" value="{{ prefill.consulta_id }}" readonly>
+ </div>
+ <div>
+ <label>Fecha de ingreso</label>
+ <input type="date" name="fecha_ingreso" value="{{ prefill.fecha_ingreso }}">
+ </div>
+ <div>
+ <label>Cama</label>
+ <input type="text" name="cama" value="{{ prefill.cama }}" required>
+ </div>
+ <div>
+ <label>Nombre completo</label>
+ <input type="text" name="nombre_completo" value="{{ prefill.nombre_completo }}" required>
+ </div>
+ <div>
+ <label>NSS</label>
+ <input type="text" name="nss" value="{{ prefill.nss }}" required maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 dígitos">
+ </div>
+ <div>
+ <label>Agregado médico</label>
+ <input type="text" name="agregado_medico" value="{{ prefill.agregado_medico }}" required>
+ </div>
+ <div>
+ <label>Médico a cargo del paciente</label>
+ <input type="text" name="medico_a_cargo" value="{{ prefill.medico_a_cargo }}" required>
+ </div>
+ <div>
+ <label>Edad</label>
+ <input type="number" name="edad" value="{{ prefill.edad }}" min="0" max="120" required>
+ </div>
+ <div>
+ <label>Sexo</label>
+ <select name="sexo" required>
+ {% for sx in sexos %}
+ <option value="{{ sx }}" {% if prefill.sexo == sx %}selected{% endif %}>{{ sx }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="w2">
+ <label>Diagnóstico</label>
+ <input type="text" name="diagnostico" value="{{ prefill.diagnostico }}" required>
+ </div>
+ <div>
+ <label>HGZ de envío</label>
+ <input type="text" name="hgz_envio" value="{{ prefill.hgz_envio }}" required>
+ </div>
+ <div>
+ <label>Estatus clínico</label>
+ <select name="estatus_detalle" required>
+ {% for st in estados_clinicos %}
+ <option value="{{ st }}" {% if prefill.estatus_detalle == st %}selected{% endif %}>{{ st }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div>
+ <label>Días de hospitalización</label>
+ <input type="number" name="dias_hospitalizacion" value="{{ prefill.dias_hospitalizacion }}" min="0" required>
+ </div>
+ <div>
+ <label>Días posquirúrgicos</label>
+ <input type="number" name="dias_postquirurgicos" value="{{ prefill.dias_postquirurgicos }}" min="0" required>
+ </div>
+ <div>
+ <label>Incapacidad</label>
+ <select name="incapacidad" id="incapacidad">
+ {% for yn in yes_no %}
+ <option value="{{ yn }}" {% if prefill.incapacidad == yn %}selected{% endif %}>{{ yn }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div id="incapacidad_emitida_box">
+ <label>Incapacidad emitida</label>
+ <select name="incapacidad_emitida">
+ {% for yn in yes_no %}
+ <option value="{{ yn }}" {% if prefill.incapacidad_emitida == yn %}selected{% endif %}>{{ yn }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ </div>
+ </div>
 
-            <div class="card">
-                <div class="grid">
-                    <div>
-                        <label>Programado</label>
-                        <select name="programado" id="programado">
-                            {% for yn in yes_no %}
-                            <option value="{{ yn }}" {% if prefill.programado == yn %}selected{% endif %}>{{ yn }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Urgencia</label>
-                        <select name="urgencia" id="urgencia">
-                            {% for yn in yes_no %}
-                            <option value="{{ yn }}" {% if prefill.urgencia == yn %}selected{% endif %}>{{ yn }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label>UCI</label>
-                        <select name="uci">
-                            {% for yn in yes_no %}
-                            <option value="{{ yn }}" {% if prefill.uci == yn %}selected{% endif %}>{{ yn }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Estatus global</label>
-                        <select name="estatus">
-                            {% for st in estatus_global %}
-                            <option value="{{ st }}" {% if prefill.estatus == st %}selected{% endif %}>{{ st }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
+ <div class="card">
+ <div class="grid">
+ <div>
+ <label>Programado</label>
+ <select name="programado" id="programado">
+ {% for yn in yes_no %}
+ <option value="{{ yn }}" {% if prefill.programado == yn %}selected{% endif %}>{{ yn }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div>
+ <label>Urgencia</label>
+ <select name="urgencia" id="urgencia">
+ {% for yn in yes_no %}
+ <option value="{{ yn }}" {% if prefill.urgencia == yn %}selected{% endif %}>{{ yn }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div>
+ <label>UCI</label>
+ <select name="uci">
+ {% for yn in yes_no %}
+ <option value="{{ yn }}" {% if prefill.uci == yn %}selected{% endif %}>{{ yn }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div>
+ <label>Estatus global</label>
+ <select name="estatus">
+ {% for st in estatus_global %}
+ <option value="{{ st }}" {% if prefill.estatus == st %}selected{% endif %}>{{ st }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ </div>
 
-                <div id="programado_box" class="dynamic" style="margin-top:10px;">
-                    <div class="grid">
-                        <div>
-                            <label>Médico programado</label>
-                            <input type="text" name="medico_programado" value="{{ prefill.medico_programado }}">
-                        </div>
-                        <div>
-                            <label>Turno programado</label>
-                            <select name="turno_programado">
-                                {% for t in turnos %}
-                                <option value="{{ t }}" {% if prefill.turno_programado == t %}selected{% endif %}>{{ t }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
+ <div id="programado_box" class="dynamic" style="margin-top:10px;">
+ <div class="grid">
+ <div>
+ <label>Médico programado</label>
+ <input type="text" name="medico_programado" value="{{ prefill.medico_programado }}">
+ </div>
+ <div>
+ <label>Turno programado</label>
+ <select name="turno_programado">
+ {% for t in turnos %}
+ <option value="{{ t }}" {% if prefill.turno_programado == t %}selected{% endif %}>{{ t }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ </div>
+ </div>
 
-                <div id="urgencia_box" class="dynamic" style="margin-top:10px;">
-                    <label>Tipo de urgencia</label>
-                    <select name="urgencia_tipo">
-                        <option value="">Seleccione</option>
-                        {% for ut in urgencia_tipos %}
-                        <option value="{{ ut }}" {% if prefill.urgencia_tipo == ut %}selected{% endif %}>{{ ut }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
+ <div id="urgencia_box" class="dynamic" style="margin-top:10px;">
+ <label>Tipo de urgencia</label>
+ <select name="urgencia_tipo">
+ <option value="">Seleccione</option>
+ {% for ut in urgencia_tipos %}
+ <option value="{{ ut }}" {% if prefill.urgencia_tipo == ut %}selected{% endif %}>{{ ut }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ </div>
 
-            <div class="card">
-                <div class="grid">
-                    <div>
-                        <label>Servicio</label>
-                        <input type="text" name="servicio" value="{{ prefill.servicio }}">
-                    </div>
-                    <div>
-                        <label>Motivo</label>
-                        <input type="text" name="motivo" value="{{ prefill.motivo }}">
-                    </div>
-                    <div>
-                        <label>Fecha de egreso (opcional)</label>
-                        <input type="date" name="fecha_egreso" value="{{ prefill.fecha_egreso }}">
-                    </div>
-                    <div class="w2">
-                        <label>Observaciones</label>
-                        <textarea name="observaciones">{{ prefill.observaciones }}</textarea>
-                    </div>
-                </div>
-            </div>
+ <div class="card">
+ <div class="grid">
+ <div>
+ <label>Servicio</label>
+ <input type="text" name="servicio" value="{{ prefill.servicio }}">
+ </div>
+ <div>
+ <label>Motivo</label>
+ <input type="text" name="motivo" value="{{ prefill.motivo }}">
+ </div>
+ <div>
+ <label>Fecha de egreso (opcional)</label>
+ <input type="date" name="fecha_egreso" value="{{ prefill.fecha_egreso }}">
+ </div>
+ <div class="w2">
+ <label>Observaciones</label>
+ <textarea name="observaciones">{{ prefill.observaciones }}</textarea>
+ </div>
+ </div>
+ </div>
 
-            <details class="card collapsible-card" id="preop-card" open>
-                <summary>Ingreso Urologia — Nota de ingreso y prequirurgica (Urgencias / Programado)</summary>
-                <div class="grid">
-                    <div>
-                        <label>Activar captura prequirúrgica</label>
-                        <label style="display:flex;gap:8px;align-items:center;font-weight:600;">
-                            <input type="checkbox" name="preop__enabled" value="SI" {% if preop_prefill.get('preop__enabled') == 'SI' %}checked{% endif %} style="width:auto;">
-                            Guardar como nota de ingreso/prequirúrgica
-                        </label>
-                    </div>
-                    <div>
-                        <label>Hora de ingreso</label>
-                        <input type="text" name="preop__hora_ingreso" value="{{ preop_prefill.get('preop__hora_ingreso', '') }}" placeholder="HH:MM">
-                    </div>
-                    <div>
-                        <label>Afiliación</label>
-                        <input type="text" name="preop__afiliacion_text" value="{{ preop_prefill.get('preop__afiliacion_text', '') }}">
-                    </div>
-                    <div>
-                        <label>Servicio de entrada</label>
-                        <input type="text" name="preop__servicio_entrada" value="{{ preop_prefill.get('preop__servicio_entrada', '') }}">
-                    </div>
-                    <div>
-                        <label>Riesgo de caídas</label>
-                        <select name="preop__riesgo_caidas">
-                            <option value="">Seleccione</option>
-                            {% for rc in preop_riesgo_caidas %}
-                            <option value="{{ rc }}" {% if preop_prefill.get('preop__riesgo_caidas') == rc %}selected{% endif %}>{{ rc }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Diuresis 24 h (ml)</label>
-                        <input type="number" step="0.01" min="0" name="preop__diuresis_24h_ml" value="{{ preop_prefill.get('preop__diuresis_24h_ml', '') }}">
-                    </div>
-                    <div>
-                        <label>Urocultivo</label>
-                        <select name="preop__urocultivo_status">
-                            <option value="">Seleccione</option>
-                            {% for us in preop_urocultivo_status %}
-                            <option value="{{ us }}" {% if preop_prefill.get('preop__urocultivo_status') == us %}selected{% endif %}>{{ us }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="w3">
-                        <label>Residentes</label>
-                        <textarea name="preop__residentes_text">{{ preop_prefill.get('preop__residentes_text', '') }}</textarea>
-                    </div>
-                    <div class="w3">
-                        <label>Resumen de ingreso</label>
-                        <textarea name="preop__resumen_ingreso_text">{{ preop_prefill.get('preop__resumen_ingreso_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>AHF</label>
-                        <textarea name="preop__ahf_text">{{ preop_prefill.get('preop__ahf_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>APNP</label>
-                        <textarea name="preop__apnp_text">{{ preop_prefill.get('preop__apnp_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>APP</label>
-                        <textarea name="preop__app_text">{{ preop_prefill.get('preop__app_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>Alergias</label>
-                        <textarea name="preop__alergias_text">{{ preop_prefill.get('preop__alergias_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>Medicamentos crónicos</label>
-                        <textarea name="preop__meds_cronicos_text">{{ preop_prefill.get('preop__meds_cronicos_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>AQx</label>
-                        <textarea name="preop__aqx_text">{{ preop_prefill.get('preop__aqx_text', '') }}</textarea>
-                    </div>
-                    <div class="w3">
-                        <label>Padecimiento actual</label>
-                        <textarea name="preop__padecimiento_actual_text">{{ preop_prefill.get('preop__padecimiento_actual_text', '') }}</textarea>
-                    </div>
-                </div>
+ <details class="card collapsible-card" id="preop-card" open>
+ <summary>Ingreso Urologia — Nota de ingreso y prequirurgica (Urgencias / Programado)</summary>
+ <div class="grid">
+ <div>
+ <label>Activar captura prequirúrgica</label>
+ <label style="display:flex;gap:8px;align-items:center;font-weight:600;">
+ <input type="checkbox" name="preop__enabled" value="SI" {% if preop_prefill.get('preop__enabled') == 'SI' %}checked{% endif %} style="width:auto;">
+ Guardar como nota de ingreso/prequirúrgica
+ </label>
+ </div>
+ <div>
+ <label>Hora de ingreso</label>
+ <input type="text" name="preop__hora_ingreso" value="{{ preop_prefill.get('preop__hora_ingreso', '') }}" placeholder="HH:MM">
+ </div>
+ <div>
+ <label>Afiliación</label>
+ <input type="text" name="preop__afiliacion_text" value="{{ preop_prefill.get('preop__afiliacion_text', '') }}">
+ </div>
+ <div>
+ <label>Servicio de entrada</label>
+ <input type="text" name="preop__servicio_entrada" value="{{ preop_prefill.get('preop__servicio_entrada', '') }}">
+ </div>
+ <div>
+ <label>Riesgo de caídas</label>
+ <select name="preop__riesgo_caidas">
+ <option value="">Seleccione</option>
+ {% for rc in preop_riesgo_caidas %}
+ <option value="{{ rc }}" {% if preop_prefill.get('preop__riesgo_caidas') == rc %}selected{% endif %}>{{ rc }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div>
+ <label>Diuresis 24 h (ml)</label>
+ <input type="number" step="0.01" min="0" name="preop__diuresis_24h_ml" value="{{ preop_prefill.get('preop__diuresis_24h_ml', '') }}">
+ </div>
+ <div>
+ <label>Urocultivo</label>
+ <select name="preop__urocultivo_status">
+ <option value="">Seleccione</option>
+ {% for us in preop_urocultivo_status %}
+ <option value="{{ us }}" {% if preop_prefill.get('preop__urocultivo_status') == us %}selected{% endif %}>{{ us }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="w3">
+ <label>Residentes</label>
+ <textarea name="preop__residentes_text">{{ preop_prefill.get('preop__residentes_text', '') }}</textarea>
+ </div>
+ <div class="w3">
+ <label>Resumen de ingreso</label>
+ <textarea name="preop__resumen_ingreso_text">{{ preop_prefill.get('preop__resumen_ingreso_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>AHF</label>
+ <textarea name="preop__ahf_text">{{ preop_prefill.get('preop__ahf_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>APNP</label>
+ <textarea name="preop__apnp_text">{{ preop_prefill.get('preop__apnp_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>APP</label>
+ <textarea name="preop__app_text">{{ preop_prefill.get('preop__app_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>Alergias</label>
+ <textarea name="preop__alergias_text">{{ preop_prefill.get('preop__alergias_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>Medicamentos crónicos</label>
+ <textarea name="preop__meds_cronicos_text">{{ preop_prefill.get('preop__meds_cronicos_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>AQx</label>
+ <textarea name="preop__aqx_text">{{ preop_prefill.get('preop__aqx_text', '') }}</textarea>
+ </div>
+ <div class="w3">
+ <label>Padecimiento actual</label>
+ <textarea name="preop__padecimiento_actual_text">{{ preop_prefill.get('preop__padecimiento_actual_text', '') }}</textarea>
+ </div>
+ </div>
 
-                <div class="dynamic" style="margin-top:10px;">
-                    <label style="margin-bottom:8px;">Snapshot de signos vitales</label>
-                    <div class="grid">
-                        <div>
-                            <label>TA sistólica</label>
-                            <input type="number" min="0" name="preop__ta_sis" value="{{ preop_prefill.get('preop__ta_sis', '') }}">
-                        </div>
-                        <div>
-                            <label>TA diastólica</label>
-                            <input type="number" min="0" name="preop__ta_dia" value="{{ preop_prefill.get('preop__ta_dia', '') }}">
-                        </div>
-                        <div>
-                            <label>FC</label>
-                            <input type="number" min="0" name="preop__fc" value="{{ preop_prefill.get('preop__fc', '') }}">
-                        </div>
-                        <div>
-                            <label>FR</label>
-                            <input type="number" min="0" name="preop__fr" value="{{ preop_prefill.get('preop__fr', '') }}">
-                        </div>
-                        <div>
-                            <label>Temp (°C)</label>
-                            <input type="number" step="0.1" name="preop__temp_c" value="{{ preop_prefill.get('preop__temp_c', '') }}">
-                        </div>
-                        <div>
-                            <label>SatO2 (%)</label>
-                            <input type="number" step="0.1" min="0" name="preop__spo2" value="{{ preop_prefill.get('preop__spo2', '') }}">
-                        </div>
-                        <div>
-                            <label>Peso (kg)</label>
-                            <input type="number" step="0.01" min="0" name="preop__peso_kg" value="{{ preop_prefill.get('preop__peso_kg', '') }}">
-                        </div>
-                        <div>
-                            <label>Talla (m)</label>
-                            <input type="number" step="0.01" min="0" name="preop__talla_m" value="{{ preop_prefill.get('preop__talla_m', '') }}">
-                        </div>
-                        <div>
-                            <label>IMC</label>
-                            <input type="number" step="0.01" min="0" name="preop__imc" value="{{ preop_prefill.get('preop__imc', '') }}">
-                        </div>
-                    </div>
-                </div>
+ <div class="dynamic" style="margin-top:10px;">
+ <label style="margin-bottom:8px;">Snapshot de signos vitales</label>
+ <div class="grid">
+ <div>
+ <label>TA sistólica</label>
+ <input type="number" min="0" name="preop__ta_sis" value="{{ preop_prefill.get('preop__ta_sis', '') }}">
+ </div>
+ <div>
+ <label>TA diastólica</label>
+ <input type="number" min="0" name="preop__ta_dia" value="{{ preop_prefill.get('preop__ta_dia', '') }}">
+ </div>
+ <div>
+ <label>FC</label>
+ <input type="number" min="0" name="preop__fc" value="{{ preop_prefill.get('preop__fc', '') }}">
+ </div>
+ <div>
+ <label>FR</label>
+ <input type="number" min="0" name="preop__fr" value="{{ preop_prefill.get('preop__fr', '') }}">
+ </div>
+ <div>
+ <label>Temp (°C)</label>
+ <input type="number" step="0.1" name="preop__temp_c" value="{{ preop_prefill.get('preop__temp_c', '') }}">
+ </div>
+ <div>
+ <label>SatO2 (%)</label>
+ <input type="number" step="0.1" min="0" name="preop__spo2" value="{{ preop_prefill.get('preop__spo2', '') }}">
+ </div>
+ <div>
+ <label>Peso (kg)</label>
+ <input type="number" step="0.01" min="0" name="preop__peso_kg" value="{{ preop_prefill.get('preop__peso_kg', '') }}">
+ </div>
+ <div>
+ <label>Talla (m)</label>
+ <input type="number" step="0.01" min="0" name="preop__talla_m" value="{{ preop_prefill.get('preop__talla_m', '') }}">
+ </div>
+ <div>
+ <label>IMC</label>
+ <input type="number" step="0.01" min="0" name="preop__imc" value="{{ preop_prefill.get('preop__imc', '') }}">
+ </div>
+ </div>
+ </div>
 
-                <div class="grid" style="margin-top:10px;">
-                    <div class="w3">
-                        <label>Exploración física</label>
-                        <textarea name="preop__exploracion_fisica_text">{{ preop_prefill.get('preop__exploracion_fisica_text', '') }}</textarea>
-                    </div>
-                    <div class="w3">
-                        <label>Tacto rectal (opcional)</label>
-                        <textarea name="preop__tacto_rectal_text">{{ preop_prefill.get('preop__tacto_rectal_text', '') }}</textarea>
-                    </div>
-                    <div>
-                        <label>Estimación prostática (g)</label>
-                        <input type="number" step="0.01" min="0" name="preop__prostata_estimacion_g" value="{{ preop_prefill.get('preop__prostata_estimacion_g', '') }}">
-                    </div>
-                    <div>
-                        <label>Nódulo (%)</label>
-                        <input type="number" step="0.01" min="0" name="preop__nodulo_pct" value="{{ preop_prefill.get('preop__nodulo_pct', '') }}">
-                    </div>
-                    <div class="w3">
-                        <label>Laboratorios</label>
-                        <textarea name="preop__labs_text">{{ preop_prefill.get('preop__labs_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>Resultado de urocultivo</label>
-                        <textarea name="preop__urocultivo_result_text">{{ preop_prefill.get('preop__urocultivo_result_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>APE</label>
-                        <textarea name="preop__ape_text">{{ preop_prefill.get('preop__ape_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>Serie de APE (JSON opcional)</label>
-                        <textarea name="preop__ape_series_json">{{ preop_prefill.get('preop__ape_series_json', '') }}</textarea>
-                    </div>
-                    <div class="w3">
-                        <label>Imagenología</label>
-                        <textarea name="preop__imagenologia_text">{{ preop_prefill.get('preop__imagenologia_text', '') }}</textarea>
-                    </div>
-                    <div>
-                        <label>RMMP fecha</label>
-                        <input type="date" name="preop__rmmp_fecha" value="{{ preop_prefill.get('preop__rmmp_fecha', '') }}">
-                    </div>
-                    <div>
-                        <label>Volumen próstata (cc)</label>
-                        <input type="number" step="0.01" min="0" name="preop__prostata_volumen_cc" value="{{ preop_prefill.get('preop__prostata_volumen_cc', '') }}">
-                    </div>
-                    <div>
-                        <label>PIRADS máximo</label>
-                        <input type="number" min="0" name="preop__pirads_max" value="{{ preop_prefill.get('preop__pirads_max', '') }}">
-                    </div>
-                    <div>
-                        <label>RX tórax fecha</label>
-                        <input type="date" name="preop__rx_torax_fecha" value="{{ preop_prefill.get('preop__rx_torax_fecha', '') }}">
-                    </div>
-                </div>
+ <div class="grid" style="margin-top:10px;">
+ <div class="w3">
+ <label>Exploración física</label>
+ <textarea name="preop__exploracion_fisica_text">{{ preop_prefill.get('preop__exploracion_fisica_text', '') }}</textarea>
+ </div>
+ <div class="w3">
+ <label>Tacto rectal (opcional)</label>
+ <textarea name="preop__tacto_rectal_text">{{ preop_prefill.get('preop__tacto_rectal_text', '') }}</textarea>
+ </div>
+ <div>
+ <label>Estimación prostática (g)</label>
+ <input type="number" step="0.01" min="0" name="preop__prostata_estimacion_g" value="{{ preop_prefill.get('preop__prostata_estimacion_g', '') }}">
+ </div>
+ <div>
+ <label>Nódulo (%)</label>
+ <input type="number" step="0.01" min="0" name="preop__nodulo_pct" value="{{ preop_prefill.get('preop__nodulo_pct', '') }}">
+ </div>
+ <div class="w3">
+ <label>Laboratorios</label>
+ <textarea name="preop__labs_text">{{ preop_prefill.get('preop__labs_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>Resultado de urocultivo</label>
+ <textarea name="preop__urocultivo_result_text">{{ preop_prefill.get('preop__urocultivo_result_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>APE</label>
+ <textarea name="preop__ape_text">{{ preop_prefill.get('preop__ape_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>Serie de APE (JSON opcional)</label>
+ <textarea name="preop__ape_series_json">{{ preop_prefill.get('preop__ape_series_json', '') }}</textarea>
+ </div>
+ <div class="w3">
+ <label>Imagenología</label>
+ <textarea name="preop__imagenologia_text">{{ preop_prefill.get('preop__imagenologia_text', '') }}</textarea>
+ </div>
+ <div>
+ <label>RMMP fecha</label>
+ <input type="date" name="preop__rmmp_fecha" value="{{ preop_prefill.get('preop__rmmp_fecha', '') }}">
+ </div>
+ <div>
+ <label>Volumen próstata (cc)</label>
+ <input type="number" step="0.01" min="0" name="preop__prostata_volumen_cc" value="{{ preop_prefill.get('preop__prostata_volumen_cc', '') }}">
+ </div>
+ <div>
+ <label>PIRADS máximo</label>
+ <input type="number" min="0" name="preop__pirads_max" value="{{ preop_prefill.get('preop__pirads_max', '') }}">
+ </div>
+ <div>
+ <label>RX tórax fecha</label>
+ <input type="date" name="preop__rx_torax_fecha" value="{{ preop_prefill.get('preop__rx_torax_fecha', '') }}">
+ </div>
+ </div>
 
-                <div class="dynamic" style="margin-top:10px;">
-                    <label style="margin-bottom:8px;">Valoración preoperatoria</label>
-                    <div class="grid">
-                        <div class="w3">
-                            <label>Texto valoración preop</label>
-                            <textarea name="preop__valoracion_preop_text">{{ preop_prefill.get('preop__valoracion_preop_text', '') }}</textarea>
-                        </div>
-                        <div>
-                            <label>ASA</label>
-                            <input type="text" name="preop__asa" value="{{ preop_prefill.get('preop__asa', '') }}">
-                        </div>
-                        <div>
-                            <label>Goldman</label>
-                            <input type="text" name="preop__goldman" value="{{ preop_prefill.get('preop__goldman', '') }}">
-                        </div>
-                        <div>
-                            <label>Detsky</label>
-                            <input type="text" name="preop__detsky" value="{{ preop_prefill.get('preop__detsky', '') }}">
-                        </div>
-                        <div>
-                            <label>Lee</label>
-                            <input type="text" name="preop__lee" value="{{ preop_prefill.get('preop__lee', '') }}">
-                        </div>
-                        <div>
-                            <label>Caprini</label>
-                            <input type="text" name="preop__caprini" value="{{ preop_prefill.get('preop__caprini', '') }}">
-                        </div>
-                        <div>
-                            <label>Apto quirúrgico</label>
-                            <select name="preop__apto_qx_bool">
-                                {% for aq in preop_apto_qx %}
-                                <option value="{{ aq }}" {% if preop_prefill.get('preop__apto_qx_bool') == aq %}selected{% endif %}>{{ aq }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="w2">
-                            <label>VPO</label>
-                            <textarea name="preop__vpo_text">{{ preop_prefill.get('preop__vpo_text', '') }}</textarea>
-                        </div>
-                    </div>
-                </div>
+ <div class="dynamic" style="margin-top:10px;">
+ <label style="margin-bottom:8px;">Valoración preoperatoria</label>
+ <div class="grid">
+ <div class="w3">
+ <label>Texto valoración preop</label>
+ <textarea name="preop__valoracion_preop_text">{{ preop_prefill.get('preop__valoracion_preop_text', '') }}</textarea>
+ </div>
+ <div>
+ <label>ASA</label>
+ <input type="text" name="preop__asa" value="{{ preop_prefill.get('preop__asa', '') }}">
+ </div>
+ <div>
+ <label>Goldman</label>
+ <input type="text" name="preop__goldman" value="{{ preop_prefill.get('preop__goldman', '') }}">
+ </div>
+ <div>
+ <label>Detsky</label>
+ <input type="text" name="preop__detsky" value="{{ preop_prefill.get('preop__detsky', '') }}">
+ </div>
+ <div>
+ <label>Lee</label>
+ <input type="text" name="preop__lee" value="{{ preop_prefill.get('preop__lee', '') }}">
+ </div>
+ <div>
+ <label>Caprini</label>
+ <input type="text" name="preop__caprini" value="{{ preop_prefill.get('preop__caprini', '') }}">
+ </div>
+ <div>
+ <label>Apto quirúrgico</label>
+ <select name="preop__apto_qx_bool">
+ {% for aq in preop_apto_qx %}
+ <option value="{{ aq }}" {% if preop_prefill.get('preop__apto_qx_bool') == aq %}selected{% endif %}>{{ aq }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="w2">
+ <label>VPO</label>
+ <textarea name="preop__vpo_text">{{ preop_prefill.get('preop__vpo_text', '') }}</textarea>
+ </div>
+ </div>
+ </div>
 
-                <div class="grid" style="margin-top:10px;">
-                    <div class="w2">
-                        <label>Diagnóstico preoperatorio</label>
-                        <textarea name="preop__diagnostico_preop">{{ preop_prefill.get('preop__diagnostico_preop', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>Procedimiento</label>
-                        <textarea name="preop__procedimiento_text">{{ preop_prefill.get('preop__procedimiento_text', '') }}</textarea>
-                    </div>
-                    <div>
-                        <label>Tipo de procedimiento</label>
-                        <input type="text" name="preop__tipo_procedimiento" value="{{ preop_prefill.get('preop__tipo_procedimiento', '') }}">
-                    </div>
-                    <div>
-                        <label>Fecha cirugía</label>
-                        <input type="date" name="preop__fecha_cirugia" value="{{ preop_prefill.get('preop__fecha_cirugia', '') }}">
-                    </div>
-                    <div>
-                        <label>Cirujano</label>
-                        <input type="text" name="preop__cirujano_text" value="{{ preop_prefill.get('preop__cirujano_text', '') }}">
-                    </div>
-                    <div class="w2">
-                        <label>Pronóstico</label>
-                        <textarea name="preop__pronostico_text">{{ preop_prefill.get('preop__pronostico_text', '') }}</textarea>
-                    </div>
-                    <div class="w3">
-                        <label>Indicaciones preoperatorias</label>
-                        <textarea name="preop__indicaciones_preop_text">{{ preop_prefill.get('preop__indicaciones_preop_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>Detalle incapacidad</label>
-                        <textarea name="preop__incapacidad_detalle_text">{{ preop_prefill.get('preop__incapacidad_detalle_text', '') }}</textarea>
-                    </div>
-                    <div class="w2">
-                        <label>Firmas (JSON)</label>
-                        <textarea name="preop__firmas_json">{{ preop_prefill.get('preop__firmas_json', '') }}</textarea>
-                    </div>
-                </div>
-            </details>
+ <div class="grid" style="margin-top:10px;">
+ <div class="w2">
+ <label>Diagnóstico preoperatorio</label>
+ <textarea name="preop__diagnostico_preop">{{ preop_prefill.get('preop__diagnostico_preop', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>Procedimiento</label>
+ <textarea name="preop__procedimiento_text">{{ preop_prefill.get('preop__procedimiento_text', '') }}</textarea>
+ </div>
+ <div>
+ <label>Tipo de procedimiento</label>
+ <input type="text" name="preop__tipo_procedimiento" value="{{ preop_prefill.get('preop__tipo_procedimiento', '') }}">
+ </div>
+ <div>
+ <label>Fecha cirugía</label>
+ <input type="date" name="preop__fecha_cirugia" value="{{ preop_prefill.get('preop__fecha_cirugia', '') }}">
+ </div>
+ <div>
+ <label>Cirujano</label>
+ <input type="text" name="preop__cirujano_text" value="{{ preop_prefill.get('preop__cirujano_text', '') }}">
+ </div>
+ <div class="w2">
+ <label>Pronóstico</label>
+ <textarea name="preop__pronostico_text">{{ preop_prefill.get('preop__pronostico_text', '') }}</textarea>
+ </div>
+ <div class="w3">
+ <label>Indicaciones preoperatorias</label>
+ <textarea name="preop__indicaciones_preop_text">{{ preop_prefill.get('preop__indicaciones_preop_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>Detalle incapacidad</label>
+ <textarea name="preop__incapacidad_detalle_text">{{ preop_prefill.get('preop__incapacidad_detalle_text', '') }}</textarea>
+ </div>
+ <div class="w2">
+ <label>Firmas (JSON)</label>
+ <textarea name="preop__firmas_json">{{ preop_prefill.get('preop__firmas_json', '') }}</textarea>
+ </div>
+ </div>
+ </details>
 
-            <div class="row-actions">
-                <button type="submit" class="btn">Guardar ingreso hospitalario</button>
-                {% if hospitalizacion_id %}
-                <a href="/hospitalizacion/ingreso/docx/{{ hospitalizacion_id }}" class="btn" style="display:inline-flex;align-items:center;gap:6px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                    Exportar Ingreso (DOC)
-                </a>
-                {% endif %}
-                <button type="button" class="btn" id="btnImprimirIngreso" onclick="imprimirIngreso()" style="display:inline-flex;align-items:center;gap:6px;background:#0d47a1;color:#fff;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                    Imprimir Formato
-                </button>
-                <a href="/hospitalizacion" class="btn btn-dorado">Volver</a>
-            </div>
-        </form>
-    </div>
+ <div class="row-actions">
+ <button type="submit" class="btn">Guardar ingreso hospitalario</button>
+ {% if hospitalizacion_id %}
+ <a href="/hospitalizacion/ingreso/docx/{{ hospitalizacion_id }}" class="btn" style="display:inline-flex;align-items:center;gap:6px;">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+ Exportar Ingreso (DOC)
+ </a>
+ {% endif %}
+ <button type="button" class="btn" id="btnImprimirIngreso" onclick="imprimirIngreso()" style="display:inline-flex;align-items:center;gap:6px;background:#0d47a1;color:#fff;">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+ Imprimir Formato
+ </button>
+ <a href="/hospitalizacion" class="btn btn-dorado">Volver</a>
+ </div>
+ </form>
+ </div>
 
-    <script>
-        (function () {
-            const programado = document.getElementById('programado');
-            const urgencia = document.getElementById('urgencia');
-            const incapacidad = document.getElementById('incapacidad');
-            const consultaIdInput = document.querySelector('input[name="consulta_id"]');
-            const nssInput = document.querySelector('input[name="nss"]');
-            const curpInput = document.querySelector('input[name="curp"]');
-            const nombreInput = document.querySelector('input[name="nombre_completo"]');
-            const precheckBtn = document.getElementById('btn-precheck-ingreso');
-            const precheckMsg = document.getElementById('precheck-ingreso-msg');
-            const contextBtn = document.getElementById('btn-context-autofill');
-            const contextMsg = document.getElementById('context-autofill-msg');
-            const programadoBox = document.getElementById('programado_box');
-            const urgenciaBox = document.getElementById('urgencia_box');
-            const incapacidadEmitidaBox = document.getElementById('incapacidad_emitida_box');
+ <script>
+ (function () {
+ const programado = document.getElementById('programado');
+ const urgencia = document.getElementById('urgencia');
+ const incapacidad = document.getElementById('incapacidad');
+ const consultaIdInput = document.querySelector('input[name="consulta_id"]');
+ const nssInput = document.querySelector('input[name="nss"]');
+ const curpInput = document.querySelector('input[name="curp"]');
+ const nombreInput = document.querySelector('input[name="nombre_completo"]');
+ const precheckBtn = document.getElementById('btn-precheck-ingreso');
+ const precheckMsg = document.getElementById('precheck-ingreso-msg');
+ const contextBtn = document.getElementById('btn-context-autofill');
+ const contextMsg = document.getElementById('context-autofill-msg');
+ const programadoBox = document.getElementById('programado_box');
+ const urgenciaBox = document.getElementById('urgencia_box');
+ const incapacidadEmitidaBox = document.getElementById('incapacidad_emitida_box');
 
-            function toggleBlocks() {
-                programadoBox.style.display = (programado.value === 'SI') ? 'block' : 'none';
-                urgenciaBox.style.display = (urgencia.value === 'SI') ? 'block' : 'none';
-                incapacidadEmitidaBox.style.display = (incapacidad.value === 'SI') ? 'block' : 'none';
-            }
+ function toggleBlocks() {
+ programadoBox.style.display = (programado.value === 'SI') ? 'block' : 'none';
+ urgenciaBox.style.display = (urgencia.value === 'SI') ? 'block' : 'none';
+ incapacidadEmitidaBox.style.display = (incapacidad.value === 'SI') ? 'block' : 'none';
+ }
 
-            programado.addEventListener('change', toggleBlocks);
-            urgencia.addEventListener('change', toggleBlocks);
-            incapacidad.addEventListener('change', toggleBlocks);
-            toggleBlocks();
+ programado.addEventListener('change', toggleBlocks);
+ urgencia.addEventListener('change', toggleBlocks);
+ incapacidad.addEventListener('change', toggleBlocks);
+ toggleBlocks();
 
-            if (precheckBtn) {
-                precheckBtn.addEventListener('click', async function () {
-                    try {
-                        const consultaId = (consultaIdInput && consultaIdInput.value) ? consultaIdInput.value : '';
-                        const nss = (nssInput && nssInput.value) ? nssInput.value : '';
-                        const nombre = (nombreInput && nombreInput.value) ? nombreInput.value : '';
-                        const params = new URLSearchParams();
-                        if (consultaId) params.set('consulta_id', consultaId);
-                        if (nss) params.set('nss', nss);
-                        if (nombre) params.set('nombre', nombre);
-                        const r = await fetch('/api/hospitalizacion/precheck-ingreso?' + params.toString(), {credentials: 'same-origin'});
-                        const data = await r.json();
-                        if (!r.ok || !data || !data.ok) {
-                            precheckMsg.textContent = (data && data.error) ? data.error : 'No se pudo validar precheck.';
-                            precheckMsg.style.color = '#8d1b1b';
-                            return;
-                        }
-                        if (data.has_active_episode && data.active_episode) {
-                            precheckMsg.textContent = 'Activo detectado: ID ' + data.active_episode.hospitalizacion_id + ', cama ' + (data.active_episode.cama || 'N/E') + '. Si procede, activa cierre forzado previo.';
-                            precheckMsg.style.color = '#8d5b00';
-                        } else {
-                            precheckMsg.textContent = 'Sin episodios activos para este paciente/consulta.';
-                            precheckMsg.style.color = '#1f5f2f';
-                        }
-                    } catch (e) {
-                        precheckMsg.textContent = 'Error de comunicación en precheck.';
-                        precheckMsg.style.color = '#8d1b1b';
-                    }
-                });
-            }
+ if (precheckBtn) {
+ precheckBtn.addEventListener('click', async function () {
+ try {
+ const consultaId = (consultaIdInput && consultaIdInput.value) ? consultaIdInput.value : '';
+ const nss = (nssInput && nssInput.value) ? nssInput.value : '';
+ const nombre = (nombreInput && nombreInput.value) ? nombreInput.value : '';
+ const params = new URLSearchParams();
+ if (consultaId) params.set('consulta_id', consultaId);
+ if (nss) params.set('nss', nss);
+ if (nombre) params.set('nombre', nombre);
+ const r = await fetch('/api/hospitalizacion/precheck-ingreso?' + params.toString(), {credentials: 'same-origin'});
+ const data = await r.json();
+ if (!r.ok || !data || !data.ok) {
+ precheckMsg.textContent = (data && data.error) ? data.error : 'No se pudo validar precheck.';
+ precheckMsg.style.color = '#8d1b1b';
+ return;
+ }
+ if (data.has_active_episode && data.active_episode) {
+ precheckMsg.textContent = 'Activo detectado: ID ' + data.active_episode.hospitalizacion_id + ', cama ' + (data.active_episode.cama || 'N/E') + '. Si procede, activa cierre forzado previo.';
+ precheckMsg.style.color = '#8d5b00';
+ } else {
+ precheckMsg.textContent = 'Sin episodios activos para este paciente/consulta.';
+ precheckMsg.style.color = '#1f5f2f';
+ }
+ } catch (e) {
+ precheckMsg.textContent = 'Error de comunicación en precheck.';
+ precheckMsg.style.color = '#8d1b1b';
+ }
+ });
+ }
 
-            async function autocompletarContexto(overwrite = false) {
-                if (!contextBtn) return;
-                try {
-                    const params = new URLSearchParams();
-                    const consultaId = (consultaIdInput && consultaIdInput.value) ? consultaIdInput.value : '';
-                    const nss = (nssInput && nssInput.value) ? nssInput.value : '';
-                    const curp = (curpInput && curpInput.value) ? curpInput.value : '';
-                    const hospitalizacionId = document.querySelector('input[name="hospitalizacion_id"]')?.value || '';
-                    if (consultaId) params.set('consulta_id', consultaId);
-                    if (nss) params.set('nss', nss);
-                    if (curp) params.set('curp', curp);
-                    if (hospitalizacionId) params.set('hospitalizacion_id', hospitalizacionId);
-                    const r = await fetch('/api/v1/patient/context?' + params.toString(), { credentials: 'same-origin' });
-                    const data = await r.json();
-                    if (!r.ok || !data || !data.ok) {
-                        contextMsg.textContent = (data && data.detail) ? data.detail : 'No se pudo autocompletar.';
-                        contextMsg.style.color = '#8d1b1b';
-                        return;
-                    }
-                    const prefill = data.prefill || {};
-                    const fields = Object.keys(prefill || {});
-                    let applied = 0;
-                    fields.forEach((name) => {
-                        const el = document.querySelector(`[name="${name}"]`);
-                        if (!el) return;
-                        const incoming = (prefill[name] ?? '').toString();
-                        if (!incoming) return;
-                        const current = (el.value || '').toString();
-                        if (!overwrite && current.trim() !== '') return;
-                        el.value = incoming;
-                        applied += 1;
-                    });
-                    toggleBlocks();
-                    contextMsg.textContent = `Contexto aplicado (${applied} campos). Datos pre-cargados desde la consulta.`;
-                    contextMsg.style.color = '#1f5f2f';
-                    if (applied > 0) {
-                        const indicator = document.getElementById('autofill-indicator');
-                        if (indicator) indicator.style.display = 'block';
-                    }
-                } catch (e) {
-                    contextMsg.textContent = 'Error de comunicación al autocompletar contexto.';
-                    contextMsg.style.color = '#8d1b1b';
-                }
-            }
+ async function autocompletarContexto(overwrite = false) {
+ if (!contextBtn) return;
+ try {
+ const params = new URLSearchParams();
+ const consultaId = (consultaIdInput && consultaIdInput.value) ? consultaIdInput.value : '';
+ const nss = (nssInput && nssInput.value) ? nssInput.value : '';
+ const curp = (curpInput && curpInput.value) ? curpInput.value : '';
+ const hospitalizacionId = document.querySelector('input[name="hospitalizacion_id"]')?.value || '';
+ if (consultaId) params.set('consulta_id', consultaId);
+ if (nss) params.set('nss', nss);
+ if (curp) params.set('curp', curp);
+ if (hospitalizacionId) params.set('hospitalizacion_id', hospitalizacionId);
+ const r = await fetch('/api/v1/patient/context?' + params.toString(), { credentials: 'same-origin' });
+ const data = await r.json();
+ if (!r.ok || !data || !data.ok) {
+ contextMsg.textContent = (data && data.detail) ? data.detail : 'No se pudo autocompletar.';
+ contextMsg.style.color = '#8d1b1b';
+ return;
+ }
+ const prefill = data.prefill || {};
+ const fields = Object.keys(prefill || {});
+ let applied = 0;
+ fields.forEach((name) => {
+ const el = document.querySelector(`[name="${name}"]`);
+ if (!el) return;
+ const incoming = (prefill[name] ?? '').toString();
+ if (!incoming) return;
+ const current = (el.value || '').toString();
+ if (!overwrite && current.trim() !== '') return;
+ el.value = incoming;
+ applied += 1;
+ });
+ toggleBlocks();
+ contextMsg.textContent = `Contexto aplicado (${applied} campos). Datos pre-cargados desde la consulta.`;
+ contextMsg.style.color = '#1f5f2f';
+ if (applied > 0) {
+ const indicator = document.getElementById('autofill-indicator');
+ if (indicator) indicator.style.display = 'block';
+ }
+ } catch (e) {
+ contextMsg.textContent = 'Error de comunicación al autocompletar contexto.';
+ contextMsg.style.color = '#8d1b1b';
+ }
+ }
 
-            if (contextBtn) {
-                contextBtn.addEventListener('click', () => {
-                    autocompletarContexto(false);
-                    autocompletarAntecedentes(false);
-                });
-            }
-            if ((consultaIdInput && consultaIdInput.value) || (nssInput && nssInput.value)) {
-                autocompletarContexto(false);
-                autocompletarAntecedentes(false);
-            }
+ if (contextBtn) {
+ contextBtn.addEventListener('click', () => {
+ autocompletarContexto(false);
+ autocompletarAntecedentes(false);
+ });
+ }
+ if ((consultaIdInput && consultaIdInput.value) || (nssInput && nssInput.value)) {
+ autocompletarContexto(false);
+ autocompletarAntecedentes(false);
+ }
 
-            /* ================================================================
-             * AUTOFILL ANTECEDENTES — Eliminación de re-captura
-             * Rellena automáticamente AHF, APP, AQX, alergias, toxicomanías,
-             * somatometría y exploración física desde la consulta previa.
-             * ================================================================ */
-            async function autocompletarAntecedentes(overwrite = false) {
-                try {
-                    const params = new URLSearchParams();
-                    const consultaId = (consultaIdInput && consultaIdInput.value) ? consultaIdInput.value : '';
-                    const nss = (nssInput && nssInput.value) ? nssInput.value : '';
-                    if (consultaId) params.set('consulta_id', consultaId);
-                    if (nss) params.set('nss', nss);
-                    if (!consultaId && !nss) return;
+ /* ================================================================
+ * AUTOFILL ANTECEDENTES — Eliminación de re-captura
+ * Rellena automáticamente AHF, APP, AQX, alergias, toxicomanías,
+ * somatometría y exploración física desde la consulta previa.
+ * ================================================================ */
+ async function autocompletarAntecedentes(overwrite = false) {
+ try {
+ const params = new URLSearchParams();
+ const consultaId = (consultaIdInput && consultaIdInput.value) ? consultaIdInput.value : '';
+ const nss = (nssInput && nssInput.value) ? nssInput.value : '';
+ if (consultaId) params.set('consulta_id', consultaId);
+ if (nss) params.set('nss', nss);
+ if (!consultaId && !nss) return;
 
-                    function cleanUrl(path) {
-                        try { return new URL(path, window.location.origin).href; } catch(_) { return path; }
-                    }
+ function cleanUrl(path) {
+ try { return new URL(path, window.location.origin).href; } catch(_) { return path; }
+ }
 
-                    const r = await fetch(cleanUrl('/api/patient/autofill?' + params.toString()));
-                    const data = await r.json();
-                    if (!r.ok || !data || !data.ok) return;
+ const r = await fetch(cleanUrl('/api/patient/autofill?' + params.toString()));
+ const data = await r.json();
+ if (!r.ok || !data || !data.ok) return;
 
-                    const ant = data.antecedentes || {};
-                    const som = data.somatometria || {};
-                    const clin = data.clinico || {};
-                    const somC = som.from_consulta || {};
-                    const somV = som.from_vitals || {};
+ const ant = data.antecedentes || {};
+ const som = data.somatometria || {};
+ const clin = data.clinico || {};
+ const somC = som.from_consulta || {};
+ const somV = som.from_vitals || {};
 
-                    // Mapeo: campo del formulario → valor del autofill
-                    const preopMap = {
-                        'preop__ahf_text': ant.ahf_text,
-                        'preop__apnp_text': ant.apnp_text,
-                        'preop__app_text': ant.app_text,
-                        'preop__alergias_text': ant.alergias_text,
-                        'preop__aqx_text': ant.aqx_text,
-                        'preop__meds_cronicos_text': ant.meds_cronicos_text,
-                        'preop__padecimiento_actual_text': clin.padecimiento_actual,
-                        'preop__exploracion_fisica_text': clin.exploracion_fisica,
-                        'preop__labs_text': clin.estudios_hallazgos,
-                        'preop__diagnostico_preop': clin.diagnostico_principal,
-                        // Somatometría: preferir vitals recientes, luego consulta
-                        'preop__peso_kg': somV.peso_kg || somC.peso,
-                        'preop__talla_m': somV.talla_m || somC.talla,
-                        'preop__imc': somV.imc || somC.imc,
-                        'preop__ta_sis': somV.ta_sis || (somC.ta ? somC.ta.split('/')[0] : ''),
-                        'preop__ta_dia': somV.ta_dia || (somC.ta ? somC.ta.split('/')[1] : ''),
-                        'preop__fc': somV.fc || somC.fc,
-                        'preop__temp_c': somV.temp_c || somC.temp,
-                    };
+ // Mapeo: campo del formulario → valor del autofill
+ const preopMap = {
+ 'preop__ahf_text': ant.ahf_text,
+ 'preop__apnp_text': ant.apnp_text,
+ 'preop__app_text': ant.app_text,
+ 'preop__alergias_text': ant.alergias_text,
+ 'preop__aqx_text': ant.aqx_text,
+ 'preop__meds_cronicos_text': ant.meds_cronicos_text,
+ 'preop__padecimiento_actual_text': clin.padecimiento_actual,
+ 'preop__exploracion_fisica_text': clin.exploracion_fisica,
+ 'preop__labs_text': clin.estudios_hallazgos,
+ 'preop__diagnostico_preop': clin.diagnostico_principal,
+ // Somatometría: preferir vitals recientes, luego consulta
+ 'preop__peso_kg': somV.peso_kg || somC.peso,
+ 'preop__talla_m': somV.talla_m || somC.talla,
+ 'preop__imc': somV.imc || somC.imc,
+ 'preop__ta_sis': somV.ta_sis || (somC.ta ? somC.ta.split('/')[0] : ''),
+ 'preop__ta_dia': somV.ta_dia || (somC.ta ? somC.ta.split('/')[1] : ''),
+ 'preop__fc': somV.fc || somC.fc,
+ 'preop__temp_c': somV.temp_c || somC.temp,
+ };
 
-                    let applied = 0;
-                    for (const [name, value] of Object.entries(preopMap)) {
-                        const el = document.querySelector(`[name="${name}"]`);
-                        if (!el) continue;
-                        const incoming = (value ?? '').toString().trim();
-                        if (!incoming) continue;
-                        const current = (el.value || '').toString().trim();
-                        if (!overwrite && current !== '') continue;
-                        el.value = incoming;
-                        applied += 1;
-                    }
+ let applied = 0;
+ for (const [name, value] of Object.entries(preopMap)) {
+ const el = document.querySelector(`[name="${name}"]`);
+ if (!el) continue;
+ const incoming = (value ?? '').toString().trim();
+ if (!incoming) continue;
+ const current = (el.value || '').toString().trim();
+ if (!overwrite && current !== '') continue;
+ el.value = incoming;
+ applied += 1;
+ }
 
-                    if (applied > 0) {
-                        const indicator = document.getElementById('autofill-indicator');
-                        if (indicator) {
-                            indicator.innerHTML = '<strong>Antecedentes y somatometría pre-cargados desde la consulta.</strong> Se rellenaron ' + applied + ' campos del ingreso preoperatorio automáticamente para evitar re-captura.';
-                            indicator.style.display = 'block';
-                        }
-                        // Auto-abrir seccion preop
-                        const preopCard = document.getElementById('preop-card');
-                        if (preopCard) preopCard.setAttribute('open', '');
-                    }
-                } catch (e) {
-                    console.warn('Autofill antecedentes error:', e);
-                }
-            }
+ if (applied > 0) {
+ const indicator = document.getElementById('autofill-indicator');
+ if (indicator) {
+ indicator.innerHTML = '<strong>Antecedentes y somatometría pre-cargados desde la consulta.</strong> Se rellenaron ' + applied + ' campos del ingreso preoperatorio automáticamente para evitar re-captura.';
+ indicator.style.display = 'block';
+ }
+ // Auto-abrir seccion preop
+ const preopCard = document.getElementById('preop-card');
+ if (preopCard) preopCard.setAttribute('open', '');
+ }
+ } catch (e) {
+ console.warn('Autofill antecedentes error:', e);
+ }
+ }
 
-            // Auto-abrir seccion preop si es programado
-            if (programado && programado.value === 'SI') {
-                const preopCard = document.getElementById('preop-card');
-                if (preopCard) preopCard.setAttribute('open', '');
-            }
-        })();
+ // Auto-abrir seccion preop si es programado
+ if (programado && programado.value === 'SI') {
+ const preopCard = document.getElementById('preop-card');
+ if (preopCard) preopCard.setAttribute('open', '');
+ }
+ })();
 
-        function imprimirIngreso() {
-            // Recolectar datos del formulario y abrir ventana de impresion
-            const form = document.getElementById('form-ingreso');
-            const data = new FormData(form);
-            const params = new URLSearchParams();
-            for (const [key, val] of data.entries()) {
-                if (typeof val === 'string') params.set(key, val);
-            }
-            window.open('/api/hospitalizacion/imprimir-ingreso?' + params.toString(), '_blank');
-        }
-    </script>
+ function imprimirIngreso() {
+ // Recolectar datos del formulario y abrir ventana de impresion
+ const form = document.getElementById('form-ingreso');
+ const data = new FormData(form);
+ const params = new URLSearchParams();
+ for (const [key, val] of data.entries()) {
+ if (typeof val === 'string') params.set(key, val);
+ }
+ window.open('/api/hospitalizacion/imprimir-ingreso?' + params.toString(), '_blank');
+ }
+ </script>
 <script src="/static/js/clinical_validation.js"></script>
 <script src="/static/js/patient_autofill.js"></script>
 </body>

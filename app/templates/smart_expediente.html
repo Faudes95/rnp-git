@@ -1,507 +1,507 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Expediente Inteligente - Urolog&iacute;a</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root { --v:#13322B; --d:#B38E5D; --bg:#f4f6f9; --ok:#2f8f63; --warn:#d4a017; --danger:#c0392b; --blue:#2980b9; }
-        *{box-sizing:border-box;}
-        body{font-family:'Montserrat',sans-serif;background:var(--bg);margin:0;padding:16px;font-size:13px;}
-        .container{max-width:1500px;margin:auto;}
-        .nav-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
-        .nav-chip{padding:7px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #cfd9d4;color:var(--v);background:#fff;text-decoration:none;}
-        .nav-chip.active{background:var(--d);border-color:#9e7a4c;}
+ <meta charset="UTF-8">
+ <title>Expediente Inteligente - Urolog&iacute;a</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root { --v:#0a3161; --d:#c82f3f; --bg:#f4f6f9; --ok:#2f8f63; --warn:#d4a017; --danger:#c0392b; --blue:#2980b9; }
+ *{box-sizing:border-box;}
+ body{font-family:'Montserrat',sans-serif;background:var(--bg);margin:0;padding:16px;font-size:13px;}
+ .container{max-width:1500px;margin:auto;}
+ .nav-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+ .nav-chip{padding:7px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #c7d9f7;color:var(--v);background:#fff;text-decoration:none;}
+ .nav-chip.active{background:var(--d);border-color:#aa2a3b;}
 
-        /* Patient Header */
-        .patient-header{background:var(--v);color:#fff;padding:18px 22px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
-        .ph-left h1{margin:0;font-size:22px;}
-        .ph-left .meta{font-size:13px;opacity:0.85;margin-top:4px;}
-        .ph-right{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
-        .ph-badge{background:rgba(255,255,255,0.15);padding:8px 14px;border-radius:8px;text-align:center;}
-        .ph-badge .val{font-size:20px;font-weight:800;}
-        .ph-badge .lbl{font-size:10px;text-transform:uppercase;opacity:0.7;}
-        .risk-bar{height:10px;border-radius:5px;background:#ffffff33;overflow:hidden;margin-top:4px;width:120px;}
-        .risk-fill{height:100%;border-radius:5px;}
+ /* Patient Header */
+ .patient-header{background:var(--v);color:#fff;padding:18px 22px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+ .ph-left h1{margin:0;font-size:22px;}
+ .ph-left .meta{font-size:13px;opacity:0.85;margin-top:4px;}
+ .ph-right{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+ .ph-badge{background:rgba(255,255,255,0.15);padding:8px 14px;border-radius:8px;text-align:center;}
+ .ph-badge .val{font-size:20px;font-weight:800;}
+ .ph-badge .lbl{font-size:10px;text-transform:uppercase;opacity:0.7;}
+ .risk-bar{height:10px;border-radius:5px;background:#ffffff33;overflow:hidden;margin-top:4px;width:120px;}
+ .risk-fill{height:100%;border-radius:5px;}
 
-        /* Profile tabs */
-        .profile-tabs{background:#fff;padding:8px 20px;border-bottom:3px solid var(--d);display:flex;gap:6px;flex-wrap:wrap;}
-        .p-tab{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;border:1px solid #dbe4df;color:#5f6d68;background:#fff;cursor:pointer;text-decoration:none;}
-        .p-tab.active{background:var(--v);color:#fff;border-color:var(--v);}
+ /* Profile tabs */
+ .profile-tabs{background:#fff;padding:8px 20px;border-bottom:3px solid var(--d);display:flex;gap:6px;flex-wrap:wrap;}
+ .p-tab{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;border:1px solid #d9e6fb;color:#5c76a6;background:#fff;cursor:pointer;text-decoration:none;}
+ .p-tab.active{background:var(--v);color:#fff;border-color:var(--v);}
 
-        /* Layout grid */
-        .layout{display:grid;grid-template-columns:340px 1fr;gap:0;background:#fff;border-radius:0 0 10px 10px;box-shadow:0 4px 16px rgba(0,0,0,0.08);min-height:600px;}
-        .sidebar{border-right:1px solid #e2e8e5;padding:16px;overflow-y:auto;max-height:85vh;}
-        .main-panel{padding:16px;overflow-y:auto;max-height:85vh;}
+ /* Layout grid */
+ .layout{display:grid;grid-template-columns:340px 1fr;gap:0;background:#fff;border-radius:0 0 10px 10px;box-shadow:0 4px 16px rgba(0,0,0,0.08);min-height:600px;}
+ .sidebar{border-right:1px solid #e2e8e5;padding:16px;overflow-y:auto;max-height:85vh;}
+ .main-panel{padding:16px;overflow-y:auto;max-height:85vh;}
 
-        /* Cards */
-        .s-section{margin-bottom:16px;}
-        .s-title{font-size:13px;font-weight:800;color:var(--v);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:1px solid #e2e8e5;padding-bottom:5px;}
-        .s-card{background:#fafcfb;border:1px solid #dbe4df;border-radius:8px;padding:10px;margin-bottom:8px;}
-        .s-card.alert{border-left:4px solid var(--danger);background:#fef7f7;}
-        .s-card.info{border-left:4px solid var(--blue);}
+ /* Cards */
+ .s-section{margin-bottom:16px;}
+ .s-title{font-size:13px;font-weight:800;color:var(--v);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;border-bottom:1px solid #e2e8e5;padding-bottom:5px;}
+ .s-card{background:#f7faff;border:1px solid #d9e6fb;border-radius:8px;padding:10px;margin-bottom:8px;}
+ .s-card.alert{border-left:4px solid var(--danger);background:#fef7f7;}
+ .s-card.info{border-left:4px solid var(--blue);}
 
-        /* Staging table */
-        .stage-table{width:100%;border-collapse:collapse;}
-        .stage-table td{padding:5px 8px;font-size:12px;border-bottom:1px solid #eef1ef;}
-        .stage-table td:first-child{font-weight:700;color:var(--v);width:40%;}
+ /* Staging table */
+ .stage-table{width:100%;border-collapse:collapse;}
+ .stage-table td{padding:5px 8px;font-size:12px;border-bottom:1px solid #eef1ef;}
+ .stage-table td:first-child{font-weight:700;color:var(--v);width:40%;}
 
-        /* Score bars */
-        .score-row{margin-bottom:10px;}
-        .score-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;}
-        .score-name{font-weight:700;color:var(--v);}
-        .score-val{font-weight:800;}
-        .score-bar{height:8px;background:#e2e8e5;border-radius:4px;overflow:hidden;}
-        .score-fill{height:100%;border-radius:4px;transition:width 0.5s;}
-        .score-label{font-size:10px;font-weight:700;margin-top:2px;}
+ /* Score bars */
+ .score-row{margin-bottom:10px;}
+ .score-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;}
+ .score-name{font-weight:700;color:var(--v);}
+ .score-val{font-weight:800;}
+ .score-bar{height:8px;background:#e2e8e5;border-radius:4px;overflow:hidden;}
+ .score-fill{height:100%;border-radius:4px;transition:width 0.5s;}
+ .score-label{font-size:10px;font-weight:700;margin-top:2px;}
 
-        /* Timeline */
-        .timeline{position:relative;padding-left:24px;}
-        .timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:#dbe4df;}
-        .tl-item{position:relative;margin-bottom:12px;padding-left:12px;}
-        .tl-dot{position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid var(--d);}
-        .tl-dot.CONSULTA{background:#3498db;}
-        .tl-dot.INGRESO{background:var(--warn);}
-        .tl-dot.CIRUGIA{background:var(--danger);}
-        .tl-dot.EGRESO{background:var(--ok);}
-        .tl-date{font-size:10px;color:#5f6d68;font-weight:700;}
-        .tl-title{font-size:12px;font-weight:700;color:var(--v);}
-        .tl-detail{font-size:11px;color:#5f6d68;}
+ /* Timeline */
+ .timeline{position:relative;padding-left:24px;}
+ .timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:#d9e6fb;}
+ .tl-item{position:relative;margin-bottom:12px;padding-left:12px;}
+ .tl-dot{position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid var(--d);}
+ .tl-dot.CONSULTA{background:#3498db;}
+ .tl-dot.INGRESO{background:var(--warn);}
+ .tl-dot.CIRUGIA{background:var(--danger);}
+ .tl-dot.EGRESO{background:var(--ok);}
+ .tl-date{font-size:10px;color:#5c76a6;font-weight:700;}
+ .tl-title{font-size:12px;font-weight:700;color:var(--v);}
+ .tl-detail{font-size:11px;color:#5c76a6;}
 
-        /* Charts area */
-        .chart-container{background:#fafcfb;border:1px solid #dbe4df;border-radius:8px;padding:14px;margin-bottom:14px;}
-        .chart-title{font-size:13px;font-weight:800;color:var(--v);margin-bottom:10px;}
-        canvas{width:100%!important;max-height:200px;}
+ /* Charts area */
+ .chart-container{background:#f7faff;border:1px solid #d9e6fb;border-radius:8px;padding:14px;margin-bottom:14px;}
+ .chart-title{font-size:13px;font-weight:800;color:var(--v);margin-bottom:10px;}
+ canvas{width:100%!important;max-height:200px;}
 
-        /* Surgical outcomes */
-        .outcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-        .outcome-item{font-size:12px;padding:4px 0;}
-        .outcome-item .olabel{color:#5f6d68;font-weight:700;}
-        .outcome-item .ovalue{color:var(--v);font-weight:800;}
+ /* Surgical outcomes */
+ .outcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+ .outcome-item{font-size:12px;padding:4px 0;}
+ .outcome-item .olabel{color:#5c76a6;font-weight:700;}
+ .outcome-item .ovalue{color:var(--v);font-weight:800;}
 
-        /* Comorbidities */
-        .comorb-item{display:flex;gap:8px;padding:4px 0;border-bottom:1px solid #f0f3f1;font-size:12px;}
-        .comorb-name{font-weight:700;color:var(--v);flex:1;}
-        .comorb-tx{color:#5f6d68;flex:1;}
+ /* Comorbidities */
+ .comorb-item{display:flex;gap:8px;padding:4px 0;border-bottom:1px solid #f0f3f1;font-size:12px;}
+ .comorb-name{font-weight:700;color:var(--v);flex:1;}
+ .comorb-tx{color:#5c76a6;flex:1;}
 
-        /* Alerts */
-        .alert-item{padding:6px 8px;margin-bottom:4px;border-radius:5px;font-size:11px;font-weight:700;}
-        .alert-item.ALTA,.alert-item.HIGH{background:#fdeaea;color:var(--danger);}
-        .alert-item.MEDIA,.alert-item.MEDIUM{background:#fff3e0;color:#e67e22;}
-        .alert-item.BAJA,.alert-item.LOW{background:#e8f5e9;color:var(--ok);}
+ /* Alerts */
+ .alert-item{padding:6px 8px;margin-bottom:4px;border-radius:5px;font-size:11px;font-weight:700;}
+ .alert-item.ALTA,.alert-item.HIGH{background:#fdeaea;color:var(--danger);}
+ .alert-item.MEDIA,.alert-item.MEDIUM{background:#fff3e0;color:#e67e22;}
+ .alert-item.BAJA,.alert-item.LOW{background:#e8f5e9;color:var(--ok);}
 
-        /* Device list */
-        .dev-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f3f1;font-size:12px;}
-        .dev-type{font-weight:700;color:var(--v);}
-        .dev-meta{color:#5f6d68;}
+ /* Device list */
+ .dev-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f3f1;font-size:12px;}
+ .dev-type{font-weight:700;color:var(--v);}
+ .dev-meta{color:#5c76a6;}
 
-        /* eGFR badge */
-        .egfr-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-weight:700;}
-        .egfr-badge.G1,.egfr-badge.G2{background:#e8f5e9;color:var(--ok);}
-        .egfr-badge.G3a,.egfr-badge.G3b{background:#fff3e0;color:#e67e22;}
-        .egfr-badge.G4,.egfr-badge.G5{background:#fdeaea;color:var(--danger);}
+ /* eGFR badge */
+ .egfr-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-weight:700;}
+ .egfr-badge.G1,.egfr-badge.G2{background:#e8f5e9;color:var(--ok);}
+ .egfr-badge.G3a,.egfr-badge.G3b{background:#fff3e0;color:#e67e22;}
+ .egfr-badge.G4,.egfr-badge.G5{background:#fdeaea;color:var(--danger);}
 
-        .btn{background:var(--v);color:#fff;padding:8px 14px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;text-decoration:none;display:inline-block;}
-        .btn.alt{background:var(--d);}
+ .btn{background:var(--v);color:#fff;padding:8px 14px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;text-decoration:none;display:inline-block;}
+ .btn.alt{background:var(--d);}
 
-        @media(max-width:1000px){
-            .layout{grid-template-columns:1fr;}
-            .sidebar{max-height:none;border-right:none;border-bottom:1px solid #e2e8e5;}
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+ @media(max-width:1000px){
+ .layout{grid-template-columns:1fr;}
+ .sidebar{max-height:none;border-right:none;border-bottom:1px solid #e2e8e5;}
+ }
+ </style>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 <div class="container">
-    <div class="nav-bar">
-        <a class="nav-chip" href="/">Menu</a>
-        <a class="nav-chip" href="/expediente">Expediente Clasico</a>
-        <a class="nav-chip" href="/ward-round">Pase de Visita</a>
-        <a class="nav-chip active" href="/expediente-smart?consulta_id={{ consulta_id }}">Smart Expediente</a>
-        <a class="nav-chip" href="/hospitalizacion">Hospitalizacion</a>
-    </div>
+ <div class="nav-bar">
+ <a class="nav-chip" href="/">Menu</a>
+ <a class="nav-chip" href="/expediente">Expediente Clasico</a>
+ <a class="nav-chip" href="/ward-round">Pase de Visita</a>
+ <a class="nav-chip active" href="/expediente-smart?consulta_id={{ consulta_id }}">Smart Expediente</a>
+ <a class="nav-chip" href="/hospitalizacion">Hospitalizacion</a>
+ </div>
 
-    {% if error %}
-    <div style="background:#fff;padding:40px;border-radius:10px;text-align:center;">
-        <h2 style="color:var(--danger);">{{ error }}</h2>
-        <a href="/expediente" class="btn" style="margin-top:16px;">Ir al buscador de expediente</a>
-    </div>
-    {% else %}
+ {% if error %}
+ <div style="background:#fff;padding:40px;border-radius:10px;text-align:center;">
+ <h2 style="color:var(--danger);">{{ error }}</h2>
+ <a href="/expediente" class="btn" style="margin-top:16px;">Ir al buscador de expediente</a>
+ </div>
+ {% else %}
 
-    <!-- PATIENT HEADER -->
-    <div class="patient-header">
-        <div class="ph-left">
-            <h1>{{ consulta.nombre or 'PACIENTE' }}</h1>
-            <div class="meta">
-                {{ consulta.edad or '?' }}a | {{ consulta.sexo or '?' }} | {{ consulta.tipo_sangre or '?' }} | NSS: {{ nss }} | CURP: {{ (consulta.curp or '?')[:10] }}...
-            </div>
-            <div class="meta" style="margin-top:4px;">
-                Dx: <strong>{{ (consulta.diagnostico or 'Sin diagnostico')[:60] }}</strong>
-                {% if consulta.pros_ecog %} | ECOG: <strong>{{ consulta.pros_ecog }}</strong>{% endif %}
-                {% if consulta.rinon_charlson %} | Charlson: <strong>{{ consulta.rinon_charlson }}</strong>{% endif %}
-            </div>
-        </div>
-        <div class="ph-right">
-            {% if active_hosp %}
-            <div class="ph-badge" style="background:rgba(179,142,93,0.3);">
-                <div class="val">{{ active_hosp.cama or '?' }}</div>
-                <div class="lbl">Cama</div>
-            </div>
-            <div class="ph-badge">
-                <div class="val">HOSPITALIZADO</div>
-                <div class="lbl">Estatus</div>
-            </div>
-            {% endif %}
-            {% if egfr %}
-            <div class="ph-badge">
-                <div class="val">{{ egfr }}</div>
-                <div class="lbl">eGFR ml/min</div>
-            </div>
-            {% endif %}
-            {% if enriched.get('completitud_pct') %}
-            <div class="ph-badge">
-                <div class="val">{{ enriched.completitud_pct|round|int }}%</div>
-                <div class="lbl">Completitud</div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
+ <!-- PATIENT HEADER -->
+ <div class="patient-header">
+ <div class="ph-left">
+ <h1>{{ consulta.nombre or 'PACIENTE' }}</h1>
+ <div class="meta">
+ {{ consulta.edad or '?' }}a | {{ consulta.sexo or '?' }} | {{ consulta.tipo_sangre or '?' }} | NSS: {{ nss }} | CURP: {{ (consulta.curp or '?')[:10] }}...
+ </div>
+ <div class="meta" style="margin-top:4px;">
+ Dx: <strong>{{ (consulta.diagnostico or 'Sin diagnostico')[:60] }}</strong>
+ {% if consulta.pros_ecog %} | ECOG: <strong>{{ consulta.pros_ecog }}</strong>{% endif %}
+ {% if consulta.rinon_charlson %} | Charlson: <strong>{{ consulta.rinon_charlson }}</strong>{% endif %}
+ </div>
+ </div>
+ <div class="ph-right">
+ {% if active_hosp %}
+ <div class="ph-badge" style="background:rgba(200,47,63,0.2);">
+ <div class="val">{{ active_hosp.cama or '?' }}</div>
+ <div class="lbl">Cama</div>
+ </div>
+ <div class="ph-badge">
+ <div class="val">HOSPITALIZADO</div>
+ <div class="lbl">Estatus</div>
+ </div>
+ {% endif %}
+ {% if egfr %}
+ <div class="ph-badge">
+ <div class="val">{{ egfr }}</div>
+ <div class="lbl">eGFR ml/min</div>
+ </div>
+ {% endif %}
+ {% if enriched.get('completitud_pct') %}
+ <div class="ph-badge">
+ <div class="val">{{ enriched.completitud_pct|round|int }}%</div>
+ <div class="lbl">Completitud</div>
+ </div>
+ {% endif %}
+ </div>
+ </div>
 
-    <!-- PROFILE TABS -->
-    <div class="profile-tabs">
-        <a class="p-tab {% if 'ONCO' in profile %}active{% endif %}" href="#">Oncologico</a>
-        <a class="p-tab {% if profile == 'LITIASIS' %}active{% endif %}" href="#">Litiasis</a>
-        <a class="p-tab {% if profile == 'HPB_STUI' %}active{% endif %}" href="#">HPB/STUI</a>
-        <a class="p-tab {% if profile == 'FUNCIONAL' %}active{% endif %}" href="#">Funcional</a>
-        <a class="p-tab {% if profile == 'TRASPLANTE' %}active{% endif %}" href="#">Trasplante</a>
-        <span style="flex:1;"></span>
-        <span style="font-size:12px;color:var(--d);font-weight:700;padding:6px;">Perfil activo: {{ profile_label }}</span>
-    </div>
+ <!-- PROFILE TABS -->
+ <div class="profile-tabs">
+ <a class="p-tab {% if 'ONCO' in profile %}active{% endif %}" href="#">Oncologico</a>
+ <a class="p-tab {% if profile == 'LITIASIS' %}active{% endif %}" href="#">Litiasis</a>
+ <a class="p-tab {% if profile == 'HPB_STUI' %}active{% endif %}" href="#">HPB/STUI</a>
+ <a class="p-tab {% if profile == 'FUNCIONAL' %}active{% endif %}" href="#">Funcional</a>
+ <a class="p-tab {% if profile == 'TRASPLANTE' %}active{% endif %}" href="#">Trasplante</a>
+ <span style="flex:1;"></span>
+ <span style="font-size:12px;color:var(--d);font-weight:700;padding:6px;">Perfil activo: {{ profile_label }}</span>
+ </div>
 
-    <!-- MAIN LAYOUT -->
-    <div class="layout">
-        <!-- ==================== SIDEBAR ==================== -->
-        <div class="sidebar">
+ <!-- MAIN LAYOUT -->
+ <div class="layout">
+ <!-- ==================== SIDEBAR ==================== -->
+ <div class="sidebar">
 
-            <!-- ALERTS -->
-            {% if alerts %}
-            <div class="s-section">
-                <div class="s-title">Alertas Activas ({{ alerts|length }})</div>
-                {% for a in alerts %}
-                <div class="alert-item {{ a.severity or 'MEDIA' }}">
-                    {{ a.message or a.alert_type or 'Alerta' }}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
+ <!-- ALERTS -->
+ {% if alerts %}
+ <div class="s-section">
+ <div class="s-title">Alertas Activas ({{ alerts|length }})</div>
+ {% for a in alerts %}
+ <div class="alert-item {{ a.severity or 'MEDIA' }}">
+ {{ a.message or a.alert_type or 'Alerta' }}
+ </div>
+ {% endfor %}
+ </div>
+ {% endif %}
 
-            <!-- STAGING -->
-            <div class="s-section">
-                <div class="s-title">Estadificacion</div>
-                <div class="s-card">
-                    <table class="stage-table">
-                    {% for f in staging.fields %}
-                        <tr>
-                            <td>{{ f.label }}</td>
-                            <td>{{ f.value }}</td>
-                        </tr>
-                    {% else %}
-                        <tr><td colspan="2" style="color:#5f6d68;">Sin datos de estadificacion</td></tr>
-                    {% endfor %}
-                    </table>
-                </div>
-            </div>
+ <!-- STAGING -->
+ <div class="s-section">
+ <div class="s-title">Estadificacion</div>
+ <div class="s-card">
+ <table class="stage-table">
+ {% for f in staging.fields %}
+ <tr>
+ <td>{{ f.label }}</td>
+ <td>{{ f.value }}</td>
+ </tr>
+ {% else %}
+ <tr><td colspan="2" style="color:#5c76a6;">Sin datos de estadificacion</td></tr>
+ {% endfor %}
+ </table>
+ </div>
+ </div>
 
-            <!-- QoL SCORES -->
-            {% if qol_scores %}
-            <div class="s-section">
-                <div class="s-title">Scores Calidad de Vida</div>
-                {% for s in qol_scores %}
-                <div class="score-row">
-                    <div class="score-header">
-                        <span class="score-name">{{ s.name }}</span>
-                        <span class="score-val">{{ s.value }}/{{ s.max }}</span>
-                    </div>
-                    <div class="score-bar">
-                        <div class="score-fill" style="width:{{ s.pct }}%; background:{{ s.color }};"></div>
-                    </div>
-                    <div class="score-label" style="color:{{ s.color }};">{{ s.label }}</div>
-                </div>
-                {% endfor %}
-                <div style="margin-top:8px;">
-                    <a href="/expediente/fase1?consulta_id={{ consulta_id }}" class="btn" style="font-size:11px;">Actualizar scores</a>
-                </div>
-            </div>
-            {% endif %}
+ <!-- QoL SCORES -->
+ {% if qol_scores %}
+ <div class="s-section">
+ <div class="s-title">Scores Calidad de Vida</div>
+ {% for s in qol_scores %}
+ <div class="score-row">
+ <div class="score-header">
+ <span class="score-name">{{ s.name }}</span>
+ <span class="score-val">{{ s.value }}/{{ s.max }}</span>
+ </div>
+ <div class="score-bar">
+ <div class="score-fill" style="width:{{ s.pct }}%; background:{{ s.color }};"></div>
+ </div>
+ <div class="score-label" style="color:{{ s.color }};">{{ s.label }}</div>
+ </div>
+ {% endfor %}
+ <div style="margin-top:8px;">
+ <a href="/expediente/fase1?consulta_id={{ consulta_id }}" class="btn" style="font-size:11px;">Actualizar scores</a>
+ </div>
+ </div>
+ {% endif %}
 
-            <!-- eGFR -->
-            {% if egfr %}
-            <div class="s-section">
-                <div class="s-title">Funcion Renal</div>
-                <div class="s-card">
-                    <div class="egfr-badge {{ ckd_stage }}">
-                        eGFR: {{ egfr }} ml/min/1.73m2 | CKD {{ ckd_stage }}
-                    </div>
-                    {% if latest_cr %}
-                    <div style="margin-top:6px;font-size:11px;color:#5f6d68;">Creatinina: {{ latest_cr }} mg/dL</div>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
+ <!-- eGFR -->
+ {% if egfr %}
+ <div class="s-section">
+ <div class="s-title">Funcion Renal</div>
+ <div class="s-card">
+ <div class="egfr-badge {{ ckd_stage }}">
+ eGFR: {{ egfr }} ml/min/1.73m2 | CKD {{ ckd_stage }}
+ </div>
+ {% if latest_cr %}
+ <div style="margin-top:6px;font-size:11px;color:#5c76a6;">Creatinina: {{ latest_cr }} mg/dL</div>
+ {% endif %}
+ </div>
+ </div>
+ {% endif %}
 
-            <!-- DEVICES -->
-            {% if devices %}
-            <div class="s-section">
-                <div class="s-title">Dispositivos Activos</div>
-                {% for d in devices %}
-                <div class="dev-item">
-                    <span class="dev-type">{{ d.device_type or '?' }}</span>
-                    <span class="dev-meta">{{ d.side or '' }} {{ d.size_fr or '' }}Fr</span>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
+ <!-- DEVICES -->
+ {% if devices %}
+ <div class="s-section">
+ <div class="s-title">Dispositivos Activos</div>
+ {% for d in devices %}
+ <div class="dev-item">
+ <span class="dev-type">{{ d.device_type or '?' }}</span>
+ <span class="dev-meta">{{ d.side or '' }} {{ d.size_fr or '' }}Fr</span>
+ </div>
+ {% endfor %}
+ </div>
+ {% endif %}
 
-            <!-- COMORBIDITIES -->
-            {% if comorbidities %}
-            <div class="s-section">
-                <div class="s-title">Comorbilidades</div>
-                {% for c in comorbidities %}
-                <div class="comorb-item">
-                    <span class="comorb-name">{{ c.name }}</span>
-                    <span class="comorb-tx">{{ c.treatment or c.time or '' }}</span>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
+ <!-- COMORBIDITIES -->
+ {% if comorbidities %}
+ <div class="s-section">
+ <div class="s-title">Comorbilidades</div>
+ {% for c in comorbidities %}
+ <div class="comorb-item">
+ <span class="comorb-name">{{ c.name }}</span>
+ <span class="comorb-tx">{{ c.treatment or c.time or '' }}</span>
+ </div>
+ {% endfor %}
+ </div>
+ {% endif %}
 
-            <!-- RISK SCORES -->
-            {% if risk_scores and (risk_scores.asa or risk_scores.goldman) %}
-            <div class="s-section">
-                <div class="s-title">Riesgo Quirurgico</div>
-                <div class="s-card">
-                    <table class="stage-table">
-                        {% if risk_scores.asa %}<tr><td>ASA</td><td>{{ risk_scores.asa }}</td></tr>{% endif %}
-                        {% if risk_scores.goldman %}<tr><td>Goldman</td><td>{{ risk_scores.goldman }}</td></tr>{% endif %}
-                        {% if risk_scores.lee %}<tr><td>Lee</td><td>{{ risk_scores.lee }}</td></tr>{% endif %}
-                        {% if risk_scores.caprini %}<tr><td>Caprini</td><td>{{ risk_scores.caprini }}</td></tr>{% endif %}
-                    </table>
-                </div>
-            </div>
-            {% endif %}
+ <!-- RISK SCORES -->
+ {% if risk_scores and (risk_scores.asa or risk_scores.goldman) %}
+ <div class="s-section">
+ <div class="s-title">Riesgo Quirurgico</div>
+ <div class="s-card">
+ <table class="stage-table">
+ {% if risk_scores.asa %}<tr><td>ASA</td><td>{{ risk_scores.asa }}</td></tr>{% endif %}
+ {% if risk_scores.goldman %}<tr><td>Goldman</td><td>{{ risk_scores.goldman }}</td></tr>{% endif %}
+ {% if risk_scores.lee %}<tr><td>Lee</td><td>{{ risk_scores.lee }}</td></tr>{% endif %}
+ {% if risk_scores.caprini %}<tr><td>Caprini</td><td>{{ risk_scores.caprini }}</td></tr>{% endif %}
+ </table>
+ </div>
+ </div>
+ {% endif %}
 
-            <!-- ALLERGIES -->
-            {% if consulta.alergeno and consulta.alergeno not in ('NEGADAS','NO','') %}
-            <div class="s-section">
-                <div class="s-title">Alergias</div>
-                <div class="s-card alert">
-                    <strong>{{ consulta.alergeno }}</strong>
-                    {% if consulta.alergia_reaccion %}<br><small>{{ consulta.alergia_reaccion }}</small>{% endif %}
-                </div>
-            </div>
-            {% endif %}
+ <!-- ALLERGIES -->
+ {% if consulta.alergeno and consulta.alergeno not in ('NEGADAS','NO','') %}
+ <div class="s-section">
+ <div class="s-title">Alergias</div>
+ <div class="s-card alert">
+ <strong>{{ consulta.alergeno }}</strong>
+ {% if consulta.alergia_reaccion %}<br><small>{{ consulta.alergia_reaccion }}</small>{% endif %}
+ </div>
+ </div>
+ {% endif %}
 
-        </div>
+ </div>
 
-        <!-- ==================== MAIN PANEL ==================== -->
-        <div class="main-panel">
+ <!-- ==================== MAIN PANEL ==================== -->
+ <div class="main-panel">
 
-            <!-- PSA CHART (for prostate profiles) -->
-            {% if psa_data and psa_data.points|length > 0 %}
-            <div class="chart-container">
-                <div class="chart-title">
-                    Curva de APE
-                    {% if psa_data.velocity is not none %} | Velocidad: {{ psa_data.velocity }} ng/ml/a&ntilde;o{% endif %}
-                    {% if psa_data.doubling_time is not none %} | PSADT: {{ psa_data.doubling_time }} meses{% endif %}
-                </div>
-                <canvas id="psaChart" height="180"></canvas>
-            </div>
-            {% endif %}
+ <!-- PSA CHART (for prostate profiles) -->
+ {% if psa_data and psa_data.points|length > 0 %}
+ <div class="chart-container">
+ <div class="chart-title">
+ Curva de APE
+ {% if psa_data.velocity is not none %} | Velocidad: {{ psa_data.velocity }} ng/ml/a&ntilde;o{% endif %}
+ {% if psa_data.doubling_time is not none %} | PSADT: {{ psa_data.doubling_time }} meses{% endif %}
+ </div>
+ <canvas id="psaChart" height="180"></canvas>
+ </div>
+ {% endif %}
 
-            <!-- VITALS TREND -->
-            {% if vitals_trend %}
-            <div class="chart-container">
-                <div class="chart-title">Tendencia de Signos Vitales (ultimos 5 dias)</div>
-                <canvas id="vitalsChart" height="160"></canvas>
-            </div>
-            {% endif %}
+ <!-- VITALS TREND -->
+ {% if vitals_trend %}
+ <div class="chart-container">
+ <div class="chart-title">Tendencia de Signos Vitales (ultimos 5 dias)</div>
+ <canvas id="vitalsChart" height="160"></canvas>
+ </div>
+ {% endif %}
 
-            <!-- LABS TREND -->
-            {% if labs_trend %}
-            <div class="chart-container">
-                <div class="chart-title">Tendencia de Laboratorios</div>
-                <canvas id="labsChart" height="160"></canvas>
-            </div>
-            {% endif %}
+ <!-- LABS TREND -->
+ {% if labs_trend %}
+ <div class="chart-container">
+ <div class="chart-title">Tendencia de Laboratorios</div>
+ <canvas id="labsChart" height="160"></canvas>
+ </div>
+ {% endif %}
 
-            <!-- SURGICAL OUTCOMES -->
-            {% if surgical_outcomes and surgical_outcomes.get('procedimiento') %}
-            <div class="s-section">
-                <div class="s-title">Resultados Postquirurgicos</div>
-                <div class="s-card">
-                    <div style="font-weight:700;color:var(--v);margin-bottom:8px;">{{ surgical_outcomes.procedimiento }}</div>
-                    <div class="outcome-grid">
-                        {% if surgical_outcomes.get('margen_quirurgico') %}
-                        <div class="outcome-item"><span class="olabel">Margenes:</span> <span class="ovalue">{{ surgical_outcomes.margen_quirurgico }}</span></div>
-                        {% endif %}
-                        {% if surgical_outcomes.get('nervios_preservados') %}
-                        <div class="outcome-item"><span class="olabel">Nervios:</span> <span class="ovalue">{{ surgical_outcomes.nervios_preservados }}</span></div>
-                        {% endif %}
-                        {% if surgical_outcomes.get('clavien_dindo') %}
-                        <div class="outcome-item"><span class="olabel">Clavien-Dindo:</span> <span class="ovalue">{{ surgical_outcomes.clavien_dindo }}</span></div>
-                        {% endif %}
-                        {% if surgical_outcomes.get('ganglios_positivos') is not none %}
-                        <div class="outcome-item"><span class="olabel">Ganglios:</span> <span class="ovalue">{{ surgical_outcomes.ganglios_positivos }}/{{ surgical_outcomes.ganglios_totales or '?' }}</span></div>
-                        {% endif %}
-                        {% if surgical_outcomes.get('sangrado_ml') %}
-                        <div class="outcome-item"><span class="olabel">Sangrado:</span> <span class="ovalue">{{ surgical_outcomes.sangrado_ml }} ml</span></div>
-                        {% endif %}
-                        {% if surgical_outcomes.get('tiempo_quirurgico_min') %}
-                        <div class="outcome-item"><span class="olabel">TQx:</span> <span class="ovalue">{{ surgical_outcomes.tiempo_quirurgico_min }} min</span></div>
-                        {% endif %}
-                        {% if surgical_outcomes.get('stone_free') %}
-                        <div class="outcome-item"><span class="olabel">Stone-free:</span> <span class="ovalue">{{ surgical_outcomes.stone_free }}</span></div>
-                        {% endif %}
-                        <div class="outcome-item"><span class="olabel">30d reingreso:</span> <span class="ovalue">{{ surgical_outcomes.get('reingreso_30d') or 'NO' }}</span></div>
-                        <div class="outcome-item"><span class="olabel">90d reintervencion:</span> <span class="ovalue">{{ surgical_outcomes.get('reintervencion_90d') or 'NO' }}</span></div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
+ <!-- SURGICAL OUTCOMES -->
+ {% if surgical_outcomes and surgical_outcomes.get('procedimiento') %}
+ <div class="s-section">
+ <div class="s-title">Resultados Postquirurgicos</div>
+ <div class="s-card">
+ <div style="font-weight:700;color:var(--v);margin-bottom:8px;">{{ surgical_outcomes.procedimiento }}</div>
+ <div class="outcome-grid">
+ {% if surgical_outcomes.get('margen_quirurgico') %}
+ <div class="outcome-item"><span class="olabel">Margenes:</span> <span class="ovalue">{{ surgical_outcomes.margen_quirurgico }}</span></div>
+ {% endif %}
+ {% if surgical_outcomes.get('nervios_preservados') %}
+ <div class="outcome-item"><span class="olabel">Nervios:</span> <span class="ovalue">{{ surgical_outcomes.nervios_preservados }}</span></div>
+ {% endif %}
+ {% if surgical_outcomes.get('clavien_dindo') %}
+ <div class="outcome-item"><span class="olabel">Clavien-Dindo:</span> <span class="ovalue">{{ surgical_outcomes.clavien_dindo }}</span></div>
+ {% endif %}
+ {% if surgical_outcomes.get('ganglios_positivos') is not none %}
+ <div class="outcome-item"><span class="olabel">Ganglios:</span> <span class="ovalue">{{ surgical_outcomes.ganglios_positivos }}/{{ surgical_outcomes.ganglios_totales or '?' }}</span></div>
+ {% endif %}
+ {% if surgical_outcomes.get('sangrado_ml') %}
+ <div class="outcome-item"><span class="olabel">Sangrado:</span> <span class="ovalue">{{ surgical_outcomes.sangrado_ml }} ml</span></div>
+ {% endif %}
+ {% if surgical_outcomes.get('tiempo_quirurgico_min') %}
+ <div class="outcome-item"><span class="olabel">TQx:</span> <span class="ovalue">{{ surgical_outcomes.tiempo_quirurgico_min }} min</span></div>
+ {% endif %}
+ {% if surgical_outcomes.get('stone_free') %}
+ <div class="outcome-item"><span class="olabel">Stone-free:</span> <span class="ovalue">{{ surgical_outcomes.stone_free }}</span></div>
+ {% endif %}
+ <div class="outcome-item"><span class="olabel">30d reingreso:</span> <span class="ovalue">{{ surgical_outcomes.get('reingreso_30d') or 'NO' }}</span></div>
+ <div class="outcome-item"><span class="olabel">90d reintervencion:</span> <span class="ovalue">{{ surgical_outcomes.get('reintervencion_90d') or 'NO' }}</span></div>
+ </div>
+ </div>
+ </div>
+ {% endif %}
 
-            <!-- CLINICAL TIMELINE -->
-            <div class="s-section">
-                <div class="s-title">Linea de Tiempo Clinica</div>
-                <div class="timeline">
-                    {% for ev in timeline %}
-                    <div class="tl-item">
-                        <div class="tl-dot {{ ev.type }}"></div>
-                        <div class="tl-date">{{ ev.date }}</div>
-                        <div class="tl-title">{{ ev.title }}</div>
-                        {% if ev.detail %}<div class="tl-detail">{{ ev.detail }}</div>{% endif %}
-                    </div>
-                    {% else %}
-                    <div style="color:#5f6d68;padding:10px;">Sin eventos clinicos registrados.</div>
-                    {% endfor %}
-                </div>
-            </div>
+ <!-- CLINICAL TIMELINE -->
+ <div class="s-section">
+ <div class="s-title">Linea de Tiempo Clinica</div>
+ <div class="timeline">
+ {% for ev in timeline %}
+ <div class="tl-item">
+ <div class="tl-dot {{ ev.type }}"></div>
+ <div class="tl-date">{{ ev.date }}</div>
+ <div class="tl-title">{{ ev.title }}</div>
+ {% if ev.detail %}<div class="tl-detail">{{ ev.detail }}</div>{% endif %}
+ </div>
+ {% else %}
+ <div style="color:#5c76a6;padding:10px;">Sin eventos clinicos registrados.</div>
+ {% endfor %}
+ </div>
+ </div>
 
-            <!-- ACTION LINKS -->
-            <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
-                <a href="/expediente?consulta_id={{ consulta_id }}" class="btn">Expediente Clasico</a>
-                <a href="/expediente/inpatient-captura?consulta_id={{ consulta_id }}#nota-diaria" class="btn alt">Nota Medica</a>
-                <a href="/expediente/inpatient-captura?consulta_id={{ consulta_id }}" class="btn">Captura Inpatient</a>
-                <a href="/expediente/fase1?consulta_id={{ consulta_id }}" class="btn alt">Fase 1 (QoL/Farmacos)</a>
-            </div>
+ <!-- ACTION LINKS -->
+ <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+ <a href="/expediente?consulta_id={{ consulta_id }}" class="btn">Expediente Clasico</a>
+ <a href="/expediente/inpatient-captura?consulta_id={{ consulta_id }}#nota-diaria" class="btn alt">Nota Medica</a>
+ <a href="/expediente/inpatient-captura?consulta_id={{ consulta_id }}" class="btn">Captura Inpatient</a>
+ <a href="/expediente/fase1?consulta_id={{ consulta_id }}" class="btn alt">Fase 1 (QoL/Farmacos)</a>
+ </div>
 
-        </div>
-    </div>
+ </div>
+ </div>
 
-    {% endif %}{# end if not error #}
+ {% endif %}{# end if not error #}
 </div>
 
 <!-- CHARTS JS -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // PSA Chart
-    {% if psa_data and psa_data.points|length > 0 %}
-    (function(){
-        const ctx = document.getElementById('psaChart');
-        if (!ctx) return;
-        const labels = [{% for p in psa_data.points %}'{{ p.date_str or p.date }}'{% if not loop.last %},{% endif %}{% endfor %}];
-        const values = [{% for p in psa_data.points %}{{ p.value }}{% if not loop.last %},{% endif %}{% endfor %}];
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'APE (ng/ml)',
-                    data: values,
-                    borderColor: '#c0392b',
-                    backgroundColor: 'rgba(192,57,43,0.1)',
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#c0392b',
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, title: { display: true, text: 'ng/ml' } },
-                    x: { title: { display: true, text: 'Fecha' } }
-                }
-            }
-        });
-    })();
-    {% endif %}
+ // PSA Chart
+ {% if psa_data and psa_data.points|length > 0 %}
+ (function(){
+ const ctx = document.getElementById('psaChart');
+ if (!ctx) return;
+ const labels = [{% for p in psa_data.points %}'{{ p.date_str or p.date }}'{% if not loop.last %},{% endif %}{% endfor %}];
+ const values = [{% for p in psa_data.points %}{{ p.value }}{% if not loop.last %},{% endif %}{% endfor %}];
+ new Chart(ctx, {
+ type: 'line',
+ data: {
+ labels: labels,
+ datasets: [{
+ label: 'APE (ng/ml)',
+ data: values,
+ borderColor: '#c0392b',
+ backgroundColor: 'rgba(192,57,43,0.1)',
+ fill: true,
+ tension: 0.3,
+ pointRadius: 5,
+ pointBackgroundColor: '#c0392b',
+ }]
+ },
+ options: {
+ responsive: true,
+ plugins: { legend: { display: false } },
+ scales: {
+ y: { beginAtZero: true, title: { display: true, text: 'ng/ml' } },
+ x: { title: { display: true, text: 'Fecha' } }
+ }
+ }
+ });
+ })();
+ {% endif %}
 
-    // Vitals Chart
-    {% if vitals_trend %}
-    (function(){
-        const ctx = document.getElementById('vitalsChart');
-        if (!ctx) return;
-        const labels = [{% for v in vitals_trend %}'{{ v.recorded_at or "" }}'{% if not loop.last %},{% endif %}{% endfor %}];
-        const sbp = [{% for v in vitals_trend %}{{ v.sbp or 'null' }}{% if not loop.last %},{% endif %}{% endfor %}];
-        const hr = [{% for v in vitals_trend %}{{ v.heart_rate or 'null' }}{% if not loop.last %},{% endif %}{% endfor %}];
-        const temp = [{% for v in vitals_trend %}{{ v.temperature or 'null' }}{% if not loop.last %},{% endif %}{% endfor %}];
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels.map(l => l.substring(5,16)),
-                datasets: [
-                    { label:'TA Sis', data:sbp, borderColor:'#c0392b', tension:0.3, pointRadius:3 },
-                    { label:'FC', data:hr, borderColor:'#2980b9', tension:0.3, pointRadius:3 },
-                    { label:'Temp', data:temp, borderColor:'#e67e22', tension:0.3, pointRadius:3, yAxisID:'y1' },
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { title: { display:true, text:'mmHg / bpm' } },
-                    y1: { position:'right', title: { display:true, text:'C' }, min:35, max:40, grid:{display:false} }
-                }
-            }
-        });
-    })();
-    {% endif %}
+ // Vitals Chart
+ {% if vitals_trend %}
+ (function(){
+ const ctx = document.getElementById('vitalsChart');
+ if (!ctx) return;
+ const labels = [{% for v in vitals_trend %}'{{ v.recorded_at or "" }}'{% if not loop.last %},{% endif %}{% endfor %}];
+ const sbp = [{% for v in vitals_trend %}{{ v.sbp or 'null' }}{% if not loop.last %},{% endif %}{% endfor %}];
+ const hr = [{% for v in vitals_trend %}{{ v.heart_rate or 'null' }}{% if not loop.last %},{% endif %}{% endfor %}];
+ const temp = [{% for v in vitals_trend %}{{ v.temperature or 'null' }}{% if not loop.last %},{% endif %}{% endfor %}];
+ new Chart(ctx, {
+ type: 'line',
+ data: {
+ labels: labels.map(l => l.substring(5,16)),
+ datasets: [
+ { label:'TA Sis', data:sbp, borderColor:'#c0392b', tension:0.3, pointRadius:3 },
+ { label:'FC', data:hr, borderColor:'#2980b9', tension:0.3, pointRadius:3 },
+ { label:'Temp', data:temp, borderColor:'#e67e22', tension:0.3, pointRadius:3, yAxisID:'y1' },
+ ]
+ },
+ options: {
+ responsive: true,
+ scales: {
+ y: { title: { display:true, text:'mmHg / bpm' } },
+ y1: { position:'right', title: { display:true, text:'C' }, min:35, max:40, grid:{display:false} }
+ }
+ }
+ });
+ })();
+ {% endif %}
 
-    // Labs Chart
-    {% if labs_trend %}
-    (function(){
-        const ctx = document.getElementById('labsChart');
-        if (!ctx) return;
-        const labs = {{ labs_trend | tojson }};
-        const crData = [], hbData = [], labels = [];
-        const seen = {};
-        labs.forEach(function(l) {
-            const name = (l.test_name || '').toLowerCase();
-            const d = (l.collected_at || '').substring(0,10);
-            if (!seen[d]) { labels.push(d); seen[d] = true; }
-            if (name.includes('creat') && l.value_num) crData.push({x:d, y:l.value_num});
-            if ((name.includes('hb') || name.includes('hemoglob')) && l.value_num) hbData.push({x:d, y:l.value_num});
-        });
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: [
-                    { label:'Creatinina', data:crData, borderColor:'#8e44ad', tension:0.3, pointRadius:4 },
-                    { label:'Hemoglobina', data:hbData, borderColor:'#c0392b', tension:0.3, pointRadius:4, yAxisID:'y1' },
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: { type:'category', labels:labels },
-                    y: { title:{display:true, text:'mg/dL (Cr)'}, beginAtZero:false },
-                    y1: { position:'right', title:{display:true, text:'g/dL (Hb)'}, grid:{display:false} }
-                }
-            }
-        });
-    })();
-    {% endif %}
+ // Labs Chart
+ {% if labs_trend %}
+ (function(){
+ const ctx = document.getElementById('labsChart');
+ if (!ctx) return;
+ const labs = {{ labs_trend | tojson }};
+ const crData = [], hbData = [], labels = [];
+ const seen = {};
+ labs.forEach(function(l) {
+ const name = (l.test_name || '').toLowerCase();
+ const d = (l.collected_at || '').substring(0,10);
+ if (!seen[d]) { labels.push(d); seen[d] = true; }
+ if (name.includes('creat') && l.value_num) crData.push({x:d, y:l.value_num});
+ if ((name.includes('hb') || name.includes('hemoglob')) && l.value_num) hbData.push({x:d, y:l.value_num});
+ });
+ new Chart(ctx, {
+ type: 'line',
+ data: {
+ datasets: [
+ { label:'Creatinina', data:crData, borderColor:'#8e44ad', tension:0.3, pointRadius:4 },
+ { label:'Hemoglobina', data:hbData, borderColor:'#c0392b', tension:0.3, pointRadius:4, yAxisID:'y1' },
+ ]
+ },
+ options: {
+ responsive: true,
+ scales: {
+ x: { type:'category', labels:labels },
+ y: { title:{display:true, text:'mg/dL (Cr)'}, beginAtZero:false },
+ y1: { position:'right', title:{display:true, text:'g/dL (Hb)'}, grid:{display:false} }
+ }
+ }
+ });
+ })();
+ {% endif %}
 });
 </script>
 </body>

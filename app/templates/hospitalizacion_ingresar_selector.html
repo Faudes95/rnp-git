@@ -1,73 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Ingreso Hospitalario</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; }
-        body { margin:0; padding:24px; font-family:"Montserrat",sans-serif; background:#f4f6f9; }
-        .container { max-width:980px; margin:0 auto; background:#fff; border-radius:12px; padding:24px; box-shadow:0 10px 28px rgba(0,0,0,.10); }
-        h1 { margin:0 0 8px; color:var(--imss-verde); }
-        .sub { color:#4f635c; font-size:14px; margin-bottom:18px; }
-        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
-        .card {
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            align-items:center;
-            text-decoration:none;
-            min-height:180px;
-            border-radius:12px;
-            border:1px solid #d7e1dc;
-            background:#fbfcfc;
-            color:var(--imss-verde);
-            transition:.18s ease;
-            text-align:center;
-            padding:16px;
-        }
-        .card:hover { transform:translateY(-2px); border-color:var(--imss-dorado); box-shadow:0 8px 20px rgba(19,50,43,.15); }
-        .icon { width:64px; height:64px; border-radius:999px; display:flex; align-items:center; justify-content:center; background:var(--imss-verde); color:#fff; font-size:28px; margin-bottom:10px; }
-        .title { font-size:18px; font-weight:800; }
-        .desc { margin-top:6px; font-size:13px; color:#4f635c; }
-        .actions { margin-top:18px; display:flex; gap:10px; }
-        .btn { text-decoration:none; background:var(--imss-dorado); color:#1e1e1e; border-radius:8px; padding:10px 14px; font-weight:700; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>Ingreso Hospitalario</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde:#0a3161; --imss-dorado:#c82f3f; }
+ body { margin:0; padding:24px; font-family:"Montserrat",sans-serif; background:#f4f6f9; }
+ .container { max-width:980px; margin:0 auto; background:#fff; border-radius:12px; padding:24px; box-shadow:0 10px 28px rgba(0,0,0,.10); }
+ h1 { margin:0 0 8px; color:var(--imss-verde); }
+ .sub { color:#4f635c; font-size:14px; margin-bottom:18px; }
+ .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+ .card {
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ text-decoration:none;
+ min-height:180px;
+ border-radius:12px;
+ border:1px solid #d7e1dc;
+ background:#fbfcfc;
+ color:var(--imss-verde);
+ transition:.18s ease;
+ text-align:center;
+ padding:16px;
+ }
+ .card:hover { transform:translateY(-2px); border-color:var(--imss-dorado); box-shadow:0 8px 20px rgba(31,79,159,.15); }
+ .icon { width:64px; height:64px; border-radius:999px; display:flex; align-items:center; justify-content:center; background:var(--imss-verde); color:#fff; font-size:28px; margin-bottom:10px; }
+ .title { font-size:18px; font-weight:800; }
+ .desc { margin-top:6px; font-size:13px; color:#4f635c; }
+ .actions { margin-top:18px; display:flex; gap:10px; }
+ .btn { text-decoration:none; background:var(--imss-dorado); color:#1e1e1e; border-radius:8px; padding:10px 14px; font-weight:700; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
 <div class="container">
-    <h1>🏥 1. INGRESAR PACIENTE</h1>
-    <div class="sub">Seleccione el tipo de ingreso. Esta selección no altera rutas ni lógica clínica existentes.</div>
+ <h1>🏥 1. INGRESAR PACIENTE</h1>
+ <div class="sub">Seleccione el tipo de ingreso. Esta selección no altera rutas ni lógica clínica existentes.</div>
 
-    <div class="grid">
-        <a class="card" href="/hospitalizacion/ingresar?tipo=urgencias">
-            <div class="icon">🚑</div>
-            <div class="title">1 INGRESO DE URGENCIAS</div>
-            <div class="desc">Abre captura metadata de consulta externa para crear la consulta y enlazar ingreso hospitalario.</div>
-        </a>
+ <div class="grid">
+ <a class="card" href="/hospitalizacion/ingresar?tipo=urgencias">
+ <div class="icon">🚑</div>
+ <div class="title">1 INGRESO DE URGENCIAS</div>
+ <div class="desc">Abre captura metadata de consulta externa para crear la consulta y enlazar ingreso hospitalario.</div>
+ </a>
 
-        <a class="card" href="/hospitalizacion/nuevo">
-            <div class="icon">📋</div>
-            <div class="title">2 INGRESO PROGRAMADO</div>
-            <div class="desc">Conserva la ruta y formulario hospitalario actual para ingreso programado.</div>
-        </a>
-    </div>
+ <a class="card" href="/hospitalizacion/nuevo">
+ <div class="icon">📋</div>
+ <div class="title">2 INGRESO PROGRAMADO</div>
+ <div class="desc">Conserva la ruta y formulario hospitalario actual para ingreso programado.</div>
+ </a>
+ </div>
 
-    <div class="actions">
-        <a class="btn" href="/hospitalizacion">← Volver a Hospitalización</a>
-    </div>
+ <div class="actions">
+ <a class="btn" href="/hospitalizacion">← Volver a Hospitalización</a>
+ </div>
 </div>
 </body>
 </html>

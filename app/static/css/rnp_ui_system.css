@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   RNP UI DESIGN SYSTEM v2.0 — Urología IMSS CMNR
-   Sistema visual institucional unificado.
-   Colores: Verde IMSS (#13322B) · Dorado (#B38E5D) · Blanco
+   UROMED UI DESIGN SYSTEM v2.0
+   Sistema visual privado unificado.
+   Colores: Azul · Rojo · Blanco
 
    ADITIVO: Este archivo NO reemplaza estilos inline existentes.
    Se aplica como capa adicional <link> en cada template.
@@ -10,25 +10,25 @@
 /* ─── ROOT VARIABLES ───────────────────────────────────────────────── */
 :root {
     /* Palette */
-    --rnp-verde-900: #0b2420;
-    --rnp-verde-800: #0f3027;
-    --rnp-verde-700: #13322B;
-    --rnp-verde-600: #1a4a3f;
-    --rnp-verde-500: #1f5c53;
-    --rnp-verde-400: #2a7a6c;
-    --rnp-verde-300: #3da68f;
-    --rnp-verde-200: #73c7b0;
-    --rnp-verde-100: #d0f0e4;
-    --rnp-verde-50:  #edf8f3;
+    --rnp-verde-900: #0a3161;
+    --rnp-verde-800: #0f3f82;
+    --rnp-verde-700: #1f4f9f;
+    --rnp-verde-600: #2e6ec9;
+    --rnp-verde-500: #4f93f1;
+    --rnp-verde-400: #74abf5;
+    --rnp-verde-300: #9bc2f8;
+    --rnp-verde-200: #c9defb;
+    --rnp-verde-100: #e7f0ff;
+    --rnp-verde-50:  #f3f8ff;
 
-    --rnp-dorado-700: #7a5c2e;
-    --rnp-dorado-600: #96733a;
-    --rnp-dorado-500: #B38E5D;
-    --rnp-dorado-400: #c9a778;
-    --rnp-dorado-300: #ddc09a;
-    --rnp-dorado-200: #eedcc4;
-    --rnp-dorado-100: #f7efe2;
-    --rnp-dorado-50:  #fffaf3;
+    --rnp-dorado-700: #8f2030;
+    --rnp-dorado-600: #aa2a3b;
+    --rnp-dorado-500: #c82f3f;
+    --rnp-dorado-400: #de4f5f;
+    --rnp-dorado-300: #ef7f8b;
+    --rnp-dorado-200: #f7c6cd;
+    --rnp-dorado-100: #ffe9ed;
+    --rnp-dorado-50:  #fff4f6;
 
     --rnp-blanco: #ffffff;
     --rnp-gris-50:  #f8fafb;
@@ -105,7 +105,7 @@
     background: linear-gradient(135deg, var(--rnp-dorado-500), var(--rnp-dorado-400));
     border-color: var(--rnp-dorado-600);
     color: var(--rnp-verde-900);
-    box-shadow: 0 2px 8px rgba(179, 142, 93, 0.3);
+    box-shadow: 0 2px 8px rgba(200,47,63,0.3);
 }
 
 /* ─── PAGE HEADER ─────────────────────────────────────────────────── */
@@ -160,7 +160,7 @@
     position: absolute;
     top: 0; right: 0;
     width: 60px; height: 60px;
-    background: radial-gradient(circle, rgba(179,142,93,0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(200,47,63,0.05) 0%, transparent 70%);
     border-radius: 50%;
     transform: translate(20px, -20px);
 }
@@ -188,7 +188,7 @@
     font-weight: 700;
     margin-top: 4px;
 }
-.rnp-kpi-card .kpi-delta.up { color: #16a34a; }
+.rnp-kpi-card .kpi-delta.up { color: var(--rnp-verde-700); }
 .rnp-kpi-card .kpi-delta.down { color: var(--rnp-rojo-500); }
 .rnp-kpi-card .kpi-delta.neutral { color: var(--rnp-gris-400); }
 .rnp-kpi-card .kpi-icon {
@@ -202,7 +202,7 @@
 .rnp-kpi-card.critical { border-left-color: var(--rnp-rojo-500); }
 .rnp-kpi-card.critical .kpi-value { color: var(--rnp-rojo-500); }
 /* Variant: success (green border) */
-.rnp-kpi-card.success { border-left-color: #16a34a; }
+.rnp-kpi-card.success { border-left-color: var(--rnp-verde-600); }
 /* Variant: info (blue border) */
 .rnp-kpi-card.info { border-left-color: var(--rnp-azul-500); }
 
@@ -352,7 +352,7 @@
     align-items: center;
     justify-content: center;
     font-size: 22px;
-    box-shadow: 0 4px 12px rgba(19, 50, 43, 0.25);
+    box-shadow: 0 4px 12px rgba(31,79,159,0.25);
 }
 .rnp-icon-card .ic-label {
     font-weight: 700;
@@ -382,17 +382,17 @@
 .rnp-btn-primary {
     background: linear-gradient(135deg, var(--rnp-verde-700), var(--rnp-verde-600));
     color: var(--rnp-blanco);
-    box-shadow: 0 2px 8px rgba(19, 50, 43, 0.25);
+    box-shadow: 0 2px 8px rgba(31,79,159,0.25);
 }
 .rnp-btn-primary:hover {
     background: linear-gradient(135deg, var(--rnp-verde-800), var(--rnp-verde-700));
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(19, 50, 43, 0.35);
+    box-shadow: 0 4px 12px rgba(31,79,159,0.35);
 }
 .rnp-btn-dorado {
     background: linear-gradient(135deg, var(--rnp-dorado-500), var(--rnp-dorado-400));
     color: var(--rnp-verde-900);
-    box-shadow: 0 2px 8px rgba(179, 142, 93, 0.3);
+    box-shadow: 0 2px 8px rgba(200,47,63,0.3);
 }
 .rnp-btn-dorado:hover {
     background: linear-gradient(135deg, var(--rnp-dorado-600), var(--rnp-dorado-500));
@@ -447,7 +447,7 @@
     flex-shrink: 0;
 }
 .rnp-status-activo { background: #dcfce7; color: #166534; }
-.rnp-status-activo::before { background: #16a34a; }
+.rnp-status-activo::before { background: var(--rnp-verde-600); }
 .rnp-status-pendiente { background: var(--rnp-amarillo-100); color: #854d0e; }
 .rnp-status-pendiente::before { background: var(--rnp-amarillo-500); }
 .rnp-status-critico { background: var(--rnp-rojo-100); color: #991b1b; }
@@ -623,7 +623,7 @@
 .rnp-input:focus, .rnp-select:focus, .rnp-textarea:focus {
     border-color: var(--rnp-verde-400);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(19, 50, 43, 0.08);
+    box-shadow: 0 0 0 3px rgba(31,79,159,0.08);
 }
 .rnp-label {
     display: block;

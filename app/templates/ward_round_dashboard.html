@@ -1,295 +1,295 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Pase de Visita Digital - Urolog&iacute;a</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root {
-            --imss-verde: #13322B;
-            --imss-dorado: #B38E5D;
-            --fondo: #f4f6f9;
-            --ok: #2f8f63;
-            --warn: #d4a017;
-            --danger: #c0392b;
-        }
-        * { box-sizing: border-box; }
-        body { font-family:'Montserrat',sans-serif; background:var(--fondo); margin:0; padding:16px; font-size:13px; }
-        .container { max-width:1500px; margin:auto; }
-        .header { background:var(--imss-verde); color:#fff; padding:16px 20px; border-radius:10px 10px 0 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
-        .header h1 { margin:0; font-size:20px; }
-        .header .guardia { font-size:12px; opacity:0.85; }
-        .header .fecha { font-size:14px; color:var(--imss-dorado); font-weight:700; }
-        .filters { background:#fff; padding:10px 20px; border-bottom:1px solid #e2e8e5; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-        .filters select, .filters input { padding:7px 10px; border:1px solid #cfd8d3; border-radius:6px; font-size:12px; }
-        .filters label { font-size:11px; font-weight:700; color:#2f3d42; text-transform:uppercase; }
+ <meta charset="UTF-8">
+ <title>Pase de Visita Digital - Urolog&iacute;a</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root {
+ --imss-verde: #0a3161;
+ --imss-dorado: #c82f3f;
+ --fondo: #f4f6f9;
+ --ok: #2f8f63;
+ --warn: #d4a017;
+ --danger: #c0392b;
+ }
+ * { box-sizing: border-box; }
+ body { font-family:'Montserrat',sans-serif; background:var(--fondo); margin:0; padding:16px; font-size:13px; }
+ .container { max-width:1500px; margin:auto; }
+ .header { background:var(--imss-verde); color:#fff; padding:16px 20px; border-radius:10px 10px 0 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+ .header h1 { margin:0; font-size:20px; }
+ .header .guardia { font-size:12px; opacity:0.85; }
+ .header .fecha { font-size:14px; color:var(--imss-dorado); font-weight:700; }
+ .filters { background:#fff; padding:10px 20px; border-bottom:1px solid #e2e8e5; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+ .filters select, .filters input { padding:7px 10px; border:1px solid #cfd8d3; border-radius:6px; font-size:12px; }
+ .filters label { font-size:11px; font-weight:700; color:#2f3d42; text-transform:uppercase; }
 
-        .summary-bar { background:#fff; padding:12px 20px; display:flex; gap:16px; flex-wrap:wrap; border-bottom:2px solid var(--imss-dorado); }
-        .summary-stat { text-align:center; min-width:100px; }
-        .summary-stat .num { font-size:26px; font-weight:800; color:var(--imss-verde); }
-        .summary-stat .lbl { font-size:10px; text-transform:uppercase; color:#5f6d68; font-weight:700; }
+ .summary-bar { background:#fff; padding:12px 20px; display:flex; gap:16px; flex-wrap:wrap; border-bottom:2px solid var(--imss-dorado); }
+ .summary-stat { text-align:center; min-width:100px; }
+ .summary-stat .num { font-size:26px; font-weight:800; color:var(--imss-verde); }
+ .summary-stat .lbl { font-size:10px; text-transform:uppercase; color:#5c76a6; font-weight:700; }
 
-        .main-table { width:100%; border-collapse:collapse; background:#fff; }
-        .main-table th { background:var(--imss-verde); color:#fff; padding:10px 8px; font-size:11px; text-align:left; position:sticky; top:0; z-index:2; }
-        .main-table td { border-bottom:1px solid #e6ece9; padding:8px; vertical-align:top; font-size:12px; }
-        .main-table tr:hover { background:#f0f7f4; }
-        .main-table tr.alert-row { background:#fff5f5; }
-        .main-table tr.alert-row:hover { background:#ffecec; }
+ .main-table { width:100%; border-collapse:collapse; background:#fff; }
+ .main-table th { background:var(--imss-verde); color:#fff; padding:10px 8px; font-size:11px; text-align:left; position:sticky; top:0; z-index:2; }
+ .main-table td { border-bottom:1px solid #e6ece9; padding:8px; vertical-align:top; font-size:12px; }
+ .main-table tr:hover { background:#f0f7f4; }
+ .main-table tr.alert-row { background:#fff5f5; }
+ .main-table tr.alert-row:hover { background:#ffecec; }
 
-        .patient-name { font-weight:700; color:var(--imss-verde); font-size:13px; }
-        .patient-meta { font-size:11px; color:#5f6d68; }
-        .days { font-weight:800; color:var(--imss-verde); }
-        .days small { font-weight:400; color:#5f6d68; }
+ .patient-name { font-weight:700; color:var(--imss-verde); font-size:13px; }
+ .patient-meta { font-size:11px; color:#5c76a6; }
+ .days { font-weight:800; color:var(--imss-verde); }
+ .days small { font-weight:400; color:#5c76a6; }
 
-        .vitals-mini { font-size:11px; line-height:1.6; }
-        .vitals-mini .v-label { color:#5f6d68; }
-        .vitals-mini .v-val { font-weight:700; }
+ .vitals-mini { font-size:11px; line-height:1.6; }
+ .vitals-mini .v-label { color:#5c76a6; }
+ .vitals-mini .v-val { font-weight:700; }
 
-        .lab-alert { display:inline-block; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:700; margin:1px; }
-        .lab-alert.danger { background:#fdeaea; color:var(--danger); }
-        .lab-alert.ok { background:#ebf8ef; color:var(--ok); }
+ .lab-alert { display:inline-block; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:700; margin:1px; }
+ .lab-alert.danger { background:#fdeaea; color:var(--danger); }
+ .lab-alert.ok { background:#ebf8ef; color:var(--ok); }
 
-        .device-chip { display:inline-block; padding:2px 6px; border-radius:999px; background:#e8f0ed; color:var(--imss-verde); font-size:10px; font-weight:700; margin:1px; }
+ .device-chip { display:inline-block; padding:2px 6px; border-radius:999px; background:#e8f0ed; color:var(--imss-verde); font-size:10px; font-weight:700; margin:1px; }
 
-        .note-status { display:inline-block; padding:3px 8px; border-radius:999px; font-size:10px; font-weight:700; }
-        .note-status.done { background:#ebf8ef; color:var(--ok); }
-        .note-status.pending { background:#fff3e0; color:#e67e22; }
+ .note-status { display:inline-block; padding:3px 8px; border-radius:999px; font-size:10px; font-weight:700; }
+ .note-status.done { background:#ebf8ef; color:var(--ok); }
+ .note-status.pending { background:#fff3e0; color:#e67e22; }
 
-        .btn { background:var(--imss-verde); color:#fff; padding:6px 10px; border:none; border-radius:5px; cursor:pointer; font-size:11px; font-weight:700; text-decoration:none; }
-        .btn:hover { opacity:0.9; }
-        .btn-sm { padding:4px 8px; font-size:10px; }
-        .btn-dorado { background:var(--imss-dorado); }
+ .btn { background:var(--imss-verde); color:#fff; padding:6px 10px; border:none; border-radius:5px; cursor:pointer; font-size:11px; font-weight:700; text-decoration:none; }
+ .btn:hover { opacity:0.9; }
+ .btn-sm { padding:4px 8px; font-size:10px; }
+ .btn-dorado { background:var(--imss-dorado); }
 
-        /* Inline SOAP note */
-        .soap-panel { display:none; background:#fafcfb; border:2px solid var(--imss-dorado); border-radius:8px; padding:14px; margin-top:8px; }
-        .soap-panel.active { display:block; }
-        .soap-panel h3 { margin:0 0 10px; font-size:14px; color:var(--imss-verde); }
-        .soap-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-        .soap-field { display:flex; flex-direction:column; }
-        .soap-field label { font-size:11px; font-weight:700; color:var(--imss-verde); margin-bottom:3px; }
-        .soap-field textarea { border:1px solid #cfd8d3; border-radius:5px; padding:6px; font-size:12px; font-family:inherit; resize:vertical; min-height:60px; }
-        .soap-actions { margin-top:10px; display:flex; gap:8px; align-items:center; }
-        .soap-msg { font-size:12px; color:var(--ok); font-weight:700; display:none; }
+ /* Inline SOAP note */
+ .soap-panel { display:none; background:#f7faff; border:2px solid var(--imss-dorado); border-radius:8px; padding:14px; margin-top:8px; }
+ .soap-panel.active { display:block; }
+ .soap-panel h3 { margin:0 0 10px; font-size:14px; color:var(--imss-verde); }
+ .soap-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+ .soap-field { display:flex; flex-direction:column; }
+ .soap-field label { font-size:11px; font-weight:700; color:var(--imss-verde); margin-bottom:3px; }
+ .soap-field textarea { border:1px solid #cfd8d3; border-radius:5px; padding:6px; font-size:12px; font-family:inherit; resize:vertical; min-height:60px; }
+ .soap-actions { margin-top:10px; display:flex; gap:8px; align-items:center; }
+ .soap-msg { font-size:12px; color:var(--ok); font-weight:700; display:none; }
 
-        .nav-bar { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
-        .nav-chip { padding:7px 12px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:var(--imss-verde); background:#fff; text-decoration:none; }
-        .nav-chip.active { background:var(--imss-dorado); border-color:#9e7a4c; }
+ .nav-bar { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+ .nav-chip { padding:7px 12px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #c7d9f7; color:var(--imss-verde); background:#fff; text-decoration:none; }
+ .nav-chip.active { background:var(--imss-dorado); border-color:#aa2a3b; }
 
-        .table-wrap { overflow-x:auto; border-radius:0 0 10px 10px; box-shadow:0 4px 16px rgba(0,0,0,0.08); }
+ .table-wrap { overflow-x:auto; border-radius:0 0 10px 10px; box-shadow:0 4px 16px rgba(0,0,0,0.08); }
 
-        @media (max-width:900px) {
-            .soap-grid { grid-template-columns:1fr; }
-            .main-table { font-size:11px; }
-        }
-    </style>
+ @media (max-width:900px) {
+ .soap-grid { grid-template-columns:1fr; }
+ .main-table { font-size:11px; }
+ }
+ </style>
 </head>
 <body>
 <div class="container">
-    <div class="nav-bar">
-        <a class="nav-chip" href="/">Menu</a>
-        <a class="nav-chip" href="/hospitalizacion">Hospitalizacion</a>
-        <a class="nav-chip" href="/hospitalizacion/censo">Censo</a>
-        <a class="nav-chip" href="/hospitalizacion/tablero">Guardia</a>
-        <a class="nav-chip active" href="/ward-round">Pase de Visita</a>
-        <a class="nav-chip" href="/expediente">Expediente</a>
-    </div>
+ <div class="nav-bar">
+ <a class="nav-chip" href="/">Menu</a>
+ <a class="nav-chip" href="/hospitalizacion">Hospitalizacion</a>
+ <a class="nav-chip" href="/hospitalizacion/censo">Censo</a>
+ <a class="nav-chip" href="/hospitalizacion/tablero">Guardia</a>
+ <a class="nav-chip active" href="/ward-round">Pase de Visita</a>
+ <a class="nav-chip" href="/expediente">Expediente</a>
+ </div>
 
-    <div class="header">
-        <div>
-            <h1>PASE DE VISITA DIGITAL - UROLOGIA</h1>
-            <div class="guardia">
-                Guardia: R5 {{ guardia.r5 or '---' }} | R4 {{ guardia.r4 or '---' }} | R3 {{ guardia.r3 or '---' }} | R2 {{ guardia.r2 or '---' }}
-            </div>
-        </div>
-        <div class="fecha">{{ fecha_hoy }}</div>
-    </div>
+ <div class="header">
+ <div>
+ <h1>PASE DE VISITA DIGITAL - UROLOGIA</h1>
+ <div class="guardia">
+ Guardia: R5 {{ guardia.r5 or '---' }} | R4 {{ guardia.r4 or '---' }} | R3 {{ guardia.r3 or '---' }} | R2 {{ guardia.r2 or '---' }}
+ </div>
+ </div>
+ <div class="fecha">{{ fecha_hoy }}</div>
+ </div>
 
-    <div class="summary-bar">
-        <div class="summary-stat">
-            <div class="num">{{ totals.total }}</div>
-            <div class="lbl">Pacientes</div>
-        </div>
-        <div class="summary-stat">
-            <div class="num" style="color:var(--warn);">{{ totals.delicados }}</div>
-            <div class="lbl">Delicados</div>
-        </div>
-        <div class="summary-stat">
-            <div class="num" style="color:var(--danger);">{{ totals.graves }}</div>
-            <div class="lbl">Graves</div>
-        </div>
-        <div class="summary-stat">
-            <div class="num">{{ totals.ocupacion }}%</div>
-            <div class="lbl">Ocupacion</div>
-        </div>
-        <div class="summary-stat">
-            <div class="num">{{ totals.promedio_estancia }}d</div>
-            <div class="lbl">Estancia prom.</div>
-        </div>
-    </div>
+ <div class="summary-bar">
+ <div class="summary-stat">
+ <div class="num">{{ totals.total }}</div>
+ <div class="lbl">Pacientes</div>
+ </div>
+ <div class="summary-stat">
+ <div class="num" style="color:var(--warn);">{{ totals.delicados }}</div>
+ <div class="lbl">Delicados</div>
+ </div>
+ <div class="summary-stat">
+ <div class="num" style="color:var(--danger);">{{ totals.graves }}</div>
+ <div class="lbl">Graves</div>
+ </div>
+ <div class="summary-stat">
+ <div class="num">{{ totals.ocupacion }}%</div>
+ <div class="lbl">Ocupacion</div>
+ </div>
+ <div class="summary-stat">
+ <div class="num">{{ totals.promedio_estancia }}d</div>
+ <div class="lbl">Estancia prom.</div>
+ </div>
+ </div>
 
-    <div class="table-wrap">
-    <table class="main-table">
-        <thead>
-        <tr>
-            <th style="width:50px;">Cama</th>
-            <th style="width:160px;">Paciente</th>
-            <th style="width:70px;">Dias H/PQ</th>
-            <th style="width:140px;">Diagnostico</th>
-            <th style="width:110px;">Vitales</th>
-            <th style="width:100px;">Labs</th>
-            <th style="width:80px;">Dispositivos</th>
-            <th style="width:70px;">Nota hoy</th>
-            <th style="width:50px;">Accion</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for p in patients %}
-        <tr class="{% if p.lab_alerts %}alert-row{% endif %}" id="row-{{ p.id }}">
-            <td style="font-weight:800; font-size:16px; color:var(--imss-verde); text-align:center;">{{ p.cama or '?' }}</td>
-            <td>
-                <div class="patient-name">{{ p.nombre_completo or p.nombre or 'SIN NOMBRE' }}</div>
-                <div class="patient-meta">{{ p.edad or '?' }}a {{ p.sexo or '' }} | NSS: {{ p.nss or '?' }}</div>
-                {% if p.estado_clinico == 'GRAVE' %}
-                <span class="lab-alert danger">GRAVE</span>
-                {% elif p.estado_clinico == 'DELICADO' %}
-                <span class="lab-alert danger" style="background:#fff3e0; color:#e67e22;">DELICADO</span>
-                {% endif %}
-            </td>
-            <td>
-                <div class="days">{{ p.dias_hosp_auto }}<small>/{{ p.dias_postqx_auto }}</small></div>
-                <div class="patient-meta">H / PQ</div>
-            </td>
-            <td style="font-size:11px;">{{ (p.diagnostico or '')[:45] }}{% if (p.diagnostico or '')|length > 45 %}...{% endif %}</td>
-            <td class="vitals-mini">
-                {% if p.vitals %}
-                <span class="v-label">TA</span> <span class="v-val">{{ p.vitals.get('sbp','?') }}/{{ p.vitals.get('dbp','?') }}</span><br>
-                <span class="v-label">FC</span> <span class="v-val">{{ p.vitals.get('heart_rate','?') }}</span>
-                <span class="v-label">T</span> <span class="v-val">{{ p.vitals.get('temperature','?') }}</span><br>
-                <span class="v-label">SpO2</span> <span class="v-val">{{ p.vitals.get('spo2','?') }}</span>
-                {% else %}
-                <span class="patient-meta">Sin vitales</span>
-                {% endif %}
-            </td>
-            <td>
-                {% for a in p.lab_alerts %}
-                <span class="lab-alert danger">{{ a }}</span>
-                {% endfor %}
-                {% if not p.lab_alerts %}
-                <span class="lab-alert ok">OK</span>
-                {% endif %}
-                {% if p.lab_summary.get('cr') %}<div style="font-size:10px;">Cr {{ p.lab_summary.cr }}</div>{% endif %}
-                {% if p.lab_summary.get('hb') %}<div style="font-size:10px;">Hb {{ p.lab_summary.hb }}</div>{% endif %}
-            </td>
-            <td>
-                {% for d in p.devices_abbr %}
-                <span class="device-chip">{{ d.abbr }}{{ d.fr }}{{ '-'+d.side if d.side else '' }}</span>
-                {% endfor %}
-                {% if not p.devices_abbr %}
-                <span class="patient-meta">---</span>
-                {% endif %}
-            </td>
-            <td style="text-align:center;">
-                {% if p.nota_hoy %}
-                <span class="note-status done">OK</span>
-                {% else %}
-                <span class="note-status pending">Pendiente</span>
-                {% endif %}
-            </td>
-            <td style="text-align:center;">
-                <button class="btn btn-sm btn-dorado" onclick="toggleSOAP({{ p.id }})">
-                    {% if p.nota_hoy %}Ver{% else %}+ Nota{% endif %}
-                </button>
-            </td>
-        </tr>
-        <tr id="soap-row-{{ p.id }}" style="display:none;">
-            <td colspan="9" style="padding:0;">
-                <div class="soap-panel active" id="soap-{{ p.id }}">
-                    <h3>Nota SOAP - {{ p.nombre_completo or p.nombre or '' }} (Cama {{ p.cama or '?' }})</h3>
-                    <div class="soap-grid">
-                        <div class="soap-field">
-                            <label>S (Subjetivo)</label>
-                            <textarea id="soap-s-{{ p.id }}" placeholder="Sintomas que refiere el paciente..."></textarea>
-                        </div>
-                        <div class="soap-field">
-                            <label>O (Objetivo)</label>
-                            <textarea id="soap-o-{{ p.id }}" placeholder="Signos vitales, exploracion fisica..."></textarea>
-                        </div>
-                        <div class="soap-field">
-                            <label>A (Analisis/Diagnostico)</label>
-                            <textarea id="soap-a-{{ p.id }}" placeholder="Impresion diagnostica, evolucion..."></textarea>
-                        </div>
-                        <div class="soap-field">
-                            <label>P (Plan)</label>
-                            <textarea id="soap-p-{{ p.id }}" placeholder="Plan terapeutico, estudios, indicaciones..."></textarea>
-                        </div>
-                    </div>
-                    <div class="soap-actions">
-                        <button class="btn" onclick="autofillVitals({{ p.id }}, {{ p.consulta_id or 0 }})">Auto-llenar vitales</button>
-                        <button class="btn btn-dorado" onclick="saveSOAP({{ p.id }}, {{ p.consulta_id or 0 }}, {{ p.id }}, '{{ p.nss or '' }}', '{{ (p.nombre_completo or p.nombre or '')|replace("'","") }}', '{{ p.cama or '' }}')">Guardar nota</button>
-                        <button class="btn" style="background:#95a5a6;" onclick="toggleSOAP({{ p.id }})">Cerrar</button>
-                        <span class="soap-msg" id="soap-msg-{{ p.id }}">Nota guardada</span>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        {% else %}
-        <tr><td colspan="9" style="text-align:center; padding:30px; color:#5f6d68;">No hay pacientes hospitalizados activos.</td></tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    </div>
+ <div class="table-wrap">
+ <table class="main-table">
+ <thead>
+ <tr>
+ <th style="width:50px;">Cama</th>
+ <th style="width:160px;">Paciente</th>
+ <th style="width:70px;">Dias H/PQ</th>
+ <th style="width:140px;">Diagnostico</th>
+ <th style="width:110px;">Vitales</th>
+ <th style="width:100px;">Labs</th>
+ <th style="width:80px;">Dispositivos</th>
+ <th style="width:70px;">Nota hoy</th>
+ <th style="width:50px;">Accion</th>
+ </tr>
+ </thead>
+ <tbody>
+ {% for p in patients %}
+ <tr class="{% if p.lab_alerts %}alert-row{% endif %}" id="row-{{ p.id }}">
+ <td style="font-weight:800; font-size:16px; color:var(--imss-verde); text-align:center;">{{ p.cama or '?' }}</td>
+ <td>
+ <div class="patient-name">{{ p.nombre_completo or p.nombre or 'SIN NOMBRE' }}</div>
+ <div class="patient-meta">{{ p.edad or '?' }}a {{ p.sexo or '' }} | NSS: {{ p.nss or '?' }}</div>
+ {% if p.estado_clinico == 'GRAVE' %}
+ <span class="lab-alert danger">GRAVE</span>
+ {% elif p.estado_clinico == 'DELICADO' %}
+ <span class="lab-alert danger" style="background:#fff3e0; color:#e67e22;">DELICADO</span>
+ {% endif %}
+ </td>
+ <td>
+ <div class="days">{{ p.dias_hosp_auto }}<small>/{{ p.dias_postqx_auto }}</small></div>
+ <div class="patient-meta">H / PQ</div>
+ </td>
+ <td style="font-size:11px;">{{ (p.diagnostico or '')[:45] }}{% if (p.diagnostico or '')|length > 45 %}...{% endif %}</td>
+ <td class="vitals-mini">
+ {% if p.vitals %}
+ <span class="v-label">TA</span> <span class="v-val">{{ p.vitals.get('sbp','?') }}/{{ p.vitals.get('dbp','?') }}</span><br>
+ <span class="v-label">FC</span> <span class="v-val">{{ p.vitals.get('heart_rate','?') }}</span>
+ <span class="v-label">T</span> <span class="v-val">{{ p.vitals.get('temperature','?') }}</span><br>
+ <span class="v-label">SpO2</span> <span class="v-val">{{ p.vitals.get('spo2','?') }}</span>
+ {% else %}
+ <span class="patient-meta">Sin vitales</span>
+ {% endif %}
+ </td>
+ <td>
+ {% for a in p.lab_alerts %}
+ <span class="lab-alert danger">{{ a }}</span>
+ {% endfor %}
+ {% if not p.lab_alerts %}
+ <span class="lab-alert ok">OK</span>
+ {% endif %}
+ {% if p.lab_summary.get('cr') %}<div style="font-size:10px;">Cr {{ p.lab_summary.cr }}</div>{% endif %}
+ {% if p.lab_summary.get('hb') %}<div style="font-size:10px;">Hb {{ p.lab_summary.hb }}</div>{% endif %}
+ </td>
+ <td>
+ {% for d in p.devices_abbr %}
+ <span class="device-chip">{{ d.abbr }}{{ d.fr }}{{ '-'+d.side if d.side else '' }}</span>
+ {% endfor %}
+ {% if not p.devices_abbr %}
+ <span class="patient-meta">---</span>
+ {% endif %}
+ </td>
+ <td style="text-align:center;">
+ {% if p.nota_hoy %}
+ <span class="note-status done">OK</span>
+ {% else %}
+ <span class="note-status pending">Pendiente</span>
+ {% endif %}
+ </td>
+ <td style="text-align:center;">
+ <button class="btn btn-sm btn-dorado" onclick="toggleSOAP({{ p.id }})">
+ {% if p.nota_hoy %}Ver{% else %}+ Nota{% endif %}
+ </button>
+ </td>
+ </tr>
+ <tr id="soap-row-{{ p.id }}" style="display:none;">
+ <td colspan="9" style="padding:0;">
+ <div class="soap-panel active" id="soap-{{ p.id }}">
+ <h3>Nota SOAP - {{ p.nombre_completo or p.nombre or '' }} (Cama {{ p.cama or '?' }})</h3>
+ <div class="soap-grid">
+ <div class="soap-field">
+ <label>S (Subjetivo)</label>
+ <textarea id="soap-s-{{ p.id }}" placeholder="Sintomas que refiere el paciente..."></textarea>
+ </div>
+ <div class="soap-field">
+ <label>O (Objetivo)</label>
+ <textarea id="soap-o-{{ p.id }}" placeholder="Signos vitales, exploracion fisica..."></textarea>
+ </div>
+ <div class="soap-field">
+ <label>A (Analisis/Diagnostico)</label>
+ <textarea id="soap-a-{{ p.id }}" placeholder="Impresion diagnostica, evolucion..."></textarea>
+ </div>
+ <div class="soap-field">
+ <label>P (Plan)</label>
+ <textarea id="soap-p-{{ p.id }}" placeholder="Plan terapeutico, estudios, indicaciones..."></textarea>
+ </div>
+ </div>
+ <div class="soap-actions">
+ <button class="btn" onclick="autofillVitals({{ p.id }}, {{ p.consulta_id or 0 }})">Auto-llenar vitales</button>
+ <button class="btn btn-dorado" onclick="saveSOAP({{ p.id }}, {{ p.consulta_id or 0 }}, {{ p.id }}, '{{ p.nss or '' }}', '{{ (p.nombre_completo or p.nombre or '')|replace("'","") }}', '{{ p.cama or '' }}')">Guardar nota</button>
+ <button class="btn" style="background:#95a5a6;" onclick="toggleSOAP({{ p.id }})">Cerrar</button>
+ <span class="soap-msg" id="soap-msg-{{ p.id }}">Nota guardada</span>
+ </div>
+ </div>
+ </td>
+ </tr>
+ {% else %}
+ <tr><td colspan="9" style="text-align:center; padding:30px; color:#5c76a6;">No hay pacientes hospitalizados activos.</td></tr>
+ {% endfor %}
+ </tbody>
+ </table>
+ </div>
 </div>
 
 <script>
 function toggleSOAP(id) {
-    const row = document.getElementById('soap-row-' + id);
-    row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+ const row = document.getElementById('soap-row-' + id);
+ row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
 }
 
 async function autofillVitals(id, consulta_id) {
-    try {
-        const resp = await fetch('/api/ward-round/vitals?consulta_id=' + consulta_id);
-        const data = await resp.json();
-        if (data.ok && data.vitals) {
-            const v = data.vitals;
-            const parts = [];
-            if (v.sbp || v.dbp) parts.push('TA ' + (v.sbp||'?') + '/' + (v.dbp||'?'));
-            if (v.heart_rate) parts.push('FC ' + v.heart_rate);
-            if (v.temperature) parts.push('Temp ' + v.temperature);
-            if (v.spo2) parts.push('SpO2 ' + v.spo2);
-            if (v.resp_rate) parts.push('FR ' + v.resp_rate);
-            document.getElementById('soap-o-' + id).value = parts.join(', ') + '. ';
-        }
-    } catch(e) { console.warn('autofill error', e); }
+ try {
+ const resp = await fetch('/api/ward-round/vitals?consulta_id=' + consulta_id);
+ const data = await resp.json();
+ if (data.ok && data.vitals) {
+ const v = data.vitals;
+ const parts = [];
+ if (v.sbp || v.dbp) parts.push('TA ' + (v.sbp||'?') + '/' + (v.dbp||'?'));
+ if (v.heart_rate) parts.push('FC ' + v.heart_rate);
+ if (v.temperature) parts.push('Temp ' + v.temperature);
+ if (v.spo2) parts.push('SpO2 ' + v.spo2);
+ if (v.resp_rate) parts.push('FR ' + v.resp_rate);
+ document.getElementById('soap-o-' + id).value = parts.join(', ') + '. ';
+ }
+ } catch(e) { console.warn('autofill error', e); }
 }
 
 async function saveSOAP(rowId, consulta_id, hosp_id, nss, nombre, cama) {
-    const fd = new FormData();
-    fd.append('consulta_id', consulta_id);
-    fd.append('hospitalizacion_id', hosp_id);
-    fd.append('nss', nss);
-    fd.append('nombre', nombre);
-    fd.append('cama', cama);
-    fd.append('soap_s', document.getElementById('soap-s-' + rowId).value);
-    fd.append('soap_o', document.getElementById('soap-o-' + rowId).value);
-    fd.append('soap_a', document.getElementById('soap-a-' + rowId).value);
-    fd.append('soap_p', document.getElementById('soap-p-' + rowId).value);
+ const fd = new FormData();
+ fd.append('consulta_id', consulta_id);
+ fd.append('hospitalizacion_id', hosp_id);
+ fd.append('nss', nss);
+ fd.append('nombre', nombre);
+ fd.append('cama', cama);
+ fd.append('soap_s', document.getElementById('soap-s-' + rowId).value);
+ fd.append('soap_o', document.getElementById('soap-o-' + rowId).value);
+ fd.append('soap_a', document.getElementById('soap-a-' + rowId).value);
+ fd.append('soap_p', document.getElementById('soap-p-' + rowId).value);
 
-    try {
-        const resp = await fetch('/ward-round/nota', { method:'POST', body:fd });
-        const data = await resp.json();
-        if (data.ok) {
-            const msg = document.getElementById('soap-msg-' + rowId);
-            msg.style.display = 'inline';
-            setTimeout(() => { msg.style.display = 'none'; }, 3000);
-            // Update note status
-            const noteCell = document.querySelector('#row-' + rowId + ' .note-status');
-            if (noteCell) { noteCell.className = 'note-status done'; noteCell.textContent = 'OK'; }
-        } else {
-            alert('Error: ' + (data.error || 'desconocido'));
-        }
-    } catch(e) { alert('Error de red: ' + e.message); }
+ try {
+ const resp = await fetch('/ward-round/nota', { method:'POST', body:fd });
+ const data = await resp.json();
+ if (data.ok) {
+ const msg = document.getElementById('soap-msg-' + rowId);
+ msg.style.display = 'inline';
+ setTimeout(() => { msg.style.display = 'none'; }, 3000);
+ // Update note status
+ const noteCell = document.querySelector('#row-' + rowId + ' .note-status');
+ if (noteCell) { noteCell.className = 'note-status done'; noteCell.textContent = 'OK'; }
+ } else {
+ alert('Error: ' + (data.error || 'desconocido'));
+ }
+ } catch(e) { alert('Error de red: ' + e.message); }
 }
 </script>
 </body>

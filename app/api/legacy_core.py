@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import json
-from datetime import date
+import os
+from datetime import date, datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, Response, RedirectResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 from sqlalchemy import desc
@@ -24,6 +25,7 @@ except Exception:
 
 
 router = APIRouter(tags=["legacy-core"])
+GATEWAY_COOKIE_NAME = "uromed_inicio_ok"
 
 
 def _get_db():
@@ -62,12 +64,36 @@ def _trends_response_common() -> Dict[str, Any]:
     }
 
 
-@router.get("/", response_class=HTMLResponse)
-async def menu_principal(
+async def _render_menu_principal(
     request: Request,
     db: Session = Depends(_get_db),
     sdb: Session = Depends(_get_surgical_db),
 ):
+    kpis = _compute_menu_kpis(db, sdb)
+
+    return m.render_template(
+        m.MENU_TEMPLATE,
+        request=request,
+        imss_logo_url=m._resolve_menu_asset(
+            m.MENU_IMSS_LOGO_URL, m.MENU_IMSS_LOGO_PATH, m.MENU_IMSS_LOGO_FALLBACK_PATH
+        ),
+        imss_pattern_url=m._resolve_menu_asset(
+            m.MENU_IMSS_PATTERN_URL, m.MENU_IMSS_PATTERN_PATH, m.MENU_IMSS_PATTERN_FALLBACK_PATH
+        ),
+        urologia_logo_url=m._resolve_menu_asset(
+            m.MENU_UROLOGIA_LOGO_URL, m.MENU_UROLOGIA_LOGO_PATH, m.MENU_UROLOGIA_LOGO_FALLBACK_PATH
+        ),
+        hospital_bg_url=m._resolve_menu_asset(
+            m.MENU_HOSPITAL_BG_URL, m.MENU_HOSPITAL_BG_PATH, m.MENU_HOSPITAL_BG_FALLBACK_PATH
+        ),
+        kpi_camas_ocupadas=kpis["kpi_camas_ocupadas"],
+        kpi_camas_libres=kpis["kpi_camas_libres"],
+        kpi_pacientes_graves=kpis["kpi_pacientes_graves"],
+        kpi_cirugias_pendientes=kpis["kpi_cirugias_pendientes"],
+    )
+
+
+def _compute_menu_kpis(db: Session, sdb: Session) -> Dict[str, int]:
     total_camas_config = 40
     kpi_camas_ocupadas = 0
     kpi_camas_libres = 0
@@ -167,26 +193,91 @@ async def menu_principal(
     except Exception:
         kpi_cirugias_pendientes = 0
 
+    return {
+        "kpi_camas_ocupadas": kpi_camas_ocupadas,
+        "kpi_camas_libres": kpi_camas_libres,
+        "kpi_pacientes_graves": kpi_pacientes_graves,
+        "kpi_cirugias_pendientes": kpi_cirugias_pendientes,
+        "total_camas_config": total_camas_config,
+    }
+
+
+@router.get("/", response_class=HTMLResponse)
+async def inicio_plataforma(
+    request: Request,
+    db: Session = Depends(_get_db),
+    sdb: Session = Depends(_get_surgical_db),
+):
+    if str(request.cookies.get(GATEWAY_COOKIE_NAME) or "").strip() == "1":
+        return await _render_menu_principal(request, db, sdb)
     return m.render_template(
-        m.MENU_TEMPLATE,
+        "inicio_uromed.html",
         request=request,
-        imss_logo_url=m._resolve_menu_asset(
-            m.MENU_IMSS_LOGO_URL, m.MENU_IMSS_LOGO_PATH, m.MENU_IMSS_LOGO_FALLBACK_PATH
-        ),
-        imss_pattern_url=m._resolve_menu_asset(
-            m.MENU_IMSS_PATTERN_URL, m.MENU_IMSS_PATTERN_PATH, m.MENU_IMSS_PATTERN_FALLBACK_PATH
-        ),
-        urologia_logo_url=m._resolve_menu_asset(
-            m.MENU_UROLOGIA_LOGO_URL, m.MENU_UROLOGIA_LOGO_PATH, m.MENU_UROLOGIA_LOGO_FALLBACK_PATH
-        ),
-        hospital_bg_url=m._resolve_menu_asset(
-            m.MENU_HOSPITAL_BG_URL, m.MENU_HOSPITAL_BG_PATH, m.MENU_HOSPITAL_BG_FALLBACK_PATH
-        ),
-        kpi_camas_ocupadas=kpi_camas_ocupadas,
-        kpi_camas_libres=kpi_camas_libres,
-        kpi_pacientes_graves=kpi_pacientes_graves,
-        kpi_cirugias_pendientes=kpi_cirugias_pendientes,
+        error_message="",
+        username_hint=os.getenv("IMSS_USER", "Faudes"),
     )
+
+
+@router.post("/inicio/ingresar", response_class=HTMLResponse)
+async def inicio_plataforma_ingresar(request: Request):
+    form = await request.form()
+    username = str(form.get("username") or "").strip()
+    password = str(form.get("password") or "")
+    remember_me = str(form.get("remember_me") or "").lower() in {"1", "true", "on", "si", "sí", "yes"}
+
+    expected_user = (os.getenv("IMSS_USER", "Faudes") or "").strip()
+    expected_pass = (os.getenv("IMSS_PASS", "") or "").strip()
+
+    valid_user = (not expected_user) or (username.lower() == expected_user.lower())
+    valid_pass = (not expected_pass) or (password == expected_pass)
+
+    if not valid_user or not valid_pass:
+        return m.render_template(
+            "inicio_uromed.html",
+            request=request,
+            error_message="Usuario o contraseña inválidos.",
+            username_hint=expected_user or "Usuario",
+        )
+
+    response = RedirectResponse(url="/menu-principal", status_code=303)
+    response.set_cookie(
+        key=GATEWAY_COOKIE_NAME,
+        value="1",
+        max_age=(30 * 24 * 3600) if remember_me else None,
+        httponly=True,
+        samesite="lax",
+        path="/",
+    )
+    return response
+
+
+@router.get("/menu-principal", response_class=HTMLResponse)
+async def menu_principal(
+    request: Request,
+    db: Session = Depends(_get_db),
+    sdb: Session = Depends(_get_surgical_db),
+):
+    response = await _render_menu_principal(request, db, sdb)
+    if str(request.cookies.get(GATEWAY_COOKIE_NAME) or "").strip() != "1":
+        response.set_cookie(
+            key=GATEWAY_COOKIE_NAME,
+            value="1",
+            max_age=24 * 3600,
+            httponly=True,
+            samesite="lax",
+            path="/",
+        )
+    return response
+
+
+@router.get("/api/menu/kpis", response_class=JSONResponse)
+async def menu_kpis(
+    db: Session = Depends(_get_db),
+    sdb: Session = Depends(_get_surgical_db),
+):
+    payload = _compute_menu_kpis(db, sdb)
+    payload["updated_at"] = datetime.now(timezone.utc).isoformat()
+    return JSONResponse(payload)
 
 
 @router.get("/consulta")

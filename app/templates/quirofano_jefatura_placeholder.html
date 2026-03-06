@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Jefatura de Quirófano</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
-    <style>
-        :root{--verde:#13322B;--verde2:#1a4a3f;--dorado:#B38E5D;--bg:#f3f7f6;--b:#d5e2de}
-        *{box-sizing:border-box}
-        body{margin:0;padding:20px;background:linear-gradient(125deg,#0f3d36,#1e5a51);font-family:'Montserrat',sans-serif}
-        .wrap{max-width:1080px;margin:0 auto;border:1px solid rgba(179,142,93,.45);border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 18px 36px rgba(0,0,0,.24)}
-        .head{padding:22px;background:linear-gradient(135deg,var(--verde),var(--verde2));color:#fff;border-bottom:3px solid var(--dorado)}
-        .head h1{margin:0;font-size:30px}
-        .head p{margin:8px 0 0;font-size:13px;opacity:.88}
-        .content{padding:20px 22px;background:linear-gradient(180deg,#f8fbfa,#f4f8f7)}
-        .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-        .badge{display:inline-flex;padding:5px 10px;border-radius:999px;background:#fff;border:1px solid #d0ddd8;font-size:11px;font-weight:800;color:#31564d}
-        .panel{border:1px solid var(--b);border-radius:14px;background:#fff;padding:16px}
-        .panel h2{margin:0 0 10px;font-size:20px;color:var(--verde)}
-        .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
-        .card{border:1px solid #d7e3df;border-radius:11px;padding:12px;background:#f9fcfb}
-        .k{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#608078;font-weight:800}
-        .v{font-size:14px;font-weight:900;color:#173e34;margin-top:4px}
-        .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-        .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:10px;text-decoration:none;font-size:12px;font-weight:800;border:1px solid transparent}
-        .btn.main{background:linear-gradient(135deg,var(--verde),var(--verde2));color:#fff}
-        .btn.alt{background:#fff;color:var(--verde);border-color:#cad8d3}
-        @media (max-width:760px){body{padding:10px}.head h1{font-size:24px}.grid{grid-template-columns:1fr}}
-    </style>
+ <meta charset="UTF-8">
+ <title>Jefatura de Quirófano</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <link href="/static/css/quirofano_visual_refresh.css" rel="stylesheet">
+ <style>
+ :root{--verde:#0a3161;--verde2:#1f4f9f;--dorado:#c82f3f;--bg:#f3f7f6;--b:#d5e2de}
+ *{box-sizing:border-box}
+ body{margin:0;padding:20px;background:linear-gradient(125deg,#0f3d36,#1e5a51);font-family:'Montserrat',sans-serif}
+ .wrap{max-width:1080px;margin:0 auto;border:1px solid rgba(200,47,63,.45);border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 18px 36px rgba(0,0,0,.24)}
+ .head{padding:22px;background:linear-gradient(135deg,var(--verde),var(--verde2));color:#fff;border-bottom:3px solid var(--dorado)}
+ .head h1{margin:0;font-size:30px}
+ .head p{margin:8px 0 0;font-size:13px;opacity:.88}
+ .content{padding:20px 22px;background:linear-gradient(180deg,#f8fbff,#f4f8f7)}
+ .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+ .badge{display:inline-flex;padding:5px 10px;border-radius:999px;background:#fff;border:1px solid #d0ddd8;font-size:11px;font-weight:800;color:#31564d}
+ .panel{border:1px solid var(--b);border-radius:14px;background:#fff;padding:16px}
+ .panel h2{margin:0 0 10px;font-size:20px;color:var(--verde)}
+ .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+ .card{border:1px solid #d7e3df;border-radius:11px;padding:12px;background:#f9fcfb}
+ .k{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#608078;font-weight:800}
+ .v{font-size:14px;font-weight:900;color:#173e34;margin-top:4px}
+ .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+ .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:10px;text-decoration:none;font-size:12px;font-weight:800;border:1px solid transparent}
+ .btn.main{background:linear-gradient(135deg,var(--verde),var(--verde2));color:#fff}
+ .btn.alt{background:#fff;color:var(--verde);border-color:#cad8d3}
+ @media (max-width:760px){body{padding:10px}.head h1{font-size:24px}.grid{grid-template-columns:1fr}}
+ </style>
 </head>
 <body class="qf-refresh">
-    <div class="wrap">
-        <div class="head">
-            <h1>Jefatura de Quirófano</h1>
-            <p>Interfaz de espera para módulo directivo. Construcción modular en curso con base de datos dedicada.</p>
-        </div>
-        <div class="content">
-            <div class="badge-row">
-                <span class="badge">Módulo en construcción</span>
-                <span class="badge">DB dedicada: Base de datos de jefatura de quirófano</span>
-                <span class="badge">Actor: {{ actor }}</span>
-            </div>
+ <div class="wrap">
+ <div class="head">
+ <h1>Jefatura de Quirófano</h1>
+ <p>Interfaz de espera para módulo directivo. Construcción modular en curso con base de datos dedicada.</p>
+ </div>
+ <div class="content">
+ <div class="badge-row">
+ <span class="badge">Módulo en construcción</span>
+ <span class="badge">DB dedicada: Base de datos de jefatura de quirófano</span>
+ <span class="badge">Actor: {{ actor }}</span>
+ </div>
 
-            <div class="panel">
-                <h2>Estado de anclaje</h2>
-                <p>Este enlace ya está activo y separado del flujo quirúrgico operativo. Los accesos quedan registrados en una base dedicada para futuras funciones administrativas.</p>
-                <div class="grid">
-                    <div class="card"><div class="k">Archivo de base de datos</div><div class="v">{{ stats.db_file }}</div></div>
-                    <div class="card"><div class="k">Total accesos registrados</div><div class="v">{{ stats.total_access }}</div></div>
-                    <div class="card"><div class="k">Último actor</div><div class="v">{{ stats.last_actor }}</div></div>
-                    <div class="card"><div class="k">Último acceso</div><div class="v">{{ stats.last_at }}</div></div>
-                </div>
-                <div class="actions">
-                    <a class="btn main" href="/quirofano/lista-espera">Lista de espera de programación quirúrgica</a>
-                    <a class="btn alt" href="/quirofano">Volver a módulo quirúrgico</a>
-                </div>
-            </div>
-        </div>
-    </div>
+ <div class="panel">
+ <h2>Estado de anclaje</h2>
+ <p>Este enlace ya está activo y separado del flujo quirúrgico operativo. Los accesos quedan registrados en una base dedicada para futuras funciones administrativas.</p>
+ <div class="grid">
+ <div class="card"><div class="k">Archivo de base de datos</div><div class="v">{{ stats.db_file }}</div></div>
+ <div class="card"><div class="k">Total accesos registrados</div><div class="v">{{ stats.total_access }}</div></div>
+ <div class="card"><div class="k">Último actor</div><div class="v">{{ stats.last_actor }}</div></div>
+ <div class="card"><div class="k">Último acceso</div><div class="v">{{ stats.last_at }}</div></div>
+ </div>
+ <div class="actions">
+ <a class="btn main" href="/quirofano/lista-espera">Lista de espera de programación quirúrgica</a>
+ <a class="btn alt" href="/quirofano">Volver a módulo quirúrgico</a>
+ </div>
+ </div>
+ </div>
+ </div>
 </body>
 </html>

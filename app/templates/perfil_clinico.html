@@ -1,455 +1,455 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Perfil Clínico — {{ servicio_label }}</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <link href="/static/css/rnp_redesign.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde:#13322B; --imss-dorado:#B38E5D; --fondo:#f4f6f9; }
-        body { margin:0; padding:0; font-family:'Montserrat',sans-serif; background:var(--fondo); min-height:100vh; }
-        .top-bar { background:var(--imss-verde); padding:12px 24px; display:flex; align-items:center; gap:14px; }
-        .top-bar a { color:#fff; text-decoration:none; font-weight:700; font-size:13px; opacity:0.85; transition:opacity 0.2s; }
-        .top-bar a:hover { opacity:1; }
-        .top-bar .sep { color:rgba(255,255,255,0.3); }
-        .top-bar .active { opacity:1; color:var(--imss-dorado); }
-        .container { max-width:1280px; margin:20px auto; padding:0 20px; }
+ <meta charset="UTF-8">
+ <title>Perfil Clínico — {{ servicio_label }}</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <link href="/static/css/rnp_redesign.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde:#0a3161; --imss-dorado:#c82f3f; --fondo:#f4f6f9; }
+ body { margin:0; padding:0; font-family:'Montserrat',sans-serif; background:var(--fondo); min-height:100vh; }
+ .top-bar { background:var(--imss-verde); padding:12px 24px; display:flex; align-items:center; gap:14px; }
+ .top-bar a { color:#fff; text-decoration:none; font-weight:700; font-size:13px; opacity:0.85; transition:opacity 0.2s; }
+ .top-bar a:hover { opacity:1; }
+ .top-bar .sep { color:rgba(255,255,255,0.3); }
+ .top-bar .active { opacity:1; color:var(--imss-dorado); }
+ .container { max-width:1280px; margin:20px auto; padding:0 20px; }
 
-        /* ── Busqueda panel ── */
-        .search-panel { background:#fff; border-radius:14px; box-shadow:0 6px 28px rgba(19,50,43,0.1); padding:30px; text-align:center; }
-        .search-panel h2 { color:var(--imss-verde); margin-bottom:6px; font-size:22px; }
-        .search-panel .sub { color:#5d6d67; font-size:13px; margin-bottom:20px; }
-        .search-form { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; max-width:700px; margin:0 auto; }
-        .search-form input { flex:1; min-width:200px; border:2px solid #d2e0da; border-radius:10px; padding:12px 16px; font-size:14px; font-family:inherit; transition:border-color 0.2s; }
-        .search-form input:focus { border-color:var(--imss-dorado); outline:none; box-shadow:0 0 0 3px rgba(179,142,93,0.15); }
-        .search-form button { background:var(--imss-verde); color:#fff; border:none; border-radius:10px; padding:12px 28px; font-weight:800; font-size:14px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:8px; }
-        .search-form button:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(19,50,43,0.3); }
+ /* ── Busqueda panel ── */
+ .search-panel { background:#fff; border-radius:14px; box-shadow:0 6px 28px rgba(31,79,159,0.1); padding:30px; text-align:center; }
+ .search-panel h2 { color:var(--imss-verde); margin-bottom:6px; font-size:22px; }
+ .search-panel .sub { color:#5d6d67; font-size:13px; margin-bottom:20px; }
+ .search-form { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; max-width:700px; margin:0 auto; }
+ .search-form input { flex:1; min-width:200px; border:2px solid #d2e0da; border-radius:10px; padding:12px 16px; font-size:14px; font-family:inherit; transition:border-color 0.2s; }
+ .search-form input:focus { border-color:var(--imss-dorado); outline:none; box-shadow:0 0 0 3px rgba(200,47,63,0.12); }
+ .search-form button { background:var(--imss-verde); color:#fff; border:none; border-radius:10px; padding:12px 28px; font-weight:800; font-size:14px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:8px; }
+ .search-form button:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(31,79,159,0.3); }
 
-        /* ── Resultados ── */
-        .results-panel { margin-top:20px; }
-        .patient-card { background:#fff; border-radius:12px; border:2px solid transparent; padding:16px 20px; margin-bottom:12px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:16px; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
-        .patient-card:hover { border-color:var(--imss-dorado); box-shadow:0 4px 20px rgba(179,142,93,0.15); transform:translateY(-2px); }
-        .patient-avatar { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg, #13322B, #1a5c4a); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:18px; flex-shrink:0; }
-        .patient-info h3 { color:var(--imss-verde); margin:0 0 4px 0; font-size:15px; }
-        .patient-info .meta { display:flex; gap:12px; flex-wrap:wrap; }
-        .patient-info .meta span { font-size:12px; color:#5d6d67; background:#f0f5f3; padding:2px 8px; border-radius:6px; }
+ /* ── Resultados ── */
+ .results-panel { margin-top:20px; }
+ .patient-card { background:#fff; border-radius:12px; border:2px solid transparent; padding:16px 20px; margin-bottom:12px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:16px; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+ .patient-card:hover { border-color:var(--imss-dorado); box-shadow:0 4px 20px rgba(200,47,63,0.12); transform:translateY(-2px); }
+ .patient-avatar { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg, #0a3161, #2e6ec9); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:18px; flex-shrink:0; }
+ .patient-info h3 { color:var(--imss-verde); margin:0 0 4px 0; font-size:15px; }
+ .patient-info .meta { display:flex; gap:12px; flex-wrap:wrap; }
+ .patient-info .meta span { font-size:12px; color:#5d6d67; background:#edf3ff; padding:2px 8px; border-radius:6px; }
 
-        /* ── Perfil clínico ── */
-        .profile-view { display:none; }
-        .profile-view.active { display:block; }
-        .profile-header { background:linear-gradient(135deg, #13322B 0%, #1a5c4a 100%); border-radius:14px; padding:24px 28px; color:#fff; margin-bottom:20px; display:flex; align-items:center; gap:20px; }
-        .profile-avatar { width:72px; height:72px; border-radius:50%; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:900; flex-shrink:0; border:3px solid var(--imss-dorado); }
-        .profile-name { font-size:22px; font-weight:800; margin-bottom:4px; }
-        .profile-meta { display:flex; gap:14px; flex-wrap:wrap; opacity:0.9; font-size:13px; }
-        .profile-meta span { background:rgba(255,255,255,0.12); padding:3px 10px; border-radius:8px; }
+ /* ── Perfil clínico ── */
+ .profile-view { display:none; }
+ .profile-view.active { display:block; }
+ .profile-header { background:linear-gradient(135deg, #0a3161 0%, #2e6ec9 100%); border-radius:14px; padding:24px 28px; color:#fff; margin-bottom:20px; display:flex; align-items:center; gap:20px; }
+ .profile-avatar { width:72px; height:72px; border-radius:50%; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:900; flex-shrink:0; border:3px solid var(--imss-dorado); }
+ .profile-name { font-size:22px; font-weight:800; margin-bottom:4px; }
+ .profile-meta { display:flex; gap:14px; flex-wrap:wrap; opacity:0.9; font-size:13px; }
+ .profile-meta span { background:rgba(255,255,255,0.12); padding:3px 10px; border-radius:8px; }
 
-        .profile-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px; margin-bottom:20px; }
-        .profile-card { background:#fff; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.06); overflow:hidden; }
-        .profile-card-head { padding:12px 16px; font-weight:800; font-size:13px; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:8px; }
-        .profile-card-body { padding:12px 16px; font-size:13px; color:#333; max-height:300px; overflow-y:auto; }
-        .profile-card-body p { margin:4px 0; }
-        .profile-card-body .empty { color:#999; font-style:italic; }
+ .profile-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px; margin-bottom:20px; }
+ .profile-card { background:#fff; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.06); overflow:hidden; }
+ .profile-card-head { padding:12px 16px; font-weight:800; font-size:13px; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:8px; }
+ .profile-card-body { padding:12px 16px; font-size:13px; color:#333; max-height:300px; overflow-y:auto; }
+ .profile-card-body p { margin:4px 0; }
+ .profile-card-body .empty { color:#999; font-style:italic; }
 
-        /* Colores por tipo de card */
-        .card-antecedentes .profile-card-head { background:#e8f5e9; color:#1b5e20; }
-        .card-quirurgicos .profile-card-head { background:#fff3e0; color:#e65100; }
-        .card-alergias .profile-card-head { background:#fce4ec; color:#c62828; }
-        .card-resumen .profile-card-head { background:#e3f2fd; color:#0d47a1; }
-        .card-hospitalizaciones .profile-card-head { background:#f3e5f5; color:#6a1b9a; }
-        .card-alertas .profile-card-head { background:#ffebee; color:#b71c1c; }
+ /* Colores por tipo de card */
+ .card-antecedentes .profile-card-head { background:#e8f5e9; color:#1b5e20; }
+ .card-quirurgicos .profile-card-head { background:#fff3e0; color:#e65100; }
+ .card-alergias .profile-card-head { background:#fce4ec; color:#c62828; }
+ .card-resumen .profile-card-head { background:#e3f2fd; color:#0d47a1; }
+ .card-hospitalizaciones .profile-card-head { background:#f3e5f5; color:#6a1b9a; }
+ .card-alertas .profile-card-head { background:#ffebee; color:#b71c1c; }
 
-        /* ── Notas del expediente ── */
-        .notes-section { margin-top:20px; }
-        .notes-section h3 { color:var(--imss-verde); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-        .note-timeline { position:relative; padding-left:30px; }
-        .note-timeline::before { content:''; position:absolute; left:12px; top:0; bottom:0; width:2px; background:#d2e0da; }
-        .note-entry { position:relative; margin-bottom:16px; }
-        .note-dot { position:absolute; left:-26px; top:6px; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-        .note-content { background:#fff; border-radius:10px; padding:14px 16px; box-shadow:0 2px 10px rgba(0,0,0,0.05); border-left:4px solid #ccc; }
-        .note-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px; }
-        .note-service { font-weight:800; font-size:12px; text-transform:uppercase; padding:2px 10px; border-radius:6px; }
-        .note-date { font-size:11px; color:#888; }
-        .note-body { font-size:13px; color:#333; }
+ /* ── Notas del expediente ── */
+ .notes-section { margin-top:20px; }
+ .notes-section h3 { color:var(--imss-verde); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+ .note-timeline { position:relative; padding-left:30px; }
+ .note-timeline::before { content:''; position:absolute; left:12px; top:0; bottom:0; width:2px; background:#d2e0da; }
+ .note-entry { position:relative; margin-bottom:16px; }
+ .note-dot { position:absolute; left:-26px; top:6px; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+ .note-content { background:#fff; border-radius:10px; padding:14px 16px; box-shadow:0 2px 10px rgba(0,0,0,0.05); border-left:4px solid #ccc; }
+ .note-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px; }
+ .note-service { font-weight:800; font-size:12px; text-transform:uppercase; padding:2px 10px; border-radius:6px; }
+ .note-date { font-size:11px; color:#888; }
+ .note-body { font-size:13px; color:#333; }
 
-        /* Colores por servicio */
-        .service-consulta .note-dot { background:#1b5e20; color:#fff; }
-        .service-consulta .note-content { border-left-color:#1b5e20; }
-        .service-consulta .note-service { background:#e8f5e9; color:#1b5e20; }
+ /* Colores por servicio */
+ .service-consulta .note-dot { background:#1b5e20; color:#fff; }
+ .service-consulta .note-content { border-left-color:#1b5e20; }
+ .service-consulta .note-service { background:#e8f5e9; color:#1b5e20; }
 
-        .service-leoch .note-dot { background:#e65100; color:#fff; }
-        .service-leoch .note-content { border-left-color:#e65100; }
-        .service-leoch .note-service { background:#fff3e0; color:#e65100; }
+ .service-leoch .note-dot { background:#e65100; color:#fff; }
+ .service-leoch .note-content { border-left-color:#e65100; }
+ .service-leoch .note-service { background:#fff3e0; color:#e65100; }
 
-        .service-uroendoscopia .note-dot { background:#0d47a1; color:#fff; }
-        .service-uroendoscopia .note-content { border-left-color:#0d47a1; }
-        .service-uroendoscopia .note-service { background:#e3f2fd; color:#0d47a1; }
+ .service-uroendoscopia .note-dot { background:#0d47a1; color:#fff; }
+ .service-uroendoscopia .note-content { border-left-color:#0d47a1; }
+ .service-uroendoscopia .note-service { background:#e3f2fd; color:#0d47a1; }
 
-        .service-recetas .note-dot { background:#6a1b9a; color:#fff; }
-        .service-recetas .note-content { border-left-color:#6a1b9a; }
-        .service-recetas .note-service { background:#f3e5f5; color:#6a1b9a; }
+ .service-recetas .note-dot { background:#6a1b9a; color:#fff; }
+ .service-recetas .note-content { border-left-color:#6a1b9a; }
+ .service-recetas .note-service { background:#f3e5f5; color:#6a1b9a; }
 
-        .service-valoracion .note-dot { background:#b38e5d; color:#fff; }
-        .service-valoracion .note-content { border-left-color:#b38e5d; }
-        .service-valoracion .note-service { background:#fef9f0; color:#7a5a00; }
+ .service-valoracion .note-dot { background:#b38e5d; color:#fff; }
+ .service-valoracion .note-content { border-left-color:#b38e5d; }
+ .service-valoracion .note-service { background:#fef9f0; color:#7a5a00; }
 
-        .service-hospitalizacion .note-dot { background:#c62828; color:#fff; }
-        .service-hospitalizacion .note-content { border-left-color:#c62828; }
-        .service-hospitalizacion .note-service { background:#ffebee; color:#c62828; }
+ .service-hospitalizacion .note-dot { background:#c62828; color:#fff; }
+ .service-hospitalizacion .note-content { border-left-color:#c62828; }
+ .service-hospitalizacion .note-service { background:#ffebee; color:#c62828; }
 
-        /* Service icons SVG */
-        .svc-icon { display:inline-flex; align-items:center; }
+ /* Service icons SVG */
+ .svc-icon { display:inline-flex; align-items:center; }
 
-        /* Action toolbar */
-        .profile-toolbar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
-        .profile-toolbar .btn { border:none; border-radius:8px; padding:10px 18px; font-weight:700; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s; }
-        .profile-toolbar .btn:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,0.15); }
-        .btn-verde { background:var(--imss-verde); color:#fff; }
-        .btn-dorado { background:var(--imss-dorado); color:#1b1b1b; }
-        .btn-azul { background:#0d47a1; color:#fff; }
-        .btn-outline { background:#fff; color:var(--imss-verde); border:2px solid var(--imss-verde) !important; }
+ /* Action toolbar */
+ .profile-toolbar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+ .profile-toolbar .btn { border:none; border-radius:8px; padding:10px 18px; font-weight:700; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s; }
+ .profile-toolbar .btn:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,0.15); }
+ .btn-verde { background:var(--imss-verde); color:#fff; }
+ .btn-dorado { background:var(--imss-dorado); color:#ffffff; }
+ .btn-azul { background:#0d47a1; color:#fff; }
+ .btn-outline { background:#fff; color:var(--imss-verde); border:2px solid var(--imss-verde) !important; }
 
-        .loading { text-align:center; padding:40px; color:#5d6d67; font-size:14px; }
-        .no-results { text-align:center; padding:30px; color:#888; font-size:14px; }
+ .loading { text-align:center; padding:40px; color:#5d6d67; font-size:14px; }
+ .no-results { text-align:center; padding:30px; color:#888; font-size:14px; }
 
-        @media (max-width:640px) {
-            .search-form { flex-direction:column; }
-            .profile-header { flex-direction:column; text-align:center; }
-            .profile-grid { grid-template-columns:1fr; }
-        }
-    </style>
+ @media (max-width:640px) {
+ .search-form { flex-direction:column; }
+ .profile-header { flex-direction:column; text-align:center; }
+ .profile-grid { grid-template-columns:1fr; }
+ }
+ </style>
 </head>
 <body>
-    <div class="top-bar">
-        <a href="/">Menu</a>
-        <span class="sep">|</span>
-        <a href="/consulta_externa">Consulta Externa</a>
-        <span class="sep">|</span>
-        <a class="active" href="#">Perfil Clinico — {{ servicio_label }}</a>
-    </div>
+ <div class="top-bar">
+ <a href="/">Menu</a>
+ <span class="sep">|</span>
+ <a href="/consulta_externa">Consulta Externa</a>
+ <span class="sep">|</span>
+ <a class="active" href="#">Perfil Clinico — {{ servicio_label }}</a>
+ </div>
 
-    <div class="container">
-        <!-- Panel de busqueda -->
-        <div id="searchView" class="search-panel">
-            <h2>Perfil Clinico del Paciente</h2>
-            <div class="sub">{{ servicio_label }} — Busque al paciente por NSS o Nombre para acceder a su perfil clinico</div>
-            <div class="search-form">
-                <input type="text" id="inputNSS" placeholder="NSS (10 digitos)" maxlength="11">
-                <input type="text" id="inputNombre" placeholder="Nombre del paciente">
-                <button type="button" onclick="buscarPaciente()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    Buscar
-                </button>
-            </div>
-            <div id="resultsPanel" class="results-panel"></div>
-        </div>
+ <div class="container">
+ <!-- Panel de busqueda -->
+ <div id="searchView" class="search-panel">
+ <h2>Perfil Clinico del Paciente</h2>
+ <div class="sub">{{ servicio_label }} — Busque al paciente por NSS o Nombre para acceder a su perfil clinico</div>
+ <div class="search-form">
+ <input type="text" id="inputNSS" placeholder="NSS (10 digitos)" maxlength="11">
+ <input type="text" id="inputNombre" placeholder="Nombre del paciente">
+ <button type="button" onclick="buscarPaciente()">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+ Buscar
+ </button>
+ </div>
+ <div id="resultsPanel" class="results-panel"></div>
+ </div>
 
-        <!-- Vista del perfil -->
-        <div id="profileView" class="profile-view">
-            <button class="btn btn-outline" onclick="volverBusqueda()" style="margin-bottom:14px;border:2px solid #13322B;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer;background:#fff;color:#13322B;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                Volver a busqueda
-            </button>
+ <!-- Vista del perfil -->
+ <div id="profileView" class="profile-view">
+ <button class="btn btn-outline" onclick="volverBusqueda()" style="margin-bottom:14px;border:2px solid #0a3161;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer;background:#fff;color:#0a3161;">
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+ Volver a busqueda
+ </button>
 
-            <div id="profileHeader" class="profile-header"></div>
+ <div id="profileHeader" class="profile-header"></div>
 
-            <div class="profile-toolbar" id="profileToolbar">
-                <a id="btnNuevaAtencion" class="btn btn-verde" href="#">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Nueva Atencion {{ servicio_label }}
-                </a>
-                <a class="btn btn-dorado" id="btnVerExpediente" href="#">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    Ver Expediente Completo
-                </a>
-            </div>
+ <div class="profile-toolbar" id="profileToolbar">
+ <a id="btnNuevaAtencion" class="btn btn-verde" href="#">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+ Nueva Atencion {{ servicio_label }}
+ </a>
+ <a class="btn btn-dorado" id="btnVerExpediente" href="#">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+ Ver Expediente Completo
+ </a>
+ </div>
 
-            <div id="profileCards" class="profile-grid"></div>
+ <div id="profileCards" class="profile-grid"></div>
 
-            <div id="notesSection" class="notes-section">
-                <h3>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
-                    Historial de Atenciones
-                </h3>
-                <div id="notesTimeline" class="note-timeline"></div>
-            </div>
-        </div>
-    </div>
+ <div id="notesSection" class="notes-section">
+ <h3>
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+ Historial de Atenciones
+ </h3>
+ <div id="notesTimeline" class="note-timeline"></div>
+ </div>
+ </div>
+ </div>
 
-    <script>
-        const CSRF_TOKEN = "{{ csrf_token }}";
-        const SERVICIO = "{{ servicio }}";
-        const SERVICIO_LABEL = "{{ servicio_label }}";
-        const ATENCION_URL = "{{ atencion_url }}";
-        let currentPatient = null;
+ <script>
+ const CSRF_TOKEN = "{{ csrf_token }}";
+ const SERVICIO = "{{ servicio }}";
+ const SERVICIO_LABEL = "{{ servicio_label }}";
+ const ATENCION_URL = "{{ atencion_url }}";
+ let currentPatient = null;
 
-        async function apiJson(url, options = {}) {
-            const res = await fetch(url, options);
-            const txt = await res.text();
-            let data = {};
-            try { data = txt ? JSON.parse(txt) : {}; } catch(_) { data = { raw: txt }; }
-            if (!res.ok) throw new Error(data.detail || data.message || `HTTP ${res.status}`);
-            return data;
-        }
+ async function apiJson(url, options = {}) {
+ const res = await fetch(url, options);
+ const txt = await res.text();
+ let data = {};
+ try { data = txt ? JSON.parse(txt) : {}; } catch(_) { data = { raw: txt }; }
+ if (!res.ok) throw new Error(data.detail || data.message || `HTTP ${res.status}`);
+ return data;
+ }
 
-        async function buscarPaciente() {
-            const nss = document.getElementById('inputNSS').value.trim();
-            const nombre = document.getElementById('inputNombre').value.trim();
-            if (!nss && !nombre) {
-                alert('Ingrese NSS o nombre del paciente');
-                return;
-            }
-            const panel = document.getElementById('resultsPanel');
-            panel.innerHTML = '<div class="loading">Buscando pacientes...</div>';
+ async function buscarPaciente() {
+ const nss = document.getElementById('inputNSS').value.trim();
+ const nombre = document.getElementById('inputNombre').value.trim();
+ if (!nss && !nombre) {
+ alert('Ingrese NSS o nombre del paciente');
+ return;
+ }
+ const panel = document.getElementById('resultsPanel');
+ panel.innerHTML = '<div class="loading">Buscando pacientes...</div>';
 
-            try {
-                const params = new URLSearchParams();
-                if (nss) params.set('nss', nss);
-                if (nombre) params.set('nombre', nombre);
-                params.set('servicio', SERVICIO);
+ try {
+ const params = new URLSearchParams();
+ if (nss) params.set('nss', nss);
+ if (nombre) params.set('nombre', nombre);
+ params.set('servicio', SERVICIO);
 
-                const data = await apiJson(`/api/perfil-clinico/buscar?${params.toString()}`);
-                const pacientes = data.pacientes || [];
+ const data = await apiJson(`/api/perfil-clinico/buscar?${params.toString()}`);
+ const pacientes = data.pacientes || [];
 
-                if (!pacientes.length) {
-                    panel.innerHTML = '<div class="no-results">No se encontraron pacientes con esos datos.</div>';
-                    return;
-                }
+ if (!pacientes.length) {
+ panel.innerHTML = '<div class="no-results">No se encontraron pacientes con esos datos.</div>';
+ return;
+ }
 
-                panel.innerHTML = pacientes.map(p => {
-                    const initials = (p.nombre || 'NN').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-                    return `
-                        <div class="patient-card" onclick='seleccionarPaciente(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
-                            <div class="patient-avatar">${initials}</div>
-                            <div class="patient-info">
-                                <h3>${p.nombre || 'Sin nombre'}</h3>
-                                <div class="meta">
-                                    <span>NSS: ${p.nss || 'N/E'}</span>
-                                    <span>Edad: ${p.edad || 'N/E'}</span>
-                                    <span>Sexo: ${p.sexo || 'N/E'}</span>
-                                    <span>Consultas: ${p.total_consultas || 0}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            } catch (e) {
-                panel.innerHTML = `<div class="no-results" style="color:#c62828;">Error: ${e.message}</div>`;
-            }
-        }
+ panel.innerHTML = pacientes.map(p => {
+ const initials = (p.nombre || 'NN').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+ return `
+ <div class="patient-card" onclick='seleccionarPaciente(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
+ <div class="patient-avatar">${initials}</div>
+ <div class="patient-info">
+ <h3>${p.nombre || 'Sin nombre'}</h3>
+ <div class="meta">
+ <span>NSS: ${p.nss || 'N/E'}</span>
+ <span>Edad: ${p.edad || 'N/E'}</span>
+ <span>Sexo: ${p.sexo || 'N/E'}</span>
+ <span>Consultas: ${p.total_consultas || 0}</span>
+ </div>
+ </div>
+ </div>
+ `;
+ }).join('');
+ } catch (e) {
+ panel.innerHTML = `<div class="no-results" style="color:#c62828;">Error: ${e.message}</div>`;
+ }
+ }
 
-        function seleccionarPaciente(paciente) {
-            currentPatient = paciente;
-            document.getElementById('searchView').style.display = 'none';
-            document.getElementById('profileView').classList.add('active');
-            cargarPerfil(paciente);
-        }
+ function seleccionarPaciente(paciente) {
+ currentPatient = paciente;
+ document.getElementById('searchView').style.display = 'none';
+ document.getElementById('profileView').classList.add('active');
+ cargarPerfil(paciente);
+ }
 
-        function volverBusqueda() {
-            document.getElementById('searchView').style.display = '';
-            document.getElementById('profileView').classList.remove('active');
-            currentPatient = null;
-        }
+ function volverBusqueda() {
+ document.getElementById('searchView').style.display = '';
+ document.getElementById('profileView').classList.remove('active');
+ currentPatient = null;
+ }
 
-        const SERVICE_ICONS = {
-            'CONSULTA EXTERNA': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
-            'LEOCH': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
-            'UROENDOSCOPIA': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
-            'RECETAS': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>',
-            'VALORACION': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
-            'HOSPITALIZACION': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>',
-        };
+ const SERVICE_ICONS = {
+ 'CONSULTA EXTERNA': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+ 'LEOCH': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+ 'UROENDOSCOPIA': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
+ 'RECETAS': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>',
+ 'VALORACION': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
+ 'HOSPITALIZACION': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>',
+ };
 
-        function serviceClass(servicio) {
-            const s = (servicio || '').toUpperCase();
-            if (s.includes('LEOCH')) return 'service-leoch';
-            if (s.includes('UROENDO')) return 'service-uroendoscopia';
-            if (s.includes('RECETA')) return 'service-recetas';
-            if (s.includes('VALORAC')) return 'service-valoracion';
-            if (s.includes('HOSPITAL')) return 'service-hospitalizacion';
-            return 'service-consulta';
-        }
+ function serviceClass(servicio) {
+ const s = (servicio || '').toUpperCase();
+ if (s.includes('LEOCH')) return 'service-leoch';
+ if (s.includes('UROENDO')) return 'service-uroendoscopia';
+ if (s.includes('RECETA')) return 'service-recetas';
+ if (s.includes('VALORAC')) return 'service-valoracion';
+ if (s.includes('HOSPITAL')) return 'service-hospitalizacion';
+ return 'service-consulta';
+ }
 
-        function serviceIcon(servicio) {
-            const s = (servicio || '').toUpperCase();
-            for (const [key, icon] of Object.entries(SERVICE_ICONS)) {
-                if (s.includes(key) || key.includes(s)) return icon;
-            }
-            return SERVICE_ICONS['CONSULTA EXTERNA'];
-        }
+ function serviceIcon(servicio) {
+ const s = (servicio || '').toUpperCase();
+ for (const [key, icon] of Object.entries(SERVICE_ICONS)) {
+ if (s.includes(key) || key.includes(s)) return icon;
+ }
+ return SERVICE_ICONS['CONSULTA EXTERNA'];
+ }
 
-        async function cargarPerfil(paciente) {
-            const nss = paciente.nss || '';
-            const nombre = paciente.nombre || '';
-            const initials = nombre.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-            const sexoIcon = (paciente.sexo||'').toUpperCase().includes('FEM') ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M12 14v7"/><path d="M9 18h6"/></svg>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="14" r="6"/><path d="M18 2l-4 4"/><path d="M18 2v5"/><path d="M18 2h-5"/></svg>';
+ async function cargarPerfil(paciente) {
+ const nss = paciente.nss || '';
+ const nombre = paciente.nombre || '';
+ const initials = nombre.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+ const sexoIcon = (paciente.sexo||'').toUpperCase().includes('FEM') ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M12 14v7"/><path d="M9 18h6"/></svg>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="14" r="6"/><path d="M18 2l-4 4"/><path d="M18 2v5"/><path d="M18 2h-5"/></svg>';
 
-            // Clinical Header Inteligente
-            document.getElementById('profileHeader').innerHTML = `
-                <div class="clinical-header">
-                    <div class="ch-avatar">${initials}</div>
-                    <div class="ch-info">
-                        <div class="ch-name">${nombre}</div>
-                        <div class="ch-meta">
-                            <span class="ch-tag gold">NSS: ${nss}</span>
-                            <span class="ch-tag">${sexoIcon} ${paciente.sexo || 'N/E'}</span>
-                            <span class="ch-tag">${paciente.edad || 'N/E'} a&ntilde;os</span>
-                            <span class="ch-tag">CURP: ${paciente.curp || 'N/E'}</span>
-                            <span class="ch-tag" style="background:rgba(220,38,38,.15);border-color:rgba(220,38,38,.3);color:#fca5a5;">Sangre: ${paciente.tipo_sangre || 'N/E'}</span>
-                        </div>
-                    </div>
-                    <div class="ch-alerts" id="headerAlerts"></div>
-                </div>
-            `;
+ // Clinical Header Inteligente
+ document.getElementById('profileHeader').innerHTML = `
+ <div class="clinical-header">
+ <div class="ch-avatar">${initials}</div>
+ <div class="ch-info">
+ <div class="ch-name">${nombre}</div>
+ <div class="ch-meta">
+ <span class="ch-tag gold">NSS: ${nss}</span>
+ <span class="ch-tag">${sexoIcon} ${paciente.sexo || 'N/E'}</span>
+ <span class="ch-tag">${paciente.edad || 'N/E'} a&ntilde;os</span>
+ <span class="ch-tag">CURP: ${paciente.curp || 'N/E'}</span>
+ <span class="ch-tag" style="background:rgba(220,38,38,.15);border-color:rgba(220,38,38,.3);color:#fca5a5;">Sangre: ${paciente.tipo_sangre || 'N/E'}</span>
+ </div>
+ </div>
+ <div class="ch-alerts" id="headerAlerts"></div>
+ </div>
+ `;
 
-            // Links
-            const btnAtencion = document.getElementById('btnNuevaAtencion');
-            if (btnAtencion) {
-                const atencionHref = ATENCION_URL + (ATENCION_URL.includes('?') ? '&' : '?') + `nss=${encodeURIComponent(nss)}&nombre=${encodeURIComponent(nombre)}`;
-                btnAtencion.href = atencionHref;
-            }
-            const btnExp = document.getElementById('btnVerExpediente');
-            if (btnExp) btnExp.href = `/expediente?nss=${encodeURIComponent(nss)}`;
+ // Links
+ const btnAtencion = document.getElementById('btnNuevaAtencion');
+ if (btnAtencion) {
+ const atencionHref = ATENCION_URL + (ATENCION_URL.includes('?') ? '&' : '?') + `nss=${encodeURIComponent(nss)}&nombre=${encodeURIComponent(nombre)}`;
+ btnAtencion.href = atencionHref;
+ }
+ const btnExp = document.getElementById('btnVerExpediente');
+ if (btnExp) btnExp.href = `/expediente?nss=${encodeURIComponent(nss)}`;
 
-            // Cargar datos del perfil
-            try {
-                const data = await apiJson(`/api/perfil-clinico/datos?nss=${encodeURIComponent(nss)}&nombre=${encodeURIComponent(nombre)}`);
-                renderPerfilCards(data);
-                renderNotasTimeline(data.notas || []);
-            } catch (e) {
-                document.getElementById('profileCards').innerHTML = `<div style="color:#c62828;padding:20px;">Error cargando perfil: ${e.message}</div>`;
-            }
-        }
+ // Cargar datos del perfil
+ try {
+ const data = await apiJson(`/api/perfil-clinico/datos?nss=${encodeURIComponent(nss)}&nombre=${encodeURIComponent(nombre)}`);
+ renderPerfilCards(data);
+ renderNotasTimeline(data.notas || []);
+ } catch (e) {
+ document.getElementById('profileCards').innerHTML = `<div style="color:#c62828;padding:20px;">Error cargando perfil: ${e.message}</div>`;
+ }
+ }
 
-        function renderPerfilCards(data) {
-            const cards = document.getElementById('profileCards');
-            const ant = data.antecedentes || {};
-            const alertas = data.alertas || [];
-            const hospitalizaciones = data.hospitalizaciones_previas || [];
-            const vitals = data.signos_vitales || {};
+ function renderPerfilCards(data) {
+ const cards = document.getElementById('profileCards');
+ const ant = data.antecedentes || {};
+ const alertas = data.alertas || [];
+ const hospitalizaciones = data.hospitalizaciones_previas || [];
+ const vitals = data.signos_vitales || {};
 
-            // Populate header alerts
-            const headerAlerts = document.getElementById('headerAlerts');
-            if (headerAlerts && alertas.length) {
-                headerAlerts.innerHTML = alertas.slice(0,3).map(a => `<div class="ch-alert-badge critical"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>${a}</div>`).join('');
-            }
+ // Populate header alerts
+ const headerAlerts = document.getElementById('headerAlerts');
+ if (headerAlerts && alertas.length) {
+ headerAlerts.innerHTML = alertas.slice(0,3).map(a => `<div class="ch-alert-badge critical"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>${a}</div>`).join('');
+ }
 
-            let html = '';
+ let html = '';
 
-            // === VITALS STRIP (always visible) ===
-            html += `<div style="grid-column:1/-1;"><div class="vitals-strip">
-                <div class="vital-item"><div class="vital-value">${vitals.peso || '--'}</div><div class="vital-label">Peso</div><div class="vital-unit">kg</div></div>
-                <div class="vital-item"><div class="vital-value">${vitals.talla || '--'}</div><div class="vital-label">Talla</div><div class="vital-unit">m</div></div>
-                <div class="vital-item"><div class="vital-value ${vitals.imc>30?'warning':''}">${vitals.imc || '--'}</div><div class="vital-label">IMC</div><div class="vital-unit">kg/m2</div></div>
-                <div class="vital-item"><div class="vital-value">${vitals.ta_sis||'--'}/${vitals.ta_dia||'--'}</div><div class="vital-label">T/A</div><div class="vital-unit">mmHg</div></div>
-                <div class="vital-item"><div class="vital-value ${vitals.fc>100?'warning':''}">${vitals.fc || '--'}</div><div class="vital-label">FC</div><div class="vital-unit">lpm</div></div>
-                <div class="vital-item"><div class="vital-value ${vitals.temp>38?'alert':''}">${vitals.temp || '--'}</div><div class="vital-label">Temp</div><div class="vital-unit">&deg;C</div></div>
-            </div></div>`;
+ // === VITALS STRIP (always visible) ===
+ html += `<div style="grid-column:1/-1;"><div class="vitals-strip">
+ <div class="vital-item"><div class="vital-value">${vitals.peso || '--'}</div><div class="vital-label">Peso</div><div class="vital-unit">kg</div></div>
+ <div class="vital-item"><div class="vital-value">${vitals.talla || '--'}</div><div class="vital-label">Talla</div><div class="vital-unit">m</div></div>
+ <div class="vital-item"><div class="vital-value ${vitals.imc>30?'warning':''}">${vitals.imc || '--'}</div><div class="vital-label">IMC</div><div class="vital-unit">kg/m2</div></div>
+ <div class="vital-item"><div class="vital-value">${vitals.ta_sis||'--'}/${vitals.ta_dia||'--'}</div><div class="vital-label">T/A</div><div class="vital-unit">mmHg</div></div>
+ <div class="vital-item"><div class="vital-value ${vitals.fc>100?'warning':''}">${vitals.fc || '--'}</div><div class="vital-label">FC</div><div class="vital-unit">lpm</div></div>
+ <div class="vital-item"><div class="vital-value ${vitals.temp>38?'alert':''}">${vitals.temp || '--'}</div><div class="vital-label">Temp</div><div class="vital-unit">&deg;C</div></div>
+ </div></div>`;
 
-            // === RESUMEN DINÁMICO (smart card - always open) ===
-            html += `
-                <div class="smart-card card-blue" style="grid-column:1/-1;">
-                    <div class="smart-card-header" onclick="toggleCard(this)">
-                        <div class="smart-card-title">
-                            <div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
-                            Resumen Dinamico Integral
-                        </div>
-                        <span class="smart-card-badge">${data.total_consultas || 0} consultas</span>
-                    </div>
-                    <div class="smart-card-body">
-                        <p><strong>Dx Principal:</strong> ${data.diagnostico_principal || 'Sin diagnostico registrado'}</p>
-                        <p><strong>Protocolo:</strong> ${data.protocolo || 'N/E'}</p>
-                        <p><strong>Total Atenciones:</strong> ${data.total_atenciones || 0} | <strong>Ultima:</strong> ${data.ultima_atencion || 'Sin registro'}</p>
-                        ${data.plan_tratamiento ? `<p><strong>Plan:</strong> ${data.plan_tratamiento}</p>` : ''}
-                    </div>
-                </div>`;
+ // === RESUMEN DINÁMICO (smart card - always open) ===
+ html += `
+ <div class="smart-card card-blue" style="grid-column:1/-1;">
+ <div class="smart-card-header" onclick="toggleCard(this)">
+ <div class="smart-card-title">
+ <div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+ Resumen Dinamico Integral
+ </div>
+ <span class="smart-card-badge">${data.total_consultas || 0} consultas</span>
+ </div>
+ <div class="smart-card-body">
+ <p><strong>Dx Principal:</strong> ${data.diagnostico_principal || 'Sin diagnostico registrado'}</p>
+ <p><strong>Protocolo:</strong> ${data.protocolo || 'N/E'}</p>
+ <p><strong>Total Atenciones:</strong> ${data.total_atenciones || 0} | <strong>Ultima:</strong> ${data.ultima_atencion || 'Sin registro'}</p>
+ ${data.plan_tratamiento ? `<p><strong>Plan:</strong> ${data.plan_tratamiento}</p>` : ''}
+ </div>
+ </div>`;
 
-            // === ALERTAS (red smart card) ===
-            if (alertas.length) {
-                html += `<div class="smart-card card-red">
-                    <div class="smart-card-header" onclick="toggleCard(this)">
-                        <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>Alertas Clinicas</div>
-                        <span class="smart-card-badge" style="background:#fee2e2;color:#dc2626;">${alertas.length}</span>
-                    </div>
-                    <div class="smart-card-body">${alertas.map(a => `<p style="color:#c62828;font-weight:600;">${a}</p>`).join('')}</div>
-                </div>`;
-            }
+ // === ALERTAS (red smart card) ===
+ if (alertas.length) {
+ html += `<div class="smart-card card-red">
+ <div class="smart-card-header" onclick="toggleCard(this)">
+ <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>Alertas Clinicas</div>
+ <span class="smart-card-badge" style="background:#fee2e2;color:#dc2626;">${alertas.length}</span>
+ </div>
+ <div class="smart-card-body">${alertas.map(a => `<p style="color:#c62828;font-weight:600;">${a}</p>`).join('')}</div>
+ </div>`;
+ }
 
-            // === ANTECEDENTES PERSONALES PATOLÓGICOS (collapsible) ===
-            html += `<div class="smart-card card-green">
-                <div class="smart-card-header" onclick="toggleCard(this)">
-                    <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>Antecedentes Patologicos</div>
-                    <span class="smart-card-badge">${(ant.patologicos||[]).length||0}</span>
-                </div>
-                <div class="smart-card-body collapsed">${(ant.patologicos||[]).length ? ant.patologicos.map(p=>`<p><strong>${p.patologia||''}</strong> — ${p.evolucion||''} — Tx: ${p.tratamiento||''}</p>`).join('') : '<p class="empty">Sin antecedentes patologicos registrados</p>'}</div>
-            </div>`;
+ // === ANTECEDENTES PERSONALES PATOLÓGICOS (collapsible) ===
+ html += `<div class="smart-card card-green">
+ <div class="smart-card-header" onclick="toggleCard(this)">
+ <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>Antecedentes Patologicos</div>
+ <span class="smart-card-badge">${(ant.patologicos||[]).length||0}</span>
+ </div>
+ <div class="smart-card-body collapsed">${(ant.patologicos||[]).length ? ant.patologicos.map(p=>`<p><strong>${p.patologia||''}</strong> — ${p.evolucion||''} — Tx: ${p.tratamiento||''}</p>`).join('') : '<p class="empty">Sin antecedentes patologicos registrados</p>'}</div>
+ </div>`;
 
-            // === QUIRÚRGICOS (collapsible) ===
-            html += `<div class="smart-card card-orange">
-                <div class="smart-card-header" onclick="toggleCard(this)">
-                    <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>Antecedentes Quirurgicos</div>
-                    <span class="smart-card-badge">${(ant.quirurgicos||[]).length||0}</span>
-                </div>
-                <div class="smart-card-body collapsed">${(ant.quirurgicos||[]).length ? ant.quirurgicos.map(q=>`<p>${q.fecha||''} — <strong>${q.procedimiento||''}</strong> — ${q.hallazgos||''}</p>`).join('') : '<p class="empty">Sin antecedentes quirurgicos registrados</p>'}</div>
-            </div>`;
+ // === QUIRÚRGICOS (collapsible) ===
+ html += `<div class="smart-card card-orange">
+ <div class="smart-card-header" onclick="toggleCard(this)">
+ <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>Antecedentes Quirurgicos</div>
+ <span class="smart-card-badge">${(ant.quirurgicos||[]).length||0}</span>
+ </div>
+ <div class="smart-card-body collapsed">${(ant.quirurgicos||[]).length ? ant.quirurgicos.map(q=>`<p>${q.fecha||''} — <strong>${q.procedimiento||''}</strong> — ${q.hallazgos||''}</p>`).join('') : '<p class="empty">Sin antecedentes quirurgicos registrados</p>'}</div>
+ </div>`;
 
-            // === ALERGIAS (collapsible) ===
-            html += `<div class="smart-card card-red">
-                <div class="smart-card-header" onclick="toggleCard(this)">
-                    <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>Alergias</div>
-                    <span class="smart-card-badge" style="${(ant.alergias||[]).length?'background:#fee2e2;color:#dc2626;':''}">${(ant.alergias||[]).length||'0'}</span>
-                </div>
-                <div class="smart-card-body collapsed">${(ant.alergias||[]).length ? ant.alergias.map(a=>`<p><strong>${a.alergeno||''}</strong> — ${a.reaccion||''}</p>`).join('') : '<p class="empty">Sin alergias registradas</p>'}</div>
-            </div>`;
+ // === ALERGIAS (collapsible) ===
+ html += `<div class="smart-card card-red">
+ <div class="smart-card-header" onclick="toggleCard(this)">
+ <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>Alergias</div>
+ <span class="smart-card-badge" style="${(ant.alergias||[]).length?'background:#fee2e2;color:#dc2626;':''}">${(ant.alergias||[]).length||'0'}</span>
+ </div>
+ <div class="smart-card-body collapsed">${(ant.alergias||[]).length ? ant.alergias.map(a=>`<p><strong>${a.alergeno||''}</strong> — ${a.reaccion||''}</p>`).join('') : '<p class="empty">Sin alergias registradas</p>'}</div>
+ </div>`;
 
-            // === HOSPITALIZACIONES (collapsible) ===
-            html += `<div class="smart-card card-purple">
-                <div class="smart-card-header" onclick="toggleCard(this)">
-                    <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div>Hospitalizaciones Previas</div>
-                    <span class="smart-card-badge">${hospitalizaciones.length||0}</span>
-                </div>
-                <div class="smart-card-body collapsed">${hospitalizaciones.length ? hospitalizaciones.map(h=>`<p><strong>${h.fecha||''}</strong> — ${h.motivo||''} — ${h.dias||''} dias ${h.uci?'(UCI: '+h.dias_uci+' dias)':''}</p>`).join('') : '<p class="empty">Sin hospitalizaciones previas registradas</p>'}</div>
-            </div>`;
+ // === HOSPITALIZACIONES (collapsible) ===
+ html += `<div class="smart-card card-purple">
+ <div class="smart-card-header" onclick="toggleCard(this)">
+ <div class="smart-card-title"><div class="smart-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div>Hospitalizaciones Previas</div>
+ <span class="smart-card-badge">${hospitalizaciones.length||0}</span>
+ </div>
+ <div class="smart-card-body collapsed">${hospitalizaciones.length ? hospitalizaciones.map(h=>`<p><strong>${h.fecha||''}</strong> — ${h.motivo||''} — ${h.dias||''} dias ${h.uci?'(UCI: '+h.dias_uci+' dias)':''}</p>`).join('') : '<p class="empty">Sin hospitalizaciones previas registradas</p>'}</div>
+ </div>`;
 
-            cards.innerHTML = html;
-        }
+ cards.innerHTML = html;
+ }
 
-        function toggleCard(header) {
-            const body = header.nextElementSibling;
-            if (body) body.classList.toggle('collapsed');
-        }
+ function toggleCard(header) {
+ const body = header.nextElementSibling;
+ if (body) body.classList.toggle('collapsed');
+ }
 
-        function renderNotasTimeline(notas) {
-            const timeline = document.getElementById('notesTimeline');
-            if (!notas.length) {
-                timeline.innerHTML = '<div class="no-results">Sin notas registradas en el expediente.</div>';
-                return;
-            }
-            timeline.innerHTML = notas.map(n => {
-                const cls = serviceClass(n.servicio);
-                const icon = serviceIcon(n.servicio);
-                return `
-                    <div class="note-entry ${cls}">
-                        <div class="note-dot">${icon}</div>
-                        <div class="note-content">
-                            <div class="note-header">
-                                <span class="note-service">${n.servicio || 'CONSULTA'}</span>
-                                <span class="note-date">${n.fecha || ''}</span>
-                            </div>
-                            <div class="note-body">
-                                <p><strong>Dx:</strong> ${n.diagnostico || 'N/E'}</p>
-                                ${n.resumen ? `<p>${n.resumen}</p>` : ''}
-                                ${n.medico ? `<p style="font-size:11px;color:#888;">Medico: ${n.medico}</p>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+ function renderNotasTimeline(notas) {
+ const timeline = document.getElementById('notesTimeline');
+ if (!notas.length) {
+ timeline.innerHTML = '<div class="no-results">Sin notas registradas en el expediente.</div>';
+ return;
+ }
+ timeline.innerHTML = notas.map(n => {
+ const cls = serviceClass(n.servicio);
+ const icon = serviceIcon(n.servicio);
+ return `
+ <div class="note-entry ${cls}">
+ <div class="note-dot">${icon}</div>
+ <div class="note-content">
+ <div class="note-header">
+ <span class="note-service">${n.servicio || 'CONSULTA'}</span>
+ <span class="note-date">${n.fecha || ''}</span>
+ </div>
+ <div class="note-body">
+ <p><strong>Dx:</strong> ${n.diagnostico || 'N/E'}</p>
+ ${n.resumen ? `<p>${n.resumen}</p>` : ''}
+ ${n.medico ? `<p style="font-size:11px;color:#888;">Medico: ${n.medico}</p>` : ''}
+ </div>
+ </div>
+ </div>
+ `;
+ }).join('');
+ }
 
-        // Enter key en inputs
-        document.getElementById('inputNSS').addEventListener('keydown', e => { if (e.key === 'Enter') buscarPaciente(); });
-        document.getElementById('inputNombre').addEventListener('keydown', e => { if (e.key === 'Enter') buscarPaciente(); });
-    </script>
+ // Enter key en inputs
+ document.getElementById('inputNSS').addEventListener('keydown', e => { if (e.key === 'Enter') buscarPaciente(); });
+ document.getElementById('inputNombre').addEventListener('keydown', e => { if (e.key === 'Enter') buscarPaciente(); });
+ </script>
 </body>
 </html>

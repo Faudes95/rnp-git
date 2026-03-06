@@ -24,6 +24,7 @@ from app.services.interconexion_flow import interconexion_consulta_flow
 from app.services.jefatura_urologia_flow import (
     render_jefatura_urologia_home_flow,
     render_jefatura_urologia_module_flow,
+    render_jefatura_urologia_programa_submodule_flow,
 )
 from app.services.quirofano_flow import (
     cancelar_programacion_flow,
@@ -59,6 +60,11 @@ async def jefatura_urologia_home(request: Request):
 @router.get("/jefatura-urologia/{slug}", response_class=HTMLResponse)
 async def jefatura_urologia_modulo(request: Request, slug: str):
     return await render_jefatura_urologia_module_flow(request, slug)
+
+
+@router.get("/jefatura-urologia/programa-academico/{section_slug}", response_class=HTMLResponse)
+async def jefatura_urologia_programa_submodulo(request: Request, section_slug: str):
+    return await render_jefatura_urologia_programa_submodule_flow(request, section_slug)
 
 
 @router.get("/quirofano/programada", response_class=HTMLResponse)

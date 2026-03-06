@@ -1,698 +1,648 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Registro Nacional de Pacientes - Urología CMNR</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root {
-            --imss-verde-1: #0f3d37;
-            --imss-verde-2: #0b2f2a;
-            --imss-verde-3: #145045;
-            --imss-dorado: #b28a47;
-            --imss-claro: #f3f1ec;
-            --imss-texto: #102f2f;
-            --imss-gris: #49545a;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Montserrat', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow-x: hidden;
-            background-image:
-                linear-gradient(rgba(8, 30, 31, 0.28), rgba(8, 30, 31, 0.42)),
-                url('{{ hospital_bg_url }}');
-            background-size: cover;
-            background-position: center 78%;
-            background-attachment: fixed;
-        }
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 162px 0 52px 0;
-            background:
-                linear-gradient(130deg, rgba(255,255,255,0.08) 12%, transparent 12%, transparent 34%, rgba(255,255,255,0.06) 34%, rgba(255,255,255,0.06) 52%, transparent 52%),
-                linear-gradient(160deg, transparent 0%, transparent 64%, rgba(0,0,0,0.18) 64%, rgba(0,0,0,0.18) 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .page-shell {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
-        }
-        .header-bar {
-            background: linear-gradient(95deg, rgba(15, 74, 64, 0.99) 0%, rgba(15, 74, 64, 0.99) 100%);
-            border-bottom: 4px solid var(--imss-dorado);
-            padding: 10px 30px;
-            display: grid;
-            grid-template-columns: 320px minmax(0, 1fr) 320px;
-            align-items: center;
-            gap: 10px;
-            min-height: 154px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.22);
-            z-index: 10;
-            position: relative;
-        }
-        .header-bar::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(95deg, rgba(14, 70, 61, 0.96) 0%, rgba(14, 70, 61, 0.96) 100%);
-            opacity: 1;
-            pointer-events: none;
-        }
-        .header-bar::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: url('{{ imss_logo_url }}');
-            background-repeat: no-repeat;
-            background-size: 360px auto;
-            background-position: 42% center;
-            opacity: 0.08;
-            filter: grayscale(1) brightness(0.38) contrast(0.95);
-            pointer-events: none;
-        }
-        .logo-block {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 0 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        .logo-block-imss {
-            width: auto;
-            min-height: 0;
-            justify-content: flex-start;
-            justify-self: start;
-            padding: 0;
-            border: 0;
-            background: transparent;
-            box-shadow: none;
-        }
-        .logo-block-uro {
-            width: auto;
-            justify-content: flex-end;
-            justify-self: end;
-        }
-        .logo-imss {
-            max-height: 176px;
-            max-width: 292px;
-            width: auto;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
-        }
-        .logo-urologia {
-            max-height: 104px;
-            max-width: 104px;
-            width: auto;
-            object-fit: contain;
-            display: block;
-            border-radius: 50%;
-            border: 1.5px solid rgba(178,138,71,0.9);
-            background: rgba(255,255,255,0.88);
-            padding: 2px;
-            filter: drop-shadow(0 2px 7px rgba(0,0,0,0.22));
-        }
-        .hospital-title {
-            flex: 1 1 auto;
-            min-width: 0;
-            width: 100%;
-            color: var(--imss-texto);
-            text-align: center;
-            text-transform: uppercase;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            line-height: 1.12;
-            position: relative;
-            z-index: 1;
-            justify-self: center;
-        }
-        .hospital-title h1 {
-            margin: 0;
-            font-size: 33px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            line-height: 1.1;
-            color: #f3fbf7;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
-        }
-        .hospital-title h2 {
-            margin: 9px 0 0 0;
-            font-size: 22px;
-            font-weight: 700;
-            color: #f0c47a;
-            letter-spacing: 1.8px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.22);
-        }
-        .main-content {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 24px 18px;
-            position: relative;
-            z-index: 5;
-        }
-        .card-menu {
-            background: rgba(255, 255, 255, 0.90);
-            padding: 22px 22px 24px;
-            border-radius: 22px;
-            box-shadow: 0 28px 48px rgba(0,0,0,0.34);
-            text-align: center;
-            max-width: 1000px;
-            width: 100%;
-            border: 4px solid var(--imss-dorado);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(8px);
-        }
-        .card-menu::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: url('{{ imss_logo_url }}');
-            background-repeat: repeat;
-            background-size: 120px auto;
-            background-position: center center;
-            opacity: 0.035;
-            filter: grayscale(1) brightness(2) contrast(0.7);
-            pointer-events: none;
-        }
-        .card-menu h1 {
-            color: var(--imss-texto);
-            font-size: 34px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: 1px;
-            position: relative;
-            z-index: 1;
-        }
-        .card-menu h2.subtitle {
-            color: var(--imss-dorado);
-            font-size: 20px;
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.4px;
-            position: relative;
-            z-index: 1;
-        }
-        .grid-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            border-top: none;
-            padding-top: 8px;
-            position: relative;
-            z-index: 1;
-        }
-        .btn-menu {
-            background: #f7f5f0;
-            border: 2px solid var(--imss-dorado);
-            border-radius: 14px;
-            padding: 14px 10px 12px;
-            text-decoration: none;
-            color: var(--imss-texto);
-            transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 9px;
-            min-height: 142px;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.08);
-        }
-        .btn-menu:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 22px rgba(16,47,47,0.2);
-            border-color: var(--imss-dorado);
-        }
-        .icon-badge {
-            width: 74px;
-            height: 74px;
-            border-radius: 50%;
-            border: 2px solid var(--imss-dorado);
-            background: radial-gradient(circle at 30% 25%, #196157, var(--imss-verde-1) 62%);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16);
-        }
-        .icon-svg {
-            width: 36px;
-            height: 36px;
-            stroke: #ffffff;
-            fill: none;
-            stroke-width: 2.4;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        .icon-svg .accent { fill: #f24839; stroke: #f24839; }
-        .btn-text {
-            font-weight: 700;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1.05;
-        }
-        .btn-reporte { grid-column: 3; }
+ <meta charset="UTF-8">
+ <title>UROMED - Menú Principal</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <style>
+ :root {
+ --uro-blue-900: #173d7a;
+ --uro-blue-700: #2e6ec9;
+ --uro-blue-500: #4f93f1;
+ --uro-blue-200: #d9e9ff;
+ --uro-flag-blue-700: #1f4f9f;
+ --uro-flag-blue-900: #0a3161;
+ --uro-red-700: #c82f3f;
+ --uro-red-500: #ef4f5f;
+ --uro-white: #ffffff;
+ --uro-ink: #294c83;
+ --uro-ink-soft: #5c76a6;
+ --uro-border: #d9e4f6;
+ }
 
-        .global-footer {
-            width: 100%;
-            text-align: center;
-            background: linear-gradient(90deg, #0f4a40 0%, #14574b 50%, #0f4a40 100%);
-            color: #e9f5ef;
-            border-top: 2px solid var(--imss-dorado);
-            padding: 14px 10px;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 0.7px;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
-        }
-        .global-footer::before { content: none; }
-        .global-footer .footer-text {
-            position: relative;
-            z-index: 1;
-            color: #e9f5ef;
-        }
-        @media (max-width: 1024px) {
-            .header-bar { padding: 10px 14px; min-height: 128px; grid-template-columns: 250px 1fr 250px; }
-            .logo-block-imss { width: auto; }
-            .logo-block-uro { width: auto; }
-            .logo-imss { max-height: 128px; max-width: 224px; }
-            .logo-urologia { max-height: 102px; max-width: 102px; }
-            .hospital-title h1 { font-size: 26px; }
-            .hospital-title h2 { font-size: 18px; }
-            .card-menu { max-width: 900px; }
-            .card-menu h1 { font-size: 30px; }
-            .card-menu h2.subtitle { font-size: 18px; }
-            .btn-text { font-size: 16px; }
-            .grid-buttons { grid-template-columns: repeat(2, 1fr); }
-            .btn-reporte { grid-column: 1 / -1; }
-            .global-footer { font-size: 13px; }
-        }
-        @media (max-width: 760px) {
-            body::before { inset: 210px 0 48px 0; }
-            .header-bar {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 12px;
-                padding-bottom: 12px;
-            }
-            .logo-block-imss {
-                width: 100%;
-                max-width: 220px;
-                order: 2;
-                justify-content: center;
-            }
-            .logo-block-uro { order: 3; width: 100%; }
-            .hospital-title {
-                order: 1;
-                flex: 1 1 100%;
-            }
-            .hospital-title h1 {
-                font-size: 19px;
-                letter-spacing: 0.4px;
-            }
-            .hospital-title h2 {
-                font-size: 16px;
-                letter-spacing: 0.8px;
-            }
-            .card-menu {
-                padding: 16px 12px 18px;
-                border-radius: 16px;
-            }
-            .card-menu h1 { font-size: 24px; }
-            .card-menu h2.subtitle {
-                margin-bottom: 14px;
-                font-size: 14px;
-            }
-            .grid-buttons { grid-template-columns: 1fr; gap: 14px; }
-            .btn-menu { min-height: 122px; }
-            .btn-text { font-size: 15px; }
-            .icon-badge { width: 62px; height: 62px; }
-            .icon-svg { width: 33px; height: 33px; }
-            .global-footer { font-size: 12px; }
-        }
-    </style>
-    <!-- Additive UI Enhancements -->
-    <style>
-        /* === Animated gradient hover for grid buttons === */
-        @keyframes btnGradientShift {
-            0%   { background-position: 0% 50%; }
-            50%  { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .btn-menu:hover {
-            background: linear-gradient(135deg, #f7f5f0 0%, #ede8dc 25%, #f7f5f0 50%, #e8e0d0 75%, #f7f5f0 100%);
-            background-size: 300% 300%;
-            animation: btnGradientShift 3s ease infinite;
-        }
+ * { box-sizing: border-box; }
 
-        /* === Notification badge area on header === */
-        .header-notification-area {
-            position: absolute;
-            top: 10px;
-            right: 16px;
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .notification-bell {
-            position: relative;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.2s ease;
-        }
-        .notification-bell:hover { opacity: 1; }
-        .notification-bell svg {
-            width: 22px;
-            height: 22px;
-            stroke: #f0f9f5;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        .notification-badge {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 10px;
-            height: 10px;
-            background: #e74c3c;
-            border-radius: 50%;
-            border: 2px solid #12423b;
-            display: none; /* hidden by default, shown via JS when notifications exist */
-        }
-        .notification-badge.active { display: block; }
+ body {
+ margin: 0;
+ min-height: 100vh;
+ font-family: 'Montserrat', sans-serif;
+ color: var(--uro-ink);
+ background:
+ radial-gradient(circle at 18% 8%, rgba(79,147,241,0.14), transparent 28%),
+ radial-gradient(circle at 86% 88%, rgba(79,147,241,0.16), transparent 34%),
+ linear-gradient(140deg, #f6f9ff 0%, #edf3ff 52%, #e6eeff 100%);
+ display: flex;
+ flex-direction: column;
+ }
 
-        /* === Animated entry for menu cards === */
-        @keyframes cardSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .card-menu {
-            animation: cardSlideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        @keyframes btnFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(16px) scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        .btn-menu {
-            opacity: 0;
-            animation: btnFadeIn 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        .btn-menu:nth-child(1) { animation-delay: 0.10s; }
-        .btn-menu:nth-child(2) { animation-delay: 0.18s; }
-        .btn-menu:nth-child(3) { animation-delay: 0.26s; }
-        .btn-menu:nth-child(4) { animation-delay: 0.34s; }
-        .btn-menu:nth-child(5) { animation-delay: 0.42s; }
-        .btn-menu:nth-child(6) { animation-delay: 0.50s; }
-        .btn-menu:nth-child(7) { animation-delay: 0.58s; }
+ .page-shell {
+ width: min(1320px, calc(100% - 36px));
+ margin: 34px auto 18px;
+ border-radius: 20px;
+ border: 1px solid var(--uro-border);
+ background:
+ linear-gradient(140deg, rgba(255,255,255,0.98), rgba(246,250,255,0.96));
+ box-shadow:
+ 0 26px 50px rgba(23, 61, 122, 0.12),
+ 0 6px 16px rgba(23, 61, 122, 0.08);
+ overflow: hidden;
+ }
 
-        /* === Subtle institutional watermark effect === */
-        .card-menu::after {
-            content: "IMSS";
-            position: absolute;
-            bottom: -18px;
-            right: -10px;
-            font-size: 120px;
-            font-weight: 900;
-            color: rgba(15, 61, 55, 0.025);
-            letter-spacing: 12px;
-            text-transform: uppercase;
-            pointer-events: none;
-            z-index: 0;
-            user-select: none;
-            line-height: 1;
-        }
+ .topbar {
+ padding: 62px 0;
+ background: linear-gradient(180deg, var(--uro-flag-blue-700) 0%, var(--uro-flag-blue-900) 100%);
+ border-bottom: 1px solid #2a5cae;
+ }
 
-        /* === Footer live clock === */
-        .footer-clock {
-            position: relative;
-            z-index: 1;
-            display: inline-block;
-            margin-left: 16px;
-            padding-left: 16px;
-            border-left: 1.5px solid var(--imss-dorado);
-            font-variant-numeric: tabular-nums;
-            font-size: 13px;
-            font-weight: 600;
-            color: #d9ecdf;
-            letter-spacing: 0.5px;
-        }
+ .topbar-inner {
+ position: relative;
+ display: flex;
+ justify-content: flex-end;
+ align-items: center;
+ gap: 12px;
+ min-height: 96px;
+ padding: 4px 24px;
+ background: #ffffff;
+ border-top: 1px solid rgba(255, 255, 255, 0.55);
+ border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+ }
 
-        /* === Quick-stat KPI cards === */
-        .quick-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 8px;
-            margin-top: 14px;
-            position: relative;
-            z-index: 1;
-        }
-        .kpi-card {
-            background: linear-gradient(135deg, var(--imss-verde-1) 0%, var(--imss-verde-3) 100%);
-            border-radius: 10px;
-            padding: 12px 10px;
-            text-align: center;
-            border: 1.5px solid rgba(178, 138, 71, 0.35);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
-        }
-        .kpi-value {
-            font-size: 26px;
-            font-weight: 800;
-            color: #ffffff;
-            line-height: 1.1;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.25);
-        }
-        .kpi-label {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--imss-dorado);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 4px;
-            line-height: 1.15;
-        }
-        @keyframes kpiPulseIn {
-            from { opacity: 0; transform: scale(0.92); }
-            to   { opacity: 1; transform: scale(1); }
-        }
-        .kpi-card {
-            opacity: 0;
-            animation: kpiPulseIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        .kpi-card:nth-child(1) { animation-delay: 0.65s; }
-        .kpi-card:nth-child(2) { animation-delay: 0.75s; }
-        .kpi-card:nth-child(3) { animation-delay: 0.85s; }
-        .kpi-card:nth-child(4) { animation-delay: 0.95s; }
+ .brand-wrap {
+ position: absolute;
+ left: 24px;
+ top: 50%;
+ transform: translateY(-50%);
+ display: flex;
+ align-items: center;
+ gap: 14px;
+ width: clamp(560px, 48vw, 760px);
+ height: clamp(160px, 19vh, 220px);
+ overflow: hidden;
+ }
 
-        /* === Jefatura de Urología button accent === */
-        .btn-jefatura .icon-badge {
-            background: linear-gradient(145deg, rgba(255,255,255,0.88), rgba(227,238,233,0.9));
-            border-color: rgba(15, 61, 55, 0.85);
-        }
-        .logo-mini {
-            width: 44px;
-            height: 44px;
-            object-fit: contain;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.92);
-            border: 1.5px solid rgba(178,138,71,0.9);
-            padding: 2px;
-            filter: drop-shadow(0 1px 4px rgba(0,0,0,0.22));
-        }
+ .brand-logo {
+ width: 100%;
+ height: 100%;
+ display: block;
+ object-fit: contain;
+ object-position: left center;
+ image-rendering: -webkit-optimize-contrast;
+ image-rendering: crisp-edges;
+ }
 
-        /* === Quick stats responsive === */
-        @media (max-width: 760px) {
-            .quick-stats-grid {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-            .kpi-value { font-size: 22px; }
-            .kpi-label { font-size: 9px; }
-            .footer-clock { display: block; margin-left: 0; margin-top: 6px; padding-left: 0; border-left: none; }
-        }
-        @media (max-width: 1024px) {
-            .quick-stats-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-    </style>
+ .user-pill {
+ display: inline-flex;
+ align-items: center;
+ gap: 9px;
+ padding: 10px 16px;
+ border-radius: 999px;
+ border: 1px solid #a8c3ee;
+ background: #eff5ff;
+ backdrop-filter: blur(4px);
+ color: #2b5eaa;
+ font-size: 14px;
+ font-weight: 600;
+ letter-spacing: .15px;
+ box-shadow: 0 8px 16px rgba(18, 67, 139, 0.14);
+ }
+ .user-dot {
+ width: 8px;
+ height: 8px;
+ border-radius: 50%;
+ background: #bcd6ff;
+ box-shadow: 0 0 0 3px rgba(188, 214, 255, 0.22);
+ flex: 0 0 auto;
+ }
+ .user-name {
+ font-weight: 700;
+ color: #2a5aa4;
+ }
+ .user-sep {
+ opacity: .78;
+ }
+ .user-chevron {
+ width: 14px;
+ height: 14px;
+ stroke: #4e78ba;
+ fill: none;
+ stroke-width: 2.2;
+ stroke-linecap: round;
+ stroke-linejoin: round;
+ }
+
+ .content {
+ padding: 20px 24px 28px;
+ background:
+ linear-gradient(155deg, rgba(79,147,241,0.04), rgba(79,147,241,0.02));
+ }
+
+ .module-grid {
+ display: grid;
+ grid-template-columns: repeat(3, minmax(0, 1fr));
+ gap: 20px;
+ }
+
+ .module-card {
+ position: relative;
+ border: 0;
+ border-radius: 14px;
+ background: transparent;
+ text-decoration: none;
+ color: var(--uro-ink);
+ min-height: 0;
+ padding: 0;
+ transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+ box-shadow: none;
+ overflow: hidden;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ }
+
+ .module-card::after {
+ display: none;
+ }
+
+ .module-card:hover {
+ transform: translateY(-2px);
+ border-color: transparent;
+ box-shadow: none;
+ }
+
+ .module-icon-wrap {
+ width: min(90%, 300px);
+ min-height: 116px;
+ border-radius: 16px;
+ display: flex;
+ flex-direction: column;
+ gap: 12px;
+ align-items: center;
+ justify-content: center;
+ text-align: center;
+ padding: 12px 10px;
+ background: #ffffff;
+ border: 1px solid #d6e4ff;
+ box-shadow: 0 10px 20px rgba(18, 54, 103, 0.12);
+ }
+
+ .module-icon {
+ width: 44px;
+ height: 44px;
+ stroke: #ffffff;
+ fill: none;
+ stroke-width: 2.3;
+ stroke-linecap: round;
+ stroke-linejoin: round;
+ }
+ .module-icon-img {
+ width: 68px;
+ height: 54px;
+ object-fit: contain;
+ display: block;
+ margin: 0 auto;
+ filter: saturate(1.02) contrast(1.01);
+ }
+
+ .module-icon-label {
+ font-size: clamp(17px, 1.35vw, 22px);
+ line-height: 1.12;
+ font-weight: 740;
+ letter-spacing: .02em;
+ color: #2c5cad;
+ margin: 0;
+ width: 100%;
+ text-wrap: balance;
+ -webkit-font-smoothing: antialiased;
+ -moz-osx-font-smoothing: grayscale;
+ text-rendering: geometricPrecision;
+ }
+
+ .module-card.jefatura .module-icon-label {
+ color: #2c5cad;
+ }
+
+ .kpi-grid {
+ margin-top: 24px;
+ display: grid;
+ grid-template-columns: repeat(4, minmax(0, 1fr));
+ gap: 18px;
+ }
+ .kpi-toolbar {
+ display: flex;
+ justify-content: flex-end;
+ margin-top: 18px;
+ margin-bottom: 6px;
+ color: #3a66ac;
+ font-size: 12px;
+ font-weight: 700;
+ letter-spacing: .02em;
+ gap: 8px;
+ align-items: center;
+ }
+ .kpi-live-dot {
+ width: 8px;
+ height: 8px;
+ border-radius: 50%;
+ background: #2f76d6;
+ box-shadow: 0 0 0 0 rgba(47,118,214,0.44);
+ animation: kpiPulse 1.4s infinite;
+ }
+ .kpi-updated {
+ animation: kpiFlash 0.9s ease;
+ }
+
+ .kpi-card {
+ border: 1px solid #d9e7ff;
+ border-radius: 12px;
+ overflow: hidden;
+ background: #fff;
+ box-shadow: 0 6px 14px rgba(34, 73, 133, 0.09);
+ transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+ cursor: pointer;
+ }
+ .kpi-card:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 12px 22px rgba(34, 73, 133, 0.16);
+ border-color: #aac8f5;
+ }
+
+ .kpi-card.kpi-national {
+ border-color: rgba(10, 49, 97, 0.34);
+ box-shadow: 0 8px 16px rgba(10, 49, 97, 0.16);
+ }
+
+ .kpi-label {
+ padding: 16px 16px 14px;
+ font-size: 20px;
+ color: #3360a5;
+ font-weight: 600;
+ background: linear-gradient(180deg, #f4f9ff, #eff6ff);
+ }
+
+ .kpi-card.kpi-national .kpi-label {
+ color: #0a3161;
+ background: linear-gradient(180deg, #eef4ff, #deebff);
+ }
+
+ .kpi-value-band {
+ padding: 12px 16px 14px;
+ background:
+ linear-gradient(135deg, var(--uro-blue-700) 0%, var(--uro-blue-500) 58%, #9dc2ff 100%);
+ color: #fff;
+ font-size: 64px;
+ font-weight: 800;
+ line-height: 1;
+ letter-spacing: .5px;
+ text-shadow: 0 2px 6px rgba(18, 54, 103, 0.26);
+ }
+
+ .kpi-card.kpi-national .kpi-value-band {
+ background: linear-gradient(135deg, var(--uro-flag-blue-700) 0%, var(--uro-flag-blue-900) 100%);
+ }
+
+ .kpi-card.danger .kpi-value-band {
+ background: linear-gradient(135deg, #b92b39 0%, #d84352 52%, #ef7380 100%);
+ }
+ .kpi-helper {
+ display: block;
+ margin-top: 4px;
+ font-size: 12px;
+ font-weight: 700;
+ color: #5e7cb0;
+ letter-spacing: .02em;
+ }
+ .kpi-card.danger .kpi-helper {
+ color: #88566a;
+ }
+ .kpi-trend {
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ padding: 8px 14px 10px;
+ font-size: 12px;
+ font-weight: 700;
+ color: #4f6ea3;
+ border-top: 1px solid #e4edfb;
+ background: #f8fbff;
+ }
+ .kpi-trend-dot {
+ width: 8px;
+ height: 8px;
+ border-radius: 50%;
+ background: #8ea7cd;
+ }
+ .kpi-trend.up .kpi-trend-dot { background: #2f9f65; }
+ .kpi-trend.down .kpi-trend-dot { background: #cc4a5a; }
+
+ @keyframes kpiPulse {
+ 0% { box-shadow: 0 0 0 0 rgba(47,118,214,0.44); }
+ 70% { box-shadow: 0 0 0 10px rgba(47,118,214,0); }
+ 100% { box-shadow: 0 0 0 0 rgba(47,118,214,0); }
+ }
+ @keyframes kpiFlash {
+ 0% { filter: brightness(1); }
+ 30% { filter: brightness(1.22); }
+ 100% { filter: brightness(1); }
+ }
+
+ .global-footer {
+ margin-top: auto;
+ background: var(--uro-flag-blue-900);
+ color: #f0f6ff;
+ border-top: 1px solid rgba(255,255,255,0.22);
+ padding: 12px 10px;
+ text-align: center;
+ font-size: 14px;
+ font-weight: 700;
+ letter-spacing: .6px;
+ text-transform: uppercase;
+ }
+
+ .footer-clock {
+ margin-left: 12px;
+ padding-left: 12px;
+ border-left: 1px solid rgba(255,255,255,0.45);
+ font-variant-numeric: tabular-nums;
+ color: #ffffff;
+ font-weight: 600;
+ letter-spacing: .3px;
+ }
+
+ @media (max-width: 1280px) {
+ .module-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+ .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .module-icon-label { font-size: clamp(18px, 2.1vw, 23px); }
+ }
+
+ @media (max-width: 980px) {
+ .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ }
+
+ @media (max-width: 760px) {
+ body { padding: 0; }
+ .page-shell {
+ width: calc(100% - 12px);
+ margin: 8px auto 10px;
+ border-radius: 14px;
+ }
+ .topbar {
+ padding: 54px 0;
+ }
+ .topbar-inner {
+ padding: 12px;
+ min-height: 78px;
+ flex-wrap: wrap;
+ background: linear-gradient(
+ to right,
+ #ffffff 0%,
+ #ffffff 100%
+ );
+ }
+ .brand-wrap {
+ position: static;
+ transform: none;
+ width: 100%;
+ height: clamp(82px, 24vw, 110px);
+ }
+ .brand-logo {
+ width: 100%;
+ height: 100%;
+ }
+ .user-pill { font-size: 13px; padding: 8px 12px; }
+ .content { padding: 14px 12px 16px; }
+ .module-grid,
+ .kpi-grid { grid-template-columns: 1fr; gap: 12px; }
+ .module-card { min-height: 0; }
+ .module-icon-wrap { min-height: 102px; }
+ .module-icon { width: 32px; height: 32px; }
+ .module-icon-img { width: 62px; height: 48px; }
+ .module-icon-label { font-size: 19px; }
+ .kpi-label { font-size: 17px; }
+ .kpi-value-band { font-size: 46px; }
+ .global-footer { font-size: 12px; padding: 10px 8px; }
+ .footer-clock {
+ display: block;
+ margin: 6px 0 0 0;
+ padding: 0;
+ border: 0;
+ }
+ }
+ </style>
 </head>
 <body>
-    <div class="page-shell">
-        <div class="header-bar">
-            <!-- Notification badge area -->
-            <div class="header-notification-area">
-                <div class="notification-bell" title="Notificaciones">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                    <span class="notification-badge" id="notifBadge"></span>
-                </div>
-            </div>
-            <div class="logo-block logo-block-imss">
-                <img src="{{ imss_logo_url }}" class="logo-imss" alt="Logo IMSS">
-            </div>
-            <div class="hospital-title">
-                <h1>HOSPITAL DE ESPECIALIDADES DR. ANTONIO LA FRAGA MOURET</h1>
-                <h2>CENTRO MEDICO NACIONAL LA RAZA</h2>
-            </div>
-            <div class="logo-block logo-block-uro">
-                <img src="{{ urologia_logo_url }}" class="logo-urologia" alt="Logo Urología">
-            </div>
-        </div>
-        <div class="main-content">
-            <div class="card-menu">
-                <h1>REGISTRO NACIONAL DE PACIENTES</h1>
-                <h2 class="subtitle">(SERVICIO DE UROLOGÍA)</h2>
-                <div class="grid-buttons">
-                    <a href="/consulta_externa" class="btn-menu">
-                        <span class="icon-badge">
-                            <svg class="icon-svg" viewBox="0 0 64 64" aria-hidden="true">
-                                <path d="M19 12v11a9 9 0 0 0 18 0V12"></path>
-                                <path d="M28 32v8a9 9 0 0 0 18 0"></path>
-                                <circle cx="46" cy="40" r="6"></circle>
-                                <path d="M23 18h-4M33 18h-4"></path>
-                            </svg>
-                        </span>
-                        <span class="btn-text">CONSULTA EXTERNA</span>
-                    </a>
-                    <a href="/hospitalizacion/ingresar" class="btn-menu">
-                        <span class="icon-badge">
-                            <svg class="icon-svg" viewBox="0 0 64 64" aria-hidden="true">
-                                <path d="M10 36h34a4 4 0 0 1 4 4v4H10z"></path>
-                                <path d="M10 44v7M48 44v7"></path>
-                                <path d="M14 36V25h10a6 6 0 0 1 6 6v5"></path>
-                                <rect class="accent" x="43" y="11" width="11" height="11" rx="1"></rect>
-                                <path d="M48.5 13.5v6M45.5 16.5h6"></path>
-                            </svg>
-                        </span>
-                        <span class="btn-text">HOSPITALIZACIÓN</span>
-                    </a>
-                    <a href="/quirofano" class="btn-menu">
-                        <span class="icon-badge">
-                            <svg class="icon-svg" viewBox="0 0 64 64" aria-hidden="true">
-                                <path d="M14 46l19-19"></path>
-                                <path d="M30 30l7 7"></path>
-                                <path d="M37 37l13-13a5 5 0 0 0 0-7l-1-1"></path>
-                                <path d="M14 46h8l17-17-8-8-17 17z"></path>
-                            </svg>
-                        </span>
-                        <span class="btn-text">QUIRÓFANO</span>
-                    </a>
-                    <a href="/expediente" class="btn-menu">
-                        <span class="icon-badge">
-                            <svg class="icon-svg" viewBox="0 0 64 64" aria-hidden="true">
-                                <path d="M9 24h18l5 5h23v22H9z"></path>
-                                <path d="M9 24v-8h18l5 5h23v8"></path>
-                            </svg>
-                        </span>
-                        <span class="btn-text">EXPEDIENTE CLÍNICO ÚNICO</span>
-                    </a>
-                    <a href="/reporte" class="btn-menu">
-                        <span class="icon-badge">
-                            <svg class="icon-svg" viewBox="0 0 64 64" aria-hidden="true">
-                                <path d="M12 50h40"></path>
-                                <rect x="17" y="31" width="7" height="19"></rect>
-                                <rect x="29" y="24" width="7" height="26"></rect>
-                                <rect x="41" y="18" width="7" height="32"></rect>
-                            </svg>
-                        </span>
-                        <span class="btn-text">REPORTE ESTADISTICO</span>
-                    </a>
-                    <a href="/jefatura-urologia" class="btn-menu btn-jefatura">
-                        <span class="icon-badge">
-                            <img src="{{ urologia_logo_url }}" alt="Jefatura Urología" class="logo-mini">
-                        </span>
-                        <span class="btn-text">JEFATURA DE UROLOGÍA</span>
-                    </a>
-                </div>
-                <!-- Quick-stat KPI cards (placeholder data - populated by backend) -->
-                <div class="quick-stats-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-value" id="kpiCamasLibres">{{ kpi_camas_libres if kpi_camas_libres is not none else 0 }}</div>
-                        <div class="kpi-label">Camas Libres</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-value" id="kpiCirugiasPend">{{ kpi_cirugias_pendientes if kpi_cirugias_pendientes is not none else 0 }}</div>
-                        <div class="kpi-label">Cirugías Pendientes</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-value" id="kpiCamasOcup">{{ kpi_camas_ocupadas if kpi_camas_ocupadas is not none else 0 }}</div>
-                        <div class="kpi-label">Camas Ocupadas</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-value" id="kpiPacientesGraves">{{ kpi_pacientes_graves if kpi_pacientes_graves is not none else 0 }}</div>
-                        <div class="kpi-label">Pacientes Graves</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="global-footer">
-        <span class="footer-text">2026 PROGRAMA PILOTO (TODOS LOS DERECHOS RESERVADOS)</span>
-        <span class="footer-clock" id="footerClock"></span>
-    </div>
-    <!-- Live clock script -->
-    <script>
-        (function() {
-            var clockEl = document.getElementById('footerClock');
-            function updateClock() {
-                var now = new Date();
-                var hh = String(now.getHours()).padStart(2, '0');
-                var mm = String(now.getMinutes()).padStart(2, '0');
-                var ss = String(now.getSeconds()).padStart(2, '0');
-                var dd = String(now.getDate()).padStart(2, '0');
-                var mo = String(now.getMonth() + 1).padStart(2, '0');
-                var yy = now.getFullYear();
-                clockEl.textContent = dd + '/' + mo + '/' + yy + '  ' + hh + ':' + mm + ':' + ss;
-            }
-            updateClock();
-            setInterval(updateClock, 1000);
-        })();
-    </script>
+ <main class="page-shell">
+ <header class="topbar">
+ <div class="topbar-inner">
+ <div class="brand-wrap">
+ <img class="brand-logo" src="/static/img/logooficial_header_clean.png" alt="Logo UROMED">
+ </div>
+ <div class="user-pill">
+ <span class="user-dot" aria-hidden="true"></span>
+ <span class="user-name">admin</span>
+ <span class="user-sep">·</span>
+ <span>Urología</span>
+ <svg class="user-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+ </div>
+ </div>
+ </header>
+
+ <section class="content">
+ <section class="module-grid">
+ <a href="/consulta_externa" class="module-card">
+ <span class="module-icon-wrap">
+ <img class="module-icon-img" src="/static/img/menu_icons/consulta.png" alt="Icono Consulta Externa">
+ <span class="module-icon-label">Consulta Externa</span>
+ </span>
+ </a>
+
+ <a href="/hospitalizacion" class="module-card">
+ <span class="module-icon-wrap">
+ <img class="module-icon-img" src="/static/img/menu_icons/hospitalizacion.png" alt="Icono Hospitalización">
+ <span class="module-icon-label">Hospitalización</span>
+ </span>
+ </a>
+
+ <a href="/quirofano" class="module-card">
+ <span class="module-icon-wrap">
+ <img class="module-icon-img" src="/static/img/menu_icons/quirofano.png" alt="Icono Quirófano">
+ <span class="module-icon-label">Quirófano</span>
+ </span>
+ </a>
+
+ <a href="/expediente" class="module-card">
+ <span class="module-icon-wrap">
+ <img class="module-icon-img" src="/static/img/menu_icons/expediente.png" alt="Icono Expediente Clínico Único">
+ <span class="module-icon-label">Expediente Clínico Único</span>
+ </span>
+ </a>
+
+ <a href="/reporte" class="module-card">
+ <span class="module-icon-wrap">
+ <img class="module-icon-img" src="/static/img/menu_icons/reporte.png" alt="Icono Reporte Estadístico">
+ <span class="module-icon-label">Reporte Estadístico</span>
+ </span>
+ </a>
+
+ <a href="/jefatura-urologia" class="module-card jefatura">
+ <span class="module-icon-wrap">
+ <img class="module-icon-img" src="/static/img/menu_icons/jefatura.png" alt="Icono Jefatura de Urología">
+ <span class="module-icon-label">Jefatura de Urología</span>
+ </span>
+ </a>
+ </section>
+
+ <div class="kpi-toolbar">
+ <span class="kpi-live-dot" aria-hidden="true"></span>
+ <span>KPIs en vivo (actualización automática)</span>
+ </div>
+ <section class="kpi-grid">
+ <article class="kpi-card kpi-national" data-kpi-card data-href="/hospitalizacion">
+ <div class="kpi-label">Camas libres</div>
+ <div class="kpi-value-band" id="kpiCamasLibres" data-kpi-value>{{ kpi_camas_libres if kpi_camas_libres is not none else 0 }}</div>
+ <span class="kpi-helper">Disponibilidad operativa actual</span>
+ <div class="kpi-trend" id="kpiTrendCamasLibres"><span class="kpi-trend-dot"></span><span>Sin cambios recientes</span></div>
+ </article>
+ <article class="kpi-card kpi-national" data-kpi-card data-href="/quirofano">
+ <div class="kpi-label">Cirugías pendientes</div>
+ <div class="kpi-value-band" id="kpiCirugiasPend" data-kpi-value>{{ kpi_cirugias_pendientes if kpi_cirugias_pendientes is not none else 0 }}</div>
+ <span class="kpi-helper">Click para abrir Quirófano</span>
+ <div class="kpi-trend" id="kpiTrendCirugiasPend"><span class="kpi-trend-dot"></span><span>Sin cambios recientes</span></div>
+ </article>
+ <article class="kpi-card kpi-national" data-kpi-card data-href="/hospitalizacion">
+ <div class="kpi-label">Camas ocupadas</div>
+ <div class="kpi-value-band" id="kpiCamasOcup" data-kpi-value>{{ kpi_camas_ocupadas if kpi_camas_ocupadas is not none else 0 }}</div>
+ <span class="kpi-helper">Click para abrir Hospitalización</span>
+ <div class="kpi-trend" id="kpiTrendCamasOcup"><span class="kpi-trend-dot"></span><span>Sin cambios recientes</span></div>
+ </article>
+ <article class="kpi-card danger" data-kpi-card data-href="/hospitalizacion/censo">
+ <div class="kpi-label">Pacientes graves</div>
+ <div class="kpi-value-band" id="kpiPacientesGraves" data-kpi-value>{{ kpi_pacientes_graves if kpi_pacientes_graves is not none else 0 }}</div>
+ <span class="kpi-helper">Click para abrir Censo diario</span>
+ <div class="kpi-trend" id="kpiTrendPacientesGraves"><span class="kpi-trend-dot"></span><span>Sin cambios recientes</span></div>
+ </article>
+ </section>
+ </section>
+ </main>
+
+ <footer class="global-footer">
+ <span>2026 PROGRAMA PILOTO (TODOS LOS DERECHOS RESERVADOS)</span>
+ <span class="footer-clock" id="footerClock"></span>
+ </footer>
+
+ <script>
+ (function () {
+ var clockEl = document.getElementById('footerClock');
+ var logoEl = document.querySelector('.brand-logo');
+ if (logoEl) {
+ logoEl.addEventListener('error', function () {
+ logoEl.src = '/static/img/logooficial.png';
+ });
+ }
+ function updateClock() {
+ var now = new Date();
+ var hh = String(now.getHours()).padStart(2, '0');
+ var mm = String(now.getMinutes()).padStart(2, '0');
+ var ss = String(now.getSeconds()).padStart(2, '0');
+ var dd = String(now.getDate()).padStart(2, '0');
+ var mo = String(now.getMonth() + 1).padStart(2, '0');
+ var yy = now.getFullYear();
+ clockEl.textContent = dd + '/' + mo + '/' + yy + ' ' + hh + ':' + mm + ':' + ss;
+ }
+ updateClock();
+ setInterval(updateClock, 1000);
+
+ var kpiMap = {
+ kpiCamasLibres: 'kpi_camas_libres',
+ kpiCirugiasPend: 'kpi_cirugias_pendientes',
+ kpiCamasOcup: 'kpi_camas_ocupadas',
+ kpiPacientesGraves: 'kpi_pacientes_graves'
+ };
+ var trendMap = {
+ kpiCamasLibres: 'kpiTrendCamasLibres',
+ kpiCirugiasPend: 'kpiTrendCirugiasPend',
+ kpiCamasOcup: 'kpiTrendCamasOcup',
+ kpiPacientesGraves: 'kpiTrendPacientesGraves'
+ };
+
+ function toInt(value) {
+ var n = parseInt(String(value || '').replace(/[^\d-]/g, ''), 10);
+ return Number.isFinite(n) ? n : 0;
+ }
+
+ function animateKpi(el, target) {
+ if (!el) return;
+ var from = toInt(el.dataset.current || el.textContent);
+ var to = toInt(target);
+ el.dataset.current = String(to);
+ if (from === to) {
+ el.textContent = String(to);
+ return;
+ }
+ var duration = 420;
+ var start = performance.now();
+ function frame(now) {
+ var p = Math.min((now - start) / duration, 1);
+ var eased = 1 - Math.pow(1 - p, 3);
+ var value = Math.round(from + (to - from) * eased);
+ el.textContent = String(value);
+ if (p < 1) requestAnimationFrame(frame);
+ }
+ requestAnimationFrame(frame);
+ }
+ function updateTrend(domId, previous, next) {
+ var trendEl = document.getElementById(trendMap[domId]);
+ if (!trendEl) return;
+ trendEl.classList.remove('up', 'down');
+ var label = trendEl.querySelector('span:last-child');
+ if (!label) return;
+ var delta = next - previous;
+ if (delta > 0) {
+ trendEl.classList.add('up');
+ label.textContent = '+' + delta + ' desde última actualización';
+ } else if (delta < 0) {
+ trendEl.classList.add('down');
+ label.textContent = delta + ' desde última actualización';
+ } else {
+ label.textContent = 'Sin cambios recientes';
+ }
+ }
+
+ async function refreshKpis() {
+ try {
+ var res = await fetch('/api/menu/kpis', { credentials: 'same-origin' });
+ if (!res.ok) return;
+ var data = await res.json();
+ Object.keys(kpiMap).forEach(function (domId) {
+ var el = document.getElementById(domId);
+ if (!el) return;
+ var nextVal = toInt(data[kpiMap[domId]]);
+ var prevVal = toInt(el.dataset.current || el.textContent);
+ animateKpi(el, nextVal);
+ updateTrend(domId, prevVal, nextVal);
+ if (nextVal !== prevVal) {
+ el.classList.remove('kpi-updated');
+ void el.offsetWidth;
+ el.classList.add('kpi-updated');
+ }
+ });
+ } catch (_err) {
+ return;
+ }
+ }
+
+ document.querySelectorAll('[data-kpi-card]').forEach(function (card) {
+ card.addEventListener('click', function () {
+ var href = card.getAttribute('data-href');
+ if (href) window.location.href = href;
+ });
+ });
+
+ document.querySelectorAll('[data-kpi-value]').forEach(function (el) {
+ el.dataset.current = String(toInt(el.textContent));
+ });
+ refreshKpis();
+ setInterval(refreshKpis, 20000);
+ })();
+ </script>
 </body>
 </html>

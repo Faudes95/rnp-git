@@ -1,389 +1,389 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Reporte de Sangrado Quirúrgico - Urología</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; padding: 20px; color: #13322B; }
-        .container { max-width: 1260px; margin: auto; background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-        h1 { margin: 0 0 6px 0; color: #13322B; }
-        h2 { margin: 26px 0 10px 0; color: #13322B; }
-        h3 { margin: 0 0 8px 0; color: #13322B; }
-        .meta { color: #49545a; margin-bottom: 14px; font-size: 13px; }
-        .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
-        .toolbar a, .toolbar button {
-            border: none;
-            background: #13322B;
-            color: #fff;
-            border-radius: 6px;
-            padding: 9px 14px;
-            font-size: 13px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .toolbar .secondary { background: #B38E5D; }
-        .filters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 8px;
-            margin-bottom: 14px;
-        }
-        .filters label { font-size: 12px; color: #49545a; display: block; margin-bottom: 4px; }
-        .filters input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #d7dce1;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-            gap: 10px;
-            margin-top: 8px;
-        }
-        .card {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-left: 4px solid #B38E5D;
-            border-radius: 8px;
-            padding: 12px;
-        }
-        .card .label { font-size: 12px; color: #49545a; margin-bottom: 4px; }
-        .card .value { font-size: 22px; font-weight: 700; color: #13322B; }
-        .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; margin-top: 12px; }
-        .chart-box { border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; padding: 10px; }
-        .chart-box img { width: 100%; border-radius: 6px; border: 1px solid #e5e7eb; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 14px; }
-        table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
-        th { background: #13322B; color: #fff; font-size: 12px; text-align: left; padding: 8px; }
-        td { border-bottom: 1px solid #eef0f2; padding: 7px 8px; font-size: 12px; color: #233; }
-        tr:last-child td { border-bottom: none; }
-        .empty { padding: 12px; border: 1px dashed #c6ccd3; border-radius: 8px; background: #f9fafb; color: #49545a; font-size: 13px; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>Reporte de Sangrado Quirúrgico - Urología</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; padding: 20px; color: #0a3161; }
+ .container { max-width: 1260px; margin: auto; background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+ h1 { margin: 0 0 6px 0; color: #0a3161; }
+ h2 { margin: 26px 0 10px 0; color: #0a3161; }
+ h3 { margin: 0 0 8px 0; color: #0a3161; }
+ .meta { color: #49545a; margin-bottom: 14px; font-size: 13px; }
+ .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+ .toolbar a, .toolbar button {
+ border: none;
+ background: #0a3161;
+ color: #fff;
+ border-radius: 6px;
+ padding: 9px 14px;
+ font-size: 13px;
+ text-decoration: none;
+ cursor: pointer;
+ }
+ .toolbar .secondary { background: #c82f3f; }
+ .filters {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+ gap: 10px;
+ margin-top: 8px;
+ margin-bottom: 14px;
+ }
+ .filters label { font-size: 12px; color: #49545a; display: block; margin-bottom: 4px; }
+ .filters input {
+ width: 100%;
+ padding: 8px;
+ border: 1px solid #d7dce1;
+ border-radius: 6px;
+ font-size: 13px;
+ }
+ .cards {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+ gap: 10px;
+ margin-top: 8px;
+ }
+ .card {
+ background: #f9fafb;
+ border: 1px solid #e5e7eb;
+ border-left: 4px solid #c82f3f;
+ border-radius: 8px;
+ padding: 12px;
+ }
+ .card .label { font-size: 12px; color: #49545a; margin-bottom: 4px; }
+ .card .value { font-size: 22px; font-weight: 700; color: #0a3161; }
+ .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; margin-top: 12px; }
+ .chart-box { border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; padding: 10px; }
+ .chart-box img { width: 100%; border-radius: 6px; border: 1px solid #e5e7eb; }
+ .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 14px; }
+ table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+ th { background: #0a3161; color: #fff; font-size: 12px; text-align: left; padding: 8px; }
+ td { border-bottom: 1px solid #eef0f2; padding: 7px 8px; font-size: 12px; color: #233; }
+ tr:last-child td { border-bottom: none; }
+ .empty { padding: 12px; border: 1px dashed #c6ccd3; border-radius: 8px; background: #f9fafb; color: #49545a; font-size: 13px; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🩸 Reporte de Sangrado Quirúrgico</h1>
-        <div class="meta">Generado: {{ fecha }} | Periodo activo: {{ target_month }}/{{ target_year }}</div>
+ <div class="container">
+ <h1>🩸 Reporte de Sangrado Quirúrgico</h1>
+ <div class="meta">Generado: {{ fecha }} | Periodo activo: {{ target_month }}/{{ target_year }}</div>
 
-        <div class="toolbar">
-            <a href="/reporte">← Volver a Reporte</a>
-            <a href="/" class="secondary">Menú Principal</a>
-            <a href="/api/stats/sangrado/resumen?anio={{ target_year }}&mes={{ target_month }}" class="secondary">API Resumen</a>
-            <a href="/api/stats/sangrado/cirujano-procedimiento?anio={{ target_year }}&mes={{ target_month }}" class="secondary">API Desglose</a>
-        </div>
+ <div class="toolbar">
+ <a href="/reporte">← Volver a Reporte</a>
+ <a href="/" class="secondary">Menú Principal</a>
+ <a href="/api/stats/sangrado/resumen?anio={{ target_year }}&mes={{ target_month }}" class="secondary">API Resumen</a>
+ <a href="/api/stats/sangrado/cirujano-procedimiento?anio={{ target_year }}&mes={{ target_month }}" class="secondary">API Desglose</a>
+ </div>
 
-        <form class="filters" method="get" action="/reporte/sangrado">
-            <div>
-                <label for="anio">Año</label>
-                <input id="anio" name="anio" type="number" min="2020" max="2100" value="{{ target_year }}">
-            </div>
-            <div>
-                <label for="mes">Mes</label>
-                <input id="mes" name="mes" type="number" min="1" max="12" value="{{ target_month }}">
-            </div>
-            <div style="display:flex; align-items:flex-end;">
-                <button type="submit">Actualizar corte</button>
-            </div>
-        </form>
+ <form class="filters" method="get" action="/reporte/sangrado">
+ <div>
+ <label for="anio">Año</label>
+ <input id="anio" name="anio" type="number" min="2020" max="2100" value="{{ target_year }}">
+ </div>
+ <div>
+ <label for="mes">Mes</label>
+ <input id="mes" name="mes" type="number" min="1" max="12" value="{{ target_month }}">
+ </div>
+ <div style="display:flex; align-items:flex-end;">
+ <button type="submit">Actualizar corte</button>
+ </div>
+ </form>
 
-        <h2>Resumen del periodo</h2>
-        <div class="cards">
-            <div class="card">
-                <div class="label">Cirugías realizadas (periodo)</div>
-                <div class="value">{{ metricas_mes.total_cirugias_realizadas_periodo or 0 }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Con sangrado registrado</div>
-                <div class="value">{{ metricas_mes.cirugias_con_sangrado_registrado or 0 }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Sangrado total (mL)</div>
-                <div class="value">{{ metricas_mes.sangrado_total_ml or 0 }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Promedio (mL)</div>
-                <div class="value">{{ metricas_mes.sangrado_promedio_ml if metricas_mes.sangrado_promedio_ml is not none else "N/A" }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Mediana (mL)</div>
-                <div class="value">{{ metricas_mes.sangrado_mediana_ml if metricas_mes.sangrado_mediana_ml is not none else "N/A" }}</div>
-            </div>
-            <div class="card">
-                <div class="label">P90 (mL)</div>
-                <div class="value">{{ metricas_mes.sangrado_p90_ml if metricas_mes.sangrado_p90_ml is not none else "N/A" }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Transfusiones SI</div>
-                <div class="value">{{ metricas_mes.transfusion_global.transfusiones_si if metricas_mes.transfusion_global else 0 }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Tasa de transfusión (%)</div>
-                <div class="value">{{ metricas_mes.transfusion_global.tasa_transfusion_pct if metricas_mes.transfusion_global else 0 }}</div>
-            </div>
-        </div>
+ <h2>Resumen del periodo</h2>
+ <div class="cards">
+ <div class="card">
+ <div class="label">Cirugías realizadas (periodo)</div>
+ <div class="value">{{ metricas_mes.total_cirugias_realizadas_periodo or 0 }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Con sangrado registrado</div>
+ <div class="value">{{ metricas_mes.cirugias_con_sangrado_registrado or 0 }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Sangrado total (mL)</div>
+ <div class="value">{{ metricas_mes.sangrado_total_ml or 0 }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Promedio (mL)</div>
+ <div class="value">{{ metricas_mes.sangrado_promedio_ml if metricas_mes.sangrado_promedio_ml is not none else "N/A" }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Mediana (mL)</div>
+ <div class="value">{{ metricas_mes.sangrado_mediana_ml if metricas_mes.sangrado_mediana_ml is not none else "N/A" }}</div>
+ </div>
+ <div class="card">
+ <div class="label">P90 (mL)</div>
+ <div class="value">{{ metricas_mes.sangrado_p90_ml if metricas_mes.sangrado_p90_ml is not none else "N/A" }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Transfusiones SI</div>
+ <div class="value">{{ metricas_mes.transfusion_global.transfusiones_si if metricas_mes.transfusion_global else 0 }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Tasa de transfusión (%)</div>
+ <div class="value">{{ metricas_mes.transfusion_global.tasa_transfusion_pct if metricas_mes.transfusion_global else 0 }}</div>
+ </div>
+ </div>
 
-        {% if metricas_mes.chart_cirujano_total or metricas_mes.chart_procedimiento_total or metricas_mes.chart_cirujano_procedimiento or metricas_mes.chart_transfusion_cirujano or metricas_mes.chart_transfusion_procedimiento or metricas_mes.chart_ajuste_complejidad_oe %}
-        <h2>Gráficas del periodo</h2>
-        <div class="charts">
-            {% if metricas_mes.chart_cirujano_total %}
-            <div class="chart-box">
-                <h3>Sangrado total por cirujano</h3>
-                <img src="data:image/png;base64,{{ metricas_mes.chart_cirujano_total }}" alt="Sangrado por cirujano">
-            </div>
-            {% endif %}
-            {% if metricas_mes.chart_procedimiento_total %}
-            <div class="chart-box">
-                <h3>Sangrado total por procedimiento</h3>
-                <img src="data:image/png;base64,{{ metricas_mes.chart_procedimiento_total }}" alt="Sangrado por procedimiento">
-            </div>
-            {% endif %}
-            {% if metricas_mes.chart_cirujano_procedimiento %}
-            <div class="chart-box">
-                <h3>Sangrado por cirujano + procedimiento</h3>
-                <img src="data:image/png;base64,{{ metricas_mes.chart_cirujano_procedimiento }}" alt="Sangrado por cirujano y procedimiento">
-            </div>
-            {% endif %}
-            {% if metricas_mes.chart_transfusion_cirujano %}
-            <div class="chart-box">
-                <h3>Tasa de transfusión por cirujano</h3>
-                <img src="data:image/png;base64,{{ metricas_mes.chart_transfusion_cirujano }}" alt="Transfusión por cirujano">
-            </div>
-            {% endif %}
-            {% if metricas_mes.chart_transfusion_procedimiento %}
-            <div class="chart-box">
-                <h3>Tasa de transfusión por procedimiento</h3>
-                <img src="data:image/png;base64,{{ metricas_mes.chart_transfusion_procedimiento }}" alt="Transfusión por procedimiento">
-            </div>
-            {% endif %}
-            {% if metricas_mes.chart_ajuste_complejidad_oe %}
-            <div class="chart-box">
-                <h3>Comparación justa (O/E ajustado por complejidad)</h3>
-                <img src="data:image/png;base64,{{ metricas_mes.chart_ajuste_complejidad_oe }}" alt="Ajuste complejidad O E">
-            </div>
-            {% endif %}
-        </div>
-        {% endif %}
+ {% if metricas_mes.chart_cirujano_total or metricas_mes.chart_procedimiento_total or metricas_mes.chart_cirujano_procedimiento or metricas_mes.chart_transfusion_cirujano or metricas_mes.chart_transfusion_procedimiento or metricas_mes.chart_ajuste_complejidad_oe %}
+ <h2>Gráficas del periodo</h2>
+ <div class="charts">
+ {% if metricas_mes.chart_cirujano_total %}
+ <div class="chart-box">
+ <h3>Sangrado total por cirujano</h3>
+ <img src="data:image/png;base64,{{ metricas_mes.chart_cirujano_total }}" alt="Sangrado por cirujano">
+ </div>
+ {% endif %}
+ {% if metricas_mes.chart_procedimiento_total %}
+ <div class="chart-box">
+ <h3>Sangrado total por procedimiento</h3>
+ <img src="data:image/png;base64,{{ metricas_mes.chart_procedimiento_total }}" alt="Sangrado por procedimiento">
+ </div>
+ {% endif %}
+ {% if metricas_mes.chart_cirujano_procedimiento %}
+ <div class="chart-box">
+ <h3>Sangrado por cirujano + procedimiento</h3>
+ <img src="data:image/png;base64,{{ metricas_mes.chart_cirujano_procedimiento }}" alt="Sangrado por cirujano y procedimiento">
+ </div>
+ {% endif %}
+ {% if metricas_mes.chart_transfusion_cirujano %}
+ <div class="chart-box">
+ <h3>Tasa de transfusión por cirujano</h3>
+ <img src="data:image/png;base64,{{ metricas_mes.chart_transfusion_cirujano }}" alt="Transfusión por cirujano">
+ </div>
+ {% endif %}
+ {% if metricas_mes.chart_transfusion_procedimiento %}
+ <div class="chart-box">
+ <h3>Tasa de transfusión por procedimiento</h3>
+ <img src="data:image/png;base64,{{ metricas_mes.chart_transfusion_procedimiento }}" alt="Transfusión por procedimiento">
+ </div>
+ {% endif %}
+ {% if metricas_mes.chart_ajuste_complejidad_oe %}
+ <div class="chart-box">
+ <h3>Comparación justa (O/E ajustado por complejidad)</h3>
+ <img src="data:image/png;base64,{{ metricas_mes.chart_ajuste_complejidad_oe }}" alt="Ajuste complejidad O E">
+ </div>
+ {% endif %}
+ </div>
+ {% endif %}
 
-        <h2>Top por cirujano (periodo)</h2>
-        {% if metricas_mes.cirujano_top %}
-        <table>
-            <tr>
-                <th>Cirujano</th>
-                <th>Cirugías</th>
-                <th>Sangrado total (mL)</th>
-                <th>Promedio (mL)</th>
-                <th>Mediana (mL)</th>
-                <th>P90 (mL)</th>
-                <th>Sangrado alto (&ge;500mL)</th>
-            </tr>
-            {% for row in metricas_mes.cirujano_top %}
-            <tr>
-                <td>{{ row.cirujano }}</td>
-                <td>{{ row.cirugias }}</td>
-                <td>{{ row.sangrado_total_ml }}</td>
-                <td>{{ row.sangrado_promedio_ml }}</td>
-                <td>{{ row.mediana_ml }}</td>
-                <td>{{ row.p90_ml }}</td>
-                <td>{{ row.sangrado_alto_500ml }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <div class="empty">No hay registros con sangrado para el periodo seleccionado.</div>
-        {% endif %}
+ <h2>Top por cirujano (periodo)</h2>
+ {% if metricas_mes.cirujano_top %}
+ <table>
+ <tr>
+ <th>Cirujano</th>
+ <th>Cirugías</th>
+ <th>Sangrado total (mL)</th>
+ <th>Promedio (mL)</th>
+ <th>Mediana (mL)</th>
+ <th>P90 (mL)</th>
+ <th>Sangrado alto (&ge;500mL)</th>
+ </tr>
+ {% for row in metricas_mes.cirujano_top %}
+ <tr>
+ <td>{{ row.cirujano }}</td>
+ <td>{{ row.cirugias }}</td>
+ <td>{{ row.sangrado_total_ml }}</td>
+ <td>{{ row.sangrado_promedio_ml }}</td>
+ <td>{{ row.mediana_ml }}</td>
+ <td>{{ row.p90_ml }}</td>
+ <td>{{ row.sangrado_alto_500ml }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ {% else %}
+ <div class="empty">No hay registros con sangrado para el periodo seleccionado.</div>
+ {% endif %}
 
-        <h2>Top por procedimiento (periodo)</h2>
-        {% if metricas_mes.procedimiento_top %}
-        <table>
-            <tr>
-                <th>Procedimiento</th>
-                <th>Cirugías</th>
-                <th>Sangrado total (mL)</th>
-                <th>Promedio (mL)</th>
-                <th>Mediana (mL)</th>
-                <th>P90 (mL)</th>
-                <th>Sangrado alto (&ge;500mL)</th>
-            </tr>
-            {% for row in metricas_mes.procedimiento_top %}
-            <tr>
-                <td>{{ row.procedimiento }}</td>
-                <td>{{ row.cirugias }}</td>
-                <td>{{ row.sangrado_total_ml }}</td>
-                <td>{{ row.sangrado_promedio_ml }}</td>
-                <td>{{ row.mediana_ml }}</td>
-                <td>{{ row.p90_ml }}</td>
-                <td>{{ row.sangrado_alto_500ml }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <div class="empty">No hay procedimientos con sangrado registrado en el periodo.</div>
-        {% endif %}
+ <h2>Top por procedimiento (periodo)</h2>
+ {% if metricas_mes.procedimiento_top %}
+ <table>
+ <tr>
+ <th>Procedimiento</th>
+ <th>Cirugías</th>
+ <th>Sangrado total (mL)</th>
+ <th>Promedio (mL)</th>
+ <th>Mediana (mL)</th>
+ <th>P90 (mL)</th>
+ <th>Sangrado alto (&ge;500mL)</th>
+ </tr>
+ {% for row in metricas_mes.procedimiento_top %}
+ <tr>
+ <td>{{ row.procedimiento }}</td>
+ <td>{{ row.cirugias }}</td>
+ <td>{{ row.sangrado_total_ml }}</td>
+ <td>{{ row.sangrado_promedio_ml }}</td>
+ <td>{{ row.mediana_ml }}</td>
+ <td>{{ row.p90_ml }}</td>
+ <td>{{ row.sangrado_alto_500ml }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ {% else %}
+ <div class="empty">No hay procedimientos con sangrado registrado en el periodo.</div>
+ {% endif %}
 
-        <h2>Top combinaciones cirujano + procedimiento (periodo)</h2>
-        {% if metricas_mes.cirujano_procedimiento_top %}
-        <table>
-            <tr>
-                <th>Cirujano</th>
-                <th>Procedimiento</th>
-                <th>Cirugías</th>
-                <th>Sangrado total (mL)</th>
-                <th>Promedio (mL)</th>
-                <th>Mediana (mL)</th>
-                <th>P90 (mL)</th>
-                <th>Sangrado alto (&ge;500mL)</th>
-            </tr>
-            {% for row in metricas_mes.cirujano_procedimiento_top %}
-            <tr>
-                <td>{{ row.cirujano }}</td>
-                <td>{{ row.procedimiento }}</td>
-                <td>{{ row.cirugias }}</td>
-                <td>{{ row.sangrado_total_ml }}</td>
-                <td>{{ row.sangrado_promedio_ml }}</td>
-                <td>{{ row.mediana_ml }}</td>
-                <td>{{ row.p90_ml }}</td>
-                <td>{{ row.sangrado_alto_500ml }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <div class="empty">No hay combinaciones de cirujano/procedimiento con sangrado para este corte.</div>
-        {% endif %}
+ <h2>Top combinaciones cirujano + procedimiento (periodo)</h2>
+ {% if metricas_mes.cirujano_procedimiento_top %}
+ <table>
+ <tr>
+ <th>Cirujano</th>
+ <th>Procedimiento</th>
+ <th>Cirugías</th>
+ <th>Sangrado total (mL)</th>
+ <th>Promedio (mL)</th>
+ <th>Mediana (mL)</th>
+ <th>P90 (mL)</th>
+ <th>Sangrado alto (&ge;500mL)</th>
+ </tr>
+ {% for row in metricas_mes.cirujano_procedimiento_top %}
+ <tr>
+ <td>{{ row.cirujano }}</td>
+ <td>{{ row.procedimiento }}</td>
+ <td>{{ row.cirugias }}</td>
+ <td>{{ row.sangrado_total_ml }}</td>
+ <td>{{ row.sangrado_promedio_ml }}</td>
+ <td>{{ row.mediana_ml }}</td>
+ <td>{{ row.p90_ml }}</td>
+ <td>{{ row.sangrado_alto_500ml }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ {% else %}
+ <div class="empty">No hay combinaciones de cirujano/procedimiento con sangrado para este corte.</div>
+ {% endif %}
 
-        <h2>Tasa de transfusión por cirujano (periodo)</h2>
-        {% if metricas_mes.transfusion_por_cirujano %}
-        <table>
-            <tr>
-                <th>Cirujano</th>
-                <th>Cirugías</th>
-                <th>Transfusiones SI</th>
-                <th>Tasa transfusión (%)</th>
-            </tr>
-            {% for row in metricas_mes.transfusion_por_cirujano %}
-            <tr>
-                <td>{{ row.cirujano }}</td>
-                <td>{{ row.cirugias }}</td>
-                <td>{{ row.transfusiones_si }}</td>
-                <td>{{ row.tasa_transfusion_pct }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <div class="empty">No hay datos de transfusión para este periodo.</div>
-        {% endif %}
+ <h2>Tasa de transfusión por cirujano (periodo)</h2>
+ {% if metricas_mes.transfusion_por_cirujano %}
+ <table>
+ <tr>
+ <th>Cirujano</th>
+ <th>Cirugías</th>
+ <th>Transfusiones SI</th>
+ <th>Tasa transfusión (%)</th>
+ </tr>
+ {% for row in metricas_mes.transfusion_por_cirujano %}
+ <tr>
+ <td>{{ row.cirujano }}</td>
+ <td>{{ row.cirugias }}</td>
+ <td>{{ row.transfusiones_si }}</td>
+ <td>{{ row.tasa_transfusion_pct }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ {% else %}
+ <div class="empty">No hay datos de transfusión para este periodo.</div>
+ {% endif %}
 
-        <h2>Tasa de transfusión por procedimiento (periodo)</h2>
-        {% if metricas_mes.transfusion_por_procedimiento %}
-        <table>
-            <tr>
-                <th>Procedimiento</th>
-                <th>Cirugías</th>
-                <th>Transfusiones SI</th>
-                <th>Tasa transfusión (%)</th>
-            </tr>
-            {% for row in metricas_mes.transfusion_por_procedimiento %}
-            <tr>
-                <td>{{ row.procedimiento }}</td>
-                <td>{{ row.cirugias }}</td>
-                <td>{{ row.transfusiones_si }}</td>
-                <td>{{ row.tasa_transfusion_pct }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <div class="empty">No hay procedimientos con transfusión registrada en este corte.</div>
-        {% endif %}
+ <h2>Tasa de transfusión por procedimiento (periodo)</h2>
+ {% if metricas_mes.transfusion_por_procedimiento %}
+ <table>
+ <tr>
+ <th>Procedimiento</th>
+ <th>Cirugías</th>
+ <th>Transfusiones SI</th>
+ <th>Tasa transfusión (%)</th>
+ </tr>
+ {% for row in metricas_mes.transfusion_por_procedimiento %}
+ <tr>
+ <td>{{ row.procedimiento }}</td>
+ <td>{{ row.cirugias }}</td>
+ <td>{{ row.transfusiones_si }}</td>
+ <td>{{ row.tasa_transfusion_pct }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ {% else %}
+ <div class="empty">No hay procedimientos con transfusión registrada en este corte.</div>
+ {% endif %}
 
-        <h2>Comparación justa entre cirujanos (ajuste por complejidad)</h2>
-        {% if metricas_mes.ajuste_complejidad_cirujano %}
-        <table>
-            <tr>
-                <th>Cirujano</th>
-                <th>Cirugías</th>
-                <th>Complejidad promedio</th>
-                <th>Sangrado observado total (mL)</th>
-                <th>Sangrado esperado total (mL)</th>
-                <th>Indice O/E</th>
-                <th>Delta O/E (%)</th>
-            </tr>
-            {% for row in metricas_mes.ajuste_complejidad_cirujano %}
-            <tr>
-                <td>{{ row.cirujano }}</td>
-                <td>{{ row.cirugias }}</td>
-                <td>{{ row.complejidad_promedio }}</td>
-                <td>{{ row.sangrado_observado_total_ml }}</td>
-                <td>{{ row.sangrado_esperado_total_ml }}</td>
-                <td>{{ row.indice_oe if row.indice_oe is not none else "N/A" }}</td>
-                <td>{{ row.delta_oe_pct if row.delta_oe_pct is not none else "N/A" }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <div class="empty">No hay información suficiente para ajuste por complejidad.</div>
-        {% endif %}
+ <h2>Comparación justa entre cirujanos (ajuste por complejidad)</h2>
+ {% if metricas_mes.ajuste_complejidad_cirujano %}
+ <table>
+ <tr>
+ <th>Cirujano</th>
+ <th>Cirugías</th>
+ <th>Complejidad promedio</th>
+ <th>Sangrado observado total (mL)</th>
+ <th>Sangrado esperado total (mL)</th>
+ <th>Indice O/E</th>
+ <th>Delta O/E (%)</th>
+ </tr>
+ {% for row in metricas_mes.ajuste_complejidad_cirujano %}
+ <tr>
+ <td>{{ row.cirujano }}</td>
+ <td>{{ row.cirugias }}</td>
+ <td>{{ row.complejidad_promedio }}</td>
+ <td>{{ row.sangrado_observado_total_ml }}</td>
+ <td>{{ row.sangrado_esperado_total_ml }}</td>
+ <td>{{ row.indice_oe if row.indice_oe is not none else "N/A" }}</td>
+ <td>{{ row.delta_oe_pct if row.delta_oe_pct is not none else "N/A" }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ {% else %}
+ <div class="empty">No hay información suficiente para ajuste por complejidad.</div>
+ {% endif %}
 
-        <h2>Estratos de complejidad (base de ajuste)</h2>
-        {% if metricas_mes.complejidad_estratos %}
-        <table>
-            <tr>
-                <th>Estrato</th>
-                <th>Cirugías</th>
-                <th>Sangrado promedio estrato (mL)</th>
-            </tr>
-            {% for row in metricas_mes.complejidad_estratos %}
-            <tr>
-                <td>{{ row.estrato }}</td>
-                <td>{{ row.cirugias }}</td>
-                <td>{{ row.sangrado_promedio_estrato_ml if row.sangrado_promedio_estrato_ml is not none else "N/A" }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% endif %}
+ <h2>Estratos de complejidad (base de ajuste)</h2>
+ {% if metricas_mes.complejidad_estratos %}
+ <table>
+ <tr>
+ <th>Estrato</th>
+ <th>Cirugías</th>
+ <th>Sangrado promedio estrato (mL)</th>
+ </tr>
+ {% for row in metricas_mes.complejidad_estratos %}
+ <tr>
+ <td>{{ row.estrato }}</td>
+ <td>{{ row.cirugias }}</td>
+ <td>{{ row.sangrado_promedio_estrato_ml if row.sangrado_promedio_estrato_ml is not none else "N/A" }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ {% endif %}
 
-        <h2>Contexto global (histórico)</h2>
-        <div class="cards">
-            <div class="card">
-                <div class="label">Cirugías realizadas (global)</div>
-                <div class="value">{{ metricas_global.total_cirugias_realizadas_periodo or 0 }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Con sangrado registrado (global)</div>
-                <div class="value">{{ metricas_global.cirugias_con_sangrado_registrado or 0 }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Sangrado total (mL)</div>
-                <div class="value">{{ metricas_global.sangrado_total_ml or 0 }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Promedio (mL)</div>
-                <div class="value">{{ metricas_global.sangrado_promedio_ml if metricas_global.sangrado_promedio_ml is not none else "N/A" }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Mediana (mL)</div>
-                <div class="value">{{ metricas_global.sangrado_mediana_ml if metricas_global.sangrado_mediana_ml is not none else "N/A" }}</div>
-            </div>
-            <div class="card">
-                <div class="label">P90 (mL)</div>
-                <div class="value">{{ metricas_global.sangrado_p90_ml if metricas_global.sangrado_p90_ml is not none else "N/A" }}</div>
-            </div>
-        </div>
-    </div>
+ <h2>Contexto global (histórico)</h2>
+ <div class="cards">
+ <div class="card">
+ <div class="label">Cirugías realizadas (global)</div>
+ <div class="value">{{ metricas_global.total_cirugias_realizadas_periodo or 0 }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Con sangrado registrado (global)</div>
+ <div class="value">{{ metricas_global.cirugias_con_sangrado_registrado or 0 }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Sangrado total (mL)</div>
+ <div class="value">{{ metricas_global.sangrado_total_ml or 0 }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Promedio (mL)</div>
+ <div class="value">{{ metricas_global.sangrado_promedio_ml if metricas_global.sangrado_promedio_ml is not none else "N/A" }}</div>
+ </div>
+ <div class="card">
+ <div class="label">Mediana (mL)</div>
+ <div class="value">{{ metricas_global.sangrado_mediana_ml if metricas_global.sangrado_mediana_ml is not none else "N/A" }}</div>
+ </div>
+ <div class="card">
+ <div class="label">P90 (mL)</div>
+ <div class="value">{{ metricas_global.sangrado_p90_ml if metricas_global.sangrado_p90_ml is not none else "N/A" }}</div>
+ </div>
+ </div>
+ </div>
 </body>
 </html>

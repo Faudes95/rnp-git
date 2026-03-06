@@ -1,254 +1,254 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Módulo Quirúrgico - IMSS Urología</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root{
-            --imss-verde:#13322B;
-            --imss-verde-2:#1a4a3f;
-            --imss-verde-3:#245a4c;
-            --imss-dorado:#B38E5D;
-            --imss-ice:#eef5f2;
-            --txt:#12362d;
-            --border:#c9d8d2;
-        }
-        *{box-sizing:border-box}
-        body{
-            margin:0;
-            min-height:100vh;
-            padding:24px;
-            font-family:'Montserrat',sans-serif;
-            background:
-                radial-gradient(circle at 12% 0%, rgba(179,142,93,.22), transparent 36%),
-                radial-gradient(circle at 88% 100%, rgba(19,50,43,.24), transparent 36%),
-                linear-gradient(135deg,#0e322c,#1c5a50 54%,#1a4a3f);
-            color:var(--txt);
-        }
-        .container{
-            max-width:1120px;
-            margin:0 auto;
-            border-radius:18px;
-            border:1px solid rgba(179,142,93,.65);
-            background:linear-gradient(145deg, rgba(255,255,255,.93), rgba(248,252,250,.90));
-            backdrop-filter:blur(3px);
-            box-shadow:0 18px 38px rgba(0,0,0,.28);
-            padding:26px;
-            position:relative;
-            overflow:hidden;
-        }
-        .container::before{
-            content:'';
-            position:absolute;
-            inset:0 0 auto 0;
-            height:4px;
-            background:linear-gradient(90deg,var(--imss-verde),var(--imss-dorado),var(--imss-verde-3));
-        }
+ <meta charset="UTF-8">
+ <title>Módulo Quirúrgico - UROMED Urología</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root{
+ --imss-verde:#0a3161;
+ --imss-verde-2:#1f4f9f;
+ --imss-verde-3:#2e6ec9;
+ --imss-dorado:#c82f3f;
+ --imss-ice:#edf3ff;
+ --txt:#12362d;
+ --border:#c9d8d2;
+ }
+ *{box-sizing:border-box}
+ body{
+ margin:0;
+ min-height:100vh;
+ padding:24px;
+ font-family:'Montserrat',sans-serif;
+ background:
+ radial-gradient(circle at 12% 0%, rgba(200,47,63,.22), transparent 36%),
+ radial-gradient(circle at 88% 100%, rgba(31,79,159,.24), transparent 36%),
+ linear-gradient(135deg,#0e322c,#2e6ec9 54%,#1f4f9f);
+ color:var(--txt);
+ }
+ .container{
+ max-width:1120px;
+ margin:0 auto;
+ border-radius:18px;
+ border:1px solid rgba(200,47,63,.65);
+ background:linear-gradient(145deg, rgba(255,255,255,.93), rgba(248,252,250,.90));
+ backdrop-filter:blur(3px);
+ box-shadow:0 18px 38px rgba(0,0,0,.28);
+ padding:26px;
+ position:relative;
+ overflow:hidden;
+ }
+ .container::before{
+ content:'';
+ position:absolute;
+ inset:0 0 auto 0;
+ height:4px;
+ background:linear-gradient(90deg,var(--imss-verde),var(--imss-dorado),var(--imss-verde-3));
+ }
 
-        .global-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-        .nav-chip{
-            text-decoration:none;
-            padding:7px 12px;
-            border-radius:20px;
-            font-size:12px;
-            font-weight:700;
-            border:1px solid #c8d5d0;
-            color:var(--imss-verde);
-            background:rgba(255,255,255,.78);
-            transition:.2s ease;
-        }
-        .nav-chip:hover{transform:translateY(-1px);border-color:#3da68f;background:#eef8f4}
-        .nav-chip.active{background:var(--imss-dorado);border-color:#9f7f53;color:#16342d;box-shadow:0 2px 8px rgba(179,142,93,.35)}
+ .global-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+ .nav-chip{
+ text-decoration:none;
+ padding:7px 12px;
+ border-radius:20px;
+ font-size:12px;
+ font-weight:700;
+ border:1px solid #c8d5d0;
+ color:var(--imss-verde);
+ background:rgba(255,255,255,.78);
+ transition:.2s ease;
+ }
+ .nav-chip:hover{transform:translateY(-1px);border-color:#74abf5;background:#eef8f4}
+ .nav-chip.active{background:var(--imss-dorado);border-color:#aa2a3b;color:#ffffff;box-shadow:0 2px 8px rgba(200,47,63,.35)}
 
-        .smart-banner{
-            border:1px solid rgba(179,142,93,.55);
-            border-radius:12px;
-            margin-bottom:18px;
-            padding:16px 18px;
-            text-align:center;
-            background:
-                linear-gradient(145deg, rgba(240,250,246,.85), rgba(255,248,236,.78));
-        }
-        .smart-banner strong{
-            display:block;
-            margin-bottom:4px;
-            color:var(--imss-verde);
-            font-size:23px;
-            font-weight:900;
-            letter-spacing:.3px;
-        }
-        .smart-banner span{
-            color:#2d4f45;
-            font-size:13px;
-            font-weight:600;
-        }
+ .smart-banner{
+ border:1px solid rgba(200,47,63,.55);
+ border-radius:12px;
+ margin-bottom:18px;
+ padding:16px 18px;
+ text-align:center;
+ background:
+ linear-gradient(145deg, rgba(240,250,246,.85), rgba(255,248,236,.78));
+ }
+ .smart-banner strong{
+ display:block;
+ margin-bottom:4px;
+ color:var(--imss-verde);
+ font-size:23px;
+ font-weight:900;
+ letter-spacing:.3px;
+ }
+ .smart-banner span{
+ color:#2f5b9e;
+ font-size:13px;
+ font-weight:600;
+ }
 
-        .grid{
-            display:grid;
-            grid-template-columns:repeat(2,minmax(0,1fr));
-            gap:14px;
-        }
-        .card{
-            position:relative;
-            min-height:178px;
-            text-decoration:none;
-            color:var(--txt);
-            border-radius:16px;
-            border:1px solid rgba(19,50,43,.28);
-            background:
-                linear-gradient(160deg, rgba(255,255,255,.50), rgba(242,249,246,.35)),
-                linear-gradient(40deg, rgba(19,50,43,.12), rgba(179,142,93,.08));
-            backdrop-filter:blur(6px);
-            box-shadow:0 12px 24px rgba(19,50,43,.16);
-            padding:18px;
-            display:flex;
-            flex-direction:column;
-            justify-content:space-between;
-            transition:.28s cubic-bezier(.4,0,.2,1);
-            overflow:hidden;
-        }
-        .card::after{
-            content:'';
-            position:absolute;
-            width:130px;
-            height:130px;
-            right:-34px;
-            top:-34px;
-            border-radius:50%;
-            background:radial-gradient(circle, rgba(179,142,93,.25), transparent 68%);
-            pointer-events:none;
-        }
-        .card:hover{
-            transform:translateY(-4px);
-            border-color:var(--imss-dorado);
-            box-shadow:0 16px 30px rgba(19,50,43,.25);
-        }
-        .icon{
-            width:56px;height:56px;border-radius:14px;
-            display:flex;align-items:center;justify-content:center;
-            font-size:30px;
-            border:1px solid rgba(19,50,43,.26);
-            background:rgba(255,255,255,.56);
-            box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);
-        }
-        .label{
-            margin-top:10px;
-            font-size:28px;
-            font-weight:900;
-            line-height:1.05;
-            text-transform:uppercase;
-            letter-spacing:.3px;
-            color:var(--imss-verde);
-        }
-        .sub{
-            margin-top:8px;
-            font-size:12px;
-            font-weight:600;
-            color:#4a6760;
-        }
-        .card.urg .icon{background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.28)}
-        .card.prog .icon{background:rgba(5,150,105,.12);border-color:rgba(5,150,105,.28)}
-        .card.wait .icon{background:rgba(179,142,93,.15);border-color:rgba(179,142,93,.35)}
-        .card.jef .icon{background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.28)}
+ .grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:14px;
+ }
+ .card{
+ position:relative;
+ min-height:178px;
+ text-decoration:none;
+ color:var(--txt);
+ border-radius:16px;
+ border:1px solid rgba(31,79,159,.28);
+ background:
+ linear-gradient(160deg, rgba(255,255,255,.50), rgba(242,249,246,.35)),
+ linear-gradient(40deg, rgba(31,79,159,.12), rgba(200,47,63,.08));
+ backdrop-filter:blur(6px);
+ box-shadow:0 12px 24px rgba(31,79,159,.16);
+ padding:18px;
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+ transition:.28s cubic-bezier(.4,0,.2,1);
+ overflow:hidden;
+ }
+ .card::after{
+ content:'';
+ position:absolute;
+ width:130px;
+ height:130px;
+ right:-34px;
+ top:-34px;
+ border-radius:50%;
+ background:radial-gradient(circle, rgba(200,47,63,.25), transparent 68%);
+ pointer-events:none;
+ }
+ .card:hover{
+ transform:translateY(-4px);
+ border-color:var(--imss-dorado);
+ box-shadow:0 16px 30px rgba(31,79,159,.25);
+ }
+ .icon{
+ width:56px;height:56px;border-radius:14px;
+ display:flex;align-items:center;justify-content:center;
+ font-size:30px;
+ border:1px solid rgba(31,79,159,.26);
+ background:rgba(255,255,255,.56);
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);
+ }
+ .label{
+ margin-top:10px;
+ font-size:28px;
+ font-weight:900;
+ line-height:1.05;
+ text-transform:uppercase;
+ letter-spacing:.3px;
+ color:var(--imss-verde);
+ }
+ .sub{
+ margin-top:8px;
+ font-size:12px;
+ font-weight:600;
+ color:#4a6760;
+ }
+ .card.urg .icon{background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.28)}
+ .card.prog .icon{background:rgba(5,150,105,.12);border-color:rgba(5,150,105,.28)}
+ .card.wait .icon{background:rgba(200,47,63,.15);border-color:rgba(200,47,63,.35)}
+ .card.jef .icon{background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.28)}
 
-        .actions{
-            margin-top:18px;
-            display:flex;
-            gap:10px;
-            justify-content:center;
-            flex-wrap:wrap;
-        }
-        .btn-back{
-            text-decoration:none;
-            padding:11px 18px;
-            border-radius:10px;
-            font-size:13px;
-            font-weight:800;
-            border:1px solid transparent;
-            transition:.2s ease;
-        }
-        .btn-back:hover{transform:translateY(-1px)}
-        .btn-back.main{
-            background:linear-gradient(135deg,var(--imss-verde),var(--imss-verde-2));
-            color:#fff;
-            box-shadow:0 8px 20px rgba(19,50,43,.30);
-        }
-        .btn-back.alt{
-            background:linear-gradient(135deg,var(--imss-dorado),#c9a778);
-            color:#16352d;
-            box-shadow:0 8px 20px rgba(179,142,93,.28);
-        }
+ .actions{
+ margin-top:18px;
+ display:flex;
+ gap:10px;
+ justify-content:center;
+ flex-wrap:wrap;
+ }
+ .btn-back{
+ text-decoration:none;
+ padding:11px 18px;
+ border-radius:10px;
+ font-size:13px;
+ font-weight:800;
+ border:1px solid transparent;
+ transition:.2s ease;
+ }
+ .btn-back:hover{transform:translateY(-1px)}
+ .btn-back.main{
+ background:linear-gradient(135deg,var(--imss-verde),var(--imss-verde-2));
+ color:#fff;
+ box-shadow:0 8px 20px rgba(31,79,159,.30);
+ }
+ .btn-back.alt{
+ background:linear-gradient(135deg,var(--imss-dorado),#de4f5f);
+ color:#16352d;
+ box-shadow:0 8px 20px rgba(200,47,63,.28);
+ }
 
-        @media (max-width:900px){
-            .grid{grid-template-columns:1fr}
-            .label{font-size:24px}
-            .card{min-height:160px}
-        }
-        @media (max-width:680px){
-            body{padding:10px}
-            .container{padding:16px}
-            .smart-banner strong{font-size:19px}
-            .smart-banner span{font-size:12px}
-        }
-    </style>
+ @media (max-width:900px){
+ .grid{grid-template-columns:1fr}
+ .label{font-size:24px}
+ .card{min-height:160px}
+ }
+ @media (max-width:680px){
+ body{padding:10px}
+ .container{padding:16px}
+ .smart-banner strong{font-size:19px}
+ .smart-banner span{font-size:12px}
+ }
+ </style>
 </head>
 <body>
-    <div class="container">
-        <div class="global-nav">
-            <a class="nav-chip" href="/">Menú</a>
-            <a class="nav-chip" href="/consulta_externa">Consulta Externa</a>
-            <a class="nav-chip" href="/hospitalizacion">Hospitalización</a>
-            <a class="nav-chip active" href="/quirofano">Quirófano</a>
-            <a class="nav-chip" href="/expediente">Expediente</a>
-            <a class="nav-chip" href="/reporte">Reporte</a>
-        </div>
+ <div class="container">
+ <div class="global-nav">
+ <a class="nav-chip" href="/">Menú</a>
+ <a class="nav-chip" href="/consulta_externa">Consulta Externa</a>
+ <a class="nav-chip" href="/hospitalizacion">Hospitalización</a>
+ <a class="nav-chip active" href="/quirofano">Quirófano</a>
+ <a class="nav-chip" href="/expediente">Expediente</a>
+ <a class="nav-chip" href="/reporte">Reporte</a>
+ </div>
 
-        <div class="smart-banner">
-            <strong>GESTIÓN QUIRÚRGICA INTEGRAL</strong>
-            <span>Programación, urgencias, lista de espera y gobierno directivo de quirófano.</span>
-        </div>
+ <div class="smart-banner">
+ <strong>GESTIÓN QUIRÚRGICA INTEGRAL</strong>
+ <span>Programación, urgencias, lista de espera y gobierno directivo de quirófano.</span>
+ </div>
 
-        <div class="grid">
-            <a class="card urg" href="/quirofano/urgencias">
-                <div class="icon">🚨</div>
-                <div>
-                    <div class="label">Urgencias</div>
-                    <div class="sub">Programación inmediata con trazabilidad al expediente único.</div>
-                </div>
-            </a>
+ <div class="grid">
+ <a class="card urg" href="/quirofano/urgencias">
+ <div class="icon">🚨</div>
+ <div>
+ <div class="label">Urgencias</div>
+ <div class="sub">Programación inmediata con trazabilidad al expediente único.</div>
+ </div>
+ </a>
 
-            <a class="card prog" href="/quirofano/programada">
-                <div class="icon">🗓️</div>
-                <div>
-                    <div class="label">Cirugía Programada</div>
-                    <div class="sub">Planeación quirúrgica con protocolo y validaciones clínicas.</div>
-                </div>
-            </a>
+ <a class="card prog" href="/quirofano/programada">
+ <div class="icon">🗓️</div>
+ <div>
+ <div class="label">Cirugía Programada</div>
+ <div class="sub">Planeación quirúrgica con protocolo y validaciones clínicas.</div>
+ </div>
+ </a>
 
-            <a class="card wait" href="/quirofano/lista-espera">
-                <div class="icon">📋</div>
-                <div>
-                    <div class="label">Lista de Espera de Programación Quirúrgica</div>
-                    <div class="sub">Módulo operativo de pacientes en espera quirúrgica (antes cola preventiva).</div>
-                </div>
-            </a>
+ <a class="card wait" href="/quirofano/lista-espera">
+ <div class="icon">📋</div>
+ <div>
+ <div class="label">Lista de Espera de Programación Quirúrgica</div>
+ <div class="sub">Módulo operativo de pacientes en espera quirúrgica (antes cola preventiva).</div>
+ </div>
+ </a>
 
-            <a class="card jef" href="/quirofano/jefatura">
-                <div class="icon">🏛️</div>
-                <div>
-                    <div class="label">Jefatura de Quirófano</div>
-                    <div class="sub">Interfaz anclada para módulo directivo en construcción modular con BD dedicada.</div>
-                </div>
-            </a>
-        </div>
+ <a class="card jef" href="/quirofano/jefatura">
+ <div class="icon">🏛️</div>
+ <div>
+ <div class="label">Jefatura de Quirófano</div>
+ <div class="sub">Interfaz anclada para módulo directivo en construcción modular con BD dedicada.</div>
+ </div>
+ </a>
+ </div>
 
-        <div class="actions">
-            <a class="btn-back main" href="/">← Volver al menú principal</a>
-            <a class="btn-back alt" href="/hospitalizacion">🏥 Hospitalización</a>
-        </div>
-    </div>
+ <div class="actions">
+ <a class="btn-back main" href="/">← Volver al menú principal</a>
+ <a class="btn-back alt" href="/hospitalizacion">🏥 Hospitalización</a>
+ </div>
+ </div>
 </body>
 </html>
 

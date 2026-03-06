@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>UROMED - Inicio</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <style>
+ :root {
+ --bg: #edf1f6;
+ --panel: #ffffff;
+ --line: #d5dce8;
+ --text: #1f325a;
+ --muted: #5e6f8d;
+ --primary: #0f3570;
+ --primary-2: #1f4f9f;
+ --input: #f2f5fa;
+ --danger: #b62e3a;
+ }
+ * { box-sizing: border-box; }
+ body {
+ margin: 0;
+ min-height: 100vh;
+ display: flex;
+ flex-direction: column;
+ font-family: "Montserrat", sans-serif;
+ background: var(--bg);
+ color: var(--text);
+ }
+ .wrap {
+ flex: 1;
+ display: grid;
+ place-items: center;
+ padding: 24px 16px;
+ }
+ .card {
+ width: min(520px, 100%);
+ border: 1px solid var(--line);
+ border-radius: 16px;
+ background: var(--panel);
+ box-shadow: 0 16px 30px rgba(13, 42, 89, 0.12);
+ padding: 42px 40px 34px;
+ }
+ .logo-box {
+ display: flex;
+ justify-content: center;
+ margin-bottom: 20px;
+ }
+ .logo-box img {
+ width: min(260px, 75%);
+ height: auto;
+ object-fit: contain;
+ }
+ .title {
+ margin: 0;
+ text-align: center;
+ font-size: clamp(34px, 3.2vw, 50px);
+ font-weight: 800;
+ color: var(--primary);
+ }
+ .subtitle {
+ margin: 10px 0 26px;
+ text-align: center;
+ color: var(--muted);
+ font-size: clamp(20px, 2vw, 28px);
+ font-weight: 500;
+ }
+ .field {
+ margin-bottom: 16px;
+ }
+ .label {
+ display: block;
+ font-size: 16px;
+ font-weight: 700;
+ color: #1d2f52;
+ margin-bottom: 8px;
+ }
+ .input-wrap {
+ position: relative;
+ display: flex;
+ align-items: center;
+ background: var(--input);
+ border: 1px solid #cfd8e6;
+ border-radius: 10px;
+ min-height: 56px;
+ padding: 0 14px;
+ }
+ .prefix {
+ font-size: 18px;
+ color: #8496b4;
+ margin-right: 10px;
+ width: 20px;
+ text-align: center;
+ flex: 0 0 20px;
+ }
+ input[type="text"],
+ input[type="password"] {
+ border: 0;
+ outline: none;
+ background: transparent;
+ width: 100%;
+ font-size: 17px;
+ color: #1f325a;
+ font-family: inherit;
+ }
+ .toggle-pass {
+ border: 0;
+ background: transparent;
+ color: #8a9cb9;
+ font-size: 19px;
+ cursor: pointer;
+ padding: 0 2px;
+ }
+ .row {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: 12px;
+ margin: 8px 0 20px;
+ color: var(--muted);
+ font-size: 16px;
+ }
+ .remember {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ cursor: pointer;
+ }
+ .remember input { width: 18px; height: 18px; }
+ .link {
+ color: var(--primary);
+ text-decoration: none;
+ font-weight: 600;
+ }
+ .btn {
+ width: 100%;
+ min-height: 58px;
+ border: 0;
+ border-radius: 10px;
+ background: linear-gradient(180deg, var(--primary-2), var(--primary));
+ color: #ffffff;
+ font-size: 28px;
+ letter-spacing: .03em;
+ font-weight: 800;
+ cursor: pointer;
+ box-shadow: 0 10px 20px rgba(15, 53, 112, .26);
+ }
+ .error {
+ margin: 0 0 14px;
+ color: var(--danger);
+ font-size: 14px;
+ font-weight: 700;
+ }
+ footer {
+ border-top: 1px solid #d5dce8;
+ color: #607089;
+ text-align: center;
+ font-size: 16px;
+ padding: 16px 12px 18px;
+ background: #f6f8fc;
+ }
+ @media (max-width: 760px) {
+ .card { padding: 28px 20px 24px; border-radius: 14px; }
+ .title { font-size: 30px; }
+ .subtitle { font-size: 20px; margin-bottom: 18px; }
+ .btn { font-size: 24px; min-height: 54px; }
+ }
+ </style>
+</head>
+<body>
+ <main class="wrap">
+ <section class="card">
+ <div class="logo-box">
+ <img src="/static/img/logooficial.png" alt="UROMED">
+ </div>
+ <h1 class="title">Bienvenido a UROMED</h1>
+ <p class="subtitle">Plataforma Clínica Digital</p>
+
+ {% if error_message %}
+ <p class="error">{{ error_message }}</p>
+ {% endif %}
+
+ <form method="post" action="/inicio/ingresar" autocomplete="off">
+ <div class="field">
+ <label class="label" for="username">Usuario</label>
+ <div class="input-wrap">
+ <span class="prefix">👤</span>
+ <input id="username" name="username" type="text" placeholder="Ingrese su usuario" required value="{{ username_hint or '' }}">
+ </div>
+ </div>
+
+ <div class="field">
+ <label class="label" for="password">Contraseña</label>
+ <div class="input-wrap">
+ <span class="prefix">🔒</span>
+ <input id="password" name="password" type="password" placeholder="••••••••" required>
+ <button class="toggle-pass" type="button" id="togglePass" aria-label="Mostrar contraseña">👁</button>
+ </div>
+ </div>
+
+ <div class="row">
+ <label class="remember">
+ <input type="checkbox" name="remember_me" value="1">
+ <span>Recordarme</span>
+ </label>
+ <a class="link" href="#" onclick="return false;">¿Olvidó su contraseña?</a>
+ </div>
+
+ <button class="btn" type="submit">INGRESAR</button>
+ </form>
+ </section>
+ </main>
+
+ <footer>© 2026 UROMED. Todos los derechos reservados.</footer>
+
+ <script>
+ (function () {
+ var input = document.getElementById('password');
+ var btn = document.getElementById('togglePass');
+ if (!input || !btn) return;
+ btn.addEventListener('click', function () {
+ input.type = input.type === 'password' ? 'text' : 'password';
+ });
+ })();
+ </script>
+</body>
+</html>

@@ -1,10 +1,10 @@
 /* Visual refresh aditivo para interfaces del módulo quirúrgico */
 :root {
-    --qf-verde-1: #13322B;
-    --qf-verde-2: #1a4a3f;
-    --qf-verde-3: #245a4c;
-    --qf-dorado: #B38E5D;
-    --qf-line: #cadad4;
+    --qf-verde-1: #0a3161;
+    --qf-verde-2: #1f4f9f;
+    --qf-verde-3: #2e6ec9;
+    --qf-dorado: #c82f3f;
+    --qf-line: #cfe0fb;
     --qf-card: rgba(255, 255, 255, 0.9);
 }
 
@@ -15,9 +15,9 @@ body.qf-refresh {
     padding: 20px;
     color: var(--qf-verde-1);
     background:
-        radial-gradient(circle at 12% 0%, rgba(179, 142, 93, 0.18), transparent 36%),
-        radial-gradient(circle at 88% 100%, rgba(19, 50, 43, 0.2), transparent 34%),
-        linear-gradient(130deg, #0e322c, #1c5a50 52%, #1a4a3f);
+        radial-gradient(circle at 12% 0%, rgba(200, 47, 63, 0.15), transparent 36%),
+        radial-gradient(circle at 88% 100%, rgba(31, 79, 159, 0.2), transparent 34%),
+        linear-gradient(130deg, #0a3161, #1f4f9f 52%, #2e6ec9);
 }
 
 body.qf-refresh .container,
@@ -25,8 +25,8 @@ body.qf-refresh .wrap {
     max-width: 1320px;
     margin: 0 auto;
     border-radius: 18px;
-    border: 1px solid rgba(179, 142, 93, 0.72);
-    background: linear-gradient(150deg, rgba(255, 255, 255, 0.95), rgba(245, 251, 248, 0.91));
+    border: 1px solid rgba(31, 79, 159, 0.42);
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.95), rgba(243, 248, 255, 0.91));
     backdrop-filter: blur(3px);
     box-shadow: 0 20px 38px rgba(0, 0, 0, 0.24);
     overflow: hidden;
@@ -55,7 +55,7 @@ body.qf-refresh .nav-chip {
     text-decoration: none;
     padding: 7px 12px;
     border-radius: 999px;
-    border: 1px solid #c7d5d0;
+    border: 1px solid #c7d9f7;
     background: rgba(255, 255, 255, 0.8);
     font-size: 12px;
     font-weight: 700;
@@ -65,15 +65,15 @@ body.qf-refresh .nav-chip {
 
 body.qf-refresh .nav-chip:hover {
     transform: translateY(-1px);
-    border-color: #3da68f;
-    background: #eef8f4;
+    border-color: #4f93f1;
+    background: #edf3ff;
 }
 
 body.qf-refresh .nav-chip.active {
     background: var(--qf-dorado);
-    border-color: #9f7f53;
-    color: #17342d;
-    box-shadow: 0 2px 8px rgba(179, 142, 93, 0.35);
+    border-color: #aa2a3b;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(200, 47, 63, 0.35);
 }
 
 body.qf-refresh h1 {
@@ -105,7 +105,7 @@ body.qf-refresh .btn-back:hover,
 body.qf-refresh .submit-bar:hover,
 body.qf-refresh button[type="submit"]:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(19, 50, 43, 0.25);
+    box-shadow: 0 6px 18px rgba(31, 79, 159, 0.25);
 }
 
 body.qf-refresh input:focus,
@@ -113,7 +113,7 @@ body.qf-refresh select:focus,
 body.qf-refresh textarea:focus {
     border-color: var(--qf-dorado);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(179, 142, 93, 0.15);
+    box-shadow: 0 0 0 3px rgba(200, 47, 63, 0.15);
 }
 
 body.qf-refresh table {
@@ -122,7 +122,7 @@ body.qf-refresh table {
 }
 
 body.qf-refresh table th {
-    background: linear-gradient(180deg, #13322B, #0f3027) !important;
+    background: linear-gradient(180deg, #0a3161, #1f4f9f) !important;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 0.4px;
@@ -130,18 +130,18 @@ body.qf-refresh table th {
 }
 
 body.qf-refresh table tbody tr:nth-child(even) {
-    background: #f8faf9;
+    background: #f8fbff;
 }
 
 body.qf-refresh table tbody tr:hover td {
-    background: rgba(179, 142, 93, 0.1);
+    background: rgba(79, 147, 241, 0.12);
 }
 
 body.qf-refresh .section,
 body.qf-refresh .info,
 body.qf-refresh .filters {
     border-radius: 12px;
-    border: 1px solid #d9e4df;
+    border: 1px solid #d9e6fb;
     background: rgba(255, 255, 255, 0.72);
 }
 

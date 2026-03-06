@@ -1,129 +1,129 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Cirugías Realizadas - Reporte Estadístico</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
-        .container { max-width: 1280px; margin: auto; background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 6px 24px rgba(0,0,0,0.1); }
-        h1, h2 { color: #13322B; margin: 0 0 10px 0; }
-        .meta { color: #5b676d; font-size: 13px; margin-bottom: 14px; }
-        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px; }
-        .card { border: 1px solid #e4e8ec; border-radius: 8px; background: #fafbfc; padding: 12px; }
-        .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-        th { background: #13322B; color: #fff; text-align: left; padding: 8px; font-size: 13px; }
-        td { border-bottom: 1px solid #e8ecef; padding: 8px; font-size: 13px; }
-        .btn { background: #13322B; color: #fff; text-decoration: none; border-radius: 7px; padding: 10px 14px; display: inline-block; margin-top: 14px; }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <title>Cirugías Realizadas - Reporte Estadístico</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ body { font-family: 'Montserrat', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
+ .container { max-width: 1280px; margin: auto; background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 6px 24px rgba(0,0,0,0.1); }
+ h1, h2 { color: #0a3161; margin: 0 0 10px 0; }
+ .meta { color: #5b676d; font-size: 13px; margin-bottom: 14px; }
+ .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px; }
+ .card { border: 1px solid #e4e8ec; border-radius: 8px; background: #fafbfc; padding: 12px; }
+ .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+ table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+ th { background: #0a3161; color: #fff; text-align: left; padding: 8px; font-size: 13px; }
+ td { border-bottom: 1px solid #e8ecef; padding: 8px; font-size: 13px; }
+ .btn { background: #0a3161; color: #fff; text-decoration: none; border-radius: 7px; padding: 10px 14px; display: inline-block; margin-top: 14px; }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🩺 Cirugías Realizadas</h1>
-        <p class="meta">Generado: {{ fecha }} | Total: <strong>{{ total }}</strong></p>
+ <div class="container">
+ <h1>🩺 Cirugías Realizadas</h1>
+ <p class="meta">Generado: {{ fecha }} | Total: <strong>{{ total }}</strong></p>
 
-        <div class="summary">
-            <div class="card"><strong>Total realizadas</strong><br>{{ total }}</div>
-        </div>
+ <div class="summary">
+ <div class="card"><strong>Total realizadas</strong><br>{{ total }}</div>
+ </div>
 
-        {% if chart_realizadas_procedimiento or chart_realizadas_sangrado %}
-        <h2>Gráficas de cirugías realizadas</h2>
-        <div class="split">
-            {% if chart_realizadas_procedimiento %}
-            <div><img src="data:image/png;base64,{{ chart_realizadas_procedimiento }}" alt="Realizadas por procedimiento"></div>
-            {% endif %}
-            {% if chart_realizadas_sangrado %}
-            <div><img src="data:image/png;base64,{{ chart_realizadas_sangrado }}" alt="Distribución de sangrado"></div>
-            {% endif %}
-        </div>
-        {% endif %}
+ {% if chart_realizadas_procedimiento or chart_realizadas_sangrado %}
+ <h2>Gráficas de cirugías realizadas</h2>
+ <div class="split">
+ {% if chart_realizadas_procedimiento %}
+ <div><img src="data:image/png;base64,{{ chart_realizadas_procedimiento }}" alt="Realizadas por procedimiento"></div>
+ {% endif %}
+ {% if chart_realizadas_sangrado %}
+ <div><img src="data:image/png;base64,{{ chart_realizadas_sangrado }}" alt="Distribución de sangrado"></div>
+ {% endif %}
+ </div>
+ {% endif %}
 
-        <h2>Desgloses</h2>
-        <div class="split">
-            <div>
-                <h3>Por edad</h3>
-                <table><tr><th>Edad</th><th>Cantidad</th></tr>
-                    {% for item, count in por_edad %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
-                </table>
-            </div>
-            <div>
-                <h3>Por sexo</h3>
-                <table><tr><th>Sexo</th><th>Cantidad</th></tr>
-                    {% for item, count in por_sexo %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
-                </table>
-            </div>
-            <div>
-                <h3>Por procedimiento</h3>
-                <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>
-                    {% for item, count in por_procedimiento %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
-                </table>
-            </div>
-            <div>
-                <h3>Por diagnóstico</h3>
-                <table><tr><th>Diagnóstico</th><th>Cantidad</th></tr>
-                    {% for item, count in por_diagnostico %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
-                </table>
-            </div>
-            <div>
-                <h3>Por cirujano</h3>
-                <table><tr><th>Cirujano</th><th>Cantidad</th></tr>
-                    {% for item, count in por_cirujano %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
-                </table>
-            </div>
-            <div>
-                <h3>Por sangrado</h3>
-                <table><tr><th>Sangrado (mL)</th><th>Cantidad</th></tr>
-                    {% for item, count in por_sangrado %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
-                </table>
-            </div>
-        </div>
+ <h2>Desgloses</h2>
+ <div class="split">
+ <div>
+ <h3>Por edad</h3>
+ <table><tr><th>Edad</th><th>Cantidad</th></tr>
+ {% for item, count in por_edad %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
+ </table>
+ </div>
+ <div>
+ <h3>Por sexo</h3>
+ <table><tr><th>Sexo</th><th>Cantidad</th></tr>
+ {% for item, count in por_sexo %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
+ </table>
+ </div>
+ <div>
+ <h3>Por procedimiento</h3>
+ <table><tr><th>Procedimiento</th><th>Cantidad</th></tr>
+ {% for item, count in por_procedimiento %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
+ </table>
+ </div>
+ <div>
+ <h3>Por diagnóstico</h3>
+ <table><tr><th>Diagnóstico</th><th>Cantidad</th></tr>
+ {% for item, count in por_diagnostico %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
+ </table>
+ </div>
+ <div>
+ <h3>Por cirujano</h3>
+ <table><tr><th>Cirujano</th><th>Cantidad</th></tr>
+ {% for item, count in por_cirujano %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
+ </table>
+ </div>
+ <div>
+ <h3>Por sangrado</h3>
+ <table><tr><th>Sangrado (mL)</th><th>Cantidad</th></tr>
+ {% for item, count in por_sangrado %}<tr><td>{{ item }}</td><td>{{ count }}</td></tr>{% endfor %}
+ </table>
+ </div>
+ </div>
 
-        <h2>Listado</h2>
-        <table>
-            <tr>
-                <th>Fecha</th>
-                <th>NSS</th>
-                <th>Paciente</th>
-                <th>Edad</th>
-                <th>Sexo</th>
-                <th>Diagnóstico</th>
-                <th>Procedimiento</th>
-                <th>Cirujano</th>
-                <th>Sangrado (mL)</th>
-                <th>HGZ</th>
-            </tr>
-            {% for row in filas %}
-            <tr>
-                <td>{{ row.fecha_realizacion if row.fecha_realizacion else "NO_REGISTRADO" }}</td>
-                <td>{{ row.nss }}</td>
-                <td>{{ row.paciente_nombre }}</td>
-                <td>{{ row.edad if row.edad is not none else "NO_REGISTRADO" }}</td>
-                <td>{{ row.sexo }}</td>
-                <td>{{ row.diagnostico }}</td>
-                <td>{{ row.procedimiento }}</td>
-                <td>{{ row.cirujano }}</td>
-                <td>{{ row.sangrado_ml if row.sangrado_ml is not none else "NO_REGISTRADO" }}</td>
-                <td>{{ row.hgz }}</td>
-            </tr>
-            {% else %}
-            <tr><td colspan="10" style="text-align:center;">No hay cirugías realizadas registradas.</td></tr>
-            {% endfor %}
-        </table>
+ <h2>Listado</h2>
+ <table>
+ <tr>
+ <th>Fecha</th>
+ <th>NSS</th>
+ <th>Paciente</th>
+ <th>Edad</th>
+ <th>Sexo</th>
+ <th>Diagnóstico</th>
+ <th>Procedimiento</th>
+ <th>Cirujano</th>
+ <th>Sangrado (mL)</th>
+ <th>HGZ</th>
+ </tr>
+ {% for row in filas %}
+ <tr>
+ <td>{{ row.fecha_realizacion if row.fecha_realizacion else "NO_REGISTRADO" }}</td>
+ <td>{{ row.nss }}</td>
+ <td>{{ row.paciente_nombre }}</td>
+ <td>{{ row.edad if row.edad is not none else "NO_REGISTRADO" }}</td>
+ <td>{{ row.sexo }}</td>
+ <td>{{ row.diagnostico }}</td>
+ <td>{{ row.procedimiento }}</td>
+ <td>{{ row.cirujano }}</td>
+ <td>{{ row.sangrado_ml if row.sangrado_ml is not none else "NO_REGISTRADO" }}</td>
+ <td>{{ row.hgz }}</td>
+ </tr>
+ {% else %}
+ <tr><td colspan="10" style="text-align:center;">No hay cirugías realizadas registradas.</td></tr>
+ {% endfor %}
+ </table>
 
-        <a class="btn" href="/reporte">← Volver al reporte estadístico</a>
-    </div>
+ <a class="btn" href="/reporte">← Volver al reporte estadístico</a>
+ </div>
 </body>
 </html>

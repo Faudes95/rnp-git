@@ -1,111 +1,111 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEOCH - Consulta Externa</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <style>
-        :root { --imss-verde: #13322B; --imss-dorado: #B38E5D; --fondo: #f4f6f9; }
-        * { box-sizing: border-box; }
-        body { margin: 0; background: var(--fondo); font-family: 'Montserrat', sans-serif; padding: 22px; }
-        .container { max-width: 1100px; margin: 0 auto; background: #fff; border-radius: 10px; border-top: 6px solid var(--imss-verde); padding: 24px; box-shadow: 0 8px 28px rgba(0,0,0,.08); }
-        .global-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
-        .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #cfd9d4; color:var(--imss-verde); background:#fff; }
-        .nav-chip.active { background:var(--imss-dorado); border-color:#9e7a4c; color:#13322B; }
-        .breadcrumbs { font-size:12px; color:#5f6d68; margin-bottom:12px; }
-        h1 { margin: 0 0 8px 0; color: var(--imss-verde); }
-        .subtitle { margin: 0 0 20px 0; color: #666; font-size: 13px; }
-        .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-        .btn { text-decoration: none; background: var(--imss-verde); color: #fff; padding: 9px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; }
-        .btn.secondary { background: #fff; color: var(--imss-verde); border: 1px solid var(--imss-verde); }
-        form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 14px; }
-        .field { display: flex; flex-direction: column; }
-        .field.full { grid-column: 1 / -1; }
-        label { font-size: 11px; font-weight: 700; color: #505050; margin-bottom: 5px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbcbcb; font-family: inherit; font-size: 13px; }
-        textarea { min-height: 90px; resize: vertical; }
-        .save {
-            grid-column: 1 / -1;
-            margin-top: 8px;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: var(--imss-verde);
-            color: #fff;
-            font-weight: 800;
-            cursor: pointer;
-        }
-    </style>
-    <style>
-    /* === RNP Additive UI Enhancements === */
-    .nav-chip { transition: all 0.2s ease; }
-    .nav-chip:hover { background: #edf8f3; border-color: #3da68f; transform: translateY(-1px); }
-    table tbody tr:nth-child(even) { background: #f8faf9; }
-    table tbody tr:hover { background: rgba(179,142,93,0.08); transition: background 0.18s; }
-    .btn, button[type="submit"] { transition: all 0.2s ease; }
-    .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(19,50,43,0.25); }
-    input:focus, select:focus, textarea:focus { border-color: #B38E5D; outline: none; box-shadow: 0 0 0 3px rgba(179,142,93,0.15); }
-    @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
-    </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>LEOCH - Consulta Externa</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <style>
+ :root { --imss-verde: #0a3161; --imss-dorado: #c82f3f; --fondo: #f4f6f9; }
+ * { box-sizing: border-box; }
+ body { margin: 0; background: var(--fondo); font-family: 'Montserrat', sans-serif; padding: 22px; }
+ .container { max-width: 1100px; margin: 0 auto; background: #fff; border-radius: 10px; border-top: 6px solid var(--imss-verde); padding: 24px; box-shadow: 0 8px 28px rgba(0,0,0,.08); }
+ .global-nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+ .nav-chip { text-decoration:none; padding:7px 11px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid #c7d9f7; color:var(--imss-verde); background:#fff; }
+ .nav-chip.active { background:var(--imss-dorado); border-color:#aa2a3b; color:#ffffff; }
+ .breadcrumbs { font-size:12px; color:#5c76a6; margin-bottom:12px; }
+ h1 { margin: 0 0 8px 0; color: var(--imss-verde); }
+ .subtitle { margin: 0 0 20px 0; color: #666; font-size: 13px; }
+ .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+ .btn { text-decoration: none; background: var(--imss-verde); color: #fff; padding: 9px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; }
+ .btn.secondary { background: #fff; color: var(--imss-verde); border: 1px solid var(--imss-verde); }
+ form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 14px; }
+ .field { display: flex; flex-direction: column; }
+ .field.full { grid-column: 1 / -1; }
+ label { font-size: 11px; font-weight: 700; color: #505050; margin-bottom: 5px; text-transform: uppercase; }
+ input, select, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbcbcb; font-family: inherit; font-size: 13px; }
+ textarea { min-height: 90px; resize: vertical; }
+ .save {
+ grid-column: 1 / -1;
+ margin-top: 8px;
+ padding: 12px;
+ border: none;
+ border-radius: 8px;
+ background: var(--imss-verde);
+ color: #fff;
+ font-weight: 800;
+ cursor: pointer;
+ }
+ </style>
+ <style>
+ /* === UROMED Additive UI Enhancements === */
+ .nav-chip { transition: all 0.2s ease; }
+ .nav-chip:hover { background: #f3f8ff; border-color: #74abf5; transform: translateY(-1px); }
+ table tbody tr:nth-child(even) { background: #f8fbff; }
+ table tbody tr:hover { background: rgba(200,47,63,0.06); transition: background 0.18s; }
+ .btn, button[type="submit"] { transition: all 0.2s ease; }
+ .btn:hover, button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(31,79,159,0.25); }
+ input:focus, select:focus, textarea:focus { border-color: #c82f3f; outline: none; box-shadow: 0 0 0 3px rgba(200,47,63,0.12); }
+ @media print { .global-nav, .breadcrumbs { display: none; } body { background: #fff; } }
+ </style>
 </head>
 <body>
-    <div class="container">
-        <div class="global-nav">
-            <a class="nav-chip" href="/">Menú</a>
-            <a class="nav-chip active" href="/consulta_externa">Consulta Externa</a>
-            <a class="nav-chip" href="/hospitalizacion">Hospitalización</a>
-            <a class="nav-chip" href="/quirofano">Quirófano</a>
-            <a class="nav-chip" href="/expediente">Expediente</a>
-            <a class="nav-chip" href="/reporte">Reporte</a>
-        </div>
-        <div class="breadcrumbs">Menú principal → Consulta Externa → LEOCH</div>
-        <h1>Consulta Externa · LEOCH</h1>
-        <p class="subtitle">Captura de litotricia con variables orientadas a resultado, recurrencia y seguimiento.</p>
-        <div class="toolbar">
-            <a class="btn secondary" href="{{ return_to if return_to else '/consulta_externa' }}">← Volver</a>
-            <a class="btn secondary" href="/expediente">Ver Expediente Clínico Único</a>
-        </div>
-        <form action="/consulta_externa/leoch/guardar" method="post">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <input type="hidden" name="return_to" value="{{ return_to if return_to else '/consulta_externa' }}">
+ <div class="container">
+ <div class="global-nav">
+ <a class="nav-chip" href="/">Menú</a>
+ <a class="nav-chip active" href="/consulta_externa">Consulta Externa</a>
+ <a class="nav-chip" href="/hospitalizacion">Hospitalización</a>
+ <a class="nav-chip" href="/quirofano">Quirófano</a>
+ <a class="nav-chip" href="/expediente">Expediente</a>
+ <a class="nav-chip" href="/reporte">Reporte</a>
+ </div>
+ <div class="breadcrumbs">Menú principal → Consulta Externa → LEOCH</div>
+ <h1>Consulta Externa · LEOCH</h1>
+ <p class="subtitle">Captura de litotricia con variables orientadas a resultado, recurrencia y seguimiento.</p>
+ <div class="toolbar">
+ <a class="btn secondary" href="{{ return_to if return_to else '/consulta_externa' }}">← Volver</a>
+ <a class="btn secondary" href="/expediente">Ver Expediente Clínico Único</a>
+ </div>
+ <form action="/consulta_externa/leoch/guardar" method="post">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+ <input type="hidden" name="return_to" value="{{ return_to if return_to else '/consulta_externa' }}">
 
-            <div class="field"><label>Consulta ID (si existe)</label><input type="number" name="consulta_id"></div>
-            <div class="field"><label>NSS</label><input type="text" name="nss" maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 dígitos"></div>
-            <div class="field"><label>Nombre completo</label><input type="text" name="nombre"></div>
-            <div class="field"><label>Edad</label><input type="number" name="edad"></div>
-            <div class="field"><label>Sexo</label><select name="sexo"><option value="">Seleccionar...</option><option>MASCULINO</option><option>FEMENINO</option></select></div>
-            <div class="field"><label>Médico responsable</label><input type="text" name="medico_responsable"></div>
-            <div class="field"><label>Turno</label><select name="turno"><option>MATUTINO</option><option>VESPERTINO</option><option>NOCTURNO</option></select></div>
-            <div class="field"><label>HGZ</label><input type="text" name="hgz"></div>
+ <div class="field"><label>Consulta ID (si existe)</label><input type="number" name="consulta_id"></div>
+ <div class="field"><label>NSS</label><input type="text" name="nss" maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 dígitos"></div>
+ <div class="field"><label>Nombre completo</label><input type="text" name="nombre"></div>
+ <div class="field"><label>Edad</label><input type="number" name="edad"></div>
+ <div class="field"><label>Sexo</label><select name="sexo"><option value="">Seleccionar...</option><option>MASCULINO</option><option>FEMENINO</option></select></div>
+ <div class="field"><label>Médico responsable</label><input type="text" name="medico_responsable"></div>
+ <div class="field"><label>Turno</label><select name="turno"><option>MATUTINO</option><option>VESPERTINO</option><option>NOCTURNO</option></select></div>
+ <div class="field"><label>HGZ</label><input type="text" name="hgz"></div>
 
-            <div class="field"><label>CIE10</label><input type="text" name="cie10_codigo" placeholder="Ej. N20.0"></div>
-            <div class="field full">
-                <label>Diagnóstico principal</label>
-                <input list="diagnosticos-list" name="diagnostico_principal" placeholder="Seleccionar o escribir diagnóstico">
-                <datalist id="diagnosticos-list">
-                    {% for code, label in diagnosticos %}
-                    <option value="{{ label }}">{{ code }} · {{ label }}</option>
-                    {% endfor %}
-                </datalist>
-            </div>
+ <div class="field"><label>CIE10</label><input type="text" name="cie10_codigo" placeholder="Ej. N20.0"></div>
+ <div class="field full">
+ <label>Diagnóstico principal</label>
+ <input list="diagnosticos-list" name="diagnostico_principal" placeholder="Seleccionar o escribir diagnóstico">
+ <datalist id="diagnosticos-list">
+ {% for code, label in diagnosticos %}
+ <option value="{{ label }}">{{ code }} · {{ label }}</option>
+ {% endfor %}
+ </datalist>
+ </div>
 
-            <div class="field"><label>Lateralidad</label><select name="lateralidad"><option>DERECHA</option><option>IZQUIERDA</option><option>BILATERAL</option></select></div>
-            <div class="field"><label>Localización del lito</label><select name="localizacion_lito"><option>RENAL</option><option>URETERAL</option><option>VESICAL</option><option>MÚLTIPLE</option></select></div>
-            <div class="field"><label>Tamaño (mm)</label><input type="number" step="0.1" name="tamano_mm"></div>
-            <div class="field"><label>Densidad (UH)</label><input type="number" step="0.1" name="uh"></div>
-            <div class="field"><label>Número de sesión</label><input type="number" name="sesion_numero"></div>
-            <div class="field"><label>Energía (J)</label><input type="number" step="0.01" name="energia_j"></div>
-            <div class="field"><label>Disparos</label><input type="number" name="disparos"></div>
-            <div class="field"><label>Catéter JJ</label><select name="cateter_jj"><option>NO</option><option>SI</option></select></div>
-            <div class="field"><label>Complicación inmediata</label><select name="complicacion"><option>NO</option><option>SI</option></select></div>
-            <div class="field full"><label>Detalle de complicación</label><textarea name="complicacion_detalle"></textarea></div>
-            <div class="field full"><label>Plan y seguimiento</label><textarea name="plan"></textarea></div>
-            <div class="field full"><label>Resumen de atención</label><textarea name="nota_resumen" placeholder="Síntesis clínica para expediente y trazabilidad analítica"></textarea></div>
+ <div class="field"><label>Lateralidad</label><select name="lateralidad"><option>DERECHA</option><option>IZQUIERDA</option><option>BILATERAL</option></select></div>
+ <div class="field"><label>Localización del lito</label><select name="localizacion_lito"><option>RENAL</option><option>URETERAL</option><option>VESICAL</option><option>MÚLTIPLE</option></select></div>
+ <div class="field"><label>Tamaño (mm)</label><input type="number" step="0.1" name="tamano_mm"></div>
+ <div class="field"><label>Densidad (UH)</label><input type="number" step="0.1" name="uh"></div>
+ <div class="field"><label>Número de sesión</label><input type="number" name="sesion_numero"></div>
+ <div class="field"><label>Energía (J)</label><input type="number" step="0.01" name="energia_j"></div>
+ <div class="field"><label>Disparos</label><input type="number" name="disparos"></div>
+ <div class="field"><label>Catéter JJ</label><select name="cateter_jj"><option>NO</option><option>SI</option></select></div>
+ <div class="field"><label>Complicación inmediata</label><select name="complicacion"><option>NO</option><option>SI</option></select></div>
+ <div class="field full"><label>Detalle de complicación</label><textarea name="complicacion_detalle"></textarea></div>
+ <div class="field full"><label>Plan y seguimiento</label><textarea name="plan"></textarea></div>
+ <div class="field full"><label>Resumen de atención</label><textarea name="nota_resumen" placeholder="Síntesis clínica para expediente y trazabilidad analítica"></textarea></div>
 
-            <button class="save" type="submit">Guardar Atención LEOCH</button>
-        </form>
-    </div>
+ <button class="save" type="submit">Guardar Atención LEOCH</button>
+ </form>
+ </div>
 </body>
 </html>

@@ -1,183 +1,183 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Interconsultas y Referencias — RNP</title>
-    <link href="/static/css/fonts_offline.css" rel="stylesheet">
-    <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-    <link href="/static/css/rnp_redesign.css" rel="stylesheet">
-    <style>
-        :root{--imss-verde:#13322B;--imss-dorado:#B38E5D;--fondo:#f4f6f9;}
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:'Montserrat',sans-serif;background:var(--fondo);min-height:100vh;}
-        .top-bar{background:var(--imss-verde);padding:12px 24px;display:flex;align-items:center;gap:14px;}
-        .top-bar a{color:#fff;text-decoration:none;font-weight:700;font-size:13px;opacity:.85;transition:opacity .2s;}.top-bar a:hover{opacity:1;}.top-bar .sep{color:rgba(255,255,255,.3);}.top-bar .active{opacity:1;color:var(--imss-dorado);}
-        .container{max-width:1400px;margin:0 auto;padding:20px;}
-        .page-title{color:var(--imss-verde);font-size:24px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-        .tabs{display:flex;gap:4px;background:#fff;border-radius:14px 14px 0 0;padding:6px 6px 0;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow-x:auto;}
-        .tab{padding:12px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border-radius:10px 10px 0 0;transition:all .2s;color:#666;border:none;background:transparent;}
-        .tab:hover{background:#f0ede6;color:var(--imss-verde);}.tab.active{background:var(--imss-verde);color:#fff;}
-        .panel{display:none;background:#fff;border-radius:0 0 14px 14px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.06);animation:fadeUp .3s ease;}.panel.active{display:block;}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-        .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:20px;}
-        .form-group{display:flex;flex-direction:column;gap:4px;}
-        .form-group label{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--imss-verde);letter-spacing:.5px;}
-        .form-group input,.form-group select,.form-group textarea{border:2px solid #d2e0da;border-radius:8px;padding:10px 14px;font-size:13px;font-family:inherit;transition:border-color .2s;}
-        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--imss-dorado);outline:none;box-shadow:0 0 0 3px rgba(179,142,93,.15);}
-        .btn{border:none;border-radius:8px;padding:10px 22px;font-weight:800;font-size:13px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
-        .btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.15);}
-        .btn-primary{background:var(--imss-verde);color:#fff;}.btn-gold{background:var(--imss-dorado);color:#1b1b1b;}.btn-sm{padding:6px 14px;font-size:12px;}
-        .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;}
-        .badge-urgente{background:#fee2e2;color:#dc2626;animation:pulse 2s infinite;}.badge-normal{background:#d1fae5;color:#065f46;}
-        .badge-solicitada{background:#fef3c7;color:#92400e;}.badge-respondida{background:#d1fae5;color:#065f46;}.badge-cerrada{background:#e5e7eb;color:#374151;}.badge-cancelada{background:#fee2e2;color:#991b1b;}.badge-en_revision{background:#dbeafe;color:#1e40af;}
-        .badge-enviada{background:#fef3c7;color:#92400e;}.badge-aceptada{background:#d1fae5;color:#065f46;}.badge-rechazada{background:#fee2e2;color:#991b1b;}.badge-completada{background:#e5e7eb;color:#374151;}.badge-recibida{background:#dbeafe;color:#1e40af;}
-        @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
-        .ic-card{background:#fff;border-radius:12px;border:2px solid #e8ece9;padding:16px;margin-bottom:12px;transition:all .2s;position:relative;overflow:hidden;}
-        .ic-card:hover{border-color:var(--imss-dorado);box-shadow:0 4px 20px rgba(179,142,93,.15);}
-        .ic-card.urgente{border-left:5px solid #dc2626;}.ic-card.normal{border-left:5px solid #16a34a;}
-        .ic-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
-        .ic-meta{font-size:12px;color:#666;display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;}
-        .ic-meta span{display:inline-flex;align-items:center;gap:4px;}
-        .ic-body{font-size:13px;color:#333;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0;}
-        .ic-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-        .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
-        .kpi{background:linear-gradient(135deg,var(--imss-verde),#1a5c4a);border-radius:12px;padding:16px;color:#fff;text-align:center;border:2px solid rgba(178,138,71,.3);}
-        .kpi-val{font-size:28px;font-weight:900;}.kpi-label{font-size:10px;font-weight:700;color:var(--imss-dorado);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
-        .empty-state{text-align:center;padding:40px;color:#999;font-size:14px;}
-        .respond-form{background:#f8fafb;border-radius:10px;padding:16px;margin-top:10px;display:none;}
-        .respond-form.show{display:block;}
-        @media(max-width:768px){.form-grid{grid-template-columns:1fr;}.kpi-row{grid-template-columns:1fr 1fr;}}
-    </style>
+ <meta charset="UTF-8">
+ <title>Interconsultas y Referencias — UROMED</title>
+ <link href="/static/css/fonts_offline.css" rel="stylesheet">
+ <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+ <link href="/static/css/rnp_redesign.css" rel="stylesheet">
+ <style>
+ :root{--imss-verde:#0a3161;--imss-dorado:#c82f3f;--fondo:#f4f6f9;}
+ *{margin:0;padding:0;box-sizing:border-box;}
+ body{font-family:'Montserrat',sans-serif;background:var(--fondo);min-height:100vh;}
+ .top-bar{background:var(--imss-verde);padding:12px 24px;display:flex;align-items:center;gap:14px;}
+ .top-bar a{color:#fff;text-decoration:none;font-weight:700;font-size:13px;opacity:.85;transition:opacity .2s;}.top-bar a:hover{opacity:1;}.top-bar .sep{color:rgba(255,255,255,.3);}.top-bar .active{opacity:1;color:var(--imss-dorado);}
+ .container{max-width:1400px;margin:0 auto;padding:20px;}
+ .page-title{color:var(--imss-verde);font-size:24px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+ .tabs{display:flex;gap:4px;background:#fff;border-radius:14px 14px 0 0;padding:6px 6px 0;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow-x:auto;}
+ .tab{padding:12px 22px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border-radius:10px 10px 0 0;transition:all .2s;color:#666;border:none;background:transparent;}
+ .tab:hover{background:#f0ede6;color:var(--imss-verde);}.tab.active{background:var(--imss-verde);color:#fff;}
+ .panel{display:none;background:#fff;border-radius:0 0 14px 14px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.06);animation:fadeUp .3s ease;}.panel.active{display:block;}
+ @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+ .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:20px;}
+ .form-group{display:flex;flex-direction:column;gap:4px;}
+ .form-group label{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--imss-verde);letter-spacing:.5px;}
+ .form-group input,.form-group select,.form-group textarea{border:2px solid #d2e0da;border-radius:8px;padding:10px 14px;font-size:13px;font-family:inherit;transition:border-color .2s;}
+ .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--imss-dorado);outline:none;box-shadow:0 0 0 3px rgba(200,47,63,.15);}
+ .btn{border:none;border-radius:8px;padding:10px 22px;font-weight:800;font-size:13px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+ .btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.15);}
+ .btn-primary{background:var(--imss-verde);color:#fff;}.btn-gold{background:var(--imss-dorado);color:#ffffff;}.btn-sm{padding:6px 14px;font-size:12px;}
+ .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;}
+ .badge-urgente{background:#fee2e2;color:#dc2626;animation:pulse 2s infinite;}.badge-normal{background:#d1fae5;color:#065f46;}
+ .badge-solicitada{background:#fef3c7;color:#92400e;}.badge-respondida{background:#d1fae5;color:#065f46;}.badge-cerrada{background:#e5e7eb;color:#374151;}.badge-cancelada{background:#fee2e2;color:#991b1b;}.badge-en_revision{background:#dbeafe;color:#1e40af;}
+ .badge-enviada{background:#fef3c7;color:#92400e;}.badge-aceptada{background:#d1fae5;color:#065f46;}.badge-rechazada{background:#fee2e2;color:#991b1b;}.badge-completada{background:#e5e7eb;color:#374151;}.badge-recibida{background:#dbeafe;color:#1e40af;}
+ @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+ .ic-card{background:#fff;border-radius:12px;border:2px solid #e8ece9;padding:16px;margin-bottom:12px;transition:all .2s;position:relative;overflow:hidden;}
+ .ic-card:hover{border-color:var(--imss-dorado);box-shadow:0 4px 20px rgba(200,47,63,.15);}
+ .ic-card.urgente{border-left:5px solid #dc2626;}.ic-card.normal{border-left:5px solid #16a34a;}
+ .ic-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+ .ic-meta{font-size:12px;color:#666;display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;}
+ .ic-meta span{display:inline-flex;align-items:center;gap:4px;}
+ .ic-body{font-size:13px;color:#333;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0;}
+ .ic-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+ .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+ .kpi{background:linear-gradient(135deg,var(--imss-verde),#2e6ec9);border-radius:12px;padding:16px;color:#fff;text-align:center;border:2px solid rgba(178,138,71,.3);}
+ .kpi-val{font-size:28px;font-weight:900;}.kpi-label{font-size:10px;font-weight:700;color:var(--imss-dorado);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+ .empty-state{text-align:center;padding:40px;color:#999;font-size:14px;}
+ .respond-form{background:#f8fafb;border-radius:10px;padding:16px;margin-top:10px;display:none;}
+ .respond-form.show{display:block;}
+ @media(max-width:768px){.form-grid{grid-template-columns:1fr;}.kpi-row{grid-template-columns:1fr 1fr;}}
+ </style>
 </head>
 <body>
-    <div class="top-bar">
-        <a href="/">Menu</a><span class="sep">|</span>
-        <a class="active" href="#">Interconsultas y Referencias</a>
-    </div>
-    <div class="container">
-        <h1 class="page-title">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
-            INTERCONSULTAS Y REFERENCIAS
-        </h1>
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('nueva')">Nueva Interconsulta</button>
-            <button class="tab" onclick="switchTab('pendientes')">Bandeja Pendientes</button>
-            <button class="tab" onclick="switchTab('historial')">Historial Paciente</button>
-            <button class="tab" onclick="switchTab('referencia')">Nueva Referencia</button>
-            <button class="tab" onclick="switchTab('refhistorial')">Historial Referencias</button>
-        </div>
-        <!-- Nueva Interconsulta -->
-        <div id="panel-nueva" class="panel active">
-            <h3 style="color:var(--imss-verde);margin-bottom:16px;">Solicitar Interconsulta</h3>
-            <div class="form-grid">
-                <div class="form-group"><label>NSS Paciente</label><input id="icNSS" placeholder="10 dígitos"></div>
-                <div class="form-group"><label>Servicio Destino</label><select id="icDestino"><option>CARDIOLOGÍA</option><option>ANESTESIOLOGÍA</option><option>MEDICINA INTERNA</option><option>NEFROLOGÍA</option><option>ONCOLOGÍA</option><option>ENDOCRINOLOGÍA</option><option>HEMATOLOGÍA</option><option>NEUMOLOGÍA</option><option>CIRUGÍA GENERAL</option><option>PATOLOGÍA</option></select></div>
-                <div class="form-group"><label>Urgencia</label><select id="icUrgencia"><option value="NORMAL">Normal</option><option value="URGENTE">Urgente</option></select></div>
-                <div class="form-group"><label>Diagnóstico Presuntivo</label><input id="icDiag" placeholder="CIE-10 o texto libre"></div>
-                <div class="form-group"><label>Médico Solicitante</label><input id="icMedSol" placeholder="Dr./Dra. ..."></div>
-                <div class="form-group"><label>Matrícula</label><input id="icMatricula" placeholder="12345678"></div>
-            </div>
-            <div class="form-group" style="margin-bottom:10px;"><label>Motivo de la Interconsulta</label><textarea id="icMotivo" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Motivo clínico detallado..."></textarea></div>
-            <div class="form-group" style="margin-bottom:10px;"><label>Pregunta Clínica</label><textarea id="icPregunta" rows="2" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="¿Qué necesita saber del interconsultante?"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Antecedentes Relevantes</label><textarea id="icAntec" rows="2" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Antecedentes pertinentes..."></textarea></div>
-            <button class="btn btn-primary" onclick="crearInterconsulta()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                Enviar Interconsulta
-            </button>
-        </div>
-        <!-- Bandeja Pendientes -->
-        <div id="panel-pendientes" class="panel">
-            <div class="kpi-row" id="icKPIs"></div>
-            <div style="display:flex;gap:10px;margin-bottom:14px;">
-                <select id="filtroServicio" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
-                    <option value="">Todos los servicios</option><option>UROLOGIA</option><option>CARDIOLOGÍA</option><option>ANESTESIOLOGÍA</option><option>MEDICINA INTERNA</option>
-                </select>
-                <button class="btn btn-gold btn-sm" onclick="loadPendientes()">Filtrar</button>
-            </div>
-            <div id="pendientesList"></div>
-        </div>
-        <!-- Historial Paciente -->
-        <div id="panel-historial" class="panel">
-            <div style="display:flex;gap:10px;margin-bottom:16px;">
-                <input id="histNSS" placeholder="NSS del paciente" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
-                <button class="btn btn-primary btn-sm" onclick="loadHistorial()">Buscar</button>
-            </div>
-            <div id="historialList"></div>
-        </div>
-        <!-- Nueva Referencia -->
-        <div id="panel-referencia" class="panel">
-            <h3 style="color:var(--imss-verde);margin-bottom:16px;">Crear Referencia / Contrarreferencia</h3>
-            <div class="form-grid">
-                <div class="form-group"><label>NSS Paciente</label><input id="refNSS" placeholder="10 dígitos"></div>
-                <div class="form-group"><label>Tipo</label><select id="refTipo"><option>REFERENCIA</option><option>CONTRARREFERENCIA</option></select></div>
-                <div class="form-group"><label>Unidad Origen</label><input id="refUniOrigen" value="CMN LA RAZA - HECMNR"></div>
-                <div class="form-group"><label>Servicio Origen</label><input id="refSvcOrigen" value="UROLOGÍA"></div>
-                <div class="form-group"><label>Unidad Destino</label><input id="refUniDestino" placeholder="HGZ, UMAE, etc."></div>
-                <div class="form-group"><label>Servicio Destino</label><input id="refSvcDestino" placeholder="Servicio receptor"></div>
-                <div class="form-group"><label>Diagnóstico CIE-10</label><input id="refCIE10" placeholder="Ej: C61"></div>
-                <div class="form-group"><label>Médico</label><input id="refMedico" placeholder="Dr./Dra. ..."></div>
-            </div>
-            <div class="form-group" style="margin-bottom:10px;"><label>Motivo</label><textarea id="refMotivo" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Motivo de la referencia..."></textarea></div>
-            <div class="form-group" style="margin-bottom:10px;"><label>Resumen Clínico</label><textarea id="refResumen" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Resumen clínico del paciente..."></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Tratamiento Actual</label><textarea id="refTx" rows="2" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Tratamiento actual..."></textarea></div>
-            <button class="btn btn-primary" onclick="crearReferencia()">Crear Referencia</button>
-        </div>
-        <!-- Historial Referencias -->
-        <div id="panel-refhistorial" class="panel">
-            <div style="display:flex;gap:10px;margin-bottom:16px;">
-                <input id="refHistNSS" placeholder="NSS del paciente" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
-                <button class="btn btn-primary btn-sm" onclick="loadRefHistorial()">Buscar</button>
-            </div>
-            <div id="refHistorialList"></div>
-        </div>
-    </div>
+ <div class="top-bar">
+ <a href="/">Menu</a><span class="sep">|</span>
+ <a class="active" href="#">Interconsultas y Referencias</a>
+ </div>
+ <div class="container">
+ <h1 class="page-title">
+ <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+ INTERCONSULTAS Y REFERENCIAS
+ </h1>
+ <div class="tabs">
+ <button class="tab active" onclick="switchTab('nueva')">Nueva Interconsulta</button>
+ <button class="tab" onclick="switchTab('pendientes')">Bandeja Pendientes</button>
+ <button class="tab" onclick="switchTab('historial')">Historial Paciente</button>
+ <button class="tab" onclick="switchTab('referencia')">Nueva Referencia</button>
+ <button class="tab" onclick="switchTab('refhistorial')">Historial Referencias</button>
+ </div>
+ <!-- Nueva Interconsulta -->
+ <div id="panel-nueva" class="panel active">
+ <h3 style="color:var(--imss-verde);margin-bottom:16px;">Solicitar Interconsulta</h3>
+ <div class="form-grid">
+ <div class="form-group"><label>NSS Paciente</label><input id="icNSS" placeholder="10 dígitos"></div>
+ <div class="form-group"><label>Servicio Destino</label><select id="icDestino"><option>CARDIOLOGÍA</option><option>ANESTESIOLOGÍA</option><option>MEDICINA INTERNA</option><option>NEFROLOGÍA</option><option>ONCOLOGÍA</option><option>ENDOCRINOLOGÍA</option><option>HEMATOLOGÍA</option><option>NEUMOLOGÍA</option><option>CIRUGÍA GENERAL</option><option>PATOLOGÍA</option></select></div>
+ <div class="form-group"><label>Urgencia</label><select id="icUrgencia"><option value="NORMAL">Normal</option><option value="URGENTE">Urgente</option></select></div>
+ <div class="form-group"><label>Diagnóstico Presuntivo</label><input id="icDiag" placeholder="CIE-10 o texto libre"></div>
+ <div class="form-group"><label>Médico Solicitante</label><input id="icMedSol" placeholder="Dr./Dra. ..."></div>
+ <div class="form-group"><label>Matrícula</label><input id="icMatricula" placeholder="12345678"></div>
+ </div>
+ <div class="form-group" style="margin-bottom:10px;"><label>Motivo de la Interconsulta</label><textarea id="icMotivo" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Motivo clínico detallado..."></textarea></div>
+ <div class="form-group" style="margin-bottom:10px;"><label>Pregunta Clínica</label><textarea id="icPregunta" rows="2" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="¿Qué necesita saber del interconsultante?"></textarea></div>
+ <div class="form-group" style="margin-bottom:14px;"><label>Antecedentes Relevantes</label><textarea id="icAntec" rows="2" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Antecedentes pertinentes..."></textarea></div>
+ <button class="btn btn-primary" onclick="crearInterconsulta()">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+ Enviar Interconsulta
+ </button>
+ </div>
+ <!-- Bandeja Pendientes -->
+ <div id="panel-pendientes" class="panel">
+ <div class="kpi-row" id="icKPIs"></div>
+ <div style="display:flex;gap:10px;margin-bottom:14px;">
+ <select id="filtroServicio" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
+ <option value="">Todos los servicios</option><option>UROLOGIA</option><option>CARDIOLOGÍA</option><option>ANESTESIOLOGÍA</option><option>MEDICINA INTERNA</option>
+ </select>
+ <button class="btn btn-gold btn-sm" onclick="loadPendientes()">Filtrar</button>
+ </div>
+ <div id="pendientesList"></div>
+ </div>
+ <!-- Historial Paciente -->
+ <div id="panel-historial" class="panel">
+ <div style="display:flex;gap:10px;margin-bottom:16px;">
+ <input id="histNSS" placeholder="NSS del paciente" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
+ <button class="btn btn-primary btn-sm" onclick="loadHistorial()">Buscar</button>
+ </div>
+ <div id="historialList"></div>
+ </div>
+ <!-- Nueva Referencia -->
+ <div id="panel-referencia" class="panel">
+ <h3 style="color:var(--imss-verde);margin-bottom:16px;">Crear Referencia / Contrarreferencia</h3>
+ <div class="form-grid">
+ <div class="form-group"><label>NSS Paciente</label><input id="refNSS" placeholder="10 dígitos"></div>
+ <div class="form-group"><label>Tipo</label><select id="refTipo"><option>REFERENCIA</option><option>CONTRARREFERENCIA</option></select></div>
+ <div class="form-group"><label>Unidad Origen</label><input id="refUniOrigen" value="CMN LA RAZA - HECMNR"></div>
+ <div class="form-group"><label>Servicio Origen</label><input id="refSvcOrigen" value="UROLOGÍA"></div>
+ <div class="form-group"><label>Unidad Destino</label><input id="refUniDestino" placeholder="HGZ, UMAE, etc."></div>
+ <div class="form-group"><label>Servicio Destino</label><input id="refSvcDestino" placeholder="Servicio receptor"></div>
+ <div class="form-group"><label>Diagnóstico CIE-10</label><input id="refCIE10" placeholder="Ej: C61"></div>
+ <div class="form-group"><label>Médico</label><input id="refMedico" placeholder="Dr./Dra. ..."></div>
+ </div>
+ <div class="form-group" style="margin-bottom:10px;"><label>Motivo</label><textarea id="refMotivo" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Motivo de la referencia..."></textarea></div>
+ <div class="form-group" style="margin-bottom:10px;"><label>Resumen Clínico</label><textarea id="refResumen" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Resumen clínico del paciente..."></textarea></div>
+ <div class="form-group" style="margin-bottom:14px;"><label>Tratamiento Actual</label><textarea id="refTx" rows="2" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:10px;font-size:13px;font-family:inherit;" placeholder="Tratamiento actual..."></textarea></div>
+ <button class="btn btn-primary" onclick="crearReferencia()">Crear Referencia</button>
+ </div>
+ <!-- Historial Referencias -->
+ <div id="panel-refhistorial" class="panel">
+ <div style="display:flex;gap:10px;margin-bottom:16px;">
+ <input id="refHistNSS" placeholder="NSS del paciente" style="border:2px solid #d2e0da;border-radius:8px;padding:8px 14px;font-size:13px;">
+ <button class="btn btn-primary btn-sm" onclick="loadRefHistorial()">Buscar</button>
+ </div>
+ <div id="refHistorialList"></div>
+ </div>
+ </div>
 <script>
 function cleanUrl(u){return u.replace(/^(https?:\/\/)([^@]+@)/,'$1');}
 async function api(url,opts={}){const r=await fetch(cleanUrl(url),opts);const t=await r.text();let d={};try{d=t?JSON.parse(t):{};}catch(e){d={raw:t};}if(!r.ok)throw new Error(d.detail||`HTTP ${r.status}`);return d;}
 function switchTab(name){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));event.target.classList.add('active');document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById('panel-'+name);if(p)p.classList.add('active');if(name==='pendientes')loadPendientes();}
 async function crearInterconsulta(){
-    const body={nss:document.getElementById('icNSS').value,servicio_destino:document.getElementById('icDestino').value,urgencia:document.getElementById('icUrgencia').value,diagnostico_presuntivo:document.getElementById('icDiag').value,medico_solicitante:document.getElementById('icMedSol').value,matricula_solicitante:document.getElementById('icMatricula').value,motivo:document.getElementById('icMotivo').value,pregunta_clinica:document.getElementById('icPregunta').value,antecedentes_relevantes:document.getElementById('icAntec').value};
-    try{const r=await api('/api/interconsultas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Interconsulta enviada! ID: '+r.interconsulta_id);document.getElementById('icMotivo').value='';document.getElementById('icPregunta').value='';}catch(e){alert('Error: '+e.message);}
+ const body={nss:document.getElementById('icNSS').value,servicio_destino:document.getElementById('icDestino').value,urgencia:document.getElementById('icUrgencia').value,diagnostico_presuntivo:document.getElementById('icDiag').value,medico_solicitante:document.getElementById('icMedSol').value,matricula_solicitante:document.getElementById('icMatricula').value,motivo:document.getElementById('icMotivo').value,pregunta_clinica:document.getElementById('icPregunta').value,antecedentes_relevantes:document.getElementById('icAntec').value};
+ try{const r=await api('/api/interconsultas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Interconsulta enviada! ID: '+r.interconsulta_id);document.getElementById('icMotivo').value='';document.getElementById('icPregunta').value='';}catch(e){alert('Error: '+e.message);}
 }
 async function loadPendientes(){
-    const svc=document.getElementById('filtroServicio').value;let url='/api/interconsultas/pending';if(svc)url+=`?servicio=${svc}`;
-    try{const d=await api(url);const items=d.interconsultas||[];
-    document.getElementById('icKPIs').innerHTML=`
-        <div class="kpi"><div class="kpi-val">${d.total||0}</div><div class="kpi-label">Pendientes</div></div>
-        <div class="kpi" style="background:linear-gradient(135deg,#dc2626,#ef4444);"><div class="kpi-val">${items.filter(i=>i.urgencia==='URGENTE').length}</div><div class="kpi-label">Urgentes</div></div>
-        <div class="kpi"><div class="kpi-val">${items.filter(i=>i.estatus==='SOLICITADA').length}</div><div class="kpi-label">Sin Revisar</div></div>`;
-    document.getElementById('pendientesList').innerHTML=items.length?items.map(ic=>renderIC(ic,true)).join(''):'<div class="empty-state">No hay interconsultas pendientes</div>';
-    }catch(e){document.getElementById('pendientesList').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
+ const svc=document.getElementById('filtroServicio').value;let url='/api/interconsultas/pending';if(svc)url+=`?servicio=${svc}`;
+ try{const d=await api(url);const items=d.interconsultas||[];
+ document.getElementById('icKPIs').innerHTML=`
+ <div class="kpi"><div class="kpi-val">${d.total||0}</div><div class="kpi-label">Pendientes</div></div>
+ <div class="kpi" style="background:linear-gradient(135deg,#dc2626,#ef4444);"><div class="kpi-val">${items.filter(i=>i.urgencia==='URGENTE').length}</div><div class="kpi-label">Urgentes</div></div>
+ <div class="kpi"><div class="kpi-val">${items.filter(i=>i.estatus==='SOLICITADA').length}</div><div class="kpi-label">Sin Revisar</div></div>`;
+ document.getElementById('pendientesList').innerHTML=items.length?items.map(ic=>renderIC(ic,true)).join(''):'<div class="empty-state">No hay interconsultas pendientes</div>';
+ }catch(e){document.getElementById('pendientesList').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
 }
 function renderIC(ic,showRespond=false){
-    return `<div class="ic-card ${(ic.urgencia||'').toLowerCase()}">
-        <div class="ic-header"><div><strong style="font-size:15px;">${ic.servicio_destino||'—'}</strong><span style="margin-left:8px;" class="badge badge-${(ic.urgencia||'').toLowerCase()}">${ic.urgencia}</span><span style="margin-left:4px;" class="badge badge-${(ic.estatus||'').toLowerCase()}">${ic.estatus}</span></div><div style="font-size:12px;color:#888;">#${ic.id} — ${(ic.creado_en||'').substring(0,10)}</div></div>
-        <div class="ic-meta"><span>NSS: <strong>${ic.nss||'-'}</strong></span><span>Dx: ${ic.diagnostico_presuntivo||'-'}</span><span>Solicitante: ${ic.medico_solicitante||'-'}</span></div>
-        <div class="ic-body"><strong>Motivo:</strong> ${ic.motivo||'-'}</div>
-        ${ic.respuesta_texto?`<div class="ic-body" style="background:#f0fdf4;border-radius:8px;padding:10px;margin-top:8px;"><strong style="color:#065f46;">Respuesta:</strong> ${ic.respuesta_texto}<br><span style="font-size:11px;color:#666;">— ${ic.medico_respondio||''} (${(ic.fecha_respuesta||'').substring(0,10)})</span></div>`:''}
-        ${showRespond && ic.estatus!=='RESPONDIDA' && ic.estatus!=='CERRADA'?`<div class="ic-actions"><button class="btn btn-gold btn-sm" onclick="toggleRespond(${ic.id})">Responder</button></div><div class="respond-form" id="rf-${ic.id}"><div class="form-grid"><div class="form-group"><label>Respuesta</label><textarea id="resp-${ic.id}" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:8px;font-size:13px;font-family:inherit;"></textarea></div><div class="form-group"><label>Diagnóstico</label><input id="diag-${ic.id}" style="border:2px solid #d2e0da;border-radius:8px;padding:8px;font-size:13px;"></div><div class="form-group"><label>Plan Sugerido</label><input id="plan-${ic.id}" style="border:2px solid #d2e0da;border-radius:8px;padding:8px;font-size:13px;"></div><div class="form-group"><label>Médico</label><input id="med-${ic.id}" style="border:2px solid #d2e0da;border-radius:8px;padding:8px;font-size:13px;"></div></div><button class="btn btn-primary btn-sm" onclick="responderIC(${ic.id})" style="margin-top:8px;">Enviar Respuesta</button></div>`:''}
-    </div>`;
+ return `<div class="ic-card ${(ic.urgencia||'').toLowerCase()}">
+ <div class="ic-header"><div><strong style="font-size:15px;">${ic.servicio_destino||'—'}</strong><span style="margin-left:8px;" class="badge badge-${(ic.urgencia||'').toLowerCase()}">${ic.urgencia}</span><span style="margin-left:4px;" class="badge badge-${(ic.estatus||'').toLowerCase()}">${ic.estatus}</span></div><div style="font-size:12px;color:#888;">#${ic.id} — ${(ic.creado_en||'').substring(0,10)}</div></div>
+ <div class="ic-meta"><span>NSS: <strong>${ic.nss||'-'}</strong></span><span>Dx: ${ic.diagnostico_presuntivo||'-'}</span><span>Solicitante: ${ic.medico_solicitante||'-'}</span></div>
+ <div class="ic-body"><strong>Motivo:</strong> ${ic.motivo||'-'}</div>
+ ${ic.respuesta_texto?`<div class="ic-body" style="background:#f0fdf4;border-radius:8px;padding:10px;margin-top:8px;"><strong style="color:#065f46;">Respuesta:</strong> ${ic.respuesta_texto}<br><span style="font-size:11px;color:#666;">— ${ic.medico_respondio||''} (${(ic.fecha_respuesta||'').substring(0,10)})</span></div>`:''}
+ ${showRespond && ic.estatus!=='RESPONDIDA' && ic.estatus!=='CERRADA'?`<div class="ic-actions"><button class="btn btn-gold btn-sm" onclick="toggleRespond(${ic.id})">Responder</button></div><div class="respond-form" id="rf-${ic.id}"><div class="form-grid"><div class="form-group"><label>Respuesta</label><textarea id="resp-${ic.id}" rows="3" style="width:100%;border:2px solid #d2e0da;border-radius:8px;padding:8px;font-size:13px;font-family:inherit;"></textarea></div><div class="form-group"><label>Diagnóstico</label><input id="diag-${ic.id}" style="border:2px solid #d2e0da;border-radius:8px;padding:8px;font-size:13px;"></div><div class="form-group"><label>Plan Sugerido</label><input id="plan-${ic.id}" style="border:2px solid #d2e0da;border-radius:8px;padding:8px;font-size:13px;"></div><div class="form-group"><label>Médico</label><input id="med-${ic.id}" style="border:2px solid #d2e0da;border-radius:8px;padding:8px;font-size:13px;"></div></div><button class="btn btn-primary btn-sm" onclick="responderIC(${ic.id})" style="margin-top:8px;">Enviar Respuesta</button></div>`:''}
+ </div>`;
 }
 function toggleRespond(id){const f=document.getElementById('rf-'+id);f.classList.toggle('show');}
 async function responderIC(id){
-    const body={respuesta_texto:document.getElementById('resp-'+id).value,diagnostico_interconsultante:document.getElementById('diag-'+id).value,plan_sugerido:document.getElementById('plan-'+id).value,medico_respondio:document.getElementById('med-'+id).value};
-    try{await api(`/api/interconsultas/${id}/respond`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Respuesta enviada');loadPendientes();}catch(e){alert('Error: '+e.message);}
+ const body={respuesta_texto:document.getElementById('resp-'+id).value,diagnostico_interconsultante:document.getElementById('diag-'+id).value,plan_sugerido:document.getElementById('plan-'+id).value,medico_respondio:document.getElementById('med-'+id).value};
+ try{await api(`/api/interconsultas/${id}/respond`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Respuesta enviada');loadPendientes();}catch(e){alert('Error: '+e.message);}
 }
 async function loadHistorial(){
-    const nss=document.getElementById('histNSS').value;if(!nss){alert('Ingrese NSS');return;}
-    try{const d=await api(`/api/interconsultas/patient/${nss}`);const items=d.interconsultas||[];
-    document.getElementById('historialList').innerHTML=items.length?items.map(ic=>renderIC(ic)).join(''):'<div class="empty-state">No hay interconsultas para este paciente</div>';
-    }catch(e){document.getElementById('historialList').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
+ const nss=document.getElementById('histNSS').value;if(!nss){alert('Ingrese NSS');return;}
+ try{const d=await api(`/api/interconsultas/patient/${nss}`);const items=d.interconsultas||[];
+ document.getElementById('historialList').innerHTML=items.length?items.map(ic=>renderIC(ic)).join(''):'<div class="empty-state">No hay interconsultas para este paciente</div>';
+ }catch(e){document.getElementById('historialList').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
 }
 async function crearReferencia(){
-    const body={nss:document.getElementById('refNSS').value,tipo:document.getElementById('refTipo').value,unidad_origen:document.getElementById('refUniOrigen').value,servicio_origen:document.getElementById('refSvcOrigen').value,unidad_destino:document.getElementById('refUniDestino').value,servicio_destino:document.getElementById('refSvcDestino').value,diagnostico_cie10:document.getElementById('refCIE10').value,medico_origen:document.getElementById('refMedico').value,motivo_referencia:document.getElementById('refMotivo').value,resumen_clinico:document.getElementById('refResumen').value,tratamiento_actual:document.getElementById('refTx').value};
-    try{const r=await api('/api/referencias',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Referencia creada ID: '+r.referencia_id);document.getElementById('refMotivo').value='';}catch(e){alert('Error: '+e.message);}
+ const body={nss:document.getElementById('refNSS').value,tipo:document.getElementById('refTipo').value,unidad_origen:document.getElementById('refUniOrigen').value,servicio_origen:document.getElementById('refSvcOrigen').value,unidad_destino:document.getElementById('refUniDestino').value,servicio_destino:document.getElementById('refSvcDestino').value,diagnostico_cie10:document.getElementById('refCIE10').value,medico_origen:document.getElementById('refMedico').value,motivo_referencia:document.getElementById('refMotivo').value,resumen_clinico:document.getElementById('refResumen').value,tratamiento_actual:document.getElementById('refTx').value};
+ try{const r=await api('/api/referencias',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});alert('Referencia creada ID: '+r.referencia_id);document.getElementById('refMotivo').value='';}catch(e){alert('Error: '+e.message);}
 }
 async function loadRefHistorial(){
-    const nss=document.getElementById('refHistNSS').value;if(!nss){alert('Ingrese NSS');return;}
-    try{const d=await api(`/api/referencias/patient/${nss}`);const items=d.referencias||[];
-    document.getElementById('refHistorialList').innerHTML=items.length?items.map(r=>`<div class="ic-card normal"><div class="ic-header"><div><strong>${r.tipo}</strong> <span class="badge badge-${(r.estatus||'').toLowerCase()}">${r.estatus}</span></div><div style="font-size:12px;color:#888;">#${r.id} — ${(r.creado_en||'').substring(0,10)}</div></div><div class="ic-meta"><span>NSS: <strong>${r.nss||'-'}</strong></span><span>${r.unidad_origen||'-'} → ${r.unidad_destino||'-'}</span><span>CIE-10: ${r.diagnostico_cie10||'-'}</span></div><div class="ic-body">${r.motivo_referencia||'-'}</div></div>`).join(''):'<div class="empty-state">No hay referencias para este paciente</div>';
-    }catch(e){document.getElementById('refHistorialList').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
+ const nss=document.getElementById('refHistNSS').value;if(!nss){alert('Ingrese NSS');return;}
+ try{const d=await api(`/api/referencias/patient/${nss}`);const items=d.referencias||[];
+ document.getElementById('refHistorialList').innerHTML=items.length?items.map(r=>`<div class="ic-card normal"><div class="ic-header"><div><strong>${r.tipo}</strong> <span class="badge badge-${(r.estatus||'').toLowerCase()}">${r.estatus}</span></div><div style="font-size:12px;color:#888;">#${r.id} — ${(r.creado_en||'').substring(0,10)}</div></div><div class="ic-meta"><span>NSS: <strong>${r.nss||'-'}</strong></span><span>${r.unidad_origen||'-'} → ${r.unidad_destino||'-'}</span><span>CIE-10: ${r.diagnostico_cie10||'-'}</span></div><div class="ic-body">${r.motivo_referencia||'-'}</div></div>`).join(''):'<div class="empty-state">No hay referencias para este paciente</div>';
+ }catch(e){document.getElementById('refHistorialList').innerHTML=`<div class="empty-state" style="color:#c62828;">Error: ${e.message}</div>`;}
 }
 </script>
 </body>

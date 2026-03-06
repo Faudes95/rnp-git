@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prototipo B — Dashboard Clinico con Sidebar</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+:root{
+ --verde:#0a3161;--verde2:#1f4f9f;--verde3:#0a3161;--dorado:#c82f3f;--dorado-l:#ef7f8b;
+ --bg:#f0f4f3;--card:#fff;--border:#e2e8e5;--text:#1a2e28;--muted:#6b8a7d;
+ --red:#dc2626;--blue:#2563eb;--emerald:#059669;--amber:#d97706;--purple:#7c3aed;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:260px;background:linear-gradient(180deg,var(--verde3) 0%,var(--verde) 50%,var(--verde2) 100%);color:#fff;padding:0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.sidebar-header h2{font-size:13px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--dorado-l)}
+.sidebar-header p{font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px}
+.sidebar-nav{padding:12px 10px;flex:1}
+.sidebar-nav a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);text-decoration:none;transition:all .2s;margin-bottom:2px}
+.sidebar-nav a:hover{background:rgba(255,255,255,0.06);color:#fff}
+.sidebar-nav a.active{background:rgba(200,47,63,0.12);color:var(--dorado-l);border-left:3px solid var(--dorado)}
+.sidebar-nav a .s-ico{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.sidebar-sections{padding:12px 10px;border-top:1px solid rgba(255,255,255,0.06)}
+.sidebar-sections .s-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.25);padding:8px 14px}
+.sidebar-sections a{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-radius:8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);text-decoration:none;transition:all .2s}
+.sidebar-sections a:hover{background:rgba(255,255,255,0.06);color:#fff}
+.sidebar-sections a .s-count{font-size:10px;background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:10px;color:rgba(255,255,255,0.5)}
+
+/* ─── MAIN CONTENT ─── */
+.main{margin-left:260px;flex:1;padding:20px 28px;max-width:1200px}
+
+/* ─── HEADLINER ─── */
+.headliner{display:flex;align-items:center;gap:20px;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:20px;position:sticky;top:0;z-index:50;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+.headliner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0;background:linear-gradient(90deg,var(--verde),var(--dorado),var(--verde))}
+.hl-avatar{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--verde),var(--verde2));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;flex-shrink:0}
+.hl-info{flex:1}
+.hl-info h1{font-size:18px;font-weight:900;color:var(--verde);margin-bottom:4px}
+.hl-tags{display:flex;flex-wrap:wrap;gap:6px}
+.hl-tag{padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#edf3ff;color:var(--verde);border:1px solid var(--border)}
+.hl-tag.gold{background:linear-gradient(135deg,#fef9f0,#fff5e6);border-color:rgba(200,47,63,0.2);color:#92400e}
+.hl-tag.crit{background:#fef2f2;border-color:#fecaca;color:var(--red);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.6}}
+.hl-actions{display:flex;gap:6px;flex-shrink:0}
+.hl-btn{padding:8px 14px;border-radius:8px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.hl-btn.primary{background:var(--verde);color:#fff}
+.hl-btn.primary:hover{background:var(--verde2);transform:translateY(-1px)}
+.hl-btn.gold{background:var(--dorado);color:#fff}
+
+/* ─── KPI ROW ─── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 16px;position:relative;overflow:hidden;transition:all .25s}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.06);border-color:var(--dorado)}
+.kpi .kpi-val{font-size:32px;font-weight:900;color:var(--verde)}
+.kpi .kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-top:2px}
+.kpi .kpi-bar{position:absolute;bottom:0;left:0;right:0;height:4px;border-radius:0 0 14px 14px}
+.kpi:nth-child(1) .kpi-bar{background:linear-gradient(90deg,var(--emerald),#34d399)}
+.kpi:nth-child(2) .kpi-bar{background:linear-gradient(90deg,var(--blue),#60a5fa)}
+.kpi:nth-child(3) .kpi-bar{background:linear-gradient(90deg,var(--amber),#fbbf24)}
+.kpi:nth-child(4) .kpi-bar{background:linear-gradient(90deg,var(--dorado),var(--dorado-l))}
+.kpi .kpi-trend{position:absolute;top:14px;right:14px;font-size:18px;opacity:0.15}
+
+/* ─── SECTION CARDS ─── */
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden;transition:all .25s}
+.section-card:hover{border-color:rgba(200,47,63,0.2)}
+.sc-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;transition:background .2s;user-select:none}
+.sc-header:hover{background:#f8fbff}
+.sc-header.open{border-bottom:1px solid var(--border);background:#f7faff}
+.sc-title{display:flex;align-items:center;gap:10px}
+.sc-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sc-icon.green{background:#d1fae5;color:#065f46}
+.sc-icon.blue{background:#dbeafe;color:#1e40af}
+.sc-icon.amber{background:#fef3c7;color:#92400e}
+.sc-icon.red{background:#fee2e2;color:#991b1b}
+.sc-icon.purple{background:#f3e8ff;color:#5b21b6}
+.sc-icon.teal{background:#ccfbf1;color:#115e59}
+.sc-name{font-size:13px;font-weight:800;color:var(--verde)}
+.sc-sub{font-size:10px;color:var(--muted);font-weight:600}
+.sc-meta{display:flex;align-items:center;gap:8px}
+.sc-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:#edf3ff;color:var(--verde)}
+.sc-arrow{font-size:11px;color:var(--muted);transition:transform .3s}
+.sc-header.open .sc-arrow{transform:rotate(180deg)}
+.sc-body{display:none;padding:18px}
+.sc-body.show{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ─── TABLES ─── */
+table{width:100%;border-collapse:collapse}
+th{padding:10px 12px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);border-bottom:2px solid var(--border);background:transparent}
+td{padding:10px 12px;font-size:12px;border-bottom:1px solid #e4edff;color:var(--text)}
+tr:hover td{background:#f8fbff}
+
+/* ─── CHARTS ─── */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.chart-panel{background:#f7faff;border:1px solid var(--border);border-radius:10px;padding:14px}
+.chart-panel h4{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--verde);margin-bottom:10px}
+
+/* ─── FLOW ─── */
+.flow-bar{display:flex;gap:2px;margin:12px 0;border-radius:10px;overflow:hidden}
+.flow-seg{flex:1;padding:10px 8px;text-align:center;font-size:10px;font-weight:700;background:#edf3ff;color:var(--muted);transition:all .3s;position:relative}
+.flow-seg.done{background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#065f46}
+.flow-seg.active{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#92400e}
+
+/* ─── ACTIONS ROW ─── */
+.act-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.act-card{padding:14px;border-radius:12px;background:var(--card);border:1px solid var(--border);text-align:center;cursor:pointer;transition:all .3s;text-decoration:none;color:var(--text)}
+.act-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(31,79,159,0.08);border-color:var(--dorado)}
+.act-card .ac-ico{font-size:22px;margin-bottom:6px}
+.act-card .ac-lab{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:var(--verde)}
+
+@media(max-width:1100px){.sidebar{display:none}.main{margin-left:0}.kpi-row,.act-row{grid-template-columns:repeat(2,1fr)}.chart-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+ <div class="sidebar-header">
+ <h2>UROMED Urologia</h2>
+ <p>UROMED &mdash; Plataforma Privada</p>
+ </div>
+ <div class="sidebar-nav">
+ <a href="#"><span class="s-ico">&#127968;</span> Menu Principal</a>
+ <a href="#"><span class="s-ico">&#128203;</span> Consulta Externa</a>
+ <a href="#"><span class="s-ico">&#127973;</span> Hospitalizacion</a>
+ <a href="#"><span class="s-ico">&#128298;</span> Quirofano</a>
+ <a href="#" class="active"><span class="s-ico">&#128194;</span> Expediente</a>
+ <a href="#"><span class="s-ico">&#128202;</span> Reportes</a>
+ </div>
+ <div class="sidebar-sections">
+ <div class="s-label">Secciones del expediente</div>
+ <a href="#sec-identity">Identidad y Metricas <span class="s-count">12</span></a>
+ <a href="#sec-flow">Flujo Clinico <span class="s-count">6</span></a>
+ <a href="#sec-hosp">Hospitalizacion <span class="s-count">3</span></a>
+ <a href="#sec-notes">Notas Medicas <span class="s-count">5</span></a>
+ <a href="#sec-episodes">Episodios <span class="s-count">2</span></a>
+ <a href="#sec-drains">Drenajes <span class="s-count">ACT</span></a>
+ <a href="#sec-labs">Laboratorios <span class="s-count">8</span></a>
+ <a href="#sec-timeline">Linea de Tiempo <span class="s-count">4</span></a>
+ <a href="#sec-images">Estudios Imagen <span class="s-count">2</span></a>
+ <a href="#sec-files">Archivos <span class="s-count">3</span></a>
+ <a href="#sec-demographics">Datos Paciente</a>
+ <a href="#sec-dx">Diagnostico</a>
+ <a href="#sec-enriched">Modulo Enriquecido</a>
+ </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- HEADLINER -->
+<div class="headliner">
+ <div class="hl-avatar">JL</div>
+ <div class="hl-info">
+ <h1>JUAN LOPEZ MARTINEZ</h1>
+ <div class="hl-tags">
+ <span class="hl-tag gold">NSS: 9800000008</span>
+ <span class="hl-tag">68 anios</span>
+ <span class="hl-tag">Masculino</span>
+ <span class="hl-tag">Dx: Hiperplasia Prostatica</span>
+ <span class="hl-tag crit">HOSPITALIZADO &mdash; Cama 312-B</span>
+ </div>
+ </div>
+ <div class="hl-actions">
+ <button class="hl-btn primary" onclick="toggleAllSections(false)">Expandir</button>
+ <button class="hl-btn gold" onclick="toggleAllSections(true)">Colapsar</button>
+ </div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-row">
+ <div class="kpi"><div class="kpi-trend">&#128200;</div><div class="kpi-val">12</div><div class="kpi-label">Consultas Totales</div><div class="kpi-bar"></div></div>
+ <div class="kpi"><div class="kpi-trend">&#127973;</div><div class="kpi-val">3</div><div class="kpi-label">Hospitalizaciones</div><div class="kpi-bar"></div></div>
+ <div class="kpi"><div class="kpi-trend">&#128298;</div><div class="kpi-val">2</div><div class="kpi-label">Cirugias</div><div class="kpi-bar"></div></div>
+ <div class="kpi"><div class="kpi-trend">&#9989;</div><div class="kpi-val">82%</div><div class="kpi-label">Completitud</div><div class="kpi-bar"></div></div>
+</div>
+
+<!-- ACTIONS -->
+<div class="act-row">
+ <a class="act-card" href="#"><div class="ac-ico">&#127919;</div><div class="ac-lab">Command Center</div></a>
+ <a class="act-card" href="#"><div class="ac-ico">&#129504;</div><div class="ac-lab">Exp. Inteligente</div></a>
+ <a class="act-card" href="#"><div class="ac-ico">&#127973;</div><div class="ac-lab">Pase de Visita</div></a>
+ <a class="act-card" href="#"><div class="ac-ico">&#128221;</div><div class="ac-lab">Nota Medica</div></a>
+ <a class="act-card" href="#"><div class="ac-ico">&#9888;</div><div class="ac-lab">Alertas</div></a>
+</div>
+
+<!-- SEC: Flujo -->
+<div class="section-card" id="sec-flow">
+ <div class="sc-header open" onclick="togSec(this)">
+ <div class="sc-title"><div class="sc-icon green">&#128736;</div><div><div class="sc-name">Rutas Transitadas y Flujo</div><div class="sc-sub">Seguimiento del proceso clinico</div></div></div>
+ <div class="sc-meta"><span class="sc-badge">6 eventos</span><span class="sc-arrow">&#9660;</span></div>
+ </div>
+ <div class="sc-body show">
+ <div class="flow-bar">
+ <div class="flow-seg done">&#9989; Consulta</div>
+ <div class="flow-seg done">&#9989; Protocolo</div>
+ <div class="flow-seg done">&#9989; Programacion</div>
+ <div class="flow-seg active">&#9203; Cirugia</div>
+ <div class="flow-seg">Egreso</div>
+ <div class="flow-seg">Seguimiento</div>
+ </div>
+ <table>
+ <tr><th>Fecha</th><th>Evento</th><th>Estatus</th><th>Resumen</th></tr>
+ <tr><td>2025-01-15</td><td>Consulta Primera Vez</td><td>COMPLETADO</td><td>Valoracion inicial HPB</td></tr>
+ <tr><td>2025-01-22</td><td>Protocolo quirurgico</td><td>COMPLETADO</td><td>RTU-P programada</td></tr>
+ <tr><td>2025-02-01</td><td>Cirugia</td><td>EN CURSO</td><td>Postoperatorio dia 3</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SEC: Labs -->
+<div class="section-card" id="sec-labs">
+ <div class="sc-header" onclick="togSec(this)">
+ <div class="sc-title"><div class="sc-icon blue">&#129514;</div><div><div class="sc-name">Serie de Laboratorios</div><div class="sc-sub">Tendencias bioquimicas</div></div></div>
+ <div class="sc-meta"><span class="sc-badge">8 registros</span><span class="sc-arrow">&#9660;</span></div>
+ </div>
+ <div class="sc-body">
+ <div class="chart-row">
+ <div class="chart-panel"><h4>Creatinina + Hemoglobina</h4><canvas id="chartB1" height="200"></canvas></div>
+ <div class="chart-panel"><h4>Leucocitos, Plaquetas, Na, K</h4><canvas id="chartB2" height="200"></canvas></div>
+ </div>
+ <table>
+ <tr><th>Fecha</th><th>Cr</th><th>Hb</th><th>Leu</th><th>Plt</th><th>Na</th><th>K</th></tr>
+ <tr><td>2025-02-10</td><td>1.2</td><td>13.5</td><td>7.8</td><td>245</td><td>140</td><td>4.2</td></tr>
+ <tr><td>2025-02-08</td><td>1.4</td><td>12.8</td><td>8.2</td><td>230</td><td>138</td><td>4.5</td></tr>
+ <tr><td>2025-02-06</td><td>1.6</td><td>11.9</td><td>9.1</td><td>210</td><td>136</td><td>4.8</td></tr>
+ <tr><td>2025-02-04</td><td>1.8</td><td>11.2</td><td>10.5</td><td>198</td><td>141</td><td>3.9</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SEC: Drenajes -->
+<div class="section-card" id="sec-drains">
+ <div class="sc-header" onclick="togSec(this)">
+ <div class="sc-title"><div class="sc-icon amber">&#129656;</div><div><div class="sc-name">Drenajes y Dispositivos</div><div class="sc-sub">Monitoreo de gastos y uresis</div></div></div>
+ <div class="sc-meta"><span class="sc-badge" style="background:#fef3c7;color:#92400e">ACTIVO</span><span class="sc-arrow">&#9660;</span></div>
+ </div>
+ <div class="sc-body">
+ <div class="chart-row">
+ <div class="chart-panel"><h4>Gasto Drenaje</h4><canvas id="chartB3" height="200"></canvas></div>
+ <div class="chart-panel"><h4>Uresis Foley</h4><canvas id="chartB4" height="200"></canvas></div>
+ </div>
+ <table>
+ <tr><th>Fecha</th><th>Tipo</th><th>Gasto (mL)</th><th>% Egreso</th><th>Uresis</th><th>Indice</th></tr>
+ <tr><td>2025-02-10</td><td>Penrose</td><td>120</td><td>8%</td><td>1800</td><td>0.9</td></tr>
+ <tr><td>2025-02-09</td><td>Penrose</td><td>180</td><td>12%</td><td>1650</td><td>0.8</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SEC: Notas -->
+<div class="section-card" id="sec-notes">
+ <div class="sc-header" onclick="togSec(this)">
+ <div class="sc-title"><div class="sc-icon purple">&#128221;</div><div><div class="sc-name">Notas Medicas Diarias</div><div class="sc-sub">Evolucion clinica registrada</div></div></div>
+ <div class="sc-meta"><span class="sc-badge">5 notas</span><span class="sc-arrow">&#9660;</span></div>
+ </div>
+ <div class="sc-body">
+ <div class="chart-row"><div class="chart-panel" style="grid-column:1/-1"><h4>Signos Vitales</h4><canvas id="chartB5" height="180"></canvas></div></div>
+ <table>
+ <tr><th>Fecha</th><th>Cama</th><th>FC</th><th>TA</th><th>Temp</th><th>Nota</th></tr>
+ <tr><td>2025-02-10</td><td>312-B</td><td>72</td><td>120/80</td><td>36.5</td><td>Estable, sin fiebre</td></tr>
+ <tr><td>2025-02-09</td><td>312-B</td><td>78</td><td>130/85</td><td>36.8</td><td>Mejoria progresiva</td></tr>
+ </table>
+ </div>
+</div>
+
+<!-- SEC: Datos -->
+<div class="section-card" id="sec-demographics">
+ <div class="sc-header" onclick="togSec(this)">
+ <div class="sc-title"><div class="sc-icon teal">&#128100;</div><div><div class="sc-name">Datos del Paciente</div><div class="sc-sub">Informacion demografica</div></div></div>
+ <div class="sc-meta"><span class="sc-arrow">&#9660;</span></div>
+ </div>
+ <div class="sc-body">
+ <table>
+ <tr><td style="font-weight:700;width:180px">Nombre</td><td>JUAN LOPEZ MARTINEZ</td></tr>
+ <tr><td style="font-weight:700">CURP</td><td>LOMJ570315HDFRTN09</td></tr>
+ <tr><td style="font-weight:700">NSS</td><td>9800000008</td></tr>
+ <tr><td style="font-weight:700">Edad</td><td>68</td></tr>
+ <tr><td style="font-weight:700">Tipo Sangre</td><td>O+</td></tr>
+ </table>
+ </div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+function togSec(h){
+ h.classList.toggle('open');
+ h.nextElementSibling.classList.toggle('show');
+ if(h.classList.contains('open')) setTimeout(initCharts,100);
+}
+function toggleAllSections(collapse){
+ document.querySelectorAll('.sc-header').forEach(function(h){
+ var b=h.nextElementSibling;
+ if(collapse){h.classList.remove('open');b.classList.remove('show')}
+ else{h.classList.add('open');b.classList.add('show')}
+ });
+ if(!collapse) setTimeout(initCharts,100);
+}
+var ci=false;
+function initCharts(){
+ if(ci) return; ci=true;
+ var c={r:'#dc2626',b:'#2563eb',g:'#059669',p:'#7c3aed',o:'#d97706',t:'#0d9488',gd:'#c82f3f'};
+ var base={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10,weight:'bold'},usePointStyle:true,boxWidth:8}},tooltip:{cornerRadius:6}},scales:{x:{grid:{display:false}},y:{grid:{color:'#e4edff'}}}};
+ var d=['02-04','02-06','02-08','02-10'];
+ new Chart('chartB1',{type:'line',data:{labels:d,datasets:[{label:'Cr',data:[1.8,1.6,1.4,1.2],borderColor:c.r,backgroundColor:'rgba(220,38,38,0.05)',fill:true,tension:.4,pointRadius:5},{label:'Hb',data:[11.2,11.9,12.8,13.5],borderColor:c.b,backgroundColor:'rgba(37,99,235,0.05)',fill:true,tension:.4,pointRadius:5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false}},y:{position:'left',grid:{color:'#e4edff'},title:{display:true,text:'Cr mg/dL',color:c.r}},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Hb g/dL',color:c.b}}}})});
+ new Chart('chartB2',{type:'line',data:{labels:d,datasets:[{label:'Leu',data:[10.5,9.1,8.2,7.8],borderColor:c.g,tension:.4,pointRadius:4},{label:'Plt',data:[198,210,230,245],borderColor:c.p,tension:.4,pointRadius:4},{label:'Na',data:[141,136,138,140],borderColor:c.o,tension:.4,pointRadius:4},{label:'K',data:[3.9,4.8,4.5,4.2],borderColor:c.t,tension:.4,pointRadius:4}]},options:base});
+ new Chart('chartB3',{type:'bar',data:{labels:['02-08','02-09','02-10'],datasets:[{label:'Gasto mL',data:[250,180,120],backgroundColor:[c.g+'cc',c.g+'99',c.g+'66'],borderRadius:6}]},options:base});
+ new Chart('chartB4',{type:'line',data:{labels:['02-08','02-09','02-10'],datasets:[{label:'Uresis mL',data:[1500,1650,1800],borderColor:c.b,backgroundColor:'rgba(37,99,235,0.05)',fill:true,tension:.4,pointRadius:5},{label:'Indice',data:[0.7,0.8,0.9],borderColor:c.gd,tension:.4,pointRadius:5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false}},y:{position:'left',grid:{color:'#e4edff'}},y1:{position:'right',grid:{drawOnChartArea:false}}}})});
+ new Chart('chartB5',{type:'line',data:{labels:['02-08','02-09','02-10'],datasets:[{label:'FC',data:[84,78,72],borderColor:c.r,tension:.3,pointRadius:5},{label:'TA Sist',data:[135,130,120],borderColor:c.b,tension:.3,pointRadius:5},{label:'TA Diast',data:[90,85,80],borderColor:'#93c5fd',borderDash:[5,3],tension:.3,pointRadius:4},{label:'Temp',data:[37.2,36.8,36.5],borderColor:c.o,tension:.3,pointRadius:5,yAxisID:'y1'}]},options:Object.assign({},base,{scales:{x:{grid:{display:false}},y:{position:'left',grid:{color:'#e4edff'}},y1:{position:'right',min:35,max:40,grid:{drawOnChartArea:false}}}})});
+}
+setTimeout(initCharts,300);
+</script>
+</body>
+</html>
