@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ resident.display_name }} | Perfil de Residente</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <script src="/static/vendor/chart.min.js"></script>
+  <style>
+    :root {
+      --uromed-blue-950: #09204a;
+      --uromed-blue-900: #113d84;
+      --uromed-blue-700: #2f62ba;
+      --uromed-blue-500: #5d8dde;
+      --uromed-blue-100: #ebf3ff;
+      --uromed-blue-050: #f7fbff;
+      --uromed-red-700: #bf2f45;
+      --uromed-red-100: #ffedf0;
+      --uromed-text: #183865;
+      --uromed-muted: #5c7393;
+      --uromed-border: #cad9f1;
+      --uromed-surface: rgba(255,255,255,.95);
+      --ok-blue: #2b63c8;
+      --warn-red: #d43b53;
+      --neutral-gray: #90a0ba;
+      --shadow: 0 18px 44px rgba(13, 48, 97, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      font-family: 'Montserrat', system-ui, sans-serif;
+      color: var(--uromed-text);
+      background:
+        radial-gradient(circle at top left, rgba(62, 109, 197, .20), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(191, 47, 69, .14), transparent 26%),
+        linear-gradient(135deg, #edf4ff, #f8fbff 48%, #eef5ff 100%);
+    }
+
+    .wrap {
+      max-width: 1380px;
+      margin: 0 auto;
+      background: var(--uromed-surface);
+      border: 1px solid var(--uromed-border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 28px 30px;
+      border-bottom: 1px solid var(--uromed-border);
+      background: linear-gradient(135deg, #f9fbff 0%, #edf4ff 44%, #fef8fa 100%);
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #bad0f1;
+      background: #f6faff;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--uromed-blue-900);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    h1 {
+      margin: 10px 0 0;
+      font-size: 40px;
+      line-height: 1.02;
+      color: var(--uromed-blue-950);
+      text-transform: uppercase;
+    }
+
+    .subline {
+      margin-top: 12px;
+      color: var(--uromed-muted);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-main {
+      background: linear-gradient(135deg, var(--uromed-blue-950), var(--uromed-blue-700));
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(17, 61, 132, 0.18);
+    }
+
+    .btn-ghost {
+      color: var(--uromed-blue-900);
+      border-color: #c2d5f4;
+      background: #f9fbff;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid #cddcf3;
+      background: rgba(255,255,255,.88);
+      display: grid;
+      gap: 3px;
+      min-width: 170px;
+    }
+
+    .chip small {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--uromed-muted);
+      font-weight: 800;
+      letter-spacing: .45px;
+    }
+
+    .chip strong {
+      font-size: 18px;
+      color: var(--uromed-blue-950);
+      line-height: 1.15;
+    }
+
+    .content {
+      padding: 24px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .grid-kpis {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .kpi {
+      border-radius: 18px;
+      border: 1px solid #d5e2f4;
+      background: linear-gradient(180deg, #ffffff 0%, #f6faff 100%);
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(14, 53, 109, 0.08);
+      min-height: 120px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    .kpi span {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--uromed-muted);
+      letter-spacing: .5px;
+    }
+
+    .kpi strong {
+      font-size: 34px;
+      line-height: 1;
+      color: var(--uromed-blue-950);
+    }
+
+    .kpi small {
+      font-size: 13px;
+      color: var(--uromed-muted);
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .panel {
+      border-radius: 20px;
+      border: 1px solid var(--uromed-border);
+      background: #fff;
+      box-shadow: 0 14px 28px rgba(14, 53, 109, 0.07);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 16px 18px;
+      border-bottom: 1px solid #d7e2f2;
+      background: linear-gradient(135deg, #f9fbff, #edf4ff);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--uromed-blue-950);
+    }
+
+    .panel-head p {
+      margin: 4px 0 0;
+      color: var(--uromed-muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .panel-body { padding: 18px; }
+
+    .viz-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .viz-card {
+      border-radius: 16px;
+      border: 1px solid #d7e2f2;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      padding: 16px;
+      min-height: 320px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .viz-card h3 {
+      margin: 0;
+      color: var(--uromed-blue-900);
+      font-size: 16px;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .mini-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--uromed-muted);
+      font-weight: 700;
+    }
+
+    .mini-row b {
+      color: var(--uromed-blue-950);
+      font-size: 13px;
+    }
+
+    .curve-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .curve-card {
+      border-radius: 16px;
+      border: 1px solid #d7e2f2;
+      background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .curve-card h3 {
+      margin: 0;
+      color: var(--uromed-blue-950);
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .curve-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .curve-meta div {
+      border-radius: 12px;
+      background: #f4f8ff;
+      border: 1px solid #d7e2f2;
+      padding: 10px;
+    }
+
+    .curve-meta span {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--uromed-muted);
+      text-transform: uppercase;
+    }
+
+    .curve-meta b {
+      display: block;
+      margin-top: 4px;
+      font-size: 20px;
+      color: var(--uromed-blue-950);
+    }
+
+    .progress-shell {
+      position: relative;
+      height: 14px;
+      border-radius: 999px;
+      background: #e4ecf8;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      position: absolute;
+      inset: 0 auto 0 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2f62ba 0%, #5d8dde 100%);
+    }
+
+    .progress-caption {
+      font-size: 12px;
+      color: var(--uromed-muted);
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    th, td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #e1e9f5;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .55px;
+      color: var(--uromed-muted);
+      font-weight: 800;
+      background: #f8fbff;
+    }
+
+    td {
+      font-size: 13px;
+      color: var(--uromed-text);
+      font-weight: 600;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .sem {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .sem-azul {
+      color: var(--ok-blue);
+      background: #edf4ff;
+      border-color: #c7dbfb;
+    }
+
+    .sem-rojo {
+      color: var(--warn-red);
+      background: #fff0f3;
+      border-color: #f0c8d0;
+    }
+
+    .sem-gris {
+      color: #677791;
+      background: #f3f6fa;
+      border-color: #d6deea;
+    }
+
+    .empty {
+      border-radius: 18px;
+      border: 1px dashed #c4d5ee;
+      background: linear-gradient(180deg, #fbfdff 0%, #f5f9ff 100%);
+      padding: 30px;
+      text-align: center;
+      color: var(--uromed-muted);
+      font-weight: 700;
+    }
+
+    .empty strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--uromed-blue-900);
+      font-size: 20px;
+    }
+
+    .foot-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--uromed-muted);
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1200px) {
+      .grid-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .viz-grid, .curve-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 10px; }
+      .hero, .content { padding: 16px; }
+      h1 { font-size: 28px; }
+      .grid-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .curve-meta { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="hero-top">
+        <div>
+          <span class="eyebrow">Perfil individual de residente</span>
+          <h1>{{ resident.display_name }}</h1>
+          <div class="subline">
+            Código {{ resident.code }} · {{ resident.grade }} · Seguimiento quirúrgico longitudinal alimentado por nota postquirúrgica indexada.
+          </div>
+        </div>
+        <nav class="hero-actions" aria-label="Navegación del perfil">
+          <a class="btn btn-ghost" href="/jefatura-urologia/programa-academico/residentes">← Volver a Residentes</a>
+          <a class="btn btn-main" href="/jefatura-urologia/programa-academico">Programa Académico</a>
+        </nav>
+      </div>
+
+      <div class="chips">
+        <div class="chip">
+          <small>Cirugías</small>
+          <strong>{{ kpis.total_cirugias }}</strong>
+        </div>
+        <div class="chip">
+          <small>Rol dominante</small>
+          <strong>{{ kpis.rol_mas_frecuente }}</strong>
+        </div>
+        <div class="chip">
+          <small>Participación dominante</small>
+          <strong>{{ kpis.participacion_mas_frecuente }}</strong>
+        </div>
+        <div class="chip">
+          <small>Abordaje dominante</small>
+          <strong>{{ kpis.abordaje_mas_frecuente }}</strong>
+        </div>
+      </div>
+    </header>
+
+    <section class="content">
+      {% if not profile.has_activity %}
+      <section class="empty">
+        <strong>Sin eventos indexados</strong>
+        Este residente aún no tiene participaciones quirúrgicas analíticas registradas. El perfil se poblará automáticamente cuando se documenten notas postquirúrgicas con su participación.
+      </section>
+      {% else %}
+      <section class="grid-kpis">
+        <article class="kpi">
+          <span>Total de cirugías</span>
+          <strong>{{ kpis.total_cirugias }}</strong>
+          <small>Eventos quirúrgicos en los que el residente tuvo participación registrada.</small>
+        </article>
+        <article class="kpi">
+          <span>Procedimientos distintos</span>
+          <strong>{{ kpis.procedimientos_distintos }}</strong>
+          <small>Base para evaluar exposición técnica y curva de aprendizaje por técnica.</small>
+        </article>
+        <article class="kpi">
+          <span>Abordajes distintos</span>
+          <strong>{{ kpis.abordajes_distintos }}</strong>
+          <small>Variedad de exposición entre abierto, laparoscópico, endoscópico y robótico.</small>
+        </article>
+        <article class="kpi">
+          <span>Sangrado promedio global</span>
+          <strong>{{ kpis.sangrado_promedio_global_residente if kpis.sangrado_promedio_global_residente is not none else 'N/E' }}</strong>
+          <small>Promedio de sangrado en mL de todos los eventos con registro válido de sangrado.</small>
+        </article>
+        <article class="kpi">
+          <span>Rol más frecuente</span>
+          <strong>{{ kpis.rol_mas_frecuente }}</strong>
+          <small>Rol quirúrgico predominante del residente dentro de los casos indexados.</small>
+        </article>
+        <article class="kpi">
+          <span>Participación técnica</span>
+          <strong>{{ kpis.participacion_mas_frecuente }}</strong>
+          <small>Nivel técnico predominante capturado en la nota postquirúrgica.</small>
+        </article>
+      </section>
+
+      <section class="panel">
+        <header class="panel-head">
+          <div>
+            <h2>Distribución de actividad</h2>
+            <p>Resumen visual del tipo de exposición quirúrgica del residente.</p>
+          </div>
+        </header>
+        <div class="panel-body">
+          <div class="viz-grid">
+            <article class="viz-card">
+              <h3>Abordajes</h3>
+              <canvas id="chartAbordajes" height="180"></canvas>
+              <div class="mini-list">
+                {% for row in profile.distribucion_abordaje %}
+                <div class="mini-row"><span>{{ row.label }}</span><b>{{ row.cantidad }} · {{ row.porcentaje }}%</b></div>
+                {% endfor %}
+              </div>
+            </article>
+            <article class="viz-card">
+              <h3>Roles</h3>
+              <canvas id="chartRoles" height="180"></canvas>
+              <div class="mini-list">
+                {% for row in profile.distribucion_roles %}
+                <div class="mini-row"><span>{{ row.label }}</span><b>{{ row.cantidad }} · {{ row.porcentaje }}%</b></div>
+                {% endfor %}
+              </div>
+            </article>
+            <article class="viz-card">
+              <h3>Participación técnica</h3>
+              <canvas id="chartParticipacion" height="180"></canvas>
+              <div class="mini-list">
+                {% for row in profile.distribucion_participacion %}
+                <div class="mini-row"><span>{{ row.label }}</span><b>{{ row.cantidad }} · {{ row.porcentaje }}%</b></div>
+                {% endfor %}
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <header class="panel-head">
+          <div>
+            <h2>Curva de aprendizaje</h2>
+            <p>Progreso del residente frente a metas configuradas por procedimiento.</p>
+          </div>
+          <span class="eyebrow">{{ profile.meta.procedimientos_activos }} procedimientos activos</span>
+        </header>
+        <div class="panel-body">
+          {% if curva_aprendizaje %}
+          <div class="curve-grid">
+            {% for item in curva_aprendizaje %}
+            <article class="curve-card">
+              <h3>{{ item.procedimiento }}</h3>
+              <div class="curve-meta">
+                <div><span>Realizados</span><b>{{ item.realizados }}</b></div>
+                <div><span>Meta</span><b>{{ item.meta }}</b></div>
+                <div><span>Faltantes</span><b>{{ item.faltantes }}</b></div>
+              </div>
+              <div class="progress-shell">
+                <div class="progress-bar" style="width: {{ item.progreso }}%;"></div>
+              </div>
+              <div class="progress-caption">Progreso {{ item.progreso }}%</div>
+            </article>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty">
+            <strong>Sin curva calculable</strong>
+            Aún no hay suficiente actividad indexada por procedimiento para construir la curva de aprendizaje.
+          </div>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="panel">
+        <header class="panel-head">
+          <div>
+            <h2>Analítica de sangrado por procedimiento</h2>
+            <p>Comparación del residente contra el promedio global del servicio por procedimiento.</p>
+          </div>
+        </header>
+        <div class="panel-body">
+          {% if sangrado_rows %}
+          <div class="viz-card" style="min-height: 380px; margin-bottom: 18px;">
+            <h3>Residente vs servicio</h3>
+            <canvas id="chartSangrado" height="180"></canvas>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Procedimiento</th>
+                  <th>Casos</th>
+                  <th>Prom. residente</th>
+                  <th>Prom. servicio</th>
+                  <th>Desv. mL</th>
+                  <th>Desv. %</th>
+                  <th>Abordaje</th>
+                  <th>Rol</th>
+                  <th>Participación</th>
+                  <th>Semáforo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in sangrado_rows %}
+                <tr>
+                  <td>{{ row.procedimiento }}</td>
+                  <td>{{ row.casos_participados }}</td>
+                  <td>{{ row.sangrado_promedio_residente if row.sangrado_promedio_residente is not none else 'N/E' }}</td>
+                  <td>{{ row.sangrado_promedio_servicio if row.sangrado_promedio_servicio is not none else 'N/E' }}</td>
+                  <td>{{ row.desviacion_ml if row.desviacion_ml is not none else 'N/E' }}</td>
+                  <td>{{ row.desviacion_pct ~ '%' if row.desviacion_pct is not none else 'N/E' }}</td>
+                  <td>{{ row.abordaje_mas_frecuente }}</td>
+                  <td>{{ row.rol_mas_frecuente }}</td>
+                  <td>{{ row.participacion_mas_frecuente }}</td>
+                  <td>
+                    <span class="sem sem-{{ row.semaforo }}">
+                      {% if row.semaforo == 'gris' %}Muestra insuficiente{% elif row.semaforo == 'azul' %}Dentro del rango{% else %}Por arriba del servicio{% endif %}
+                    </span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="foot-note">
+            La comparación interpretativa se desactiva cuando el residente o el servicio tienen menos de 3 casos con sangrado capturado para ese procedimiento.
+            En esta fase la métrica es no ponderada por rol o participación técnica; esos datos se muestran para conservar contexto clínico y académico.
+          </div>
+          {% else %}
+          <div class="empty">
+            <strong>Sin analítica de sangrado</strong>
+            Todavía no hay suficiente información de sangrado capturada para construir comparaciones por procedimiento.
+          </div>
+          {% endif %}
+        </div>
+      </section>
+      {% endif %}
+    </section>
+  </main>
+
+  <script>
+    const charts = {{ charts | tojson }};
+    const hasActivity = {{ profile.has_activity | tojson }};
+
+    function safeChart(id, type, data, options) {
+      const canvas = document.getElementById(id);
+      if (!canvas || !window.Chart || !data.labels || !data.labels.length) return;
+      new Chart(canvas, { type, data, options });
+    }
+
+    if (hasActivity) {
+      safeChart("chartAbordajes", "doughnut", {
+        labels: charts.abordajes.labels,
+        datasets: [{
+          data: charts.abordajes.values,
+          backgroundColor: ["#113d84", "#2f62ba", "#5d8dde", "#98baf0"],
+          borderWidth: 0
+        }]
+      }, {
+        plugins: { legend: { position: "bottom" } },
+        maintainAspectRatio: false
+      });
+
+      safeChart("chartRoles", "bar", {
+        labels: charts.roles.labels,
+        datasets: [{
+          data: charts.roles.values,
+          backgroundColor: "#2f62ba",
+          borderRadius: 8,
+        }]
+      }, {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+        maintainAspectRatio: false
+      });
+
+      safeChart("chartParticipacion", "bar", {
+        labels: charts.participacion.labels,
+        datasets: [{
+          data: charts.participacion.values,
+          backgroundColor: "#bf2f45",
+          borderRadius: 8,
+        }]
+      }, {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+        maintainAspectRatio: false
+      });
+
+      safeChart("chartSangrado", "bar", {
+        labels: charts.sangrado.labels,
+        datasets: [
+          {
+            label: "Residente",
+            data: charts.sangrado.resident,
+            backgroundColor: "#2f62ba",
+            borderRadius: 8,
+          },
+          {
+            label: "Servicio",
+            data: charts.sangrado.service,
+            backgroundColor: "#bf2f45",
+            borderRadius: 8,
+          }
+        ]
+      }, {
+        plugins: { legend: { position: "bottom" } },
+        scales: { y: { beginAtZero: true } },
+        maintainAspectRatio: false
+      });
+    }
+  </script>
+</body>
+</html>

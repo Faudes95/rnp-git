@@ -4,6 +4,7 @@ import re
 import json
 import mimetypes
 import logging
+import importlib
 from functools import partial
 from time import sleep
 from datetime import date, datetime, timedelta
@@ -168,7 +169,6 @@ from app.core.startup_wiring import (
     run_startup_interconexion_wired as run_startup_interconexion_wired_core,
     run_startup_ai_agents_bootstrap_wired as run_startup_ai_agents_bootstrap_wired_core,
 )
-from app.api import get_api_routers
 from app.services.common import (
     normalize_upper as svc_normalize_upper,
     parse_int as svc_parse_int,
@@ -176,50 +176,17 @@ from app.services.common import (
     normalize_curp as svc_normalize_curp,
     normalize_nss as svc_normalize_nss,
 )
-from app.services.consulta import (
-    preparar_payload_consulta as svc_preparar_payload_consulta,
-    mensaje_estatus_consulta as svc_mensaje_estatus_consulta,
-)
-from app.services.reporte import agregar_timestamp as svc_agregar_timestamp
-from app.services.consulta_flow import (
-    guardar_consulta_completa_flow as svc_guardar_consulta_completa_flow,
-)
-from app.services.reporte_flow import (
-    render_reporte_html as svc_render_reporte_html,
-    render_qx_catalogos_json as svc_render_qx_catalogos_json,
-)
 from app.services import reporte_metrics_extracted as svc_reporte_metrics_extracted
 from app.services import reporte_bi_extracted as svc_reporte_bi_extracted
 from app.services import reporte_datasets_extracted as svc_reporte_datasets_extracted
 from app.services import quirofano_sync_extracted as svc_quirofano_sync_extracted
 from app.services import preventive_priority as svc_preventive_priority
-from app.services import files_flow as svc_files_flow
 from app.services import schema_extracted as svc_schema_extracted
-from app.services import forecast_geo_extracted as svc_forecast_geo_extracted
-from app.services import dashboard_extracted as svc_dashboard_extracted
-from app.services import form_metadata_flow as svc_form_metadata_flow
 from app.services import outbox_flow as svc_outbox_flow
 from app.services import event_log_flow as svc_event_log_flow
-from app.services import job_registry_flow as svc_job_registry_flow
-from app.services import admin_ml_flow as svc_admin_ml_flow
-from app.services import analytics_dashboard_api_flow as svc_analytics_dashboard_api_flow
-from app.services import analytics_stats_api_flow as svc_analytics_stats_api_flow
 from app.services import clinical_events_bridge_flow as svc_clinical_events_bridge_flow
-from app.services.carga_masiva_flow import (
-    carga_masiva_excel_flow as svc_carga_masiva_excel_flow,
-    carga_masiva_status_flow as svc_carga_masiva_status_flow,
-)
-from app.services.geospatial_flow import (
-    admin_geocodificar_flow as svc_admin_geocodificar_flow,
-    api_geostats_pacientes_flow as svc_api_geostats_pacientes_flow,
-    mapa_epidemiologico_geojson_flow as svc_mapa_epidemiologico_geojson_flow,
-    mapa_epidemiologico_flow as svc_mapa_epidemiologico_flow,
-)
 from app.services.quirofano_backfill_flow import (
     backfill_quirofano_to_surgical_flow as svc_backfill_quirofano_to_surgical_flow,
-)
-from app.services.hospital_guardia_flow import (
-    ensure_hospital_guardia_schema as svc_ensure_hospital_guardia_schema,
 )
 from app.services.analytics import (
     kaplan_meier as svc_kaplan_meier,
@@ -234,20 +201,6 @@ from app.services.fhir_adapter import (
     build_fhir_condition_only as svc_build_fhir_condition_only,
     build_fhir_patient_only as svc_build_fhir_patient_only,
 )
-from app.worker import (
-    configure_default_beat_schedule as worker_configure_default_beat_schedule,
-    run_actualizar_data_mart_sync as worker_run_actualizar_data_mart_sync,
-    run_backfill_quirofano as worker_run_backfill_quirofano,
-    run_carga_masiva_excel as worker_run_carga_masiva_excel,
-    run_entrenar_modelo_riesgo_v2 as worker_run_entrenar_modelo_riesgo_v2,
-    run_fau_bot_central_cycle as worker_run_fau_bot_central_cycle,
-    run_fau_bot_self_improvement as worker_run_fau_bot_self_improvement,
-    run_quirofano_agent_window as worker_run_quirofano_agent_window,
-    run_quirofano_programacion_analizar as worker_run_quirofano_programacion_analizar,
-)
-from app.ai_agents.model_registry import load_model_cached as ai_load_model_cached, warmup_models as ai_warmup_models
-from app.ai_agents.vector_store import ensure_consulta_vector_schema, sync_consulta_embedding_vector
-
 try:
     import matplotlib
     matplotlib.use("Agg")
@@ -370,6 +323,7 @@ AUTH_USER = AUTH_SETTINGS.user
 AUTH_PASS = AUTH_SETTINGS.password
 AUTH_PUBLIC_PATHS = {
     "/",
+    "/status",
     "/inicio/ingresar",
     "/menu-principal",
     "/api/menu/kpis",
@@ -1271,6 +1225,7 @@ class SurgicalPostquirurgicaDB(SurgicalBase):
     consulta_id = Column(Integer, index=True, nullable=False)
     fecha_realizacion = Column(Date, index=True)
     cirujano = Column(String(100), index=True)
+    tipo_abordaje = Column(String(50), index=True)
     sangrado_ml = Column(Float, index=True)
     tiempo_quirurgico_min = Column(Float, index=True)
     transfusion = Column(String(20), index=True)
@@ -1413,6 +1368,41 @@ class SurgicalFeedbackDB(SurgicalBase):
     referencia_id = Column(String(80), nullable=True)
     payload = Column(SURGICAL_JSON_TYPE)
     creado_en = Column(DateTime, default=utcnow, nullable=False)
+
+
+class SurgeryEventIndex(SurgicalBase):
+    __tablename__ = "surgery_event_index"
+
+    id = Column(Integer, primary_key=True, index=True)
+    feedback_id = Column(Integer, ForeignKey("surgical_feedback.id", ondelete="SET NULL"), unique=True, nullable=True)
+    surgical_programacion_id = Column(Integer, index=True, nullable=False, unique=True)
+    postquirurgica_id = Column(Integer, index=True, nullable=True)
+    event_date = Column(Date, index=True)
+    patient_name = Column(String(200), index=True)
+    patient_nss = Column(String(20), index=True)
+    patient_age = Column(Integer, index=True)
+    patient_sex = Column(String(20), index=True)
+    dx = Column(String(220), index=True)
+    procedure_name = Column(String(220), index=True)
+    approach = Column(String(50), index=True)
+    blood_loss_ml = Column(Integer, index=True)
+    blood_loss_allowed_ml = Column(Integer, index=True)
+    created_at = Column(DateTime, default=utcnow, nullable=False, index=True)
+    participants = relationship("SurgeryEventParticipant", back_populates="event", cascade="all, delete-orphan")
+
+
+class SurgeryEventParticipant(SurgicalBase):
+    __tablename__ = "surgery_event_participants"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(Integer, ForeignKey("surgery_event_index.id", ondelete="CASCADE"), nullable=False, index=True)
+    grade = Column(String(10), nullable=False, index=True)
+    resident_code = Column(String(120), nullable=False, index=True)
+    resident_name = Column(String(160), nullable=True, index=True)
+    role = Column(String(40), nullable=False, index=True)
+    participacion_tecnica = Column(String(40), nullable=True, index=True)
+
+    event = relationship("SurgeryEventIndex", back_populates="participants")
 
 
 class DimFecha(SurgicalBase):
@@ -2250,26 +2240,131 @@ def require_auth(
     require_auth_basic(credentials, AUTH_SETTINGS)
 
 # ==========================================
-# PLANTILLAS JINJA2 (IMPORTADAS)
+# EXPORTS CARGADOS DE MANERA PEREZOSA
 # ==========================================
-from app.legacy_inline_templates import (
-    MENU_TEMPLATE,
-    CONSULTA_TEMPLATE,
-    CONFIRMACION_TEMPLATE,
-    HOSPITALIZACION_LISTA_TEMPLATE,
-    HOSPITALIZACION_NUEVO_TEMPLATE,
-    QUIROFANO_HOME_TEMPLATE,
-    QUIROFANO_PROGRAMADA_TEMPLATE,
-    QUIROFANO_PLACEHOLDER_TEMPLATE,
-    QUIROFANO_LISTA_TEMPLATE,
-    QUIROFANO_NUEVO_TEMPLATE,
-    EXPEDIENTE_TEMPLATE,
-    BUSQUEDA_TEMPLATE,
-    BUSQUEDA_SEMANTICA_TEMPLATE,
-    REPORTE_TEMPLATE,
-    DASHBOARD_TEMPLATE,
-    CARGA_ARCHIVOS_TEMPLATE,
-)
+_LAZY_MAIN_EXPORTS: Dict[str, Tuple[str, str]] = {
+    # Plantillas legacy pesadas: se cargan solo cuando una ruta las usa.
+    "MENU_TEMPLATE": ("app.legacy_inline_templates", "MENU_TEMPLATE"),
+    "CONSULTA_TEMPLATE": ("app.legacy_inline_templates", "CONSULTA_TEMPLATE"),
+    "CONFIRMACION_TEMPLATE": ("app.legacy_inline_templates", "CONFIRMACION_TEMPLATE"),
+    "HOSPITALIZACION_LISTA_TEMPLATE": ("app.legacy_inline_templates", "HOSPITALIZACION_LISTA_TEMPLATE"),
+    "HOSPITALIZACION_NUEVO_TEMPLATE": ("app.legacy_inline_templates", "HOSPITALIZACION_NUEVO_TEMPLATE"),
+    "QUIROFANO_HOME_TEMPLATE": ("app.legacy_inline_templates", "QUIROFANO_HOME_TEMPLATE"),
+    "QUIROFANO_PROGRAMADA_TEMPLATE": ("app.legacy_inline_templates", "QUIROFANO_PROGRAMADA_TEMPLATE"),
+    "QUIROFANO_PLACEHOLDER_TEMPLATE": ("app.legacy_inline_templates", "QUIROFANO_PLACEHOLDER_TEMPLATE"),
+    "QUIROFANO_LISTA_TEMPLATE": ("app.legacy_inline_templates", "QUIROFANO_LISTA_TEMPLATE"),
+    "QUIROFANO_NUEVO_TEMPLATE": ("app.legacy_inline_templates", "QUIROFANO_NUEVO_TEMPLATE"),
+    "EXPEDIENTE_TEMPLATE": ("app.legacy_inline_templates", "EXPEDIENTE_TEMPLATE"),
+    "BUSQUEDA_TEMPLATE": ("app.legacy_inline_templates", "BUSQUEDA_TEMPLATE"),
+    "BUSQUEDA_SEMANTICA_TEMPLATE": ("app.legacy_inline_templates", "BUSQUEDA_SEMANTICA_TEMPLATE"),
+    "REPORTE_TEMPLATE": ("app.legacy_inline_templates", "REPORTE_TEMPLATE"),
+    "DASHBOARD_TEMPLATE": ("app.legacy_inline_templates", "DASHBOARD_TEMPLATE"),
+    "CARGA_ARCHIVOS_TEMPLATE": ("app.legacy_inline_templates", "CARGA_ARCHIVOS_TEMPLATE"),
+    # Flujos poco usados expuestos por main_proxy.
+    "svc_preparar_payload_consulta": ("app.services.consulta", "preparar_payload_consulta"),
+    "svc_mensaje_estatus_consulta": ("app.services.consulta", "mensaje_estatus_consulta"),
+    "svc_agregar_timestamp": ("app.services.reporte", "agregar_timestamp"),
+    "svc_guardar_consulta_completa_flow": ("app.services.consulta_flow", "guardar_consulta_completa_flow"),
+    "svc_render_reporte_html": ("app.services.reporte_flow", "render_reporte_html"),
+    "svc_render_qx_catalogos_json": ("app.services.reporte_flow", "render_qx_catalogos_json"),
+    "svc_files_flow": ("app.services", "files_flow"),
+    "svc_forecast_geo_extracted": ("app.services", "forecast_geo_extracted"),
+    "svc_dashboard_extracted": ("app.services", "dashboard_extracted"),
+    "svc_form_metadata_flow": ("app.services", "form_metadata_flow"),
+    "svc_job_registry_flow": ("app.services", "job_registry_flow"),
+    "svc_admin_ml_flow": ("app.services", "admin_ml_flow"),
+    "svc_analytics_dashboard_api_flow": ("app.services", "analytics_dashboard_api_flow"),
+    "svc_analytics_stats_api_flow": ("app.services", "analytics_stats_api_flow"),
+    "svc_carga_masiva_excel_flow": ("app.services.carga_masiva_flow", "carga_masiva_excel_flow"),
+    "svc_carga_masiva_status_flow": ("app.services.carga_masiva_flow", "carga_masiva_status_flow"),
+    "svc_admin_geocodificar_flow": ("app.services.geospatial_flow", "admin_geocodificar_flow"),
+    "svc_api_geostats_pacientes_flow": ("app.services.geospatial_flow", "api_geostats_pacientes_flow"),
+    "svc_mapa_epidemiologico_geojson_flow": ("app.services.geospatial_flow", "mapa_epidemiologico_geojson_flow"),
+    "svc_mapa_epidemiologico_flow": ("app.services.geospatial_flow", "mapa_epidemiologico_flow"),
+    "svc_ensure_hospital_guardia_schema": ("app.services.hospital_guardia_flow", "ensure_hospital_guardia_schema"),
+}
+
+
+def _resolve_lazy_main_export(name: str) -> Any:
+    module_name, attr_name = _LAZY_MAIN_EXPORTS[name]
+    module = importlib.import_module(module_name)
+    value = getattr(module, attr_name)
+    globals()[name] = value
+    return value
+
+
+def __getattr__(name: str) -> Any:
+    if name in _LAZY_MAIN_EXPORTS:
+        return _resolve_lazy_main_export(name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def _worker_module():
+    return importlib.import_module("app.worker")
+
+
+def worker_configure_default_beat_schedule(*args, **kwargs):
+    return _worker_module().configure_default_beat_schedule(*args, **kwargs)
+
+
+def worker_run_actualizar_data_mart_sync(*args, **kwargs):
+    return _worker_module().run_actualizar_data_mart_sync(*args, **kwargs)
+
+
+def worker_run_backfill_quirofano(*args, **kwargs):
+    return _worker_module().run_backfill_quirofano(*args, **kwargs)
+
+
+def worker_run_carga_masiva_excel(*args, **kwargs):
+    return _worker_module().run_carga_masiva_excel(*args, **kwargs)
+
+
+def worker_run_entrenar_modelo_riesgo_v2(*args, **kwargs):
+    return _worker_module().run_entrenar_modelo_riesgo_v2(*args, **kwargs)
+
+
+def worker_run_fau_bot_central_cycle(*args, **kwargs):
+    return _worker_module().run_fau_bot_central_cycle(*args, **kwargs)
+
+
+def worker_run_fau_bot_self_improvement(*args, **kwargs):
+    return _worker_module().run_fau_bot_self_improvement(*args, **kwargs)
+
+
+def worker_run_quirofano_agent_window(*args, **kwargs):
+    return _worker_module().run_quirofano_agent_window(*args, **kwargs)
+
+
+def worker_run_quirofano_programacion_analizar(*args, **kwargs):
+    return _worker_module().run_quirofano_programacion_analizar(*args, **kwargs)
+
+
+def _ai_model_registry_module():
+    return importlib.import_module("app.ai_agents.model_registry")
+
+
+def ai_load_model_cached(*args, **kwargs):
+    return _ai_model_registry_module().load_model_cached(*args, **kwargs)
+
+
+def ai_warmup_models(*args, **kwargs):
+    return _ai_model_registry_module().warmup_models(*args, **kwargs)
+
+
+def _ai_vector_store_module():
+    return importlib.import_module("app.ai_agents.vector_store")
+
+
+def ensure_consulta_vector_schema(*args, **kwargs):
+    return _ai_vector_store_module().ensure_consulta_vector_schema(*args, **kwargs)
+
+
+def sync_consulta_embedding_vector(*args, **kwargs):
+    return _ai_vector_store_module().sync_consulta_embedding_vector(*args, **kwargs)
+
+
+def _get_api_routers_lazy():
+    return importlib.import_module("app.api").get_api_routers()
 
 # ==========================================
 # INSTANCIA DE FASTAPI
@@ -2278,7 +2373,7 @@ app = create_app_instance(
     title="IMSS - Urología HES CMNR (Versión Completa con DB, Validación y Módulos)",
     require_auth=require_auth,
     app_static_dir=APP_STATIC_DIR,
-    routers=get_api_routers(),
+    routers=_get_api_routers_lazy(),
     register_security_middlewares=register_security_middlewares,
     request_is_https=_request_is_https,
     force_https=FORCE_HTTPS,
@@ -2320,6 +2415,18 @@ attach_lifespan(
     startup_redis_cache=startup_redis_cache,
     shutdown_redis_cache=shutdown_redis_cache,
 )
+
+
+@app.get("/status", response_class=JSONResponse, include_in_schema=False)
+def status_endpoint():
+    return {
+        "ok": True,
+        "service": "uromed",
+        "auth_enabled": AUTH_ENABLED,
+        "startup_interconexion_mode": STARTUP_INTERCONEXION_MODE,
+        "ai_warmup_mode": AI_WARMUP_MODE,
+        "timestamp": utcnow().isoformat(),
+    }
 
 
 async_actualizar_data_mart_task = None

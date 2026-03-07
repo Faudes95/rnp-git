@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Residentes | Programa Académico</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root {
+      --uromed-blue-900: #0c2c66;
+      --uromed-blue-700: #2f62ba;
+      --uromed-blue-100: #eaf2ff;
+      --uromed-red-700: #bf2f45;
+      --uromed-red-100: #fdeff2;
+      --uromed-text: #143463;
+      --uromed-muted: #4f6e99;
+      --uromed-border: #c8d9f4;
+      --uromed-surface: rgba(255, 255, 255, 0.92);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      font-family: 'Montserrat', system-ui, sans-serif;
+      color: var(--uromed-text);
+      background:
+        radial-gradient(circle at 8% -8%, rgba(47, 98, 186, 0.16), transparent 44%),
+        radial-gradient(circle at 92% 108%, rgba(191, 47, 69, 0.14), transparent 45%),
+        linear-gradient(135deg, #edf3ff 0%, #f8fbff 60%, #f2f8ff 100%);
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      border-radius: 20px;
+      border: 1px solid var(--uromed-border);
+      background: var(--uromed-surface);
+      box-shadow: 0 18px 38px rgba(9, 42, 91, .15);
+      overflow: hidden;
+    }
+
+    .head {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--uromed-border);
+      background: linear-gradient(110deg, #f7fbff, #edf4ff);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .head h1 {
+      margin: 0;
+      font-size: 32px;
+      text-transform: uppercase;
+      color: var(--uromed-blue-900);
+      line-height: 1;
+    }
+
+    .head p {
+      margin: 8px 0 0;
+      color: var(--uromed-muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .badge {
+      border: 1px solid #aec8ee;
+      background: var(--uromed-blue-100);
+      color: var(--uromed-blue-900);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .content {
+      padding: 22px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .intro {
+      border: 1px solid var(--uromed-border);
+      border-radius: 16px;
+      background: linear-gradient(145deg, #fbfdff 0%, #eef5ff 100%);
+      padding: 18px;
+      color: var(--uromed-muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+
+    .grade-block {
+      border: 1px solid var(--uromed-border);
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .grade-head {
+      padding: 16px 18px;
+      background: linear-gradient(135deg, var(--uromed-blue-900), var(--uromed-blue-700));
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .grade-head h2 {
+      margin: 0;
+      font-size: 22px;
+      text-transform: uppercase;
+    }
+
+    .grade-head span {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.22);
+    }
+
+    .cards {
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .resident-card {
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid #d3e0f5;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fcfeff 0%, #f3f8ff 100%);
+      padding: 16px;
+      box-shadow: 0 10px 22px rgba(14, 53, 109, 0.09);
+      display: grid;
+      gap: 10px;
+      min-height: 200px;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .resident-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 28px rgba(14, 53, 109, 0.14);
+      border-color: #93b4e7;
+    }
+
+    .avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #f0f6ff, #e1ecff);
+      border: 1px solid #bcd1f1;
+      color: var(--uromed-blue-900);
+      font-size: 28px;
+    }
+
+    .resident-name {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.2;
+      color: var(--uromed-blue-900);
+    }
+
+    .resident-code {
+      color: var(--uromed-muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+
+    .resident-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .summary-pill {
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #f4f8ff;
+      border: 1px solid #d8e4f8;
+    }
+
+    .summary-pill b {
+      display: block;
+      font-size: 18px;
+      color: var(--uromed-blue-900);
+      line-height: 1.1;
+    }
+
+    .summary-pill span {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--uromed-muted);
+      line-height: 1.35;
+    }
+
+    .resident-note {
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--uromed-red-100);
+      color: #8b2740;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      color: var(--uromed-blue-900);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      border: 1px solid transparent;
+    }
+
+    .btn-main { background: linear-gradient(135deg, var(--uromed-blue-900), var(--uromed-blue-700)); }
+    .btn-alt { background: linear-gradient(135deg, var(--uromed-red-700), #8a1c2f); }
+
+    @media (max-width: 1024px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      .content { padding: 14px; }
+      .head h1 { font-size: 24px; }
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="head">
+      <div>
+        <h1>Residentes</h1>
+        <p>Base académica inicial para perfilar curva de aprendizaje, carga quirúrgica y desempeño técnico por residente.</p>
+      </div>
+      <span class="badge">{{ resident_cards|length }} residentes detectados</span>
+    </header>
+
+    <section class="content">
+      <article class="intro">
+        Este módulo ya queda conectado al programa operativo y a la futura analítica de nota postquirúrgica. 
+        Cada residente tendrá un perfil longitudinal alimentado por su participación real en quirófano, sin modificar el flujo clínico actual.
+      </article>
+
+      {% for grade, cards in residents_by_grade.items() %}
+      <section class="grade-block">
+        <header class="grade-head">
+          <h2>{{ grade }}</h2>
+          <span>{{ cards|length }} residentes</span>
+        </header>
+        <div class="cards">
+          {% for resident in cards %}
+          <a class="resident-card" href="{{ resident.href }}">
+            <div class="avatar">{{ resident.icon }}</div>
+            <div class="resident-name">{{ resident.name }}</div>
+            <div class="resident-code">{{ resident.code }}</div>
+            {% if resident.summary.total_cirugias %}
+            <div class="resident-summary">
+              <div class="summary-pill">
+                <b>{{ resident.summary.total_cirugias }}</b>
+                <span>Cirugías indexadas</span>
+              </div>
+              <div class="summary-pill">
+                <b>{{ resident.summary.procedimientos }}</b>
+                <span>Procedimientos</span>
+              </div>
+            </div>
+            <div class="resident-note">
+              Última actividad: {{ resident.summary.ultima_fecha or "N/E" }} · Abordaje dominante: {{ resident.summary.abordaje_dominante }}
+            </div>
+            {% else %}
+            <div class="resident-note">
+              Sin actividad indexada aún. El perfil se activará automáticamente conforme se registren notas postquirúrgicas con participación del residente.
+            </div>
+            {% endif %}
+            <div class="cta">Abrir perfil analítico →</div>
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endfor %}
+
+      <nav class="actions" aria-label="Navegación">
+        <a class="btn btn-main" href="/jefatura-urologia/programa-academico">← Volver a Programa Académico</a>
+        <a class="btn btn-alt" href="/jefatura-urologia">Ir a Jefatura de Urología</a>
+      </nav>
+    </section>
+  </main>
+</body>
+</html>

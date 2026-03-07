@@ -20,6 +20,8 @@ from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
+from app.services.common import nss_aliases, nss_compat_expr, nss_matches
+
 router = APIRouter(tags=["patient_autofill"])
 
 
@@ -104,6 +106,57 @@ def _get_surgical_db():
         sdb.close()
 
 
+def _find_consulta_by_nss(db: Session, m: Any, raw_nss: Any):
+    aliases = nss_aliases(raw_nss)
+    if not aliases:
+        return None
+
+    exact_candidates = []
+    raw_text = _safe_text(raw_nss)
+    if raw_text:
+        exact_candidates.append(raw_text)
+    normalized = _nss10(raw_nss, m)
+    if normalized:
+        exact_candidates.append(normalized)
+    exact_candidates.extend(aliases)
+
+    for candidate in dict.fromkeys(exact_candidates):
+        row = (
+            db.query(m.ConsultaDB)
+            .filter(m.ConsultaDB.nss == candidate)
+            .order_by(m.ConsultaDB.id.desc())
+            .first()
+        )
+        if row is not None:
+            return row
+
+    compat_expr = nss_compat_expr(m.ConsultaDB.nss, normalized or raw_text)
+    if compat_expr is not None:
+        candidates = (
+            db.query(m.ConsultaDB)
+            .filter(compat_expr)
+            .order_by(m.ConsultaDB.id.desc())
+            .limit(100)
+            .all()
+        )
+        for row in candidates:
+            if nss_matches(getattr(row, "nss", ""), raw_nss):
+                return row
+
+    # Último recurso aditivo: revisar consultas recientes con NSS capturado y comparar alias en Python.
+    candidates = (
+        db.query(m.ConsultaDB)
+        .filter(m.ConsultaDB.nss.isnot(None))
+        .order_by(m.ConsultaDB.id.desc())
+        .limit(2000)
+        .all()
+    )
+    for row in candidates:
+        if nss_matches(getattr(row, "nss", ""), raw_nss):
+            return row
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Endpoint principal
 # ---------------------------------------------------------------------------
@@ -134,12 +187,7 @@ async def patient_autofill(
     if target_consulta_id:
         consulta = db.query(m.ConsultaDB).filter(m.ConsultaDB.id == int(target_consulta_id)).first()
     if consulta is None and target_nss and len(target_nss) == 10:
-        consulta = (
-            db.query(m.ConsultaDB)
-            .filter(m.ConsultaDB.nss == target_nss)
-            .order_by(m.ConsultaDB.id.desc())
-            .first()
-        )
+        consulta = _find_consulta_by_nss(db, m, nss)
     if consulta is None and target_curp and len(target_curp) >= 16:
         consulta = (
             db.query(m.ConsultaDB)
@@ -205,10 +253,17 @@ async def patient_autofill(
     try:
         consulta_ids = [int(consulta.id)]
         if target_nss:
-            extra_ids = [
-                int(r.id) for r in
-                db.query(m.ConsultaDB).filter(m.ConsultaDB.nss == target_nss).order_by(m.ConsultaDB.id.desc()).limit(50).all()
-            ]
+            compat_expr = nss_compat_expr(m.ConsultaDB.nss, target_nss)
+            extra_rows = (
+                db.query(m.ConsultaDB)
+                .filter(compat_expr)
+                .order_by(m.ConsultaDB.id.desc())
+                .limit(100)
+                .all()
+                if compat_expr is not None
+                else []
+            )
+            extra_ids = [int(r.id) for r in extra_rows if nss_matches(getattr(r, "nss", ""), target_nss)]
             consulta_ids = list(set(consulta_ids + extra_ids))
 
         vital_latest = (

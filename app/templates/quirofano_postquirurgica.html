@@ -26,9 +26,19 @@
  .btn-primary { background: var(--imss-verde); color: #fff; }
  .btn-gold { background: var(--imss-dorado); color: #fff; }
  .small { font-size: 13px; color: #4f5b60; }
+ .resident-team-card { border: 1px solid #b8caea; border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, #fbfdff 0%, #f3f8ff 100%); box-shadow: 0 10px 24px rgba(10,49,97,.08); }
+ .resident-team-head { padding: 14px 16px; background: linear-gradient(135deg, #0a3161, #1a4c97); color: #fff; }
+ .resident-team-head h3 { margin: 0; font-size: 18px; }
+ .resident-team-head p { margin: 4px 0 0; font-size: 13px; color: rgba(255,255,255,.86); }
+ .resident-team-body { padding: 16px; display: grid; gap: 12px; }
+ .resident-row { display: grid; grid-template-columns: 110px repeat(3, minmax(0, 1fr)); gap: 12px; align-items: end; padding-bottom: 12px; border-bottom: 1px solid #dce7f7; }
+ .resident-row:last-child { border-bottom: none; padding-bottom: 0; }
+ .resident-grade { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; border-radius: 10px; font-weight: 800; color: #0a3161; background: #eaf2ff; border: 1px solid #bfd2ef; }
+ .field-note { margin-top: 4px; font-size: 11px; color: #637693; font-weight: 600; }
  @media (max-width: 960px) {
  .grid { grid-template-columns: 1fr; }
  .span-2, .span-3 { grid-column: span 1; }
+ .resident-row { grid-template-columns: 1fr; }
  }
  </style>
  <style>
@@ -97,8 +107,58 @@
  <input type="text" name="cirujano" value="{{ selected.cirujano if selected and selected.cirujano else '' }}" required>
  </div>
  <div>
+ <label>Tipo de abordaje quirúrgico</label>
+ <select name="tipo_abordaje" required>
+ <option value="">Seleccione el abordaje...</option>
+ {% for approach in approach_options %}
+ <option value="{{ approach }}" {% if selected and selected.abordaje == approach %}selected{% endif %}>{{ approach.replace('_', ' ').title() }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div>
  <label>Sangrado (mL)</label>
  <input type="number" min="0" step="0.1" name="sangrado_ml" placeholder="Ej. 120">
+ </div>
+
+ <div class="span-3 resident-team-card">
+ <div class="resident-team-head">
+ <h3>Equipo Quirúrgico (Residentes)</h3>
+ <p>Identifica participación por grado para alimentar el perfil académico y la curva de aprendizaje de cada residente.</p>
+ </div>
+ <div class="resident-team-body">
+ {% for grade in ['R5', 'R4', 'R3', 'R2'] %}
+ {% set members = resident_catalog.get(grade, []) if resident_catalog else [] %}
+ <div class="resident-row">
+ <div class="resident-grade">{{ grade }}</div>
+ <div>
+ <label for="{{ grade|lower }}_residente">Residente</label>
+ <select class="form-control" id="{{ grade|lower }}_residente" name="resident_team[{{ grade }}][residente]">
+ <option value="NA" selected>NA (No participó)</option>
+ {% for member in members %}
+ <option value="{{ member.code }}">{{ member.label }}</option>
+ {% endfor %}
+ </select>
+ <div class="field-note">Catálogo derivado del programa operativo vigente.</div>
+ </div>
+ <div>
+ <label for="{{ grade|lower }}_rol">Rol en la cirugía</label>
+ <select class="form-control" id="{{ grade|lower }}_rol" name="resident_team[{{ grade }}][rol]">
+ {% for role in role_options %}
+ <option value="{{ role }}" {% if role == 'NA' %}selected{% endif %}>{{ role.replace('_', ' ') }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div>
+ <label for="{{ grade|lower }}_participacion">Participación técnica</label>
+ <select class="form-control" id="{{ grade|lower }}_participacion" name="resident_team[{{ grade }}][participacion]">
+ {% for participation in participation_options %}
+ <option value="{{ participation }}" {% if participation == 'NA' %}selected{% endif %}>{{ participation.replace('_', ' ').title() }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ </div>
+ {% endfor %}
+ </div>
  </div>
 
  <div class="span-2">

@@ -13,7 +13,16 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 
 from app.core.terminology import normalize_diagnostico, normalize_procedimiento
+from app.services.common import nss_aliases, nss_compat_expr, nss_matches
 from app.services.event_log_flow import emit_event
+from app.services.resident_profiles_flow import (
+    APPROACH_OPTIONS,
+    PARTICIPATION_OPTIONS,
+    ROLE_OPTIONS,
+    index_postqx_feedback,
+    load_resident_catalog,
+    parse_resident_team,
+)
 
 QUIROFANO_CANCELACION_CATALOG: List[Dict[str, str]] = [
     {"codigo": "1.1", "categoria": "ATRIBUIBLES AL SISTEMA", "concepto": "POR INDICACION MEDICA"},
@@ -64,14 +73,14 @@ def _cancelacion_catalogo_ui() -> List[Dict[str, str]]:
 def _find_consulta_for_urgencia(m: Any, db: Session, nss: str, nombre_completo: str):
     normalized_nss = m.normalize_nss(nss or "")
     if normalized_nss:
-        row = (
+        query = (
             db.query(m.ConsultaDB)
-            .filter(m.ConsultaDB.nss == normalized_nss)
+            .filter(nss_compat_expr(m.ConsultaDB.nss, normalized_nss))
             .order_by(m.ConsultaDB.id.desc())
-            .first()
         )
-        if row is not None:
-            return row
+        for row in query.limit(100).all():
+            if nss_matches(getattr(row, "nss", ""), nss):
+                return row
     nombre = (nombre_completo or "").strip().upper()
     if nombre:
         row = (
@@ -630,10 +639,28 @@ async def listar_quirofanos_flow(
         "hgz": m.SurgicalProgramacionDB.hgz,
         "estatus": m.SurgicalProgramacionDB.estatus,
     }
-    if campo in field_map and search_value:
+    rows = None
+    if campo == "nss" and search_value:
+        digits = "".join(ch for ch in search_value if ch.isdigit())
+        if digits:
+            alias_set = set(nss_aliases(digits))
+            query_rows = query.limit(1000).all()
+            rows = []
+            for row in query_rows:
+                row_nss = str(getattr(row, "nss", "") or "")
+                row_digits = "".join(ch for ch in row_nss if ch.isdigit())
+                if alias_set:
+                    if set(nss_aliases(row_nss)).intersection(alias_set):
+                        rows.append(row)
+                elif digits in row_digits:
+                    rows.append(row)
+        else:
+            query = query.filter(field_map[campo].contains(search_value.upper()))
+    elif campo in field_map and search_value:
         query = query.filter(field_map[campo].contains(search_value.upper()))
 
-    rows = query.limit(500).all()
+    if rows is None:
+        rows = query.limit(500).all()
     resultado = []
     if rows:
         for row in rows:
@@ -1348,6 +1375,10 @@ async def render_postquirurgica_flow(
         request=request,
         programadas=context["programadas"],
         selected=context["selected"],
+        approach_options=APPROACH_OPTIONS,
+        role_options=ROLE_OPTIONS,
+        participation_options=PARTICIPATION_OPTIONS,
+        resident_catalog=load_resident_catalog(),
         message=message,
         error=error,
         form_action=form_action,
@@ -1460,6 +1491,14 @@ async def guardar_postquirurgica_flow(
             return 0
 
     cirujano = (form_dict.get("cirujano") or row.cirujano or "").strip().upper() or "NO_REGISTRADO"
+    tipo_abordaje = (form_dict.get("tipo_abordaje") or row.abordaje or "").strip().upper()
+    if tipo_abordaje and tipo_abordaje not in APPROACH_OPTIONS:
+        return await _render(
+            selected_programacion_id=programacion_id,
+            message=None,
+            error="Tipo de abordaje inválido.",
+        )
+    resident_team = parse_resident_team(form_dict)
     procedimiento_realizado = (form_dict.get("procedimiento_realizado") or row.procedimiento_programado or row.procedimiento or "").strip().upper()
     diagnostico_postop = (form_dict.get("diagnostico_postop") or row.patologia or row.diagnostico_principal or "").strip().upper()
     complicaciones = (form_dict.get("complicaciones") or "").strip()
@@ -1543,6 +1582,7 @@ async def guardar_postquirurgica_flow(
         row.fecha_postquirurgica = fecha_realizacion
         row.estatus = "REALIZADA"
         row.cirujano = cirujano
+        row.abordaje = tipo_abordaje or row.abordaje
         row.sangrado_ml = sangrado_ml
         row.tiempo_quirurgico_min = tiempo_quirurgico_min
         row.transfusion = transfusion
@@ -1571,43 +1611,44 @@ async def guardar_postquirurgica_flow(
         row.complicaciones_postquirurgicas = complicaciones
         row.nota_postquirurgica = nota_postquirurgica
 
-        sdb.add(
-            m.SurgicalPostquirurgicaDB(
-                surgical_programacion_id=row.id,
-                quirofano_id=row.quirofano_id,
-                consulta_id=row.consulta_id,
-                fecha_realizacion=fecha_realizacion,
-                cirujano=cirujano,
-                sangrado_ml=sangrado_ml,
-                tiempo_quirurgico_min=tiempo_quirurgico_min,
-                transfusion=transfusion,
-                uso_hemoderivados=uso_hemoderivados,
-                hemoderivados_pg_utilizados=hemoderivados_pg_utilizados,
-                hemoderivados_pfc_utilizados=hemoderivados_pfc_utilizados,
-                hemoderivados_cp_utilizados=hemoderivados_cp_utilizados,
-                antibiotico=antibiotico,
-                clavien_dindo=clavien_dindo,
-                margen_quirurgico=margen_quirurgico,
-                neuropreservacion=neuropreservacion,
-                linfadenectomia=linfadenectomia,
-                reingreso_30d=reingreso_30d,
-                reintervencion_30d=reintervencion_30d,
-                mortalidad_30d=mortalidad_30d,
-                reingreso_90d=reingreso_90d,
-                reintervencion_90d=reintervencion_90d,
-                mortalidad_90d=mortalidad_90d,
-                stone_free=stone_free,
-                composicion_lito=composicion_lito,
-                recurrencia_litiasis=recurrencia_litiasis,
-                cateter_jj_colocado=cateter_jj_colocado,
-                fecha_colocacion_jj=fecha_colocacion_jj,
-                diagnostico_postop=diagnostico_postop or None,
-                procedimiento_realizado=procedimiento_realizado or None,
-                complicaciones=complicaciones or None,
-                nota_postquirurgica=nota_postquirurgica or None,
-            )
+        postqx_row = m.SurgicalPostquirurgicaDB(
+            surgical_programacion_id=row.id,
+            quirofano_id=row.quirofano_id,
+            consulta_id=row.consulta_id,
+            fecha_realizacion=fecha_realizacion,
+            cirujano=cirujano,
+            tipo_abordaje=tipo_abordaje or None,
+            sangrado_ml=sangrado_ml,
+            tiempo_quirurgico_min=tiempo_quirurgico_min,
+            transfusion=transfusion,
+            uso_hemoderivados=uso_hemoderivados,
+            hemoderivados_pg_utilizados=hemoderivados_pg_utilizados,
+            hemoderivados_pfc_utilizados=hemoderivados_pfc_utilizados,
+            hemoderivados_cp_utilizados=hemoderivados_cp_utilizados,
+            antibiotico=antibiotico,
+            clavien_dindo=clavien_dindo,
+            margen_quirurgico=margen_quirurgico,
+            neuropreservacion=neuropreservacion,
+            linfadenectomia=linfadenectomia,
+            reingreso_30d=reingreso_30d,
+            reintervencion_30d=reintervencion_30d,
+            mortalidad_30d=mortalidad_30d,
+            reingreso_90d=reingreso_90d,
+            reintervencion_90d=reintervencion_90d,
+            mortalidad_90d=mortalidad_90d,
+            stone_free=stone_free,
+            composicion_lito=composicion_lito,
+            recurrencia_litiasis=recurrencia_litiasis,
+            cateter_jj_colocado=cateter_jj_colocado,
+            fecha_colocacion_jj=fecha_colocacion_jj,
+            diagnostico_postop=diagnostico_postop or None,
+            procedimiento_realizado=procedimiento_realizado or None,
+            complicaciones=complicaciones or None,
+            nota_postquirurgica=nota_postquirurgica or None,
         )
+        sdb.add(postqx_row)
         sdb.commit()
+        sdb.refresh(postqx_row)
     except Exception:
         sdb.rollback()
         return await _render(
@@ -1681,6 +1722,7 @@ async def guardar_postquirurgica_flow(
                 urg_row.estatus = "REALIZADA"
                 urg_row.fecha_realizacion = fecha_realizacion
                 urg_row.cirujano = cirujano
+                urg_row.abordaje = tipo_abordaje or urg_row.abordaje
                 urg_row.sangrado_ml = sangrado_ml
                 urg_row.tiempo_quirurgico_min = tiempo_quirurgico_min
                 urg_row.transfusion = transfusion
@@ -1701,43 +1743,73 @@ async def guardar_postquirurgica_flow(
     except Exception:
         sdb.rollback()
 
+    feedback_payload = {
+        "estatus": "REALIZADA",
+        "quirofano_id": row.quirofano_id,
+        "surgical_programacion_id": row.id,
+        "postquirurgica_id": postqx_row.id if postqx_row is not None else None,
+        "fecha_realizacion": fecha_realizacion.isoformat() if fecha_realizacion else None,
+        "cirujano": cirujano,
+        "tipo_abordaje": tipo_abordaje or None,
+        "resident_team": resident_team,
+        "sangrado_ml": sangrado_ml,
+        "sangrado_permisible_ml": None,
+        "tiempo_quirurgico_min": tiempo_quirurgico_min,
+        "transfusion": transfusion,
+        "uso_hemoderivados": uso_hemoderivados,
+        "hemoderivados_pg_utilizados": hemoderivados_pg_utilizados,
+        "hemoderivados_pfc_utilizados": hemoderivados_pfc_utilizados,
+        "hemoderivados_cp_utilizados": hemoderivados_cp_utilizados,
+        "antibiotico": antibiotico,
+        "clavien_dindo": clavien_dindo,
+        "margen_quirurgico": margen_quirurgico,
+        "neuropreservacion": neuropreservacion,
+        "linfadenectomia": linfadenectomia,
+        "reingreso_30d": reingreso_30d,
+        "reintervencion_30d": reintervencion_30d,
+        "mortalidad_30d": mortalidad_30d,
+        "reingreso_90d": reingreso_90d,
+        "reintervencion_90d": reintervencion_90d,
+        "mortalidad_90d": mortalidad_90d,
+        "stone_free": stone_free,
+        "composicion_lito": composicion_lito,
+        "recurrencia_litiasis": recurrencia_litiasis,
+        "cateter_jj_colocado": cateter_jj_colocado,
+        "fecha_colocacion_jj": fecha_colocacion_jj.isoformat() if fecha_colocacion_jj else None,
+        "diagnostico_postop": diagnostico_postop,
+        "procedimiento_realizado": procedimiento_realizado,
+        "paciente_nombre": row.paciente_nombre,
+        "paciente_nss": row.nss,
+        "paciente_edad": row.edad,
+        "paciente_sexo": row.sexo,
+        "patologia": row.patologia,
+        "diagnostico": row.diagnostico_principal or row.patologia,
+        "procedimiento_programado": row.procedimiento_programado or row.procedimiento,
+        "modulo_origen": row.modulo_origen,
+        "urgencia_programacion_id": row.urgencia_programacion_id,
+    }
+
     m.push_module_feedback(
         consulta_id=row.consulta_id,
         modulo="postquirurgica",
         referencia_id=f"postquirurgica:{row.id}",
-        payload={
-            "estatus": "REALIZADA",
-            "quirofano_id": row.quirofano_id,
-            "surgical_programacion_id": row.id,
-            "fecha_realizacion": fecha_realizacion.isoformat() if fecha_realizacion else None,
-            "cirujano": cirujano,
-            "sangrado_ml": sangrado_ml,
-            "tiempo_quirurgico_min": tiempo_quirurgico_min,
-            "transfusion": transfusion,
-            "uso_hemoderivados": uso_hemoderivados,
-            "hemoderivados_pg_utilizados": hemoderivados_pg_utilizados,
-            "hemoderivados_pfc_utilizados": hemoderivados_pfc_utilizados,
-            "hemoderivados_cp_utilizados": hemoderivados_cp_utilizados,
-            "antibiotico": antibiotico,
-            "clavien_dindo": clavien_dindo,
-            "margen_quirurgico": margen_quirurgico,
-            "neuropreservacion": neuropreservacion,
-            "linfadenectomia": linfadenectomia,
-            "reingreso_30d": reingreso_30d,
-            "reintervencion_30d": reintervencion_30d,
-            "mortalidad_30d": mortalidad_30d,
-            "reingreso_90d": reingreso_90d,
-            "reintervencion_90d": reintervencion_90d,
-            "mortalidad_90d": mortalidad_90d,
-            "stone_free": stone_free,
-            "composicion_lito": composicion_lito,
-            "recurrencia_litiasis": recurrencia_litiasis,
-            "cateter_jj_colocado": cateter_jj_colocado,
-            "fecha_colocacion_jj": fecha_colocacion_jj.isoformat() if fecha_colocacion_jj else None,
-            "diagnostico_postop": diagnostico_postop,
-            "procedimiento_realizado": procedimiento_realizado,
-        },
+        payload=feedback_payload,
     )
+    try:
+        feedback_row = (
+            sdb.query(m.SurgicalFeedbackDB)
+            .filter(
+                m.SurgicalFeedbackDB.consulta_id == row.consulta_id,
+                m.SurgicalFeedbackDB.modulo == "postquirurgica",
+                m.SurgicalFeedbackDB.referencia_id == f"postquirurgica:{row.id}",
+            )
+            .order_by(m.SurgicalFeedbackDB.id.desc())
+            .first()
+        )
+        if feedback_row is not None:
+            index_postqx_feedback(sdb, feedback_row, payload_override=feedback_payload)
+    except Exception:
+        pass
     m.registrar_evento_flujo_quirurgico(
         consulta_id=row.consulta_id,
         evento="REALIZADA",

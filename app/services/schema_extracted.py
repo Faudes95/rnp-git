@@ -145,6 +145,7 @@ def ensure_surgical_postquirurgica_schema() -> None:
         sql_types = {
             "tiempo_quirurgico_min": "FLOAT",
             "transfusion": "TEXT",
+            "tipo_abordaje": "TEXT",
             "uso_hemoderivados": "TEXT",
             "hemoderivados_pg_utilizados": "INTEGER",
             "hemoderivados_pfc_utilizados": "INTEGER",

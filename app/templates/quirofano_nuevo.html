@@ -472,9 +472,11 @@
  }
  }
 
- function applyAutofillData(data, source) {
+function applyAutofillData(data, source) {
  const d = data.demograficos || {};
  const c = data.clinico || {};
+ const qx = data.quirofano_programado || {};
+ const hosp = data.hospitalizacion_activa || {};
 
  // Rellenar campos solo si están vacíos o si venimos del auto-fill
  setIfEmpty('consulta_id', d.consulta_id);
@@ -483,7 +485,9 @@
  setIfEmpty('nombre_completo', d.nombre_completo || d.nombre);
  setIfEmpty('edad', d.edad);
  setSelectIfEmpty('sexo', d.sexo);
- setIfEmpty('hgz', (data.hospitalizacion_activa || {}).hgz_envio || '');
+ setSelectIfEmpty('patologia', qx.patologia || c.diagnostico_principal);
+ setSelectIfEmpty('procedimiento_programado', qx.procedimiento_programado);
+ setIfEmpty('hgz', hosp.hgz_envio || '');
 
  // Mostrar banner de éxito
  const nombre = d.nombre_completo || d.nombre || 'Paciente';

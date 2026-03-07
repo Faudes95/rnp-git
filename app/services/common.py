@@ -1,6 +1,9 @@
 from typing import Any, Optional
 
+from sqlalchemy import String, cast, func, or_
+
 from app.core.validators import normalize_curp as _normalize_curp
+from app.core.validators import nss_aliases as _nss_aliases
 from app.core.validators import normalize_nss_10 as _normalize_nss_10
 
 
@@ -25,6 +28,43 @@ def normalize_nss(value: str) -> str:
     # Compatibilidad aditiva: se mantiene la estrategia legacy (primeros 10)
     # para no romper cruces históricos.
     return _normalize_nss_10(value, strategy="legacy_left")
+
+
+def nss_aliases(value: Any) -> list[str]:
+    return _nss_aliases(value)
+
+
+def nss_matches(left: Any, right: Any) -> bool:
+    left_aliases = set(_nss_aliases(left))
+    right_aliases = set(_nss_aliases(right))
+    return bool(left_aliases and right_aliases and left_aliases.intersection(right_aliases))
+
+
+def nss_compat_expr(column: Any, target_nss: Any) -> Optional[Any]:
+    nss = normalize_nss(str(target_nss or ""))
+    if not nss:
+        return None
+    col_txt = func.coalesce(cast(column, String), "")
+    col_digits = func.replace(
+        func.replace(
+            func.replace(
+                func.replace(col_txt, " ", ""),
+                "-",
+                "",
+            ),
+            "/",
+            "",
+        ),
+        ".",
+        "",
+    )
+    return or_(
+        func.substr(col_digits, 1, 10) == nss,
+        col_txt == nss,
+        col_txt.like(f"{nss}%"),
+        col_txt.like(f"%{nss}"),
+        col_txt.like(f"%{nss}%"),
+    )
 
 
 def classify_age_group(age: Optional[int]) -> str:

@@ -427,11 +427,17 @@
 
  _lastNss = nss;
  const d = data.demograficos || {};
+ const c = data.clinico || {};
+ const qx = data.quirofano_programado || {};
+ const hosp = data.hospitalizacion_activa || {};
 
  setIfEmpty('agregado_medico', d.agregado_medico);
  setIfEmpty('nombre_completo', d.nombre_completo || d.nombre);
  setIfEmpty('edad', d.edad);
  setSelectIfEmpty('sexo', d.sexo);
+ setSelectIfEmpty('patologia', qx.patologia || c.diagnostico_principal);
+ setSelectIfEmpty('procedimiento_programado', qx.procedimiento_programado);
+ setIfEmpty('hgz', hosp.hgz_envio || '');
 
  showBanner('Datos auto-rellenados: ' + (d.nombre_completo || d.nombre || 'Paciente') + ' (NSS: ' + d.nss + ')', '#e8f5e9', '#2e7d32');
  refreshEstatus();

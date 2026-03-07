@@ -17,7 +17,7 @@ dev: install
 	$(PIP) install -r requirements.txt
 
 run:
-	$(UVICORN) main:app --host 0.0.0.0 --port 8000
+	bash ./start.sh --quick --port 8000
 
 test:
 	$(PY) -m unittest discover -s tests -p 'test_*.py'

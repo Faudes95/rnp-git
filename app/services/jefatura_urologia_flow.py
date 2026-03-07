@@ -2,7 +2,14 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
+from sqlalchemy.orm import Session
+
 from app.core.app_context import main_proxy as m
+from app.services.resident_profiles_flow import (
+    build_resident_card_summaries,
+    build_resident_profile_viewmodel,
+    resident_cards,
+)
 
 
 JEFATURA_UROLOGIA_MODULES: List[Dict[str, Any]] = [
@@ -160,11 +167,38 @@ async def render_jefatura_urologia_programa_academico_flow(request):
     )
 
 
-async def render_jefatura_urologia_programa_submodule_flow(request, section_slug: str):
+async def render_jefatura_urologia_programa_submodule_flow(
+    request,
+    section_slug: str,
+    db: Optional[Session] = None,
+):
     if section_slug == "programa-operativo":
         return m.render_template(
             "jefatura_urologia_programa_operativo.html",
             request=request,
+        )
+    if section_slug == "residentes":
+        cards = resident_cards()
+        card_summaries = build_resident_card_summaries(db) if db is not None else {}
+        grouped_cards: Dict[str, List[Dict[str, Any]]] = {}
+        for card in cards:
+            summary = card_summaries.get(card["code"]) or card_summaries.get(card["name"].upper()) or {}
+            enriched = {
+                **card,
+                "href": f"/jefatura-urologia/programa-academico/residentes/{card['code']}",
+                "summary": {
+                    "total_cirugias": int(summary.get("total_cirugias") or 0),
+                    "procedimientos": int(summary.get("procedimientos") or 0),
+                    "ultima_fecha": summary.get("ultima_fecha"),
+                    "abordaje_dominante": summary.get("abordaje_dominante") or "N/E",
+                },
+            }
+            grouped_cards.setdefault(card["grade"], []).append(enriched)
+        return m.render_template(
+            "jefatura_urologia_programa_residentes.html",
+            request=request,
+            residents_by_grade=grouped_cards,
+            resident_cards=cards,
         )
 
     section = _find_programa_submodule(section_slug)
@@ -203,4 +237,22 @@ async def render_jefatura_urologia_module_flow(request, module_slug: str):
         request=request,
         module=module,
         nested_modules=nested_modules,
+    )
+
+
+async def render_jefatura_urologia_residente_profile_flow(
+    request,
+    db: Session,
+    resident_code: str,
+):
+    profile = build_resident_profile_viewmodel(db, resident_code)
+    return m.render_template(
+        "jefatura_urologia_residente_perfil.html",
+        request=request,
+        profile=profile,
+        resident=profile["resident"],
+        kpis=profile["kpis"],
+        curva_aprendizaje=profile["curva_aprendizaje"],
+        sangrado_rows=profile["sangrado_por_procedimiento"],
+        charts=profile["charts"],
     )

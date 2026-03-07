@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.core.app_context import main_proxy as m
 from app.core.time_utils import utcnow
+from app.services.common import nss_compat_expr, nss_matches
 import sqlite3
 from pathlib import Path
 
@@ -192,12 +193,14 @@ def _find_consulta(db: Session, consulta_id: Optional[int], nss: str) -> Optiona
             return row
     nss_norm = m.normalize_nss(nss)
     if nss_norm:
-        return (
+        row = (
             db.query(m.ConsultaDB)
-            .filter(m.ConsultaDB.nss == nss_norm)
+            .filter(nss_compat_expr(m.ConsultaDB.nss, nss_norm))
             .order_by(m.ConsultaDB.id.desc())
-            .first()
         )
+        for candidate in row.limit(100).all():
+            if nss_matches(getattr(candidate, "nss", ""), nss):
+                return candidate
     return None
 
 
