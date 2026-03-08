@@ -1,148 +1,280 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Conciliación de Importación | Jefatura de Quirófano</title>
-  <link href="/static/css/fonts_offline.css" rel="stylesheet">
-  <style>
-    :root{--bg:#f4f7fb;--card:#fff;--ink:#17314a;--muted:#67788b;--line:#d6e0ea;--primary:#0d4b7a;--good:#156a44;--warn:#a06307;--bad:#9a2233}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--ink)}
-    .shell{max-width:1500px;margin:0 auto;padding:20px}
-    .head{background:linear-gradient(135deg,#102d4a,#0d4b7a);color:#fff;border-radius:20px;padding:24px}
-    .head h1{margin:0 0 8px;font-size:30px}.head p{margin:0;color:rgba(245,249,255,.9);line-height:1.5}
-    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 14px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid transparent;background:#fff;color:var(--primary)}
-    .btn.alt{background:transparent;color:#fff;border-color:rgba(255,255,255,.25)} .btn.warn{background:#fff2dc;color:var(--warn)} .btn.good{background:#e7f6ee;color:var(--good)}
-    .flash{margin:16px 0;padding:14px 16px;border-radius:14px;font-weight:700}.flash.success{background:#e7f6ee;color:var(--good);border:1px solid #c1e5ce}.flash.error{background:#fdecef;color:var(--bad);border:1px solid #f0c1cb}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 12px 26px rgba(15,39,64,.06);margin-top:18px}
-    .meta{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:16px}
-    .meta .box{border:1px solid var(--line);border-radius:14px;padding:12px;background:#f9fbfd}
-    .k{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.v{font-size:18px;font-weight:900;margin-top:6px}
-    .tone{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase}
-    .tone.green{background:#e6f6ed;color:var(--good)} .tone.red{background:#fdecef;color:var(--bad)} .tone.amber{background:#fff2dc;color:var(--warn)} .tone.slate{background:#edf1f5;color:#5f7182}
-    .sub{font-size:13px;color:var(--muted);line-height:1.5}
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-    .list{display:grid;gap:10px}
-    .issue{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff8eb}
-    .table-wrap{overflow:auto}
-    table{width:100%;border-collapse:collapse;min-width:1500px}
-    th,td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:12px}
-    th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#f7fafc;position:sticky;top:0}
-    input[type=text],input[type=number],select{width:100%;padding:9px 10px;border-radius:9px;border:1px solid #cad6e2;background:#fff;font:inherit}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-    @media (max-width:1100px){.split,.meta{grid-template-columns:1fr}}
-  </style>
-</head>
-<body>
-  <div class="shell">
-    <section class="head">
-      <h1>Conciliación del lote #{{ batch.id }}</h1>
-      <p>La extracción ya leyó el PDF y creó filas normalizadas. Desde aquí corriges sala, turno o campos clínicos antes de confirmar y convertir el lote en programación diaria real.</p>
-      <div class="nav">
-        <a class="btn" href="/quirofano/jefatura/importaciones">Volver a importaciones</a>
-        {% if batch.file_date %}<a class="btn alt" href="/quirofano/jefatura/programacion/{{ batch.file_date.isoformat() }}">Abrir día {{ batch.file_date.strftime('%d/%m/%Y') }}</a>{% endif %}
-      </div>
-      <div class="meta">
-        <div class="box"><div class="k">Archivo</div><div class="v">{{ batch.original_filename }}</div></div>
-        <div class="box"><div class="k">Fecha detectada</div><div class="v">{{ batch.file_date.strftime('%d/%m/%Y') if batch.file_date else 'No detectada' }}</div></div>
-        <div class="box"><div class="k">Páginas</div><div class="v">{{ batch.page_count }}</div></div>
-        <div class="box"><div class="k">Filas</div><div class="v">{{ batch.extracted_rows_count }}</div></div>
-        <div class="box"><div class="k">Estatus</div><div class="v"><span class="tone {{ batch_badge.tone }}">{{ batch_badge.label }}</span></div></div>
-      </div>
-    </section>
+{% extends "_quirofano_jefatura_base.html" %}
+{% from "_quirofano_jefatura_macros.html" import qx_badge, qx_kpi %}
 
-    {% if flash %}
-      <div class="flash {{ flash.kind }}">{{ flash.message }}</div>
-    {% endif %}
+{% set shell_title = "Conciliación del lote #" ~ batch.id %}
+{% set shell_subtitle = "La extracción ya normalizó las filas del PDF. Desde aquí corriges sala, turno o campos clínicos antes de confirmar y convertir el lote en programación diaria real." %}
+{% set shell_overline = "Conciliación previa a materialización" %}
+{% set current_tab = "importaciones" %}
+{% set global_section = "jefatura_quirofano" %}
+{% set hero_chips = [
+  "Archivo: " ~ batch.original_filename,
+  "Fecha detectada: " ~ (batch.file_date.strftime('%d/%m/%Y') if batch.file_date else "No detectada"),
+  "Filas: " ~ batch.extracted_rows_count
+] %}
 
-    <section class="card">
-      <div class="split">
+{% block title %}Conciliación de importación | Jefatura de Quirófano{% endblock %}
+
+{% block hero_actions %}
+  <a class="qx-btn" href="/quirofano/jefatura/importaciones">Volver a importaciones</a>
+  {% if batch.file_date %}
+    <a class="qx-btn secondary" href="/quirofano/jefatura/programacion/{{ batch.file_date.isoformat() }}">Abrir día {{ batch.file_date.strftime('%d/%m/%Y') }}</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <section class="qx-kpi-strip">
+    {{ qx_kpi("Filas totales", review_summary.total_rows, "Total de filas normalizadas en el lote.", "blue", "📄") }}
+    {{ qx_kpi("Listas", review_summary.ready, "Filas que ya cumplen la estructura mínima.", "emerald", "🟢") }}
+    {{ qx_kpi("En revisión", review_summary.review, "Filas aún pendientes de resolver.", "gold", "📝") }}
+    {{ qx_kpi("Discrepancias", review_summary.discrepancies, "Combinaciones sala/turno o campos requeridos pendientes.", "rose", "⚠️") }}
+  </section>
+
+  <section class="qx-review-summary">
+    <article class="qx-review-note">
+      <strong>Regla de materialización</strong>
+      <p>Guardar conserva tus correcciones intermedias. Confirmar solo debe usarse cuando las discrepancias obligatorias estén resueltas, porque desde ese punto el lote se convierte en programación diaria real.</p>
+    </article>
+    <article class="qx-panel alt">
+      <div class="qx-status-board">
+        <div class="qx-status-chip">
+          <span>Páginas</span>
+          <strong>{{ batch.page_count }}</strong>
+        </div>
+        <div class="qx-status-chip">
+          <span>Filas</span>
+          <strong>{{ batch.extracted_rows_count }}</strong>
+        </div>
+        <div class="qx-status-chip">
+          <span>Estado</span>
+          <strong>{{ batch.status }}</strong>
+        </div>
+        <div class="qx-status-chip">
+          <span>Fecha</span>
+          <strong>{{ batch.file_date.strftime('%d/%m/%Y') if batch.file_date else 'N/D' }}</strong>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="qx-page-grid qx-two-col">
+    <article class="qx-panel alt">
+      <div class="qx-panel-head">
         <div>
-          <h2>Advertencias</h2>
-          <div class="list">
+          <h2>Resumen del lote</h2>
+          <p>Metadatos del archivo y estado actual del pipeline antes de tocar la programación diaria.</p>
+        </div>
+        {{ qx_badge(batch_badge.label, batch_badge.tone) }}
+      </div>
+
+      <div class="qx-inline-grid two">
+        <div class="qx-item"><strong>Archivo</strong><div class="qx-text-muted">{{ batch.original_filename }}</div></div>
+        <div class="qx-item"><strong>Fecha detectada</strong><div class="qx-text-muted">{{ batch.file_date.strftime('%d/%m/%Y') if batch.file_date else 'No detectada' }}</div></div>
+        <div class="qx-item"><strong>Páginas</strong><div class="qx-text-muted">{{ batch.page_count }}</div></div>
+        <div class="qx-item"><strong>Filas extraídas</strong><div class="qx-text-muted">{{ batch.extracted_rows_count }}</div></div>
+      </div>
+    </article>
+
+    <article class="qx-panel">
+      <div class="qx-panel-head">
+        <div>
+          <h2>Alertas estructurales</h2>
+          <p>Las advertencias y errores del parser no se esconden; quedan visibles para auditoría del batch.</p>
+        </div>
+      </div>
+
+      <div class="qx-inline-grid two">
+        <div class="qx-item">
+          <strong>Advertencias</strong>
+          <div class="qx-stack" style="margin-top:12px">
             {% for item in batch.warnings_json or [] %}
-              <div class="issue">{{ item }}</div>
+              <div class="qx-empty">{{ item }}</div>
             {% else %}
-              <div class="sub">Sin advertencias estructurales en el parser.</div>
+              <div class="qx-text-muted">Sin advertencias estructurales en el parser.</div>
             {% endfor %}
           </div>
         </div>
-        <div>
-          <h2>Errores estructurales</h2>
-          <div class="list">
+        <div class="qx-item">
+          <strong>Errores estructurales</strong>
+          <div class="qx-stack" style="margin-top:12px">
             {% for item in batch.errors_json or [] %}
-              <div class="issue" style="background:#fdecef">{{ item }}</div>
+              <div class="qx-empty" style="border-color:#f3c2cb;background:#fdecef;color:#9a2233">{{ item }}</div>
             {% else %}
-              <div class="sub">Sin errores de parsing. Si aún hay discrepancias, se resuelven fila por fila en la tabla inferior.</div>
+              <div class="qx-text-muted">Sin errores de parsing. Las discrepancias operativas se resuelven fila por fila.</div>
             {% endfor %}
           </div>
         </div>
       </div>
-    </section>
+    </article>
+  </section>
 
-    <section class="card">
-      <h2>Filas conciliables</h2>
-      <div class="sub">La línea de servicio la toma el sistema desde la plantilla semanal activa. Si una combinación sala/turno no existe para la fecha del lote, la fila seguirá marcada con discrepancia hasta corregirse.</div>
-      <form method="post">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Pág/Fila</th><th>Estado</th><th>Sala</th><th>Turno</th><th>Hora</th><th>Cama</th><th>Paciente</th><th>NSS</th><th>Agregado</th><th>Edad</th><th>Dx</th><th>Operación</th><th>Cirujano</th><th>Anestesiólogo</th><th>Anestesia</th><th>Enfermera</th><th>Guess</th><th>Discrepancias</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for row in rows %}
-                <tr>
-                  <td>{{ row.page_number }}/{{ row.row_number }}</td>
-                  <td>
-                    {% set badge = {'label': row.review_status.title(), 'tone': 'slate'} %}
-                    {% if row.review_status == 'READY' %}{% set badge = {'label': 'Lista', 'tone': 'green'} %}{% endif %}
-                    {% if row.review_status == 'REVIEW' %}{% set badge = {'label': 'Revisión', 'tone': 'amber'} %}{% endif %}
-                    {% if row.review_status == 'CONFIRMED' %}{% set badge = {'label': 'Confirmada', 'tone': 'green'} %}{% endif %}
-                    <span class="tone {{ badge.tone }}">{{ badge.label }}</span>
-                  </td>
-                  <td><input type="text" name="room_code__{{ row.id }}" value="{{ row.room_code or '' }}"></td>
-                  <td>
-                    <select name="turno__{{ row.id }}">
-                      <option value="">Sin turno</option>
-                      <option value="MATUTINO" {% if row.turno == 'MATUTINO' %}selected{% endif %}>MATUTINO</option>
-                      <option value="VESPERTINO" {% if row.turno == 'VESPERTINO' %}selected{% endif %}>VESPERTINO</option>
-                    </select>
-                  </td>
-                  <td><input type="text" name="hora_programada__{{ row.id }}" value="{{ row.hora_programada or '' }}"></td>
-                  <td><input type="text" name="cama__{{ row.id }}" value="{{ row.cama or '' }}"></td>
-                  <td><input type="text" name="paciente_nombre__{{ row.id }}" value="{{ row.paciente_nombre or '' }}"></td>
-                  <td><input type="text" name="nss__{{ row.id }}" value="{{ row.nss or '' }}"></td>
-                  <td><input type="text" name="agregado_medico__{{ row.id }}" value="{{ row.agregado_medico or '' }}"></td>
-                  <td><input type="number" name="edad__{{ row.id }}" value="{{ row.edad if row.edad is not none else '' }}"></td>
-                  <td><input type="text" name="diagnostico_preoperatorio__{{ row.id }}" value="{{ row.diagnostico_preoperatorio or '' }}"></td>
-                  <td><input type="text" name="operacion_proyectada__{{ row.id }}" value="{{ row.operacion_proyectada or '' }}"></td>
-                  <td><input type="text" name="cirujano__{{ row.id }}" value="{{ row.cirujano or '' }}"></td>
-                  <td><input type="text" name="anestesiologo__{{ row.id }}" value="{{ row.anestesiologo or '' }}"></td>
-                  <td><input type="text" name="tipo_anestesia__{{ row.id }}" value="{{ row.tipo_anestesia or '' }}"></td>
-                  <td><input type="text" name="enfermera_especialista__{{ row.id }}" value="{{ row.enfermera_especialista or '' }}"></td>
-                  <td>{{ row.specialty_guess or '—' }}</td>
-                  <td>
-                    {% if row.discrepancy_json %}
+  <section class="qx-panel">
+    <div class="qx-panel-head">
+      <div>
+        <h2>Filas conciliables</h2>
+        <p>El servicio asignado se resuelve desde la plantilla semanal. Las filas con discrepancia quedan resaltadas hasta que corrijas sala, turno o campos obligatorios.</p>
+      </div>
+    </div>
+
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <div class="qx-review-toolbar" data-review-toolbar>
+        <div class="qx-filter-group">
+          <button type="button" class="qx-filter is-active" data-review-filter="all">Todas</button>
+          <button type="button" class="qx-filter" data-review-filter="discrepancy">Solo discrepancias</button>
+          <button type="button" class="qx-filter" data-review-filter="pending">Solo pendientes</button>
+          <button type="button" class="qx-filter" data-review-filter="ready">Solo listas</button>
+        </div>
+        <div class="qx-actions">
+          {{ qx_badge("Pendientes: " ~ review_summary.review, "gold") }}
+          {{ qx_badge("Listas: " ~ review_summary.ready, "emerald") }}
+          {% if review_summary.next_discrepancy_id %}
+            <button type="button" class="qx-btn ghost" data-next-discrepancy>Ir a la siguiente discrepancia</button>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="qx-table-wrap" style="margin-top:16px">
+        <table class="qx-table large">
+          <thead>
+            <tr>
+              <th>Pág/Fila</th>
+              <th>Estado</th>
+              <th>Sala</th>
+              <th>Turno</th>
+              <th>Hora</th>
+              <th>Paciente</th>
+              <th>Operación</th>
+              <th>Discrepancias</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+              <tr
+                id="review-row-{{ row.id }}"
+                data-review-row
+                data-review-status="{{ row.review_status }}"
+                data-has-discrepancy="{{ 'true' if row.discrepancy_flag else 'false' }}"
+                class="{% if row.discrepancy_flag %}has-discrepancy{% endif %}"
+              >
+                <td><strong>{{ row.page_number }}/{{ row.row_number }}</strong></td>
+                <td>
+                  {% set tone = 'slate' %}
+                  {% if row.review_status == 'READY' %}{% set tone = 'emerald' %}{% endif %}
+                  {% if row.review_status == 'REVIEW' %}{% set tone = 'gold' %}{% endif %}
+                  {% if row.review_status == 'CONFIRMED' %}{% set tone = 'emerald' %}{% endif %}
+                  {{ qx_badge(row.review_status, tone) }}
+                </td>
+                <td><input type="text" name="room_code__{{ row.id }}" value="{{ row.room_code or '' }}"></td>
+                <td>
+                  <select name="turno__{{ row.id }}">
+                    <option value="">Sin turno</option>
+                    <option value="MATUTINO" {% if row.turno == 'MATUTINO' %}selected{% endif %}>MATUTINO</option>
+                    <option value="VESPERTINO" {% if row.turno == 'VESPERTINO' %}selected{% endif %}>VESPERTINO</option>
+                  </select>
+                </td>
+                <td><input type="text" name="hora_programada__{{ row.id }}" value="{{ row.hora_programada or '' }}"></td>
+                <td><input type="text" name="paciente_nombre__{{ row.id }}" value="{{ row.paciente_nombre or '' }}"></td>
+                <td><input type="text" name="operacion_proyectada__{{ row.id }}" value="{{ row.operacion_proyectada or '' }}"></td>
+                <td>
+                  {% if row.discrepancy_json %}
+                    <div class="qx-stack">
                       {% for key, value in row.discrepancy_json.items() %}
-                        <div class="sub"><strong>{{ key }}:</strong> {{ value }}</div>
+                        <div class="qx-caption"><strong>{{ key }}:</strong> {{ value }}</div>
                       {% endfor %}
-                    {% else %}
-                      <span class="tone green">Sin discrepancias</span>
-                    {% endif %}
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+                    </div>
+                  {% else %}
+                    {{ qx_badge("Sin discrepancias", "emerald") }}
+                  {% endif %}
+                </td>
+                <td>
+                  <button
+                    class="qx-row-toggle"
+                    type="button"
+                    data-row-toggle
+                    data-row-target="review-detail-{{ row.id }}"
+                    data-label-open="Ver detalle"
+                    data-label-close="Ocultar"
+                  >Ver detalle</button>
+                </td>
+              </tr>
+              <tr id="review-detail-{{ row.id }}" class="qx-row-detail" hidden>
+                <td colspan="9">
+                  <div class="qx-row-detail-card">
+                    <div class="qx-detail-grid">
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Cama</strong>
+                        <input type="text" name="cama__{{ row.id }}" value="{{ row.cama or '' }}">
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">NSS</strong>
+                        <input type="text" name="nss__{{ row.id }}" value="{{ row.nss or '' }}">
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Agregado médico</strong>
+                        <input type="text" name="agregado_medico__{{ row.id }}" value="{{ row.agregado_medico or '' }}">
+                      </div>
+                    </div>
+                    <div class="qx-detail-grid" style="margin-top:12px">
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Edad</strong>
+                        <input type="number" name="edad__{{ row.id }}" value="{{ row.edad if row.edad is not none else '' }}">
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Cirujano</strong>
+                        <input type="text" name="cirujano__{{ row.id }}" value="{{ row.cirujano or '' }}">
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Anestesiólogo</strong>
+                        <input type="text" name="anestesiologo__{{ row.id }}" value="{{ row.anestesiologo or '' }}">
+                      </div>
+                    </div>
+                    <div class="qx-detail-grid" style="margin-top:12px">
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Tipo de anestesia</strong>
+                        <input type="text" name="tipo_anestesia__{{ row.id }}" value="{{ row.tipo_anestesia or '' }}">
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Enfermera especialista</strong>
+                        <input type="text" name="enfermera_especialista__{{ row.id }}" value="{{ row.enfermera_especialista or '' }}">
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Servicio sugerido</strong>
+                        <div class="qx-text-muted">{{ row.specialty_guess or '—' }}</div>
+                      </div>
+                    </div>
+                    <div class="qx-detail-grid two" style="margin-top:12px">
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Diagnóstico preoperatorio</strong>
+                        <input type="text" name="diagnostico_preoperatorio__{{ row.id }}" value="{{ row.diagnostico_preoperatorio or '' }}">
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Discrepancias detectadas</strong>
+                        <div class="qx-stack" style="margin-top:12px">
+                          {% for key, value in row.discrepancy_json.items() %}
+                            <div class="qx-caption"><strong>{{ key }}:</strong> {{ value }}</div>
+                          {% else %}
+                            <div class="qx-text-muted">Sin discrepancias pendientes.</div>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="qx-review-actions">
+        <div class="qx-caption">Guardar conserva tus correcciones. Confirmar materializa la programación diaria solo si ya no quedan discrepancias obligatorias.</div>
+        <div class="qx-actions">
+          <button class="qx-btn warn" type="submit" formaction="/quirofano/jefatura/importaciones/{{ batch.id }}/guardar">Guardar conciliación</button>
+          <button class="qx-btn good" type="submit" formaction="/quirofano/jefatura/importaciones/{{ batch.id }}/confirmar">Confirmar importación</button>
         </div>
-        <div class="actions">
-          <button class="btn warn" type="submit" formaction="/quirofano/jefatura/importaciones/{{ batch.id }}/guardar">Guardar conciliación</button>
-          <button class="btn good" type="submit" formaction="/quirofano/jefatura/importaciones/{{ batch.id }}/confirmar">Confirmar importación</button>
-        </div>
-      </form>
-    </section>
-  </div>
-</body>
-</html>
+      </div>
+    </form>
+  </section>
+{% endblock %}

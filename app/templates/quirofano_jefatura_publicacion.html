@@ -2,60 +2,75 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Publicación Interna | {{ selected_date_label }}</title>
   <link href="/static/css/fonts_offline.css" rel="stylesheet">
-  <style>
-    :root{--bg:#0e2339;--card:#102f4d;--ink:#f7fbff;--muted:#bfd1e1;--line:rgba(255,255,255,.12);--accent:#f8b100}
-    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#173b60,#0e2339 55%);font-family:'Montserrat',sans-serif;color:var(--ink)}
-    .shell{max-width:1500px;margin:0 auto;padding:24px}
-    .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px}
-    .head h1{margin:0;font-size:34px}.head p{margin:10px 0 0;color:var(--muted);line-height:1.5;max-width:900px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:800;background:#fff;color:#0d4b7a}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 18px 36px rgba(0,0,0,.22)}
-    h2{margin:0 0 14px;font-size:26px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
-    th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-    .room{font-size:19px;font-weight:900}.sub{font-size:12px;color:var(--muted)}
-    .tone{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;background:rgba(255,255,255,.1)}
-    .green{background:rgba(27,156,82,.18);color:#9af0b7}.red{background:rgba(220,76,100,.18);color:#ffb8c2}.amber{background:rgba(248,177,0,.18);color:#ffd98a}.blue{background:rgba(120,184,255,.18);color:#d8ebff}.slate{background:rgba(255,255,255,.1);color:#d7e1ea}
-    @media (max-width:1080px){.grid{grid-template-columns:1fr}.head{flex-direction:column}}
-  </style>
+  <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+  <link href="/static/css/quirofano_jefatura.css" rel="stylesheet">
 </head>
-<body>
-  <div class="shell">
-    <section class="head">
-      <div>
-        <h1>Publicación Interna de Programación</h1>
-        <p>{{ selected_date_label }}. Vista optimizada para monitores internos, vestidores y control de piso. Solo muestra programación confirmada del día.</p>
+<body class="qx-module">
+  <div class="qx-shell qx-broadcast">
+    <section class="qx-hero">
+      <div class="qx-hero-copy">
+        <span class="qx-overline">{{ ui_terms.panel_principal }}</span>
+        <h1>Programación quirúrgica confirmada</h1>
+        <p>{{ selected_date_label }}. Vista optimizada para monitores internos, vestidores y control de piso. Solo muestra programación confirmada del día y prioriza lectura a distancia.</p>
+        <div class="qx-chip-row">
+          <span class="qx-chip">{{ ui_terms.day_spaces }}: {{ overview.kpis.blocks_total }}</span>
+          <span class="qx-chip">Casos: {{ overview.kpis.programmed_cases }}</span>
+          <span class="qx-chip">Realizadas: {{ overview.kpis.performed_cases }}</span>
+          <span class="qx-chip">Canceladas: {{ overview.kpis.cancelled_cases }}</span>
+        </div>
       </div>
-      <a class="btn" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}">Volver al día</a>
+      <div class="qx-hero-actions">
+        <a class="qx-btn" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}">Volver al día</a>
+      </div>
     </section>
 
-    <section class="grid">
+    <section class="qx-broadcast-grid" style="margin-top:18px">
       {% for shift in ['MATUTINO','VESPERTINO'] %}
-        <article class="card">
-          <h2>{{ shift.title() }}</h2>
-          <table>
-            <thead>
-              <tr><th>Sala</th><th>Hora</th><th>Paciente</th><th>Operación</th><th>Cirujano</th><th>Estatus</th></tr>
-            </thead>
-            <tbody>
-              {% for row in rows if row.turno == shift %}
+        <article class="qx-broadcast-card">
+          <div class="qx-panel-head">
+            <div>
+              <h2 style="color:#ffffff">{{ shift.title() }}</h2>
+              <p>Programación visible para el turno {{ shift.lower() }}.</p>
+            </div>
+          </div>
+          <div class="qx-table-wrap" style="border-color:rgba(255,255,255,.12);background:transparent">
+            <table class="qx-table">
+              <thead>
                 <tr>
-                  <td><div class="room">{{ row.room_code }}</div><div class="sub">{{ row.service_line_code }}</div></td>
-                  <td>{{ row.hora }}</td>
-                  <td>{{ row.paciente }}</td>
-                  <td>{{ row.operacion }}</td>
-                  <td>{{ row.cirujano or 'N/E' }}</td>
-                  <td><span class="tone {{ row.estatus.tone }}">{{ row.estatus.label }}</span></td>
+                  <th>Sala</th>
+                  <th>Hora</th>
+                  <th>Paciente</th>
+                  <th>Operación</th>
+                  <th>Cirujano</th>
+                  <th>Estatus</th>
                 </tr>
-              {% else %}
-                <tr><td colspan="6">Sin casos confirmados para este turno.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {% for row in rows if row.turno == shift %}
+                  <tr>
+                    <td>
+                      <div class="qx-room-code">{{ row.room_code }}</div>
+                      <div class="qx-caption">{{ row.service_line_code }}</div>
+                    </td>
+                    <td>{{ row.hora }}</td>
+                    <td>{{ row.paciente }}</td>
+                    <td>{{ row.operacion }}</td>
+                    <td>{{ row.cirujano or 'N/E' }}</td>
+                    <td><span class="qx-badge tone-{{ row.estatus.tone }}">{{ row.estatus.label }}</span></td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="6">
+                      <div class="qx-empty" style="background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.14);color:#eef5fd">Sin casos confirmados para este turno.</div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </article>
       {% endfor %}
     </section>

@@ -1,0 +1,34 @@
+{% macro qx_badge(label, tone='slate') -%}
+  <span class="qx-badge tone-{{ tone }}">{{ label }}</span>
+{%- endmacro %}
+
+{% macro qx_kpi(label, value, hint='', tone='blue', icon='') -%}
+  <article class="qx-kpi-card tone-{{ tone }}">
+    <div class="qx-kpi-head">
+      <div>
+        <div class="qx-kpi-label">{{ label }}</div>
+        <div class="qx-kpi-value">{{ value }}</div>
+      </div>
+      {% if icon %}
+        <div class="qx-kpi-icon">{{ icon }}</div>
+      {% endif %}
+    </div>
+    {% if hint %}
+      <div class="qx-kpi-hint">{{ hint }}</div>
+    {% endif %}
+  </article>
+{%- endmacro %}
+
+{% macro qx_chart_panel(title, key, subtitle='') -%}
+  <article class="qx-panel qx-chart-panel">
+    <div class="qx-panel-head">
+      <div>
+        <h3>{{ title }}</h3>
+        {% if subtitle %}<p>{{ subtitle }}</p>{% endif %}
+      </div>
+    </div>
+    <div class="qx-chart-wrap">
+      <canvas data-chart-key="{{ key }}"></canvas>
+    </div>
+  </article>
+{%- endmacro %}

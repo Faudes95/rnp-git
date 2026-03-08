@@ -1,81 +1,133 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Importaciones PDF | Jefatura de Quirófano</title>
-  <link href="/static/css/fonts_offline.css" rel="stylesheet">
-  <style>
-    :root{--bg:#f4f7fb;--card:#fff;--ink:#17314a;--muted:#68788b;--line:#d7e0e9;--primary:#0d4b7a;--good:#156a44;--warn:#9e6207;--bad:#9b2133}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--ink)}
-    .shell{max-width:1280px;margin:0 auto;padding:20px}
-    .head{background:linear-gradient(135deg,#102e4a,#0d4b7a);color:#fff;border-radius:20px;padding:24px}
-    .head h1{margin:0 0 8px;font-size:30px}.head p{margin:0;color:rgba(245,249,255,.9);line-height:1.55}
-    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 14px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid transparent;background:#fff;color:var(--primary)}
-    .btn.alt{background:transparent;color:#fff;border-color:rgba(255,255,255,.26)}
-    .grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:18px;margin-top:18px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 12px 26px rgba(15,39,64,.06)}
-    .flash{margin:16px 0;padding:14px 16px;border-radius:14px;font-weight:700}.flash.success{background:#e7f6ee;color:var(--good);border:1px solid #c1e5ce}.flash.error{background:#fdecef;color:var(--bad);border:1px solid #f1c1cb}
-    h2{margin:0 0 12px;font-size:24px}.sub{font-size:13px;color:var(--muted);line-height:1.5}
-    input[type=file]{width:100%;padding:12px;border:1px dashed #aac0d7;border-radius:14px;background:#f9fbfd}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-    .item{border:1px solid var(--line);border-radius:15px;padding:14px;background:#f9fbfd}
-    .list{display:grid;gap:12px}
-    .row{display:flex;justify-content:space-between;gap:12px;align-items:center}
-    .small{font-size:12px;color:var(--muted)}
-    .tone{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase}
-    .tone.green{background:#e6f6ed;color:var(--good)} .tone.red{background:#fdecef;color:var(--bad)} .tone.amber{background:#fff2dc;color:var(--warn)} .tone.slate{background:#edf1f5;color:#5f7182}
-    @media (max-width:980px){.grid{grid-template-columns:1fr}}
-  </style>
-</head>
-<body>
-  <div class="shell">
-    <section class="head">
-      <h1>Importaciones PDF IMSS</h1>
-      <p>Este flujo está diseñado para el formato digital institucional <strong>Programa Diario de Operaciones 4-30-IQ-1/87</strong>. No hace OCR genérico; si el layout no coincide, el lote se marca como no soportado y se captura manualmente.</p>
-      <div class="nav">
-        <a class="btn" href="/quirofano/jefatura">Tablero</a>
-        <a class="btn alt" href="/quirofano/jefatura/programacion">Programación diaria</a>
-        <a class="btn alt" href="/quirofano/jefatura/plantillas">Plantilla semanal</a>
+{% extends "_quirofano_jefatura_base.html" %}
+{% from "_quirofano_jefatura_macros.html" import qx_badge, qx_kpi %}
+
+{% set shell_title = "Importaciones PDF IMSS" %}
+{% set shell_subtitle = "Carga asistida del Programa Diario de Operaciones 4-30-IQ-1/87. La lectura usa estructura digital validada, no OCR genérico, y siempre exige revisión humana antes de confirmar." %}
+{% set shell_overline = "Captura asistida" %}
+{% set current_tab = "importaciones" %}
+{% set global_section = "jefatura_quirofano" %}
+{% set hero_chips = [
+  "Lectura estructurada: PyMuPDF + find_tables",
+  "Corte de turno: 14:00",
+  "Confirmación humana obligatoria"
+] %}
+
+{% block title %}Importaciones | Jefatura de Quirófano{% endblock %}
+
+{% block hero_actions %}
+  <a class="qx-btn" href="/quirofano/jefatura/programacion">Programación diaria</a>
+  <a class="qx-btn secondary" href="/quirofano/jefatura/plantillas">Plantillas</a>
+{% endblock %}
+
+{% block content %}
+  <section class="qx-kpi-strip">
+    {{ qx_kpi("Confirmados", imports_dashboard.confirmed, "Lotes ya materializados a programación diaria.", "emerald", "✅") }}
+    {{ qx_kpi("En revisión", imports_dashboard.review, "Lotes con conciliación pendiente o discrepancias abiertas.", "gold", "🕵️") }}
+    {{ qx_kpi("No soportados", imports_dashboard.unsupported, "Archivos fuera del layout digital esperado.", "rose", "⛔") }}
+    {{ qx_kpi("Filas extraídas", imports_dashboard.rows, "Volumen bruto de filas analizadas en la carga reciente.", "blue", "📄") }}
+  </section>
+
+  <section class="qx-command-grid">
+    <article class="qx-command-card">
+      <h3>Carga controlada</h3>
+      <p>La carga conserva archivo, metadata, filas crudas y normalizadas antes de tocar la agenda hospitalaria.</p>
+      <div class="qx-chip-row">
+        <span class="qx-chip">PDF original</span>
+        <span class="qx-chip">Filas normalizadas</span>
+        <span class="qx-chip">Auditabilidad</span>
       </div>
-    </section>
+    </article>
+    <article class="qx-command-card">
+      <h3>Revisión humana</h3>
+      <p>Ningún lote materializa programación hasta pasar por conciliación fila por fila y control de discrepancias.</p>
+      <div class="qx-chip-row">
+        <span class="qx-chip">Discrepancias visibles</span>
+        <span class="qx-chip">Guardar intermedio</span>
+        <span class="qx-chip">Confirmación explícita</span>
+      </div>
+    </article>
+    <article class="qx-command-card">
+      <h3>Ritmo de captura</h3>
+      <p>La idea es reducir fricción: subir, revisar, ajustar y convertir sin duplicar trabajo manual en la programación diaria.</p>
+      <div class="qx-chip-row">
+        <span class="qx-chip">PyMuPDF</span>
+        <span class="qx-chip">Corte 14:00</span>
+        <span class="qx-chip">Sin OCR genérico</span>
+      </div>
+    </article>
+  </section>
 
-    {% if flash %}
-      <div class="flash {{ flash.kind }}">{{ flash.message }}</div>
-    {% endif %}
-
-    <section class="grid">
-      <article class="card">
-        <h2>Subir nuevo lote</h2>
-        <div class="sub">El parser extrae tabla por página con PyMuPDF, clasifica turno por hora con corte 14:00 y deja la conciliación humana antes de confirmar programación real del día.</div>
-        <form method="post" action="/quirofano/jefatura/importaciones" enctype="multipart/form-data" class="actions">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-          <input type="file" name="pdf_file" accept="application/pdf" required>
-          <button class="btn" type="submit">Procesar PDF</button>
-        </form>
-      </article>
-
-      <article class="card">
-        <h2>Lotes recientes</h2>
-        <div class="list">
-          {% for batch in batches %}
-            {% set badge = {'label': batch.status.title(), 'tone': 'slate'} %}
-            {% if batch.status == 'CONFIRMED' %}{% set badge = {'label': 'Confirmado', 'tone': 'green'} %}{% endif %}
-            {% if batch.status == 'REVIEW' %}{% set badge = {'label': 'En revisión', 'tone': 'amber'} %}{% endif %}
-            {% if batch.status == 'UNSUPPORTED' %}{% set badge = {'label': 'No soportado', 'tone': 'red'} %}{% endif %}
-            <div class="item">
-              <div class="row"><strong>{{ batch.original_filename }}</strong><span class="tone {{ badge.tone }}">{{ badge.label }}</span></div>
-              <div class="small">Fecha detectada: {{ batch.file_date.strftime('%d/%m/%Y') if batch.file_date else 'No detectada' }} · {{ batch.extracted_rows_count }} filas · {{ batch.page_count }} páginas</div>
-              <div class="actions"><a class="btn" href="/quirofano/jefatura/importaciones/{{ batch.id }}">Abrir conciliación</a></div>
-            </div>
-          {% else %}
-            <div class="item">
-              <strong>Sin lotes previos</strong>
-              <div class="sub">Sube uno de los programas diarios para generar la vista de conciliación.</div>
-            </div>
-          {% endfor %}
+  <section class="qx-page-grid qx-two-col">
+    <article class="qx-panel alt">
+      <div class="qx-panel-head">
+        <div>
+          <h2>Subir nuevo lote</h2>
+          <p>La carga genera un batch con PDF original, filas crudas, filas normalizadas, discrepancias y trazabilidad antes de tocar la agenda hospitalaria.</p>
         </div>
-      </article>
-    </section>
-  </div>
-</body>
-</html>
+      </div>
+
+      <form method="post" action="/quirofano/jefatura/importaciones" enctype="multipart/form-data" class="qx-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="qx-form-intro">
+          <strong>Sube primero, concilia después</strong>
+          <p>Esta pantalla no materializa casos por sí sola. El lote entra a revisión para que puedas corregir salas, turnos y campos faltantes antes de confirmar.</p>
+        </div>
+        <section class="qx-form-section">
+          <h3>Archivo fuente</h3>
+          <p>Se espera el formato institucional digital `PROGRAMA DIARIO DE OPERACIONES 4-30-IQ-1/87`.</p>
+          <div class="qx-field">
+            <label>PDF institucional</label>
+            <input type="file" name="pdf_file" accept="application/pdf" required>
+            <small>Si el layout no coincide con el formato validado, el batch se marcará como no soportado y no tocará la programación.</small>
+          </div>
+        </section>
+        <div class="qx-actions">
+          <button class="qx-btn" type="submit">Procesar PDF</button>
+        </div>
+      </form>
+    </article>
+
+    <article class="qx-panel">
+      <div class="qx-panel-head">
+        <div>
+          <h2>Lotes recientes</h2>
+          <p>Vista operativa para detectar rápido si un archivo ya está conciliado, pendiente o fuera del formato soportado.</p>
+        </div>
+      </div>
+
+      <div class="qx-list">
+        {% for batch in batches %}
+          {% set tone = 'slate' %}
+          {% set label = batch.status.title() %}
+          {% if batch.status == 'CONFIRMED' %}{% set tone = 'emerald' %}{% set label = 'Confirmado' %}{% endif %}
+          {% if batch.status == 'REVIEW' %}{% set tone = 'gold' %}{% set label = 'En revisión' %}{% endif %}
+          {% if batch.status == 'UNSUPPORTED' %}{% set tone = 'rose' %}{% set label = 'No soportado' %}{% endif %}
+          <details class="qx-collapsible qx-item" data-collapsible-id="imports-batch-{{ batch.id }}">
+            <summary class="qx-collapse-summary">
+              <div>
+                <h3>{{ batch.original_filename }}</h3>
+                <p>{{ batch.file_date.strftime('%d/%m/%Y') if batch.file_date else 'Fecha no detectada' }} · {{ batch.extracted_rows_count }} filas · {{ batch.page_count }} páginas</p>
+              </div>
+              <div class="qx-collapse-meta">
+                {{ qx_badge(label, tone) }}
+                <span class="qx-collapse-hint">Tocar para desplegar</span>
+              </div>
+            </summary>
+            <div class="qx-row-detail-card">
+              <div class="qx-chip-row" style="margin-top:0">
+                {% if batch.file_date %}{{ qx_badge(batch.file_date.strftime('%d/%m/%Y'), "blue") }}{% endif %}
+                {{ qx_badge(batch.extracted_rows_count ~ " filas", "slate") }}
+                {{ qx_badge(batch.page_count ~ " páginas", "gold") }}
+              </div>
+              <div class="qx-actions" style="margin-top:14px">
+                <a class="qx-btn ghost" href="/quirofano/jefatura/importaciones/{{ batch.id }}">Abrir conciliación</a>
+              </div>
+            </div>
+          </details>
+        {% else %}
+          <div class="qx-empty">Sin lotes previos. El siguiente PDF que subas aparecerá aquí con su estado de conciliación.</div>
+        {% endfor %}
+      </div>
+    </article>
+  </section>
+{% endblock %}

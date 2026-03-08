@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import shutil
+from collections import Counter
 from datetime import date
 from typing import Any, Dict, List, Optional
 
@@ -36,6 +37,7 @@ from app.services.quirofano_jefatura_shared import (
     shift_for_scheduled_time,
     status_badge,
     template_slot_for_date,
+    ui_terms,
 )
 
 
@@ -81,6 +83,29 @@ def _row_discrepancies(row_data: Dict[str, Any], *, target_date: Optional[date],
         if slot is None:
             issues["template_slot"] = "La sala/turno no existe en la plantilla activa para esa fecha."
     return issues
+
+
+def _imports_dashboard(batches: List[Any]) -> Dict[str, Any]:
+    status_counts = Counter(str(getattr(batch, "status", "") or "").upper() for batch in batches)
+    return {
+        "confirmed": status_counts.get("CONFIRMED", 0),
+        "review": status_counts.get("REVIEW", 0),
+        "unsupported": status_counts.get("UNSUPPORTED", 0),
+        "rows": sum(int(getattr(batch, "extracted_rows_count", 0) or 0) for batch in batches),
+    }
+
+
+def _review_dashboard(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
+    status_counts = Counter(str(row.get("review_status", "") or "").upper() for row in rows)
+    discrepancy_rows = [row for row in rows if bool(row.get("discrepancy_flag"))]
+    return {
+        "total_rows": len(rows),
+        "ready": status_counts.get("READY", 0),
+        "review": status_counts.get("REVIEW", 0),
+        "confirmed": status_counts.get("CONFIRMED", 0),
+        "discrepancies": len(discrepancy_rows),
+        "next_discrepancy_id": int(discrepancy_rows[0]["id"]) if discrepancy_rows else None,
+    }
 
 
 def parse_imss_operating_pdf(file_path: str, session: Session) -> Dict[str, Any]:
@@ -231,7 +256,11 @@ async def render_jefatura_quirofano_imports_flow(
         "quirofano_jefatura_importaciones.html",
         request=request,
         flash=flash,
+        selected_date=date.today(),
+        selected_date_label=date.today().strftime("%d/%m/%Y"),
         batches=batches,
+        imports_dashboard=_imports_dashboard(list(batches)),
+        ui_terms=ui_terms(),
     )
 
 
@@ -246,14 +275,19 @@ async def render_jefatura_quirofano_import_review_flow(
     batch = _import_batch(session, batch_id)
     if batch is None:
         return HTMLResponse(content="<h1>Importación no encontrada</h1>", status_code=404)
+    rows = [serialize_import_row(row) for row in sorted(batch.rows, key=lambda item: (item.page_number, item.row_number))]
     return m.render_template(
         "quirofano_jefatura_import_review.html",
         request=request,
         flash=flash,
         batch=batch,
-        rows=[serialize_import_row(row) for row in sorted(batch.rows, key=lambda item: (item.page_number, item.row_number))],
+        rows=rows,
+        selected_date=batch.file_date,
+        selected_date_label=batch.file_date.strftime("%d/%m/%Y") if isinstance(batch.file_date, date) else "Sin fecha",
+        review_summary=_review_dashboard(rows),
         service_lines=[{"code": row.code, "nombre": row.nombre} for row in list_service_lines(session) if bool(row.activo)],
         batch_badge=status_badge(batch.status),
+        ui_terms=ui_terms(),
     )
 
 

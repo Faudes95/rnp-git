@@ -1,241 +1,476 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Programación | Jefatura de Quirófano</title>
-  <link href="/static/css/fonts_offline.css" rel="stylesheet">
-  <style>
-    :root{--bg:#f2f6fb;--card:#fff;--ink:#17324b;--muted:#66778a;--line:#d6e0ea;--primary:#0e4b7f;--good:#126843;--warn:#9f6308;--bad:#a02234}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--ink)}
-    .shell{max-width:1440px;margin:0 auto;padding:18px}
-    .hero{background:linear-gradient(135deg,#102e4a,#0e4b7f);color:#fff;border-radius:20px;padding:24px}
-    .hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;color:rgba(245,249,255,.9);line-height:1.5}
-    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 14px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid transparent;background:#fff;color:var(--primary)}
-    .btn.alt{background:transparent;color:#fff;border-color:rgba(255,255,255,.28)}
-    .flash{margin:16px 0;padding:14px 16px;border-radius:14px;font-weight:700}.flash.success{background:#e7f6ee;color:var(--good);border:1px solid #c2e6cf}.flash.error{background:#fdecef;color:var(--bad);border:1px solid #f3c3ce}
-    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:18px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 12px 26px rgba(15,39,64,.06)}
-    .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
-    .kpi{border:1px solid var(--line);border-radius:16px;padding:14px;background:#f9fbfd}
-    .k{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-    .v{font-size:28px;font-weight:900;margin-top:8px}
-    h2{margin:0 0 10px;font-size:24px}
-    .sub{font-size:13px;color:var(--muted);line-height:1.5}
-    .days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
-    .day{border:1px solid var(--line);border-radius:14px;padding:14px;background:#f9fbfd}
-    .day strong{display:block;font-size:16px}.day .small{font-size:12px;color:var(--muted);margin-top:6px}
-    .day .actions{margin-top:12px}
-    .section{margin-top:16px}
-    form{margin:0}
-    input[type=text],input[type=number],input[type=date],input[type=time],input[type=datetime-local],select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #cad6e2;background:#fff;font:inherit}
-    textarea{min-height:92px;resize:vertical}
-    .table-wrap{overflow:auto}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top;text-align:left}
-    th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-    .tone{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase}
-    .tone.green{background:#e6f6ed;color:var(--good)} .tone.red{background:#fdecef;color:var(--bad)} .tone.amber{background:#fff2dc;color:var(--warn)} .tone.blue{background:#e6f0fb;color:var(--primary)} .tone.slate{background:#edf1f5;color:#617283}
-    .sticky{position:sticky;top:12px}
-    .actions{display:flex;gap:10px;flex-wrap:wrap}
-    .block-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    .block-panel{border:1px solid var(--line);border-radius:16px;padding:14px;background:#f9fbfd}
-    .room-list{display:grid;gap:10px;margin-top:12px}
-    .room-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
-    @media (max-width:1180px){.grid,.split,.block-grid,.days,.kpi-grid{grid-template-columns:1fr}}
-  </style>
-</head>
-<body>
-  <div class="shell">
-    <section class="hero">
-      <h1>Programación de Quirófano</h1>
-      {% if view_mode == 'calendar' %}
-        <p>Calendario operativo para abrir el día quirúrgico, revisar ocupación estimada y navegar entre fechas sin salir del módulo de Jefatura.</p>
-      {% else %}
-        <p>Vista operativa del {{ weekday_label }} {{ selected_date_label }}. Aquí se controla la distribución de salas, la captura manual de casos, las sobrescrituras del día y el acceso al detalle de cada cirugía.</p>
-      {% endif %}
-      <div class="nav">
-        <a class="btn" href="/quirofano/jefatura">Tablero</a>
-        <a class="btn alt" href="/quirofano/jefatura/plantillas">Plantilla semanal</a>
-        <a class="btn alt" href="/quirofano/jefatura/importaciones">Importaciones PDF</a>
+{% extends "_quirofano_jefatura_base.html" %}
+{% from "_quirofano_jefatura_macros.html" import qx_badge, qx_chart_panel, qx_kpi %}
+
+{% set current_tab = "programacion" %}
+{% set global_section = "jefatura_quirofano" %}
+{% if view_mode == 'calendar' %}
+  {% set shell_title = "Programación diaria" %}
+  {% set shell_subtitle = "Calendario operativo para abrir el día quirúrgico, revisar la carga estimada y navegar entre fechas sin salir del centro de mando." %}
+  {% set shell_overline = "Planeación operativa" %}
+  {% set hero_chips = ["Carga visible por fecha", "Acceso directo al día quirúrgico", "Sincronizado con plantilla y cambios del día"] %}
+{% else %}
+  {% set shell_title = "Programación del " ~ weekday_label ~ " " ~ selected_date_label %}
+  {% set shell_subtitle = "Vista operativa del día con distribución de salas, captura rápida de cirugías, alertas de conflicto y acceso al detalle quirúrgico sin romper el flujo de captura." %}
+  {% set shell_overline = "Captura + centro de mando del día" %}
+  {% set hero_chips = [
+    ui_terms.day_spaces ~ ": " ~ overview.kpis.blocks_total,
+    "Casos: " ~ overview.kpis.programmed_cases,
+    "Ocupación: " ~ overview.kpis.occupancy_pct ~ "%",
+    "Conflictos: " ~ overview.kpis.conflict_cases
+  ] %}
+{% endif %}
+
+{% block title %}Programación | Jefatura de Quirófano{% endblock %}
+
+{% block hero_actions %}
+  {% if view_mode == 'day' %}
+    <a class="qx-btn" href="/quirofano/jefatura/publicacion/{{ selected_date.isoformat() }}">{{ ui_terms.panel_principal }}</a>
+  {% endif %}
+  <a class="qx-btn" href="/quirofano/jefatura">{{ ui_terms.dashboard }}</a>
+  <a class="qx-btn secondary" href="/quirofano/jefatura/importaciones">Importaciones PDF</a>
+  <a class="qx-btn secondary" href="/quirofano/jefatura/plantillas">Plantilla semanal</a>
+{% endblock %}
+
+{% block content %}
+  {% if view_mode == 'calendar' %}
+    <section class="qx-panel">
+      <div class="qx-panel-head">
+        <div>
+          <h2>Calendario operativo</h2>
+          <p>Cada tarjeta abre el día resuelto desde la plantilla vigente y los cambios diarios confirmados hasta ese momento.</p>
+        </div>
+      </div>
+      <div class="qx-grid-calendar">
+        {% for item in days %}
+          <article class="qx-day-card">
+            <strong>{{ item.weekday }}</strong>
+            <div class="qx-day-meta">{{ item.date_label }}</div>
+            <div class="qx-chip-row">
+              {{ qx_badge(item.blocks_total ~ " salas/turnos", "blue") }}
+              {{ qx_badge(item.programmed_cases ~ " cirugías", "emerald") }}
+              {{ qx_badge(item.occupancy_pct ~ "% ocupación", "gold") }}
+            </div>
+            <div class="qx-actions" style="margin-top:14px">
+              <a class="qx-btn ghost" href="/quirofano/jefatura/programacion/{{ item.date.isoformat() }}">Abrir día</a>
+            </div>
+          </article>
+        {% endfor %}
       </div>
     </section>
+  {% else %}
+    <section class="qx-kpi-strip">
+      {{ qx_kpi(ui_terms.enabled_spaces, overview.kpis.active_blocks, "Salas y turnos disponibles después de aplicar cambios del día.", "blue", "🧱") }}
+      {{ qx_kpi("Matutino", overview.kpis.matutino_cases, "Cirugías distribuidas en turno matutino.", "emerald", "🌤️") }}
+      {{ qx_kpi("Vespertino", overview.kpis.vespertino_cases, "Carga programada para la segunda mitad del día.", "gold", "🌙") }}
+      {{ qx_kpi("Cancelaciones", overview.kpis.cancelled_cases, "Se mantienen visibles para auditoría y reconciliación.", "rose", "⛔") }}
+    </section>
 
-    {% if flash %}
-      <div class="flash {{ flash.kind }}">{{ flash.message }}</div>
-    {% endif %}
+    <section class="qx-chart-grid">
+      {{ qx_chart_panel("Mix por turno", "shift_mix", "Relación entre salas/turnos habilitados y agenda capturada.") }}
+      {{ qx_chart_panel("Estatus del día", "status_mix", "Panorama de programadas, en curso, realizadas y canceladas.") }}
+    </section>
 
-    {% if view_mode == 'calendar' %}
-      <article class="card section">
-        <h2>Calendario operativo</h2>
-        <div class="sub">Cada tarjeta abre el día quirúrgico resuelto desde la plantilla semanal y los cambios confirmados hasta ese momento.</div>
-        <div class="days">
-          {% for item in days %}
-            <div class="day">
-              <strong>{{ item.weekday }}</strong>
-              <div>{{ item.date_label }}</div>
-              <div class="small">{{ item.programmed_cases }} casos · {{ item.blocks_total }} bloques · {{ item.occupancy_pct }}% ocupación</div>
-              <div class="actions"><a class="btn" href="/quirofano/jefatura/programacion/{{ item.date.isoformat() }}">Abrir día</a></div>
-            </div>
-          {% endfor %}
-        </div>
-      </article>
-    {% else %}
-      <section class="kpi-grid">
-        <article class="kpi"><div class="k">Bloques</div><div class="v">{{ overview.kpis.blocks_total }}</div></article>
-        <article class="kpi"><div class="k">Casos</div><div class="v">{{ overview.kpis.programmed_cases }}</div></article>
-        <article class="kpi"><div class="k">Ocupación</div><div class="v">{{ overview.kpis.occupancy_pct }}%</div></article>
-        <article class="kpi"><div class="k">Conflictos</div><div class="v">{{ overview.kpis.conflict_cases }}</div></article>
-      </section>
-
-      <section class="grid">
-        <article class="card">
-          <div class="actions" style="justify-content:space-between;margin-bottom:12px">
-            <a class="btn" href="/quirofano/jefatura/programacion/{{ previous_date.isoformat() }}">← {{ previous_date.strftime('%d/%m') }}</a>
-            <a class="btn" href="/quirofano/jefatura/publicacion/{{ selected_date.isoformat() }}">Pantalla interna</a>
-            <a class="btn" href="/quirofano/jefatura/programacion/{{ next_date.isoformat() }}">{{ next_date.strftime('%d/%m') }} →</a>
+    <section class="qx-page-grid qx-two-col">
+      <article class="qx-panel alt">
+        <div class="qx-panel-head">
+          <div>
+            <h2>Distribución de salas</h2>
+            <p>Cada sala y turno del día nace de la plantilla activa y puede corregirse sin alterar el historial de capacidad semanal.</p>
           </div>
-          <h2>Distribución de salas</h2>
-          <div class="sub">Cada bloque diario nace de la plantilla activa y puede cambiarse sin tocar la plantilla base. Las sobrescrituras quedan auditadas.</div>
-          <form method="post" action="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}/bloques" class="section">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <div class="block-grid">
-              {% for shift in ['MATUTINO','VESPERTINO'] %}
-                <div class="block-panel">
-                  <strong>{{ shift.title() }}</strong>
-                  <div class="room-list">
-                    {% for block in overview.blocks if block.turno == shift %}
-                      <div class="room-card">
-                        <div class="actions" style="justify-content:space-between">
-                          <strong>{{ block.room_code }}</strong>
-                          {% set badge = {'label': block.block_status.title(), 'tone': 'slate'} %}
-                          {% if block.block_status == 'ACTIVO' %}{% set badge = {'label': 'Activo', 'tone': 'green'} %}{% endif %}
-                          {% if block.block_status == 'BLOQUEADO' %}{% set badge = {'label': 'Bloqueado', 'tone': 'red'} %}{% endif %}
-                          {% if block.block_status == 'CONTINGENCIA' %}{% set badge = {'label': 'Contingencia', 'tone': 'amber'} %}{% endif %}
-                          <span class="tone {{ badge.tone }}">{{ badge.label }}</span>
+          <div class="qx-actions">
+            <a class="qx-btn ghost" href="/quirofano/jefatura/programacion/{{ previous_date.isoformat() }}">← {{ previous_date.strftime('%d/%m') }}</a>
+            <a class="qx-btn ghost" href="/quirofano/jefatura/programacion/{{ next_date.isoformat() }}">{{ next_date.strftime('%d/%m') }} →</a>
+          </div>
+        </div>
+
+        <form method="post" action="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}/bloques" class="qx-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <div class="qx-metric-grid" style="margin-bottom:16px">
+            <div class="qx-item">
+              <strong class="qx-item-kicker">Composición del turno</strong>
+              <div class="qx-metric-stack" style="margin-top:12px">
+                <div class="qx-metric-row">
+                  <div>
+                    <strong>Matutino</strong>
+                    <span>Salas y turnos con operación prevista antes del corte vespertino</span>
+                  </div>
+                  <div class="qx-metric-value">{{ overview.kpis.matutino_blocks }}</div>
+                </div>
+                <div class="qx-metric-row">
+                  <div>
+                    <strong>Vespertino</strong>
+                    <span>Capacidad efectiva en segunda jornada</span>
+                  </div>
+                  <div class="qx-metric-value">{{ overview.kpis.vespertino_blocks }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="qx-item">
+              <strong class="qx-item-kicker">Presión operativa</strong>
+              <div class="qx-status-board" style="margin-top:12px">
+                <div class="qx-status-chip">
+                  <span>Habilitados</span>
+                  <strong>{{ overview.kpis.active_blocks }}</strong>
+                </div>
+                <div class="qx-status-chip">
+                  <span>Cerrados</span>
+                  <strong>{{ overview.kpis.blocked_blocks }}</strong>
+                </div>
+                <div class="qx-status-chip">
+                  <span>En contingencia</span>
+                  <strong>{{ overview.kpis.contingency_blocks }}</strong>
+                </div>
+                <div class="qx-status-chip">
+                  <span>Cirugías capturadas</span>
+                  <strong>{{ overview.kpis.programmed_cases }}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="qx-inline-grid two">
+            {% for shift in ['MATUTINO','VESPERTINO'] %}
+              {% set shift_blocks = overview.blocks | selectattr('turno', 'equalto', shift) | list %}
+              {% set shift_cases = overview.cases | selectattr('daily_block.turno', 'equalto', shift) | list | length %}
+              <details class="qx-collapsible" data-collapsible-id="day-{{ selected_date.isoformat() }}-{{ shift }}" {% if shift == 'MATUTINO' %}open{% endif %}>
+                <summary class="qx-collapse-summary">
+                  <div>
+                    <h3>{{ shift.title() }}</h3>
+                    <p>{{ ui_terms.day_spaces }} editables para {{ shift.lower() }}.</p>
+                  </div>
+                  <div class="qx-collapse-meta">
+                    {{ qx_badge(shift_blocks|length ~ " salas/turnos", "blue") }}
+                    {{ qx_badge(shift_cases ~ " cirugías", "emerald") }}
+                    <span class="qx-collapse-hint">Tocar para desplegar</span>
+                  </div>
+                </summary>
+                <div class="qx-room-list">
+                  {% for block in shift_blocks %}
+                    <article class="qx-room-card {% if block.block_status == 'ACTIVO' %}is-active{% elif block.block_status == 'BLOQUEADO' %}is-blocked{% elif block.block_status == 'CONTINGENCIA' %}is-contingency{% endif %}">
+                      <div class="qx-room-meta">
+                        <div>
+                          <div class="qx-room-code">{{ block.room_code }}</div>
+                          <div class="qx-caption">{{ block.cases|length }} cirugías capturadas</div>
                         </div>
-                        <div class="small">{{ block.cases|length }} casos capturados</div>
-                        <div class="split section">
-                          <div>
-                            <label>Línea</label>
-                            <select name="service_line__{{ block.id }}">
-                              {% for line in service_lines %}
-                                <option value="{{ line.code }}" {% if block.service_line_code == line.code %}selected{% endif %}>{{ line.code }} · {{ line.nombre }}</option>
-                              {% endfor %}
-                            </select>
-                          </div>
-                          <div>
-                            <label>Estatus</label>
-                            <select name="block_status__{{ block.id }}">
-                              {% for item in block_status_options %}
-                                <option value="{{ item }}" {% if block.block_status == item %}selected{% endif %}>{{ item }}</option>
-                              {% endfor %}
-                            </select>
-                          </div>
+                        {% set tone = 'slate' %}
+                        {% set label = block.block_status.title() %}
+                        {% if block.block_status == 'ACTIVO' %}{% set tone = 'green' %}{% set label = ui_terms.block_status.ACTIVO %}{% endif %}
+                        {% if block.block_status == 'BLOQUEADO' %}{% set tone = 'red' %}{% set label = ui_terms.block_status.BLOQUEADO %}{% endif %}
+                        {% if block.block_status == 'CONTINGENCIA' %}{% set tone = 'amber' %}{% set label = 'Contingencia' %}{% endif %}
+                        {{ qx_badge(label, tone) }}
+                      </div>
+                      <div class="qx-inline-grid two" style="margin-top:14px">
+                        <div class="qx-field">
+                          <label>{{ ui_terms.service_assigned }}</label>
+                          <select name="service_line__{{ block.id }}">
+                            {% for line in service_lines %}
+                              <option value="{{ line.code }}" {% if block.service_line_code == line.code %}selected{% endif %}>{{ line.code }} · {{ line.nombre }}</option>
+                            {% endfor %}
+                          </select>
                         </div>
-                        <div class="section">
-                          <label>Notas</label>
-                          <input type="text" name="notes__{{ block.id }}" value="{{ block.notes or '' }}" placeholder="Motivo del cambio o comentario operativo">
+                        <div class="qx-field">
+                          <label>Estatus</label>
+                          <select name="block_status__{{ block.id }}">
+                            {% for item in block_status_options %}
+                              <option value="{{ item }}" {% if block.block_status == item %}selected{% endif %}>{{ ui_terms.block_status[item] if item in ui_terms.block_status else item }}</option>
+                            {% endfor %}
+                          </select>
                         </div>
                       </div>
-                    {% endfor %}
-                  </div>
+                      <div class="qx-field" style="margin-top:12px">
+                        <label>Notas</label>
+                        <input type="text" name="notes__{{ block.id }}" value="{{ block.notes or '' }}" placeholder="Motivo del cambio o comentario operativo">
+                      </div>
+                    </article>
+                  {% endfor %}
                 </div>
-              {% endfor %}
-            </div>
-            <div class="actions section"><button class="btn" type="submit">Guardar distribución diaria</button></div>
-          </form>
-        </article>
+              </details>
+            {% endfor %}
+          </div>
+          <div class="qx-actions" style="margin-top:16px">
+            <button class="qx-btn" type="submit">Guardar distribución diaria</button>
+          </div>
+        </form>
+      </article>
 
-        <article class="card sticky">
-          <h2>{% if edit_case %}Editar caso #{{ edit_case.id }}{% else %}Nuevo caso del día{% endif %}</h2>
-          <div class="sub">La captura manual permite corregir o complementar la programación importada, o registrar casos sin PDF.</div>
-          <form method="post" action="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}/casos" class="section">
+      <aside class="qx-panel qx-sticky">
+        <div class="qx-panel-head">
+          <div>
+            <h2>{% if edit_case %}Editar cirugía #{{ edit_case.id }}{% else %}Nueva cirugía del día{% endif %}</h2>
+            <p>La captura manual mantiene el mismo contrato actual, pero ahora queda agrupada por sala y turno, tiempo, paciente, contexto clínico y staff.</p>
+          </div>
+        </div>
+
+        <div class="qx-form-shell">
+          <div class="qx-form-intro">
+            <strong>{% if edit_case %}Modo edición del caso{% else %}Captura operativa asistida{% endif %}</strong>
+            <p>{% if edit_case %}Estás ajustando un caso ya materializado. Conserva los mismos campos y contratos del flujo previo, pero con una lectura más guiada para jefatura.{% else %}Usa esta tarjeta para cargar casos manuales cuando todavía no existe PDF o cuando necesitas corregir la agenda sobre la marcha.{% endif %}</p>
+          </div>
+
+          <div class="qx-mini-grid">
+            <article class="qx-mini-tile">
+              <span>Salas/turnos</span>
+              <strong>{{ overview.kpis.blocks_total }}</strong>
+            </article>
+            <article class="qx-mini-tile">
+              <span>Cirugías</span>
+              <strong>{{ overview.kpis.programmed_cases }}</strong>
+            </article>
+            <article class="qx-mini-tile">
+              <span>Conflictos</span>
+              <strong>{{ overview.kpis.conflict_cases }}</strong>
+            </article>
+          </div>
+
+          <form method="post" action="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}/casos" class="qx-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <input type="hidden" name="case_id" value="{{ edit_case.id if edit_case else '' }}">
-            <div class="section">
-              <label>Bloque diario</label>
-              <select name="daily_block_id" required>
-                <option value="">Seleccionar sala</option>
-                {% for block in overview.blocks %}
-                  <option value="{{ block.id }}" {% if edit_case and edit_case.daily_block_id == block.id %}selected{% endif %}>{{ block.turno }} · {{ block.room_code }} · {{ block.service_line_code }}</option>
-                {% endfor %}
-              </select>
+
+            <section class="qx-form-section">
+              <h3>Sala y turno / estatus</h3>
+              <p>Selecciona la sala resuelta y el estado operativo del caso antes de capturar el contexto clínico.</p>
+            <div class="qx-inline-grid two">
+              <div class="qx-field">
+                <label>{{ ui_terms.room_shift }}</label>
+                <select name="daily_block_id" required>
+                  <option value="">Seleccionar sala</option>
+                  {% for block in overview.blocks %}
+                    <option value="{{ block.id }}" {% if edit_case and edit_case.daily_block_id == block.id %}selected{% endif %}>{{ block.turno }} · {{ block.room_code }} · {{ block.service_line_code }}</option>
+                  {% endfor %}
+                </select>
+                <small>Sala y turno resueltos desde la distribución del día.</small>
+              </div>
+              <div class="qx-field">
+                <label>Estatus</label>
+                <select name="status">
+                  {% for item in case_status_options %}
+                    <option value="{{ item }}" {% if edit_case and edit_case.status == item %}selected{% endif %}>{{ item }}</option>
+                  {% endfor %}
+                </select>
+                <small>Los badges del tablero y la publicación toman este mismo estatus.</small>
+              </div>
             </div>
-            <div class="split section">
-              <div><label>Estatus</label><select name="status">{% for item in case_status_options %}<option value="{{ item }}" {% if edit_case and edit_case.status == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select></div>
-              <div><label>Hora programada</label><input type="time" name="scheduled_time" value="{{ edit_case.scheduled_time if edit_case else '' }}" required></div>
+            </section>
+
+            <section class="qx-form-section">
+              <h3>Tiempo y cama</h3>
+              <p>Captura la ventana esperada para que el módulo pueda resaltar recambios, sobrecargas y traslapes.</p>
+            <div class="qx-inline-grid three">
+              <div class="qx-field">
+                <label>Hora programada</label>
+                <input type="time" name="scheduled_time" value="{{ edit_case.scheduled_time if edit_case else '' }}" required>
+              </div>
+              <div class="qx-field">
+                <label>Duración estimada (min)</label>
+                <input type="number" min="20" max="480" name="duracion_estimada_min" value="{{ edit_case.duracion_estimada_min if edit_case else 60 }}">
+              </div>
+              <div class="qx-field">
+                <label>Cama</label>
+                <input type="text" name="cama" value="{{ edit_case.cama if edit_case else '' }}">
+              </div>
             </div>
-            <div class="split section">
-              <div><label>Duración estimada (min)</label><input type="number" min="20" max="480" name="duracion_estimada_min" value="{{ edit_case.duracion_estimada_min if edit_case else 60 }}"></div>
-              <div><label>Cama</label><input type="text" name="cama" value="{{ edit_case.cama if edit_case else '' }}"></div>
+            </section>
+
+            <section class="qx-form-section">
+              <h3>Identificación del paciente</h3>
+              <p>La identificación queda visible después en la agenda consolidada y en el detalle del caso.</p>
+            <div class="qx-field">
+              <label>Paciente</label>
+              <input type="text" name="patient_name" value="{{ edit_case.patient_name if edit_case else '' }}" required>
             </div>
-            <div class="section"><label>Paciente</label><input type="text" name="patient_name" value="{{ edit_case.patient_name if edit_case else '' }}" required></div>
-            <div class="split section">
-              <div><label>NSS</label><input type="text" name="nss" value="{{ edit_case.nss if edit_case else '' }}"></div>
-              <div><label>Agregado médico</label><input type="text" name="agregado_medico" value="{{ edit_case.agregado_medico if edit_case else '' }}"></div>
+            <div class="qx-inline-grid three">
+              <div class="qx-field">
+                <label>NSS</label>
+                <input type="text" name="nss" value="{{ edit_case.nss if edit_case else '' }}">
+              </div>
+              <div class="qx-field">
+                <label>Agregado médico</label>
+                <input type="text" name="agregado_medico" value="{{ edit_case.agregado_medico if edit_case else '' }}">
+              </div>
+              <div class="qx-field">
+                <label>Edad</label>
+                <input type="number" min="0" max="130" name="edad" value="{{ edit_case.edad if edit_case and edit_case.edad is not none else '' }}">
+              </div>
             </div>
-            <div class="split section">
-              <div><label>Edad</label><input type="number" min="0" max="130" name="edad" value="{{ edit_case.edad if edit_case and edit_case.edad is not none else '' }}"></div>
-              <div><label>Tipo de anestesia</label><input type="text" name="tipo_anestesia" value="{{ edit_case.tipo_anestesia if edit_case else '' }}"></div>
+            </section>
+
+            <section class="qx-form-section">
+              <h3>Contexto clínico</h3>
+              <p>Estos campos alimentan la lectura ejecutiva, la conciliación y la publicación interna.</p>
+            <div class="qx-field">
+              <label>Tipo de anestesia</label>
+              <input type="text" name="tipo_anestesia" value="{{ edit_case.tipo_anestesia if edit_case else '' }}">
             </div>
-            <div class="section"><label>Diagnóstico preoperatorio</label><textarea name="diagnostico_preoperatorio">{{ edit_case.diagnostico_preoperatorio if edit_case else '' }}</textarea></div>
-            <div class="section"><label>Operación proyectada</label><textarea name="operacion_proyectada">{{ edit_case.operacion_proyectada if edit_case else '' }}</textarea></div>
-            <div class="split section">
-              <div><label>Cirujano</label><input type="text" name="cirujano" value="{{ edit_case.cirujano if edit_case else '' }}"></div>
-              <div><label>Anestesiólogo</label><input type="text" name="anestesiologo" value="{{ edit_case.anestesiologo if edit_case else '' }}"></div>
+            <div class="qx-field">
+              <label>Diagnóstico preoperatorio</label>
+              <textarea name="diagnostico_preoperatorio">{{ edit_case.diagnostico_preoperatorio if edit_case else '' }}</textarea>
             </div>
-            <div class="section"><label>Enfermera especialista</label><input type="text" name="enfermera_especialista" value="{{ edit_case.enfermera_especialista if edit_case else '' }}"></div>
-            <div class="section"><label>Notas</label><textarea name="notes">{{ edit_case.notes if edit_case else '' }}</textarea></div>
-            <div class="actions section">
-              <button class="btn" type="submit">Guardar caso</button>
-              {% if edit_case %}<a class="btn" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}">Cancelar edición</a>{% endif %}
+            <div class="qx-field">
+              <label>Operación proyectada</label>
+              <textarea name="operacion_proyectada">{{ edit_case.operacion_proyectada if edit_case else '' }}</textarea>
+            </div>
+            </section>
+
+            <section class="qx-form-section">
+              <h3>Staff primario</h3>
+              <p>Si luego necesitas ampliar el equipo, el detalle del caso conserva la bitácora específica de personal asociado.</p>
+            <div class="qx-inline-grid two">
+              <div class="qx-field">
+                <label>Cirujano</label>
+                <input type="text" name="cirujano" value="{{ edit_case.cirujano if edit_case else '' }}">
+              </div>
+              <div class="qx-field">
+                <label>Anestesiólogo</label>
+                <input type="text" name="anestesiologo" value="{{ edit_case.anestesiologo if edit_case else '' }}">
+              </div>
+            </div>
+            <div class="qx-field">
+              <label>Enfermera especialista</label>
+              <input type="text" name="enfermera_especialista" value="{{ edit_case.enfermera_especialista if edit_case else '' }}">
+            </div>
+            </section>
+
+            <section class="qx-form-section">
+              <h3>Notas</h3>
+              <p>Úsalas para excepciones operativas, decisiones de coordinación o aclaraciones del parte.</p>
+            <div class="qx-field">
+              <label>Notas operativas</label>
+              <textarea name="notes">{{ edit_case.notes if edit_case else '' }}</textarea>
+            </div>
+            </section>
+
+            <div class="qx-actions">
+              <button class="qx-btn" type="submit">Guardar caso</button>
+              {% if edit_case %}
+                <a class="qx-btn ghost" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}">Cancelar edición</a>
+              {% endif %}
             </div>
           </form>
-        </article>
-      </section>
-
-      <article class="card section">
-        <h2>Casos del día</h2>
-        <div class="sub">Los casos importados desde PDF y los manuales conviven en la misma vista. El detalle permite registrar staff adicional, eventos reales e incidencias.</div>
-        <div class="table-wrap section">
-          <table>
-            <thead>
-              <tr>
-                <th>Hora</th><th>Sala</th><th>Paciente</th><th>Operación</th><th>Staff</th><th>Estatus</th><th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for case in overview.cases %}
-                <tr>
-                  <td>{{ case.scheduled_time }}</td>
-                  <td>{{ case.daily_block.room_code }} · {{ case.daily_block.turno }}</td>
-                  <td><strong>{{ case.patient_name }}</strong><div class="sub">{{ case.nss or 'Sin NSS' }}</div></td>
-                  <td>{{ case.operacion_proyectada }}<div class="sub">{{ case.diagnostico_preoperatorio }}</div></td>
-                  <td>{{ case.cirujano or 'Sin cirujano' }}<div class="sub">{{ case.anestesiologo or 'Sin anestesiólogo' }}</div></td>
-                  <td>
-                    {% set badge = {'label': case.status.title(), 'tone': 'slate'} %}
-                    {% if case.status == 'PROGRAMADA' %}{% set badge = {'label': 'Programada', 'tone': 'blue'} %}{% endif %}
-                    {% if case.status == 'EN_CURSO' %}{% set badge = {'label': 'En curso', 'tone': 'amber'} %}{% endif %}
-                    {% if case.status == 'REALIZADA' %}{% set badge = {'label': 'Realizada', 'tone': 'green'} %}{% endif %}
-                    {% if case.status == 'CANCELADA' %}{% set badge = {'label': 'Cancelada', 'tone': 'red'} %}{% endif %}
-                    <span class="tone {{ badge.tone }}">{{ badge.label }}</span>
-                  </td>
-                  <td>
-                    <div class="actions">
-                      <a class="btn" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}?edit_case={{ case.id }}">Editar</a>
-                      <a class="btn" href="/quirofano/jefatura/casos/{{ case.id }}">Detalle</a>
-                    </div>
-                  </td>
-                </tr>
-              {% else %}
-                <tr><td colspan="7">Todavía no hay casos confirmados para este día.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
         </div>
-      </article>
-    {% endif %}
-  </div>
-</body>
-</html>
+      </aside>
+    </section>
+
+    <section class="qx-chart-grid">
+      {{ qx_chart_panel("Utilización por servicio", "service_mix", "Lectura rápida de volumen por servicio asignado durante el día.") }}
+      {{ qx_chart_panel("Tendencia reciente", "trend_mix", "Comparativo diario de agenda capturada frente a cirugías realizadas.") }}
+    </section>
+
+    <section class="qx-panel">
+      <div class="qx-panel-head">
+        <div>
+          <h2>{{ ui_terms.day_cases }}</h2>
+          <p>Las cirugías importadas y las manuales conviven en una sola agenda. Los conflictos quedan resaltados para no esconder riesgos operativos.</p>
+        </div>
+        <div class="qx-chip-row" style="margin-top:0">
+          {{ qx_badge("Programados: " ~ overview.kpis.programmed_cases, "blue") }}
+          {{ qx_badge("Realizados: " ~ overview.kpis.performed_cases, "emerald") }}
+          {{ qx_badge("Conflictos: " ~ overview.kpis.conflict_cases, "gold") }}
+          {{ qx_badge("Cancelados: " ~ overview.kpis.cancelled_cases, "rose") }}
+        </div>
+      </div>
+
+      <div class="qx-table-wrap">
+        <table class="qx-table">
+          <thead>
+            <tr>
+              <th>Hora</th>
+              <th>Sala</th>
+              <th>Paciente</th>
+              <th>Operación</th>
+              <th>Equipo principal</th>
+              <th>Estatus</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for case in overview.cases %}
+              <tr class="{% if case.id in overview.conflict_case_ids %}is-conflict{% endif %}">
+                <td>
+                  <strong>{{ case.scheduled_time }}</strong>
+                  <div class="qx-caption">{{ case.duracion_estimada_min }} min</div>
+                </td>
+                <td>
+                  <strong>{{ case.daily_block.room_code }}</strong>
+                  <div class="qx-caption">{{ case.daily_block.turno }} · {{ case.daily_block.service_line_code }}</div>
+                </td>
+                <td>
+                  <strong>{{ case.patient_name }}</strong>
+                  <div class="qx-caption">{{ case.nss or 'Sin NSS' }} · {{ case.agregado_medico or 'Sin agregado' }}</div>
+                </td>
+                <td>
+                  <strong>{{ case.operacion_proyectada }}</strong>
+                  <div class="qx-caption">{{ case.diagnostico_preoperatorio or 'Sin diagnóstico' }}</div>
+                </td>
+                <td>
+                  <strong>{{ case.cirujano or 'Sin cirujano' }}</strong>
+                  <div class="qx-caption">{{ case.anestesiologo or 'Sin anestesiólogo' }}</div>
+                </td>
+                <td>
+                  {% set tone = 'slate' %}
+                  {% set label = case.status.title() %}
+                  {% if case.status == 'PROGRAMADA' %}{% set tone = 'blue' %}{% set label = 'Programada' %}{% endif %}
+                  {% if case.status == 'EN_CURSO' %}{% set tone = 'gold' %}{% set label = 'En curso' %}{% endif %}
+                  {% if case.status == 'REALIZADA' %}{% set tone = 'emerald' %}{% set label = 'Realizada' %}{% endif %}
+                  {% if case.status == 'CANCELADA' %}{% set tone = 'rose' %}{% set label = 'Cancelada' %}{% endif %}
+                  {{ qx_badge(label, tone) }}
+                  {% if case.id in overview.conflict_case_ids %}
+                    <div class="qx-caption" style="margin-top:8px;color:#922539">Conflicto horario o de personal detectado</div>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="qx-actions">
+                    <button
+                      class="qx-row-toggle"
+                      type="button"
+                      data-row-toggle
+                      data-row-target="case-detail-{{ case.id }}"
+                      data-label-open="Ver más"
+                      data-label-close="Ocultar"
+                    >Ver más</button>
+                    <a class="qx-btn ghost" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}?edit_case={{ case.id }}">Editar</a>
+                    <a class="qx-btn ghost" href="/quirofano/jefatura/casos/{{ case.id }}">Detalle</a>
+                  </div>
+                </td>
+              </tr>
+              <tr id="case-detail-{{ case.id }}" class="qx-row-detail" hidden>
+                <td colspan="7">
+                  <div class="qx-row-detail-card">
+                    <div class="qx-detail-grid">
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">{{ ui_terms.room_shift }}</strong>
+                        <div class="qx-text-muted">{{ case.daily_block.turno }} · {{ case.daily_block.room_code }} · {{ case.daily_block.service_line_code }}</div>
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Tipo de anestesia</strong>
+                        <div class="qx-text-muted">{{ case.tipo_anestesia or 'No capturada' }}</div>
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Fuente</strong>
+                        <div class="qx-text-muted">{{ case.source_type }}</div>
+                      </div>
+                    </div>
+                    <div class="qx-detail-grid two" style="margin-top:12px">
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Diagnóstico preoperatorio</strong>
+                        <div class="qx-text-muted">{{ case.diagnostico_preoperatorio or 'Sin diagnóstico' }}</div>
+                      </div>
+                      <div class="qx-item">
+                        <strong class="qx-item-kicker">Notas operativas</strong>
+                        <div class="qx-text-muted">{{ case.notes or 'Sin notas capturadas.' }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="7">
+                  <div class="qx-empty">Todavía no hay casos confirmados para este día.</div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

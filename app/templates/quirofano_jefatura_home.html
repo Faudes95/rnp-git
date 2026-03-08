@@ -1,134 +1,192 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Jefatura de Quirófano</title>
-  <link href="/static/css/fonts_offline.css" rel="stylesheet">
-  <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
-  <style>
-    :root{--bg:#eef3f8;--ink:#13304a;--muted:#5f7286;--line:#d7e1ec;--card:#fff;--primary:#0d4b7a;--accent:#b72c3b;--good:#156b45;--warn:#a46408;--bad:#9b2335}
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#0f2740,#133d62 260px,var(--bg) 260px);font-family:'Montserrat',sans-serif;color:var(--ink)}
-    .shell{max-width:1280px;margin:0 auto;padding:24px}
-    .hero{background:linear-gradient(135deg,#0f3355,#0d4b7a);color:#fff;border-radius:24px;padding:28px;box-shadow:0 22px 46px rgba(8,30,52,.28)}
-    .hero h1{margin:0 0 8px;font-size:34px}
-    .hero p{margin:0;color:rgba(245,249,255,.88);max-width:860px;line-height:1.55}
-    .hero-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-    .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.12);font-size:12px;font-weight:800}
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid transparent}
-    .btn.primary{background:#fff;color:var(--primary)}
-    .btn.secondary{background:transparent;color:#fff;border-color:rgba(255,255,255,.26)}
-    .flash{margin:18px 0;padding:14px 16px;border-radius:14px;font-weight:700}
-    .flash.success{background:#e8f6ee;color:var(--good);border:1px solid #c3e7d0}
-    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:22px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 12px 28px rgba(15,39,64,.08)}
-    .k{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-    .v{font-size:34px;font-weight:900;margin:10px 0 6px}
-    .sub{font-size:13px;color:var(--muted);line-height:1.45}
-    .content{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:18px}
-    .section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-    .section-title h2{margin:0;font-size:22px}
-    .list{display:grid;gap:12px}
-    .item{border:1px solid var(--line);border-radius:16px;padding:14px;background:#f8fbfe}
-    .item strong{display:block;font-size:15px}
-    .row{display:flex;justify-content:space-between;gap:12px;align-items:center}
-    .small{font-size:12px;color:var(--muted)}
-    .tone{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase}
-    .tone.green{background:#e6f6ed;color:var(--good)}
-    .tone.red{background:#fdecef;color:var(--bad)}
-    .tone.amber{background:#fff2dc;color:var(--warn)}
-    .tone.blue{background:#e6f0fb;color:var(--primary)}
-    .tone.slate{background:#edf1f5;color:#5a6b7a}
-    @media (max-width:1080px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content{grid-template-columns:1fr}}
-    @media (max-width:760px){body{background:var(--bg)}.shell{padding:14px}.hero{padding:20px;border-radius:18px}.hero h1{font-size:28px}.grid{grid-template-columns:1fr}}
-  </style>
-</head>
-<body>
-  <div class="shell">
-    <section class="hero">
-      <h1>Jefatura de Quirófano</h1>
-      <p>Gobierno de programación hospitalaria, plantilla semanal versionada, conciliación de PDF IMSS y seguimiento operativo por sala, turno y caso. El módulo corre separado del quirófano clínico actual para evitar mezclar la lógica hospitalaria con Urología.</p>
-      <div class="hero-meta">
-        <span class="chip">Unidad: HES CMN La Raza</span>
-        <span class="chip">Fecha operativa: {{ selected_date_label }}</span>
-        <span class="chip">Plantilla activa: {{ active_template.version_label if active_template else 'Sin plantilla' }}</span>
+{% extends "_quirofano_jefatura_base.html" %}
+{% from "_quirofano_jefatura_macros.html" import qx_badge, qx_chart_panel, qx_kpi %}
+
+{% set shell_title = "Jefatura de Quirófano" %}
+{% set shell_subtitle = "Centro de mando hospitalario para distribución de salas, agenda quirúrgica del día, conciliación del parte IMSS y seguimiento operativo por sala, turno y cirugía." %}
+{% set shell_overline = "Resumen ejecutivo + captura operativa" %}
+{% set current_tab = "dashboard" %}
+{% set global_section = "jefatura_quirofano" %}
+{% set hero_chips = [
+  "Unidad: HES CMN La Raza",
+  "Fecha operativa: " ~ selected_date_label,
+  "Plantilla activa: " ~ (active_template.version_label if active_template else "Sin plantilla")
+] %}
+
+{% block hero_actions %}
+  <a class="qx-btn" href="/quirofano/jefatura/publicacion/{{ selected_date.isoformat() }}">{{ ui_terms.panel_principal }}</a>
+  <a class="qx-btn" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}">Abrir día</a>
+  <a class="qx-btn secondary" href="/quirofano/jefatura/importaciones">Subir PDF IMSS</a>
+  <a class="qx-btn secondary" href="/quirofano/jefatura/plantillas">Editar plantilla</a>
+{% endblock %}
+
+{% block content %}
+  <section class="qx-kpi-strip">
+    {{ qx_kpi(ui_terms.day_spaces, overview.kpis.blocks_total, "Salas y turnos resueltos desde la plantilla y los cambios del día.", "blue", "🧭") }}
+    {{ qx_kpi("Cirugías programadas", overview.kpis.programmed_cases, "Cirugías confirmadas para la fecha operativa.", "rose", "🗂️") }}
+    {{ qx_kpi("Ocupación estimada", overview.kpis.occupancy_pct ~ "%", "Relación rápida entre salas/turnos habilitados y cirugías capturadas.", "emerald", "📈") }}
+    {{ qx_kpi("Conflictos detectados", overview.kpis.conflict_cases, "Traslapes de sala o personal sobre la agenda del día.", "gold", "⚠️") }}
+  </section>
+
+  <section class="qx-chart-grid">
+    {{ qx_chart_panel("Distribución por turno", "shift_mix", "Comparativo entre salas/turnos habilitados y cirugías programadas por turno.") }}
+    {{ qx_chart_panel("Estatus quirúrgico", "status_mix", "Lectura ejecutiva de programadas, en curso, realizadas y canceladas.") }}
+    {{ qx_chart_panel("Utilización por servicio", "service_mix", "Volumen capturado por servicio asignado durante el día.") }}
+    {{ qx_chart_panel("Tendencia reciente", "trend_mix", "Comparativo de siete días entre agenda capturada y cirugías realizadas.") }}
+  </section>
+
+  <section class="qx-command-grid">
+    <article class="qx-command-card">
+      <h3>Operar el día</h3>
+      <p>Entra a la programación diaria para mover salas y turnos, capturar cirugías manuales y resolver conflictos de sala o personal desde una sola vista.</p>
+      <div class="qx-chip-row">
+        <span class="qx-chip">Salas habilitadas</span>
+        <span class="qx-chip">Captura rápida</span>
+        <span class="qx-chip">Conflictos visibles</span>
       </div>
-      <div class="actions">
-        <a class="btn primary" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}">Abrir día quirúrgico</a>
-        <a class="btn secondary" href="/quirofano/jefatura/importaciones">Importaciones PDF</a>
-        <a class="btn secondary" href="/quirofano/jefatura/plantillas">Plantilla semanal</a>
-        <a class="btn secondary" href="/quirofano/jefatura/publicacion/{{ selected_date.isoformat() }}">Pantalla interna</a>
+      <div class="qx-actions">
+        <a class="qx-btn" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}">Abrir día</a>
       </div>
-    </section>
+    </article>
+    <article class="qx-command-card">
+      <h3>Conciliar el parte</h3>
+      <p>Sube el PDF IMSS, revisa discrepancias y convierte solo lotes limpios en programación diaria confirmada.</p>
+      <div class="qx-chip-row">
+        <span class="qx-chip">Lectura estructurada</span>
+        <span class="qx-chip">Revisión humana</span>
+        <span class="qx-chip">Trazabilidad completa</span>
+      </div>
+      <div class="qx-actions">
+        <a class="qx-btn" href="/quirofano/jefatura/importaciones">Ir a importaciones</a>
+      </div>
+    </article>
+    <article class="qx-command-card">
+      <h3>Modelar capacidad</h3>
+      <p>Ajusta la plantilla semanal y el catálogo de servicios para que la distribución de salas refleje la presión real del hospital.</p>
+      <div class="qx-chip-row">
+        <span class="qx-chip">Versionado</span>
+        <span class="qx-chip">Servicios editables</span>
+        <span class="qx-chip">Sin reescribir historial</span>
+      </div>
+      <div class="qx-actions">
+        <a class="qx-btn" href="/quirofano/jefatura/plantillas">Abrir plantillas</a>
+      </div>
+    </article>
+  </section>
 
-    {% if flash %}
-      <div class="flash {{ flash.kind }}">{{ flash.message }}</div>
-    {% endif %}
-
-    <section class="grid">
-      <article class="card"><div class="k">Bloques del día</div><div class="v">{{ overview.kpis.blocks_total }}</div><div class="sub">Salas activas resueltas desde la plantilla y sobrescrituras diarias.</div></article>
-      <article class="card"><div class="k">Casos programados</div><div class="v">{{ overview.kpis.programmed_cases }}</div><div class="sub">Casos confirmados para la fecha operativa seleccionada.</div></article>
-      <article class="card"><div class="k">Ocupación estimada</div><div class="v">{{ overview.kpis.occupancy_pct }}%</div><div class="sub">Relación simple entre bloques activos y casos capturados.</div></article>
-      <article class="card"><div class="k">Conflictos detectados</div><div class="v">{{ overview.kpis.conflict_cases }}</div><div class="sub">Casos con traslape de sala o personal sobre el mismo horario.</div></article>
-    </section>
-
-    <section class="content">
-      <article class="card">
-        <div class="section-title">
-          <h2>Resumen operativo del día</h2>
-          <a class="btn primary" href="/quirofano/jefatura/programacion">Calendario</a>
+  <section class="qx-page-grid qx-two-col">
+    <article class="qx-panel alt">
+      <div class="qx-panel-head">
+        <div>
+          <h2>Estado operativo del día</h2>
+          <p>La portada combina KPIs de gobierno, entrada rápida al día quirúrgico y lectura de productividad sin obligarte a cambiar de pantalla.</p>
         </div>
-        <div class="list">
-          <div class="item">
-            <div class="row"><strong>Realizadas vs programadas</strong><span class="small">{{ overview.kpis.performed_cases }} / {{ overview.kpis.programmed_cases }}</span></div>
-            <div class="sub">Avance de ejecución con base en eventos reales de los casos del día.</div>
-          </div>
-          <div class="item">
-            <div class="row"><strong>Cancelaciones del día</strong><span class="small">{{ overview.kpis.cancelled_cases }}</span></div>
-            <div class="sub">Los casos cancelados permanecen visibles para auditoría y trazabilidad.</div>
-          </div>
-          <div class="item">
-            <div class="row"><strong>Retraso promedio de inicio</strong><span class="small">{{ overview.kpis.avg_start_delay_min if overview.kpis.avg_start_delay_min is not none else 'Sin datos' }}</span></div>
-            <div class="sub">Minutos promedio entre hora programada e inicio real de cirugía.</div>
-          </div>
-          <div class="item">
-            <div class="row"><strong>Tiempo medio de recambio</strong><span class="small">{{ overview.kpis.avg_turnover_min if overview.kpis.avg_turnover_min is not none else 'Sin datos' }}</span></div>
-            <div class="sub">Calculado solo cuando ya existen eventos de fin e inicio real entre casos consecutivos.</div>
+        <div class="qx-actions">
+          <a class="qx-btn ghost" href="/quirofano/jefatura/programacion">Calendario</a>
+        </div>
+      </div>
+
+      <div class="qx-metric-grid">
+        <div class="qx-item">
+          <strong class="qx-item-kicker">Pulso de ejecución</strong>
+          <div class="qx-kpi-value">{{ overview.kpis.performed_cases }} / {{ overview.kpis.programmed_cases }}</div>
+          <div class="qx-text-muted">Avance real contra la agenda cargada del día.</div>
+          <div class="qx-metric-stack" style="margin-top:14px">
+            <div class="qx-metric-row">
+              <div>
+                <strong>Tiempo medio de recambio</strong>
+                <span>Solo con pares de fin e inicio ya registrados</span>
+              </div>
+              <div class="qx-metric-value">{{ overview.kpis.avg_turnover_min if overview.kpis.avg_turnover_min is not none else "—" }}</div>
+            </div>
+            <div class="qx-metric-row">
+              <div>
+                <strong>Retraso promedio de arranque</strong>
+                <span>Medido contra hora programada e inicio real</span>
+              </div>
+              <div class="qx-metric-value">{{ overview.kpis.avg_start_delay_min if overview.kpis.avg_start_delay_min is not none else "—" }}</div>
+            </div>
           </div>
         </div>
-      </article>
+        <div class="qx-item">
+          <strong class="qx-item-kicker">Lectura táctica</strong>
+          <div class="qx-status-board" style="margin-top:12px">
+            <div class="qx-status-chip">
+              <span>{{ ui_terms.base_distribution }}</span>
+              <strong>{{ template_slots_total }}</strong>
+            </div>
+            <div class="qx-status-chip">
+              <span>Servicios activos</span>
+              <strong>{{ service_lines_total }}</strong>
+            </div>
+            <div class="qx-status-chip">
+              <span>Conflictos</span>
+              <strong>{{ overview.kpis.conflict_cases }}</strong>
+            </div>
+            <div class="qx-status-chip">
+              <span>Cancelaciones</span>
+              <strong>{{ overview.kpis.cancelled_cases }}</strong>
+            </div>
+          </div>
+          <div class="qx-chip-row" style="margin-top:14px">
+            {{ qx_badge(ui_terms.enabled_spaces ~ ": " ~ overview.kpis.active_blocks, "emerald") }}
+            {{ qx_badge(ui_terms.closed_spaces ~ ": " ~ overview.kpis.blocked_blocks, "rose") }}
+            {{ qx_badge(ui_terms.contingency_spaces ~ ": " ~ overview.kpis.contingency_blocks, "gold") }}
+            {{ qx_badge("Matutino: " ~ overview.kpis.matutino_cases ~ " casos", "blue") }}
+            {{ qx_badge("Vespertino: " ~ overview.kpis.vespertino_cases ~ " casos", "slate") }}
+          </div>
+        </div>
+      </div>
+    </article>
 
-      <article class="card">
-        <div class="section-title">
+    <article class="qx-panel">
+      <div class="qx-panel-head">
+        <div>
           <h2>Importaciones recientes</h2>
-          <a class="btn primary" href="/quirofano/jefatura/importaciones">Gestionar</a>
+          <p>Carga del parte quirúrgico IMSS con trazabilidad completa del lote antes de convertirlo en agenda hospitalaria real.</p>
         </div>
-        <div class="list">
-          {% for batch in recent_imports %}
-            {% set badge = {'label': batch.status.title(), 'tone': 'slate'} %}
-            {% if batch.status == 'CONFIRMED' %}{% set badge = {'label': 'Confirmado', 'tone': 'green'} %}{% endif %}
-            {% if batch.status == 'REVIEW' %}{% set badge = {'label': 'En revisión', 'tone': 'amber'} %}{% endif %}
-            {% if batch.status == 'UNSUPPORTED' %}{% set badge = {'label': 'No soportado', 'tone': 'red'} %}{% endif %}
-            <div class="item">
-              <div class="row">
-                <strong>{{ batch.original_filename }}</strong>
-                <span class="tone {{ badge.tone }}">{{ badge.label }}</span>
+        <a class="qx-btn ghost" href="/quirofano/jefatura/importaciones">Gestionar</a>
+      </div>
+
+      <div class="qx-list">
+        {% for batch in recent_imports %}
+          {% set tone = 'slate' %}
+          {% set label = batch.status.title() %}
+          {% if batch.status == 'CONFIRMED' %}{% set tone = 'emerald' %}{% set label = 'Confirmado' %}{% endif %}
+          {% if batch.status == 'REVIEW' %}{% set tone = 'gold' %}{% set label = 'En revisión' %}{% endif %}
+          {% if batch.status == 'UNSUPPORTED' %}{% set tone = 'rose' %}{% set label = 'No soportado' %}{% endif %}
+          <details class="qx-collapsible qx-item" data-collapsible-id="home-batch-{{ batch.id }}">
+            <summary class="qx-collapse-summary">
+              <div>
+                <h3>{{ batch.original_filename }}</h3>
+                <p>{{ batch.file_date.strftime('%d/%m/%Y') if batch.file_date else 'Fecha no detectada' }} · {{ batch.extracted_rows_count }} filas · {{ batch.page_count }} páginas</p>
               </div>
-              <div class="small">Fecha del programa: {{ batch.file_date.strftime('%d/%m/%Y') if batch.file_date else 'No detectada' }} · {{ batch.extracted_rows_count }} filas · {{ batch.page_count }} páginas</div>
-              <div class="actions" style="margin-top:12px">
-                <a class="btn primary" href="/quirofano/jefatura/importaciones/{{ batch.id }}">Abrir lote</a>
+              <div class="qx-collapse-meta">
+                {{ qx_badge(label, tone) }}
+                <span class="qx-collapse-hint">Tocar para desplegar</span>
               </div>
+            </summary>
+            <div class="qx-row-detail-card">
+              <div class="qx-panel-head">
+              <div>
+                <h3>Resumen del lote</h3>
+                <p>Revisión rápida del archivo, su volumen y el estado de la carga antes de volver a la conciliación.</p>
+              </div>
+              {{ qx_badge(label, tone) }}
             </div>
-          {% else %}
-            <div class="item">
-              <strong>Sin importaciones todavía</strong>
-              <div class="sub">Sube un PDF institucional IMSS para convertirlo en programación del día con conciliación previa.</div>
+            <div class="qx-chip-row" style="margin-top:0">
+              {% if batch.file_date %}{{ qx_badge(batch.file_date.strftime('%d/%m/%Y'), "blue") }}{% endif %}
+              {{ qx_badge(batch.extracted_rows_count ~ " filas", "slate") }}
+              {{ qx_badge(batch.page_count ~ " páginas", "gold") }}
             </div>
-          {% endfor %}
-        </div>
-      </article>
-    </section>
-  </div>
-</body>
-</html>
+            <div class="qx-actions">
+              <a class="qx-btn ghost" href="/quirofano/jefatura/importaciones/{{ batch.id }}">Abrir lote</a>
+            </div>
+            </div>
+          </details>
+        {% else %}
+          <div class="qx-empty">Todavía no hay lotes importados. Puedes arrancar el flujo desde el botón “Subir PDF IMSS”.</div>
+        {% endfor %}
+      </div>
+    </article>
+  </section>
+{% endblock %}

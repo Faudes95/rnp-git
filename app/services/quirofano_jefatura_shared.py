@@ -35,6 +35,28 @@ SHIFT_OPTIONS = [
     {"code": "VESPERTINO", "label": "Vespertino"},
 ]
 
+UI_TERMS = {
+    "panel_principal": "Panel principal",
+    "dashboard": "Tablero",
+    "programacion": "Programación",
+    "importaciones": "Importaciones",
+    "plantillas": "Plantillas",
+    "day_spaces": "Salas/turnos del día",
+    "enabled_spaces": "Salas/turnos habilitados",
+    "closed_spaces": "Salas/turnos cerrados",
+    "contingency_spaces": "Salas/turnos en contingencia",
+    "base_distribution": "Distribución base semanal",
+    "weekly_spaces": "Espacios base semanales",
+    "day_cases": "Cirugías del día",
+    "service_assigned": "Servicio asignado",
+    "room_shift": "Sala y turno",
+    "block_status": {
+        "ACTIVO": "Habilitado",
+        "BLOQUEADO": "Cerrado",
+        "CONTINGENCIA": "Contingencia",
+    },
+}
+
 BLOCK_STATUS_OPTIONS = ["ACTIVO", "BLOQUEADO", "CONTINGENCIA"]
 CASE_STATUS_OPTIONS = ["PROGRAMADA", "EN_CURSO", "REALIZADA", "CANCELADA", "REPROGRAMADA"]
 CASE_EVENT_TYPES = [
@@ -214,8 +236,8 @@ BASE_TEMPLATE_MATRIX: List[Dict[str, Any]] = [
 ]
 
 STATUS_BADGES = {
-    "ACTIVO": {"label": "Activo", "tone": "green"},
-    "BLOQUEADO": {"label": "Bloqueado", "tone": "red"},
+    "ACTIVO": {"label": "Habilitado", "tone": "green"},
+    "BLOQUEADO": {"label": "Cerrado", "tone": "red"},
     "CONTINGENCIA": {"label": "Contingencia", "tone": "amber"},
     "PROGRAMADA": {"label": "Programada", "tone": "blue"},
     "EN_CURSO": {"label": "En curso", "tone": "amber"},
@@ -237,6 +259,13 @@ EVENT_ORDER = {
     "EGRESO": 5,
     "CANCELADO": 6,
 }
+
+
+def ui_terms() -> Dict[str, Any]:
+    return {
+        **UI_TERMS,
+        "block_status": dict(UI_TERMS["block_status"]),
+    }
 
 
 def _bind_from(bind_or_session: Any) -> Any:
@@ -1030,6 +1059,7 @@ def build_day_overview(session: Session, target_date: date, *, actor: str = "SYS
     starts = []
     turnovers = []
     conflicts = 0
+    conflict_case_ids: List[int] = []
     cases_by_block: Dict[int, List[Any]] = defaultdict(list)
     for case in cases:
         cases_by_block[int(case.daily_block_id)].append(case)
@@ -1057,6 +1087,24 @@ def build_day_overview(session: Session, target_date: date, *, actor: str = "SYS
         )
         if errs:
             conflicts += 1
+            conflict_case_ids.append(int(getattr(case, "id", 0) or 0))
+    shift_code_list = [str(item["code"]) for item in SHIFT_OPTIONS]
+    shift_block_counts = {
+        code: sum(1 for row in blocks if str(getattr(row, "turno", "") or "").upper() == code)
+        for code in shift_code_list
+    }
+    shift_case_counts = {
+        code: sum(
+            1
+            for row in cases
+            if str(getattr(getattr(row, "daily_block", None), "turno", "") or "").upper() == code
+        )
+        for code in shift_code_list
+    }
+    block_status_counts = {
+        code: sum(1 for row in blocks if str(getattr(row, "block_status", "") or "").upper() == code)
+        for code in BLOCK_STATUS_OPTIONS
+    }
     return {
         "target_date": target_date,
         "target_date_label": format_date(target_date),
@@ -1064,6 +1112,7 @@ def build_day_overview(session: Session, target_date: date, *, actor: str = "SYS
         "cases": cases,
         "grouped_blocks": grouped_blocks,
         "grouped_cases": grouped_cases,
+        "conflict_case_ids": conflict_case_ids,
         "kpis": {
             "blocks_total": len(blocks),
             "programmed_cases": programmed,
@@ -1073,6 +1122,13 @@ def build_day_overview(session: Session, target_date: date, *, actor: str = "SYS
             "avg_start_delay_min": round(sum(starts) / len(starts), 1) if starts else None,
             "avg_turnover_min": round(sum(turnovers) / len(turnovers), 1) if turnovers else None,
             "conflict_cases": conflicts,
+            "active_blocks": block_status_counts.get("ACTIVO", 0),
+            "blocked_blocks": block_status_counts.get("BLOQUEADO", 0),
+            "contingency_blocks": block_status_counts.get("CONTINGENCIA", 0),
+            "matutino_blocks": shift_block_counts.get("MATUTINO", 0),
+            "vespertino_blocks": shift_block_counts.get("VESPERTINO", 0),
+            "matutino_cases": shift_case_counts.get("MATUTINO", 0),
+            "vespertino_cases": shift_case_counts.get("VESPERTINO", 0),
         },
     }
 

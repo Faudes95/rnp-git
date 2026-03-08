@@ -16,7 +16,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker, Session, relationship
 from fastapi import Request, Form, Depends, HTTPException, status, UploadFile, File, BackgroundTasks
 from fastapi.responses import HTMLResponse, JSONResponse, Response, FileResponse, RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from jinja2 import Environment, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pydantic import ValidationError
 import uvicorn
 from app.bootstrap import build_main_lifespan, register_security_middlewares
@@ -704,7 +704,10 @@ SURGICAL_JSON_TYPE = JSONB if (not SURGICAL_IS_SQLITE and SURGICAL_DATABASE_URL.
 # ==========================================
 # ENTORNO JINJA2 (AUTOESCAPE)
 # ==========================================
-jinja_env = Environment(autoescape=select_autoescape(default=True, enabled_extensions=("html", "xml")))
+jinja_env = Environment(
+    loader=FileSystemLoader(os.path.join(BASE_DIR, "app", "templates")),
+    autoescape=select_autoescape(default=True, enabled_extensions=("html", "xml")),
+)
 _template_cache: Dict[str, Any] = {}
 
 # ==========================================

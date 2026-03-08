@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ shell_title or 'Jefatura de Quirófano' }} | UROMED{% endblock %}</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <link href="/static/css/rnp_ui_system.css" rel="stylesheet">
+  <link href="/static/css/quirofano_jefatura.css" rel="stylesheet">
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="qx-module {% block body_class %}{% endblock %}">
+  <div class="qx-shell">
+    <header class="qx-topbar">
+      <div class="qx-brand">
+        <img src="/static/img/logooficial_header_clean.png" alt="UROMED" class="qx-logo">
+        <div class="qx-brand-copy">
+          <span class="qx-brand-overline">UROMED</span>
+          <strong>{{ brand_title or 'Jefatura de Quirófano' }}</strong>
+          <span>{{ brand_subtitle or 'Centro de mando perioperatorio y captura hospitalaria' }}</span>
+        </div>
+      </div>
+      <div class="qx-topbar-context">
+        {% if selected_date_label %}
+          <div class="qx-mini-stat">
+            <span>Fecha</span>
+            <strong>{{ selected_date_label }}</strong>
+          </div>
+        {% endif %}
+        <div class="qx-mini-stat">
+          <span>Unidad</span>
+          <strong>HES CMN La Raza</strong>
+        </div>
+      </div>
+    </header>
+
+    <nav class="qx-global-nav" aria-label="Navegación global">
+      <a class="qx-global-link {% if global_section == 'menu' %}is-active{% endif %}" href="/">Menú</a>
+      <a class="qx-global-link {% if global_section == 'quirofano' %}is-active{% endif %}" href="/quirofano">Quirófano</a>
+      <a class="qx-global-link {% if global_section == 'jefatura_quirofano' %}is-active{% endif %}" href="/quirofano/jefatura">Jefatura de Quirófano</a>
+      <a class="qx-global-link {% if global_section == 'jefatura_urologia' %}is-active{% endif %}" href="/jefatura-urologia">Jefatura Urología</a>
+      <a class="qx-global-link {% if global_section == 'central' %}is-active{% endif %}" href="/jefatura-urologia/central">Central</a>
+    </nav>
+
+    <section class="qx-hero">
+      <div class="qx-hero-copy">
+        <span class="qx-overline">{{ shell_overline or 'Gobierno perioperatorio' }}</span>
+        <h1>{{ shell_title }}</h1>
+        <p>{{ shell_subtitle }}</p>
+        {% if hero_chips %}
+          <div class="qx-chip-row">
+            {% for chip in hero_chips %}
+              <span class="qx-chip">{{ chip }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <div class="qx-hero-actions">
+        {% block hero_actions %}{% endblock %}
+      </div>
+    </section>
+
+    {% if show_internal_nav is not sameas false %}
+      <nav class="qx-local-nav" aria-label="Secciones internas">
+        {% if selected_date %}
+          <a class="qx-tab {% if current_tab == 'publicacion' %}is-active{% endif %}" href="/quirofano/jefatura/publicacion/{{ selected_date.isoformat() }}">{{ ui_terms.panel_principal if ui_terms else 'Panel principal' }}</a>
+        {% endif %}
+        <a class="qx-tab {% if current_tab == 'dashboard' %}is-active{% endif %}" href="/quirofano/jefatura">{{ ui_terms.dashboard if ui_terms else 'Tablero' }}</a>
+        <a class="qx-tab {% if current_tab == 'programacion' %}is-active{% endif %}" href="{% if selected_date %}/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}{% else %}/quirofano/jefatura/programacion{% endif %}">Programación</a>
+        <a class="qx-tab {% if current_tab == 'importaciones' %}is-active{% endif %}" href="/quirofano/jefatura/importaciones">Importaciones</a>
+        <a class="qx-tab {% if current_tab == 'plantillas' %}is-active{% endif %}" href="/quirofano/jefatura/plantillas">Plantillas</a>
+      </nav>
+    {% endif %}
+
+    {% if flash %}
+      <div class="qx-flash {{ flash.kind }}">{{ flash.message }}</div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </div>
+
+  {% if charts %}
+    <script id="qxChartsJson" type="application/json">{{ charts|tojson }}</script>
+  {% endif %}
+  <script src="/static/vendor/chart.min.js"></script>
+  <script src="/static/js/quirofano_jefatura.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
