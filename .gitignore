@@ -14,3 +14,12 @@ __MACOSX/
 .playwright-cli/
 output/
 patient_files/
+node_modules/
+playwright-report/
+test-results/
+artifacts/har/
+artifacts/traces/
+artifacts/screenshots/
+artifacts/results.json
+artifacts/results.xml
+artifacts/perf_raw.json

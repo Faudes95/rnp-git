@@ -1,0 +1,25 @@
+{
+  "name": "uromed-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "e2e:discovery": "playwright test e2e/discovery/endpoints_matrix.spec.ts --workers=1",
+    "e2e:smoke": "playwright test e2e/discovery/smoke_inventory.spec.ts",
+    "e2e:modules": "playwright test e2e/modules",
+    "e2e:security": "playwright test e2e/security",
+    "e2e:perf": "playwright test e2e/perf",
+    "e2e:report": "tsx e2e/helpers/generate_reports.ts",
+    "e2e:all": "playwright test && tsx e2e/helpers/generate_reports.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2",
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "xlsx": "^0.18.5"
+  }
+}

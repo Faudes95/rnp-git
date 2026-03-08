@@ -213,6 +213,7 @@ body.qx-module{
   margin:10px 0 10px;
   font-size:36px;
   line-height:1.06;
+  color:#f7fbff !important;
 }
 
 .qx-hero p{
@@ -220,6 +221,7 @@ body.qx-module{
   max-width:920px;
   color:rgba(245,249,255,.88);
   line-height:1.6;
+  color:#eef5ff !important;
 }
 
 .qx-chip-row{
@@ -240,6 +242,7 @@ body.qx-module{
   color:#f7fbff;
   font-size:12px;
   font-weight:800;
+  color:#f7fbff !important;
 }
 
 .qx-hero-actions{
@@ -259,6 +262,7 @@ body.qx-module{
   background:rgba(255,255,255,.08);
   border-color:rgba(255,255,255,.22);
   color:#f7fbff;
+  color:#f7fbff !important;
 }
 
 .qx-btn.ghost{
@@ -295,6 +299,7 @@ body.qx-module{
 .qx-tab.is-active{
   background:linear-gradient(135deg,var(--qx-navy),var(--qx-blue));
   color:#ffffff;
+  color:#ffffff !important;
 }
 
 .qx-flash{
@@ -707,12 +712,14 @@ body.qx-module{
 .qx-command-card h3{
   margin:0;
   font-size:18px;
+  color:#f7fbff !important;
 }
 
 .qx-command-card p{
   margin:10px 0 0;
   color:rgba(247,251,255,.84);
   line-height:1.55;
+  color:#eef5ff !important;
 }
 
 .qx-command-card .qx-chip-row{
@@ -721,6 +728,8 @@ body.qx-module{
 
 .qx-command-card .qx-chip{
   background:rgba(255,255,255,.1);
+  color:#f7fbff !important;
+  border-color:rgba(255,255,255,.22);
 }
 
 .qx-command-card .qx-actions{
@@ -1213,15 +1222,42 @@ body.qx-module{
 .qx-broadcast-card .qx-table th{
   background:rgba(255,255,255,.05);
   color:#eef5fd;
+  color:#eef5fd !important;
 }
 
 .qx-broadcast-card .qx-table td{
   border-color:rgba(255,255,255,.08);
   color:#f7fbff;
+  color:#f7fbff !important;
 }
 
 .qx-broadcast-card .qx-room-code{
   color:#ffffff;
+  color:#ffffff !important;
+}
+
+.qx-hero .qx-overline,
+.qx-hero .qx-overline *,
+.qx-hero h1,
+.qx-hero p,
+.qx-hero .qx-chip,
+.qx-hero .qx-chip *,
+.qx-command-card h3,
+.qx-command-card p,
+.qx-command-card .qx-chip,
+.qx-command-card .qx-chip *,
+.qx-broadcast .qx-hero h1,
+.qx-broadcast .qx-hero p,
+.qx-broadcast .qx-hero .qx-chip,
+.qx-broadcast-card h2,
+.qx-broadcast-card h3,
+.qx-broadcast-card .qx-panel-head p,
+.qx-broadcast-card .qx-caption,
+.qx-broadcast-card .qx-table td,
+.qx-broadcast-card .qx-table td *,
+.qx-broadcast-card .qx-badge,
+.qx-broadcast-card .qx-badge *{
+  color:#f7fbff !important;
 }
 
 .qx-broadcast .qx-overline,

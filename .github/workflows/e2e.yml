@@ -1,0 +1,84 @@
+name: e2e
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  playwright-e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        profile:
+          - full
+          - minimal_jefatura
+    env:
+      BASE_URL: http://127.0.0.1:8000
+      AUTH_ENABLED: "true"
+      AUTH_USER: Faudes
+      AUTH_PASS: "1995"
+      IMSS_USER: Faudes
+      IMSS_PASS: "1995"
+      APP_BOOT_PROFILE: ${{ matrix.profile }}
+      STARTUP_INTERCONEXION_MODE: off
+      AI_WARMUP_MODE: off
+      DATABASE_URL: sqlite:///${{ github.workspace }}/artifacts/clinical-${{ matrix.profile }}.db
+      SURGICAL_DATABASE_URL: sqlite:///${{ github.workspace }}/artifacts/surgical-${{ matrix.profile }}.db
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Node dependencies
+        run: npm install --no-fund --no-audit
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Start UROMED
+        run: |
+          mkdir -p artifacts
+          nohup python -m uvicorn main:app --host 127.0.0.1 --port 8000 > artifacts/app-${{ matrix.profile }}.log 2>&1 &
+          python - <<'PY'
+          import time
+          import urllib.request
+          url = "http://127.0.0.1:8000/status"
+          for _ in range(120):
+              try:
+                  with urllib.request.urlopen(url, timeout=2) as resp:
+                      if resp.status == 200:
+                          raise SystemExit(0)
+              except Exception:
+                  time.sleep(1)
+          raise SystemExit("App no respondió en /status")
+          PY
+
+      - name: Run discovery
+        run: npm run e2e:discovery
+
+      - name: Run Playwright suite
+        run: npm run e2e:all
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-${{ matrix.profile }}
+          path: |
+            playwright-report
+            artifacts
+            docs
+            test-results
