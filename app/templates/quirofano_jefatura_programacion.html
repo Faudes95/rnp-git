@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Programación | Jefatura de Quirófano</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root{--bg:#f2f6fb;--card:#fff;--ink:#17324b;--muted:#66778a;--line:#d6e0ea;--primary:#0e4b7f;--good:#126843;--warn:#9f6308;--bad:#a02234}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--ink)}
+    .shell{max-width:1440px;margin:0 auto;padding:18px}
+    .hero{background:linear-gradient(135deg,#102e4a,#0e4b7f);color:#fff;border-radius:20px;padding:24px}
+    .hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;color:rgba(245,249,255,.9);line-height:1.5}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 14px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid transparent;background:#fff;color:var(--primary)}
+    .btn.alt{background:transparent;color:#fff;border-color:rgba(255,255,255,.28)}
+    .flash{margin:16px 0;padding:14px 16px;border-radius:14px;font-weight:700}.flash.success{background:#e7f6ee;color:var(--good);border:1px solid #c2e6cf}.flash.error{background:#fdecef;color:var(--bad);border:1px solid #f3c3ce}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:18px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 12px 26px rgba(15,39,64,.06)}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+    .kpi{border:1px solid var(--line);border-radius:16px;padding:14px;background:#f9fbfd}
+    .k{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+    .v{font-size:28px;font-weight:900;margin-top:8px}
+    h2{margin:0 0 10px;font-size:24px}
+    .sub{font-size:13px;color:var(--muted);line-height:1.5}
+    .days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+    .day{border:1px solid var(--line);border-radius:14px;padding:14px;background:#f9fbfd}
+    .day strong{display:block;font-size:16px}.day .small{font-size:12px;color:var(--muted);margin-top:6px}
+    .day .actions{margin-top:12px}
+    .section{margin-top:16px}
+    form{margin:0}
+    input[type=text],input[type=number],input[type=date],input[type=time],input[type=datetime-local],select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #cad6e2;background:#fff;font:inherit}
+    textarea{min-height:92px;resize:vertical}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top;text-align:left}
+    th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .tone{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase}
+    .tone.green{background:#e6f6ed;color:var(--good)} .tone.red{background:#fdecef;color:var(--bad)} .tone.amber{background:#fff2dc;color:var(--warn)} .tone.blue{background:#e6f0fb;color:var(--primary)} .tone.slate{background:#edf1f5;color:#617283}
+    .sticky{position:sticky;top:12px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .block-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .block-panel{border:1px solid var(--line);border-radius:16px;padding:14px;background:#f9fbfd}
+    .room-list{display:grid;gap:10px;margin-top:12px}
+    .room-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+    @media (max-width:1180px){.grid,.split,.block-grid,.days,.kpi-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <h1>Programación de Quirófano</h1>
+      {% if view_mode == 'calendar' %}
+        <p>Calendario operativo para abrir el día quirúrgico, revisar ocupación estimada y navegar entre fechas sin salir del módulo de Jefatura.</p>
+      {% else %}
+        <p>Vista operativa del {{ weekday_label }} {{ selected_date_label }}. Aquí se controla la distribución de salas, la captura manual de casos, las sobrescrituras del día y el acceso al detalle de cada cirugía.</p>
+      {% endif %}
+      <div class="nav">
+        <a class="btn" href="/quirofano/jefatura">Tablero</a>
+        <a class="btn alt" href="/quirofano/jefatura/plantillas">Plantilla semanal</a>
+        <a class="btn alt" href="/quirofano/jefatura/importaciones">Importaciones PDF</a>
+      </div>
+    </section>
+
+    {% if flash %}
+      <div class="flash {{ flash.kind }}">{{ flash.message }}</div>
+    {% endif %}
+
+    {% if view_mode == 'calendar' %}
+      <article class="card section">
+        <h2>Calendario operativo</h2>
+        <div class="sub">Cada tarjeta abre el día quirúrgico resuelto desde la plantilla semanal y los cambios confirmados hasta ese momento.</div>
+        <div class="days">
+          {% for item in days %}
+            <div class="day">
+              <strong>{{ item.weekday }}</strong>
+              <div>{{ item.date_label }}</div>
+              <div class="small">{{ item.programmed_cases }} casos · {{ item.blocks_total }} bloques · {{ item.occupancy_pct }}% ocupación</div>
+              <div class="actions"><a class="btn" href="/quirofano/jefatura/programacion/{{ item.date.isoformat() }}">Abrir día</a></div>
+            </div>
+          {% endfor %}
+        </div>
+      </article>
+    {% else %}
+      <section class="kpi-grid">
+        <article class="kpi"><div class="k">Bloques</div><div class="v">{{ overview.kpis.blocks_total }}</div></article>
+        <article class="kpi"><div class="k">Casos</div><div class="v">{{ overview.kpis.programmed_cases }}</div></article>
+        <article class="kpi"><div class="k">Ocupación</div><div class="v">{{ overview.kpis.occupancy_pct }}%</div></article>
+        <article class="kpi"><div class="k">Conflictos</div><div class="v">{{ overview.kpis.conflict_cases }}</div></article>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <div class="actions" style="justify-content:space-between;margin-bottom:12px">
+            <a class="btn" href="/quirofano/jefatura/programacion/{{ previous_date.isoformat() }}">← {{ previous_date.strftime('%d/%m') }}</a>
+            <a class="btn" href="/quirofano/jefatura/publicacion/{{ selected_date.isoformat() }}">Pantalla interna</a>
+            <a class="btn" href="/quirofano/jefatura/programacion/{{ next_date.isoformat() }}">{{ next_date.strftime('%d/%m') }} →</a>
+          </div>
+          <h2>Distribución de salas</h2>
+          <div class="sub">Cada bloque diario nace de la plantilla activa y puede cambiarse sin tocar la plantilla base. Las sobrescrituras quedan auditadas.</div>
+          <form method="post" action="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}/bloques" class="section">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <div class="block-grid">
+              {% for shift in ['MATUTINO','VESPERTINO'] %}
+                <div class="block-panel">
+                  <strong>{{ shift.title() }}</strong>
+                  <div class="room-list">
+                    {% for block in overview.blocks if block.turno == shift %}
+                      <div class="room-card">
+                        <div class="actions" style="justify-content:space-between">
+                          <strong>{{ block.room_code }}</strong>
+                          {% set badge = {'label': block.block_status.title(), 'tone': 'slate'} %}
+                          {% if block.block_status == 'ACTIVO' %}{% set badge = {'label': 'Activo', 'tone': 'green'} %}{% endif %}
+                          {% if block.block_status == 'BLOQUEADO' %}{% set badge = {'label': 'Bloqueado', 'tone': 'red'} %}{% endif %}
+                          {% if block.block_status == 'CONTINGENCIA' %}{% set badge = {'label': 'Contingencia', 'tone': 'amber'} %}{% endif %}
+                          <span class="tone {{ badge.tone }}">{{ badge.label }}</span>
+                        </div>
+                        <div class="small">{{ block.cases|length }} casos capturados</div>
+                        <div class="split section">
+                          <div>
+                            <label>Línea</label>
+                            <select name="service_line__{{ block.id }}">
+                              {% for line in service_lines %}
+                                <option value="{{ line.code }}" {% if block.service_line_code == line.code %}selected{% endif %}>{{ line.code }} · {{ line.nombre }}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                          <div>
+                            <label>Estatus</label>
+                            <select name="block_status__{{ block.id }}">
+                              {% for item in block_status_options %}
+                                <option value="{{ item }}" {% if block.block_status == item %}selected{% endif %}>{{ item }}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                        <div class="section">
+                          <label>Notas</label>
+                          <input type="text" name="notes__{{ block.id }}" value="{{ block.notes or '' }}" placeholder="Motivo del cambio o comentario operativo">
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="actions section"><button class="btn" type="submit">Guardar distribución diaria</button></div>
+          </form>
+        </article>
+
+        <article class="card sticky">
+          <h2>{% if edit_case %}Editar caso #{{ edit_case.id }}{% else %}Nuevo caso del día{% endif %}</h2>
+          <div class="sub">La captura manual permite corregir o complementar la programación importada, o registrar casos sin PDF.</div>
+          <form method="post" action="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}/casos" class="section">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <input type="hidden" name="case_id" value="{{ edit_case.id if edit_case else '' }}">
+            <div class="section">
+              <label>Bloque diario</label>
+              <select name="daily_block_id" required>
+                <option value="">Seleccionar sala</option>
+                {% for block in overview.blocks %}
+                  <option value="{{ block.id }}" {% if edit_case and edit_case.daily_block_id == block.id %}selected{% endif %}>{{ block.turno }} · {{ block.room_code }} · {{ block.service_line_code }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="split section">
+              <div><label>Estatus</label><select name="status">{% for item in case_status_options %}<option value="{{ item }}" {% if edit_case and edit_case.status == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select></div>
+              <div><label>Hora programada</label><input type="time" name="scheduled_time" value="{{ edit_case.scheduled_time if edit_case else '' }}" required></div>
+            </div>
+            <div class="split section">
+              <div><label>Duración estimada (min)</label><input type="number" min="20" max="480" name="duracion_estimada_min" value="{{ edit_case.duracion_estimada_min if edit_case else 60 }}"></div>
+              <div><label>Cama</label><input type="text" name="cama" value="{{ edit_case.cama if edit_case else '' }}"></div>
+            </div>
+            <div class="section"><label>Paciente</label><input type="text" name="patient_name" value="{{ edit_case.patient_name if edit_case else '' }}" required></div>
+            <div class="split section">
+              <div><label>NSS</label><input type="text" name="nss" value="{{ edit_case.nss if edit_case else '' }}"></div>
+              <div><label>Agregado médico</label><input type="text" name="agregado_medico" value="{{ edit_case.agregado_medico if edit_case else '' }}"></div>
+            </div>
+            <div class="split section">
+              <div><label>Edad</label><input type="number" min="0" max="130" name="edad" value="{{ edit_case.edad if edit_case and edit_case.edad is not none else '' }}"></div>
+              <div><label>Tipo de anestesia</label><input type="text" name="tipo_anestesia" value="{{ edit_case.tipo_anestesia if edit_case else '' }}"></div>
+            </div>
+            <div class="section"><label>Diagnóstico preoperatorio</label><textarea name="diagnostico_preoperatorio">{{ edit_case.diagnostico_preoperatorio if edit_case else '' }}</textarea></div>
+            <div class="section"><label>Operación proyectada</label><textarea name="operacion_proyectada">{{ edit_case.operacion_proyectada if edit_case else '' }}</textarea></div>
+            <div class="split section">
+              <div><label>Cirujano</label><input type="text" name="cirujano" value="{{ edit_case.cirujano if edit_case else '' }}"></div>
+              <div><label>Anestesiólogo</label><input type="text" name="anestesiologo" value="{{ edit_case.anestesiologo if edit_case else '' }}"></div>
+            </div>
+            <div class="section"><label>Enfermera especialista</label><input type="text" name="enfermera_especialista" value="{{ edit_case.enfermera_especialista if edit_case else '' }}"></div>
+            <div class="section"><label>Notas</label><textarea name="notes">{{ edit_case.notes if edit_case else '' }}</textarea></div>
+            <div class="actions section">
+              <button class="btn" type="submit">Guardar caso</button>
+              {% if edit_case %}<a class="btn" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}">Cancelar edición</a>{% endif %}
+            </div>
+          </form>
+        </article>
+      </section>
+
+      <article class="card section">
+        <h2>Casos del día</h2>
+        <div class="sub">Los casos importados desde PDF y los manuales conviven en la misma vista. El detalle permite registrar staff adicional, eventos reales e incidencias.</div>
+        <div class="table-wrap section">
+          <table>
+            <thead>
+              <tr>
+                <th>Hora</th><th>Sala</th><th>Paciente</th><th>Operación</th><th>Staff</th><th>Estatus</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for case in overview.cases %}
+                <tr>
+                  <td>{{ case.scheduled_time }}</td>
+                  <td>{{ case.daily_block.room_code }} · {{ case.daily_block.turno }}</td>
+                  <td><strong>{{ case.patient_name }}</strong><div class="sub">{{ case.nss or 'Sin NSS' }}</div></td>
+                  <td>{{ case.operacion_proyectada }}<div class="sub">{{ case.diagnostico_preoperatorio }}</div></td>
+                  <td>{{ case.cirujano or 'Sin cirujano' }}<div class="sub">{{ case.anestesiologo or 'Sin anestesiólogo' }}</div></td>
+                  <td>
+                    {% set badge = {'label': case.status.title(), 'tone': 'slate'} %}
+                    {% if case.status == 'PROGRAMADA' %}{% set badge = {'label': 'Programada', 'tone': 'blue'} %}{% endif %}
+                    {% if case.status == 'EN_CURSO' %}{% set badge = {'label': 'En curso', 'tone': 'amber'} %}{% endif %}
+                    {% if case.status == 'REALIZADA' %}{% set badge = {'label': 'Realizada', 'tone': 'green'} %}{% endif %}
+                    {% if case.status == 'CANCELADA' %}{% set badge = {'label': 'Cancelada', 'tone': 'red'} %}{% endif %}
+                    <span class="tone {{ badge.tone }}">{{ badge.label }}</span>
+                  </td>
+                  <td>
+                    <div class="actions">
+                      <a class="btn" href="/quirofano/jefatura/programacion/{{ selected_date.isoformat() }}?edit_case={{ case.id }}">Editar</a>
+                      <a class="btn" href="/quirofano/jefatura/casos/{{ case.id }}">Detalle</a>
+                    </div>
+                  </td>
+                </tr>
+              {% else %}
+                <tr><td colspan="7">Todavía no hay casos confirmados para este día.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </article>
+    {% endif %}
+  </div>
+</body>
+</html>

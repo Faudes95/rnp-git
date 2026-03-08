@@ -10,3 +10,7 @@ __pycache__/
 .env.*
 *.db
 __MACOSX/
+
+.playwright-cli/
+output/
+patient_files/

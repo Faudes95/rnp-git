@@ -5,6 +5,14 @@ from typing import Any, Dict, List, Optional
 from sqlalchemy.orm import Session
 
 from app.core.app_context import main_proxy as m
+from app.services.jefatura_central_flow import (
+    render_jefatura_central_home_flow,
+)
+from app.services.jefatura_central_insumos_flow import render_jefatura_central_insumos_flow
+from app.services.jefatura_central_shared import (
+    CENTRAL_MODULE,
+    CENTRAL_SUBMODULES,
+)
 from app.services.resident_profiles_flow import (
     build_resident_card_summaries,
     build_resident_profile_viewmodel,
@@ -13,13 +21,7 @@ from app.services.resident_profiles_flow import (
 
 
 JEFATURA_UROLOGIA_MODULES: List[Dict[str, Any]] = [
-    {
-        "slug": "reporte-jefatura",
-        "nombre": "Reporte de Jefatura",
-        "icono": "📈",
-        "descripcion": "Indicadores estratégicos de productividad, tiempos y resultados clínicos del servicio.",
-        "color": "azul",
-    },
+    dict(CENTRAL_MODULE),
     {
         "slug": "programa-academico",
         "nombre": "Programa Académico",
@@ -67,16 +69,7 @@ JEFATURA_UROLOGIA_MODULES: List[Dict[str, Any]] = [
     },
 ]
 
-REPORTE_JEFATURA_SUBMODULES: List[Dict[str, str]] = [
-    {
-        "slug": "insumos",
-        "nombre": "Insumos",
-        "icono": "🧰",
-        "descripcion": "Control modular de inventario crítico quirúrgico y alertas de reposición.",
-        "href": "/jefatura-urologia/insumos",
-        "color": "rojo",
-    }
-]
+REPORTE_JEFATURA_SUBMODULES: List[Dict[str, str]] = list(CENTRAL_SUBMODULES)
 
 
 PROGRAMA_ACADEMICO_DIRECTORIO: List[Dict[str, str]] = [
@@ -216,9 +209,13 @@ async def render_jefatura_urologia_programa_submodule_flow(
     )
 
 
-async def render_jefatura_urologia_module_flow(request, module_slug: str):
+async def render_jefatura_urologia_module_flow(request, module_slug: str, db: Optional[Session] = None):
     if module_slug == "programa-academico":
         return await render_jefatura_urologia_programa_academico_flow(request)
+    if module_slug in {"central", "reporte-jefatura"} and db is not None:
+        return await render_jefatura_central_home_flow(request, db)
+    if module_slug == "insumos" and db is not None:
+        return await render_jefatura_central_insumos_flow(request, db)
 
     module = _find_module(module_slug)
     if not module:
@@ -228,9 +225,9 @@ async def render_jefatura_urologia_module_flow(request, module_slug: str):
             "icono": "⚠️",
             "descripcion": "El enlace solicitado no existe. Vuelva al panel de Jefatura de Urología.",
             "color": "rojo",
-        }
+    }
     nested_modules: List[Dict[str, str]] = []
-    if module.get("slug") == "reporte-jefatura":
+    if module.get("slug") in {"central", "reporte-jefatura"}:
         nested_modules = REPORTE_JEFATURA_SUBMODULES
     return m.render_template(
         "jefatura_urologia_modulo_placeholder.html",
@@ -244,8 +241,17 @@ async def render_jefatura_urologia_residente_profile_flow(
     request,
     db: Session,
     resident_code: str,
+    *,
+    flash: Optional[Dict[str, str]] = None,
+    drawer_open: bool = False,
 ):
     profile = build_resident_profile_viewmodel(db, resident_code)
+    resolved_flash = flash
+    if resolved_flash is None and str(request.query_params.get("saved") or "") == "1":
+        resolved_flash = {
+            "kind": "success",
+            "message": "Perfil actualizado correctamente.",
+        }
     return m.render_template(
         "jefatura_urologia_residente_perfil.html",
         request=request,
@@ -255,4 +261,6 @@ async def render_jefatura_urologia_residente_profile_flow(
         curva_aprendizaje=profile["curva_aprendizaje"],
         sangrado_rows=profile["sangrado_por_procedimiento"],
         charts=profile["charts"],
+        flash=resolved_flash,
+        drawer_open=drawer_open,
     )

@@ -8,22 +8,39 @@
   <script src="/static/vendor/chart.min.js"></script>
   <style>
     :root {
-      --uromed-blue-950: #09204a;
-      --uromed-blue-900: #113d84;
-      --uromed-blue-700: #2f62ba;
-      --uromed-blue-500: #5d8dde;
-      --uromed-blue-100: #ebf3ff;
-      --uromed-blue-050: #f7fbff;
-      --uromed-red-700: #bf2f45;
-      --uromed-red-100: #ffedf0;
-      --uromed-text: #183865;
-      --uromed-muted: #5c7393;
-      --uromed-border: #cad9f1;
-      --uromed-surface: rgba(255,255,255,.95);
-      --ok-blue: #2b63c8;
-      --warn-red: #d43b53;
-      --neutral-gray: #90a0ba;
-      --shadow: 0 18px 44px rgba(13, 48, 97, 0.14);
+      --ink-980: #091423;
+      --ink-900: #12253e;
+      --ink-700: #36506d;
+      --slate-700: #566a7f;
+      --slate-600: #71859a;
+      --line-strong: #d6deea;
+      --line-soft: #e3e9f1;
+      --surface: rgba(255, 255, 255, 0.96);
+      --surface-raised: #ffffff;
+      --surface-soft: #f5f8fb;
+      --surface-tint: #eef3f9;
+      --navy-900: #0c2d5b;
+      --navy-700: #184f93;
+      --cyan-700: #0f6f7d;
+      --gold-700: #9b6a1d;
+      --rose-700: #a53b4f;
+      --green-700: #1f6a52;
+      --ok-bg: #e7f6ef;
+      --ok-fg: #215d49;
+      --warn-bg: #fff3e0;
+      --warn-fg: #8b5d14;
+      --info-bg: #ebf3ff;
+      --info-fg: #1a4f93;
+      --error-bg: #fff0f3;
+      --error-fg: #9b3147;
+      --neutral-bg: #eff3f7;
+      --neutral-fg: #617385;
+      --shadow-lg: 0 28px 64px rgba(12, 28, 52, 0.14);
+      --shadow-md: 0 16px 34px rgba(12, 28, 52, 0.09);
+      --radius-xl: 30px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
     }
 
     * { box-sizing: border-box; }
@@ -33,128 +50,339 @@
       min-height: 100vh;
       padding: 20px;
       font-family: 'Montserrat', system-ui, sans-serif;
-      color: var(--uromed-text);
+      color: var(--ink-900);
       background:
-        radial-gradient(circle at top left, rgba(62, 109, 197, .20), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(191, 47, 69, .14), transparent 26%),
-        linear-gradient(135deg, #edf4ff, #f8fbff 48%, #eef5ff 100%);
+        radial-gradient(circle at top left, rgba(24, 79, 147, 0.14), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(15, 111, 125, 0.12), transparent 24%),
+        linear-gradient(180deg, #eef3f8 0%, #f7f9fb 52%, #eef2f7 100%);
     }
 
-    .wrap {
-      max-width: 1380px;
-      margin: 0 auto;
-      background: var(--uromed-surface);
-      border: 1px solid var(--uromed-border);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
+    body.drawer-open {
       overflow: hidden;
     }
 
-    .hero {
-      padding: 28px 30px;
-      border-bottom: 1px solid var(--uromed-border);
-      background: linear-gradient(135deg, #f9fbff 0%, #edf4ff 44%, #fef8fa 100%);
-      display: grid;
-      gap: 18px;
+    a { color: inherit; }
+
+    .page-shell {
+      max-width: 1560px;
+      margin: 0 auto;
+      border: 1px solid var(--line-strong);
+      border-radius: 32px;
+      background: var(--surface);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
     }
 
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-      flex-wrap: wrap;
+    .masthead {
+      padding: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background:
+        radial-gradient(circle at top right, rgba(113, 163, 232, 0.20), transparent 26%),
+        linear-gradient(135deg, #0c2d5b 0%, #184f93 62%, #103f77 100%);
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(360px, 0.95fr);
+      gap: 22px;
+    }
+
+    .identity-panel {
+      display: grid;
+      gap: 22px;
+    }
+
+    .identity-row {
+      display: grid;
+      grid-template-columns: 172px minmax(0, 1fr);
+      gap: 22px;
+      align-items: center;
+    }
+
+    .portrait-shell {
+      position: relative;
+      width: 172px;
+      height: 172px;
+      border-radius: 36px;
+      overflow: hidden;
+      background: linear-gradient(150deg, #e4edf7 0%, #d7e4f4 100%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+    }
+
+    .portrait-shell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .portrait-badge {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(10, 20, 36, 0.76);
+      color: #f8fbff;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+      backdrop-filter: blur(10px);
     }
 
     .eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 12px;
+      padding: 10px 14px;
       border-radius: 999px;
-      border: 1px solid #bad0f1;
-      background: #f6faff;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #f5f8fc;
       font-size: 12px;
       font-weight: 800;
-      color: var(--uromed-blue-900);
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      letter-spacing: .4px;
+      width: fit-content;
     }
 
-    h1 {
+    .resident-title {
       margin: 10px 0 0;
-      font-size: 40px;
-      line-height: 1.02;
-      color: var(--uromed-blue-950);
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 0.98;
+      color: #f8fbff;
       text-transform: uppercase;
+      letter-spacing: -0.03em;
+      text-shadow: 0 10px 28px rgba(5, 16, 31, 0.16);
     }
 
-    .subline {
+    .lead {
       margin-top: 12px;
-      color: var(--uromed-muted);
+      max-width: 760px;
       font-size: 15px;
+      line-height: 1.6;
+      color: rgba(245, 249, 255, 0.92);
       font-weight: 600;
-      line-height: 1.5;
     }
 
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .hero-tags,
+    .status-row,
+    .masthead-actions,
+    .header-stats,
+    .panel-grid,
+    .metric-grid,
+    .mini-grid,
+    .weight-grid,
+    .chart-grid,
+    .curve-grid,
+    .academic-grid,
+    .record-grid,
+    .field-grid,
+    .drawer-grid {
+      display: grid;
+      gap: 16px;
     }
 
-    .btn {
-      text-decoration: none;
-      padding: 11px 16px;
-      border-radius: 12px;
+    .hero-tags {
+      grid-template-columns: repeat(4, minmax(0, max-content));
+    }
+
+    .tag,
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
       font-size: 12px;
       font-weight: 800;
-      border: 1px solid transparent;
-      transition: transform .15s ease, box-shadow .15s ease;
+      letter-spacing: 0.03em;
+      width: fit-content;
     }
 
-    .btn:hover { transform: translateY(-1px); }
+    .tag {
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #f5f8fc;
+    }
+
+    .status-row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .status-pill {
+      width: 100%;
+      justify-content: center;
+      border: 1px solid transparent;
+    }
+
+    .tone-info {
+      background: var(--info-bg);
+      color: var(--info-fg);
+      border-color: rgba(26, 79, 147, 0.14);
+    }
+
+    .tone-warn {
+      background: var(--warn-bg);
+      color: var(--warn-fg);
+      border-color: rgba(139, 93, 20, 0.16);
+    }
+
+    .tone-neutral {
+      background: var(--neutral-bg);
+      color: var(--neutral-fg);
+      border-color: rgba(97, 115, 133, 0.15);
+    }
+
+    .tone-ok {
+      background: var(--ok-bg);
+      color: var(--ok-fg);
+      border-color: rgba(33, 93, 73, 0.16);
+    }
+
+    .tone-error {
+      background: var(--error-bg);
+      color: var(--error-fg);
+      border-color: rgba(155, 49, 71, 0.14);
+    }
+
+    .masthead .status-pill {
+      color: #f6f9fd;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .masthead .status-pill.tone-info {
+      background: rgba(255, 255, 255, 0.16);
+      color: #f6f9fd;
+    }
+
+    .masthead .status-pill.tone-neutral {
+      background: rgba(255, 255, 255, 0.12);
+      color: #f6f9fd;
+    }
+
+    .masthead .status-pill.tone-warn {
+      background: rgba(255, 240, 210, 0.16);
+      color: #fff1d6;
+    }
+
+    .masthead .status-pill.tone-ok {
+      background: rgba(216, 246, 233, 0.16);
+      color: #f1fff8;
+    }
+
+    .masthead-actions {
+      grid-template-columns: repeat(3, max-content);
+      align-items: center;
+    }
+
+    .btn,
+    .link-btn {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      text-decoration: none;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover,
+    .link-btn:hover {
+      transform: translateY(-1px);
+    }
 
     .btn-main {
-      background: linear-gradient(135deg, var(--uromed-blue-950), var(--uromed-blue-700));
+      background: linear-gradient(135deg, #163a68 0%, #1d5ea7 100%);
       color: #fff;
-      box-shadow: 0 10px 20px rgba(17, 61, 132, 0.18);
+      box-shadow: 0 12px 24px rgba(23, 77, 143, 0.18);
     }
 
     .btn-ghost {
-      color: var(--uromed-blue-900);
-      border-color: #c2d5f4;
-      background: #f9fbff;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #f8fbff;
     }
 
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .btn-soft {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #dff7fb;
     }
 
-    .chip {
-      padding: 10px 14px;
-      border-radius: 14px;
-      border: 1px solid #cddcf3;
-      background: rgba(255,255,255,.88);
+    .header-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-content: start;
+    }
+
+    .hero-stat,
+    .metric-card,
+    .mini-card,
+    .panel,
+    .weight-card,
+    .chart-card,
+    .curve-card,
+    .academic-card,
+    .record-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: var(--shadow-md);
+    }
+
+    .hero-stat {
+      padding: 18px;
+      min-height: 150px;
       display: grid;
-      gap: 3px;
-      min-width: 170px;
+      gap: 12px;
     }
 
-    .chip small {
+    .hero-stat span,
+    .metric-card span,
+    .mini-card span,
+    .summary-item span,
+    .weight-summary span,
+    .curve-meta span,
+    .record-meta span,
+    .pill-label {
       font-size: 11px;
-      text-transform: uppercase;
-      color: var(--uromed-muted);
       font-weight: 800;
-      letter-spacing: .45px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-600);
     }
 
-    .chip strong {
-      font-size: 18px;
-      color: var(--uromed-blue-950);
-      line-height: 1.15;
+    .hero-stat strong,
+    .metric-card strong,
+    .mini-card strong,
+    .summary-item strong,
+    .weight-summary b,
+    .curve-meta b {
+      font-size: 34px;
+      line-height: 1;
+      color: var(--ink-980);
+    }
+
+    .hero-stat small,
+    .metric-card small,
+    .mini-card small,
+    .summary-item small,
+    .record-meta small,
+    .weight-card p,
+    .empty-note,
+    .helper {
+      color: var(--slate-700);
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 600;
     }
 
     .content {
@@ -163,105 +391,257 @@
       gap: 20px;
     }
 
-    .grid-kpis {
+    .flash {
+      border-radius: 18px;
+      padding: 14px 18px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .flash-success {
+      background: var(--ok-bg);
+      border-color: rgba(29, 107, 81, 0.18);
+      color: var(--ok-fg);
+    }
+
+    .flash-error {
+      background: var(--error-bg);
+      border-color: rgba(155, 49, 71, 0.18);
+      color: var(--error-fg);
+    }
+
+    .panel-head,
+    .weight-head,
+    .chart-head {
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      background: linear-gradient(135deg, #0d3768 0%, #184f93 64%, #14447d 100%);
+    }
+
+    .panel-head h2,
+    .panel-head p,
+    .weight-head h3,
+    .weight-head .pill-label,
+    .weight-head .score-stack span,
+    .weight-head .score-stack strong,
+    .chart-head h3,
+    .chart-head p {
+      color: #f8fbff !important;
+    }
+
+    .panel-head h2,
+    .chart-head h3 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-head p,
+    .chart-head p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+      max-width: 760px;
+    }
+
+    .panel-body {
+      padding: 20px;
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .panel-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .summary-card {
+      display: grid;
       gap: 14px;
     }
 
-    .kpi {
-      border-radius: 18px;
-      border: 1px solid #d5e2f4;
-      background: linear-gradient(180deg, #ffffff 0%, #f6faff 100%);
-      padding: 16px;
-      box-shadow: 0 10px 24px rgba(14, 53, 109, 0.08);
-      min-height: 120px;
+    .summary-list {
       display: grid;
-      align-content: start;
+      gap: 12px;
+    }
+
+    .summary-item {
+      display: grid;
+      gap: 4px;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--surface-soft);
+      border: 1px solid rgba(20, 38, 62, 0.06);
+    }
+
+    .summary-item strong {
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .metric-grid {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+
+    .metric-card,
+    .mini-card {
+      padding: 16px;
+      display: grid;
       gap: 10px;
+      min-height: 130px;
     }
 
-    .kpi span {
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: var(--uromed-muted);
-      letter-spacing: .5px;
+    .mini-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .kpi strong {
-      font-size: 34px;
-      line-height: 1;
-      color: var(--uromed-blue-950);
+    .weight-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .kpi small {
-      font-size: 13px;
-      color: var(--uromed-muted);
-      font-weight: 700;
-      line-height: 1.35;
-    }
-
-    .panel {
-      border-radius: 20px;
-      border: 1px solid var(--uromed-border);
-      background: #fff;
-      box-shadow: 0 14px 28px rgba(14, 53, 109, 0.07);
+    .weight-card {
       overflow: hidden;
     }
 
-    .panel-head {
-      padding: 16px 18px;
-      border-bottom: 1px solid #d7e2f2;
-      background: linear-gradient(135deg, #f9fbff, #edf4ff);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .panel-head h2 {
-      margin: 0;
-      font-size: 20px;
-      color: var(--uromed-blue-950);
-    }
-
-    .panel-head p {
-      margin: 4px 0 0;
-      color: var(--uromed-muted);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .panel-body { padding: 18px; }
-
-    .viz-grid {
+    .weight-body {
+      padding: 18px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px;
     }
 
-    .viz-card {
-      border-radius: 16px;
-      border: 1px solid #d7e2f2;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-      padding: 16px;
-      min-height: 260px;
+    .score-stack {
       display: grid;
-      gap: 12px;
+      gap: 4px;
+      min-width: 160px;
+      text-align: right;
     }
 
-    .viz-card h3 {
-      margin: 0;
-      color: var(--uromed-blue-900);
-      font-size: 16px;
+    .score-stack strong {
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .weight-summary,
+    .curve-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .curve-meta {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .weight-summary div,
+    .curve-meta div,
+    .record-meta {
+      border-radius: 14px;
+      background: #eff4f9;
+      border: 1px solid rgba(20, 38, 62, 0.07);
+      padding: 12px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .weight-list,
+    .mini-list,
+    .record-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .weight-item,
+    .record-item {
+      display: grid;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: var(--surface-soft);
+      border: 1px solid rgba(20, 38, 62, 0.06);
+    }
+
+    .weight-item-head,
+    .mini-row,
+    .record-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      font-size: 13px;
+      color: var(--slate-700);
+      font-weight: 700;
+    }
+
+    .weight-item-head strong,
+    .mini-row b,
+    .record-top strong {
+      color: var(--ink-900);
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: #dde7f1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #174d8f 0%, #2d6dbe 100%);
+    }
+
+    .weight-meta,
+    .record-copy {
+      color: var(--slate-700);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .chart-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .chart-card,
+    .curve-card {
+      overflow: hidden;
+    }
+
+    .chart-body,
+    .curve-body,
+    .academic-body,
+    .record-body {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
     }
 
     .chart-shell {
       position: relative;
       width: 100%;
-      height: 148px;
+      height: 200px;
+    }
+
+    .chart-shell-compact {
+      max-width: 228px;
+      height: 170px;
+      margin: 0 auto;
+    }
+
+    .chart-shell-wide {
+      height: 260px;
     }
 
     .chart-shell canvas {
@@ -269,379 +649,1380 @@
       height: 100% !important;
     }
 
-    .chart-shell-compact {
-      max-width: 210px;
-      margin: 0 auto;
-      height: 132px;
+    .curve-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .chart-shell-wide {
-      height: 190px;
-    }
-
-    .mini-list {
-      display: grid;
-      gap: 8px;
-    }
-
-    .mini-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 12px;
-      color: var(--uromed-muted);
+    .curve-progress-label {
+      font-size: 13px;
+      color: var(--slate-700);
       font-weight: 700;
     }
 
-    .mini-row b {
-      color: var(--uromed-blue-950);
-      font-size: 13px;
-    }
-
-    .curve-grid {
-      display: grid;
+    .academic-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
     }
 
-    .curve-card {
-      border-radius: 16px;
-      border: 1px solid #d7e2f2;
-      background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
-      padding: 16px;
-      display: grid;
-      gap: 12px;
-    }
-
-    .curve-card h3 {
-      margin: 0;
-      color: var(--uromed-blue-950);
-      font-size: 18px;
-      line-height: 1.25;
-    }
-
-    .curve-meta {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .curve-meta div {
-      border-radius: 12px;
-      background: #f4f8ff;
-      border: 1px solid #d7e2f2;
-      padding: 10px;
-    }
-
-    .curve-meta span {
-      display: block;
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--uromed-muted);
-      text-transform: uppercase;
-    }
-
-    .curve-meta b {
-      display: block;
-      margin-top: 4px;
-      font-size: 20px;
-      color: var(--uromed-blue-950);
-    }
-
-    .progress-shell {
-      position: relative;
-      height: 14px;
-      border-radius: 999px;
-      background: #e4ecf8;
+    .academic-card {
       overflow: hidden;
     }
 
-    .progress-bar {
-      position: absolute;
-      inset: 0 auto 0 0;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #2f62ba 0%, #5d8dde 100%);
+    .academic-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, rgba(248, 251, 254, 0.98) 0%, rgba(242, 246, 250, 0.98) 100%);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
     }
 
-    .progress-caption {
-      font-size: 12px;
-      color: var(--uromed-muted);
-      font-weight: 700;
+    .academic-head h3 {
+      margin: 0;
+      color: var(--ink-980);
+      font-size: 20px;
+      letter-spacing: -0.02em;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 980px;
-    }
-
-    th, td {
-      padding: 14px 12px;
-      border-bottom: 1px solid #e1e9f5;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .55px;
-      color: var(--uromed-muted);
-      font-weight: 800;
-      background: #f8fbff;
-    }
-
-    td {
-      font-size: 13px;
-      color: var(--uromed-text);
-      font-weight: 600;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-    }
-
-    .sem {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+    .academic-head .count {
       border-radius: 999px;
       padding: 8px 12px;
+      background: var(--surface-tint);
+      border: 1px solid rgba(23, 77, 143, 0.1);
+      color: var(--navy-700);
       font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .record-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .record-card {
+      overflow: hidden;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 11px;
       font-weight: 800;
       border: 1px solid transparent;
       white-space: nowrap;
     }
 
-    .sem-azul {
-      color: var(--ok-blue);
-      background: #edf4ff;
-      border-color: #c7dbfb;
-    }
+    .badge.info { background: var(--info-bg); color: var(--info-fg); border-color: rgba(26, 79, 147, 0.16); }
+    .badge.warn { background: var(--warn-bg); color: var(--warn-fg); border-color: rgba(139, 93, 20, 0.16); }
+    .badge.ok { background: var(--ok-bg); color: var(--ok-fg); border-color: rgba(33, 93, 73, 0.16); }
+    .badge.error { background: var(--error-bg); color: var(--error-fg); border-color: rgba(155, 49, 71, 0.16); }
+    .badge.neutral { background: var(--neutral-bg); color: var(--neutral-fg); border-color: rgba(97, 115, 133, 0.16); }
 
-    .sem-rojo {
-      color: var(--warn-red);
-      background: #fff0f3;
-      border-color: #f0c8d0;
-    }
-
-    .sem-gris {
-      color: #677791;
-      background: #f3f6fa;
-      border-color: #d6deea;
-    }
-
-    .empty {
+    .table-wrap {
+      overflow-x: auto;
       border-radius: 18px;
-      border: 1px dashed #c4d5ee;
-      background: linear-gradient(180deg, #fbfdff 0%, #f5f9ff 100%);
-      padding: 30px;
-      text-align: center;
-      color: var(--uromed-muted);
-      font-weight: 700;
+      border: 1px solid var(--line-soft);
     }
 
-    .empty strong {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--uromed-blue-900);
-      font-size: 20px;
+    table {
+      width: 100%;
+      min-width: 1040px;
+      border-collapse: collapse;
+      background: #fff;
     }
 
-    .foot-note {
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--uromed-muted);
+    th,
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #e3eaf1;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f4f8fb;
+      color: var(--slate-600);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td {
+      color: var(--ink-900);
+      font-size: 13px;
       font-weight: 600;
       line-height: 1.5;
     }
 
-    @media (max-width: 1200px) {
-      .grid-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .viz-grid, .curve-grid { grid-template-columns: 1fr; }
+    .empty-card {
+      border-radius: var(--radius-md);
+      border: 1px dashed #c5d2df;
+      background: linear-gradient(180deg, #fbfdff 0%, #f3f7fb 100%);
+      padding: 34px 24px;
+      text-align: center;
     }
 
-    @media (max-width: 720px) {
+    .empty-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink-980);
+      font-size: 22px;
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 17, 29, 0.45);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      z-index: 30;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(620px, 100vw);
+      height: 100vh;
+      background: #fff;
+      border-left: 1px solid var(--line-soft);
+      box-shadow: -24px 0 60px rgba(11, 22, 38, 0.18);
+      transform: translateX(105%);
+      transition: transform 0.22s ease;
+      z-index: 31;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    body.drawer-open .drawer-overlay {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    body.drawer-open .drawer {
+      transform: translateX(0);
+    }
+
+    .drawer-head,
+    .drawer-foot {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .drawer-foot {
+      border-top: 1px solid var(--line-soft);
+      border-bottom: 0;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      background: #fff;
+    }
+
+    .drawer-head {
+      background: linear-gradient(180deg, #fbfdff 0%, #f2f6fa 100%);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .drawer-head h2 {
+      margin: 0;
+      color: var(--ink-980);
+      font-size: 22px;
+    }
+
+    .drawer-head p {
+      margin: 8px 0 0;
+      color: var(--slate-700);
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .drawer-close {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--line-soft);
+      background: #fff;
+      color: var(--ink-900);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .drawer-body {
+      overflow-y: auto;
+      padding: 20px 22px 26px;
+      display: grid;
+      gap: 22px;
+      background: #f7f9fb;
+    }
+
+    .drawer-section {
+      border-radius: 18px;
+      border: 1px solid var(--line-soft);
+      background: #fff;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .drawer-section h3 {
+      margin: 0;
+      color: var(--ink-980);
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .drawer-section p {
+      margin: 0;
+      color: var(--slate-700);
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .drawer-photo {
+      display: grid;
+      gap: 14px;
+      align-items: start;
+      justify-items: start;
+    }
+
+    .drawer-photo-preview {
+      width: 148px;
+      height: 148px;
+      border-radius: 30px;
+      overflow: hidden;
+      border: 1px solid rgba(20, 38, 62, 0.12);
+      box-shadow: var(--shadow-md);
+      background: linear-gradient(150deg, #e4edf7 0%, #d9e7f6 100%);
+    }
+
+    .drawer-photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .drawer-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field,
+    .drawer-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label,
+    .drawer-field label {
+      color: var(--ink-900);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .field input,
+    .field select,
+    .field textarea,
+    .drawer-field input,
+    .drawer-field select,
+    .drawer-field textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid #cfd9e4;
+      background: #fff;
+      color: var(--ink-900);
+      font: inherit;
+      font-size: 14px;
+      padding: 14px 14px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus,
+    .drawer-field input:focus,
+    .drawer-field select:focus,
+    .drawer-field textarea:focus {
+      border-color: rgba(23, 77, 143, 0.48);
+      box-shadow: 0 0 0 3px rgba(23, 77, 143, 0.10);
+    }
+
+    .readonly-chip-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .readonly-chip {
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid var(--line-soft);
+      padding: 13px 14px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .readonly-chip strong {
+      font-size: 15px;
+      color: var(--ink-900);
+    }
+
+    .readonly-chip span {
+      font-size: 11px;
+      color: var(--slate-600);
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+
+    .repeater {
+      display: grid;
+      gap: 12px;
+    }
+
+    .repeater-item {
+      border-radius: 16px;
+      border: 1px solid var(--line-soft);
+      background: var(--surface-soft);
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .repeater-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .repeater-title {
+      color: var(--ink-900);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .icon-btn {
+      border: 1px solid rgba(20, 38, 62, 0.12);
+      background: #fff;
+      color: var(--ink-900);
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .section-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1280px) {
+      .masthead {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .panel-grid,
+      .weight-grid,
+      .chart-grid,
+      .curve-grid,
+      .academic-grid,
+      .record-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 960px) {
       body { padding: 10px; }
-      .hero, .content { padding: 16px; }
-      h1 { font-size: 28px; }
-      .grid-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .curve-meta { grid-template-columns: 1fr; }
+      .page-shell { border-radius: 24px; }
+      .masthead, .content { padding: 16px; }
+      .identity-row { grid-template-columns: 1fr; }
+      .portrait-shell { width: 136px; height: 136px; }
+      .hero-tags,
+      .masthead-actions,
+      .status-row,
+      .drawer-grid,
+      .field-grid.two {
+        grid-template-columns: 1fr;
+      }
+      .header-stats,
+      .metric-grid,
+      .mini-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .curve-meta {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .header-stats,
+      .metric-grid,
+      .mini-grid,
+      .weight-summary {
+        grid-template-columns: 1fr;
+      }
+      .drawer {
+        width: 100vw;
+      }
     }
   </style>
 </head>
-<body>
-  <main class="wrap">
-    <header class="hero">
-      <div class="hero-top">
-        <div>
-          <span class="eyebrow">Perfil individual de residente</span>
-          <h1>{{ resident.display_name }}</h1>
-          <div class="subline">
-            Código {{ resident.code }} · {{ resident.grade }} · Seguimiento quirúrgico longitudinal alimentado por nota postquirúrgica indexada.
+<body class="{{ 'drawer-open' if drawer_open else '' }}">
+  <div class="drawer-overlay" data-close-drawer></div>
+
+  <aside class="drawer" aria-hidden="{{ 'false' if drawer_open else 'true' }}">
+    <div class="drawer-head">
+      <div>
+        <h2>Editar perfil del residente</h2>
+        <p>Actualiza los datos personales, la foto y el bloque académico no clínico. El grado actual, la rotación, vacaciones, evaluaciones, casos e incidencias se siguen controlando desde el sistema.</p>
+      </div>
+      <button type="button" class="drawer-close" data-close-drawer aria-label="Cerrar editor">×</button>
+    </div>
+
+    <form method="post" action="/jefatura-urologia/programa-academico/residentes/{{ resident.code }}/perfil" enctype="multipart/form-data" class="drawer-body">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <section class="drawer-section">
+        <div class="drawer-photo">
+          <div class="drawer-photo-preview">
+            <img id="drawerPhotoPreview" src="{{ resident.photo_url }}" alt="Foto de perfil de {{ resident.display_name }}">
+          </div>
+          <div class="drawer-field">
+            <label for="photo">Foto de perfil</label>
+            <input id="photo" type="file" name="photo" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+          </div>
+          <div class="helper">Acepta JPG, PNG o WEBP hasta 5 MB. La imagen cargada se convertirá en la foto principal del residente.</div>
+        </div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>Datos personales</h3>
+        <div class="drawer-grid">
+          <div class="drawer-field" style="grid-column: 1 / -1;">
+            <label for="nombre">Nombre completo</label>
+            <input id="nombre" type="text" name="nombre" value="{{ profile.personal.nombre if profile.personal.nombre != 'Sin capturar' else resident.display_name }}" placeholder="Nombre completo del residente">
+          </div>
+          <div class="drawer-field">
+            <label for="sexo">Sexo</label>
+            <select id="sexo" name="sexo">
+              {% set current_sexo = profile.personal.sexo if profile.personal.sexo != 'Sin capturar' else '' %}
+              {% for option in profile.form_options.sexo %}
+              <option value="{{ option }}" {% if option == current_sexo %}selected{% endif %}>{{ option if option else 'Seleccionar' }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="drawer-field">
+            <label for="inscripcion_unam">Inscripción UNAM</label>
+            <input id="inscripcion_unam" type="text" name="inscripcion_unam" value="{{ '' if profile.personal.inscripcion_unam == 'Sin capturar' else profile.personal.inscripcion_unam }}" placeholder="Folio o clave de inscripción">
+          </div>
+          <div class="drawer-field">
+            <label for="universidad">Universidad</label>
+            <input id="universidad" type="text" name="universidad" value="{{ '' if profile.personal.universidad == 'Sin capturar' else profile.personal.universidad }}" placeholder="Universidad de adscripción">
+          </div>
+          <div class="drawer-field">
+            <label for="sede_r1">Lugar donde realizó el R1</label>
+            <input id="sede_r1" type="text" name="sede_r1" value="{{ '' if profile.personal.sede_r1 == 'Sin capturar' else profile.personal.sede_r1 }}" placeholder="Sede o institución del R1">
           </div>
         </div>
-        <nav class="hero-actions" aria-label="Navegación del perfil">
-          <a class="btn btn-ghost" href="/jefatura-urologia/programa-academico/residentes">← Volver a Residentes</a>
-          <a class="btn btn-main" href="/jefatura-urologia/programa-academico">Programa Académico</a>
-        </nav>
-      </div>
+        <div class="readonly-chip-grid">
+          <div class="readonly-chip">
+            <span>Grado actual</span>
+            <strong>{{ profile.operativo.grado_actual }}</strong>
+          </div>
+          <div class="readonly-chip">
+            <span>Rotación actual</span>
+            <strong>{{ profile.operativo.rotacion_actual }}</strong>
+          </div>
+          <div class="readonly-chip">
+            <span>Próxima rotación</span>
+            <strong>{{ profile.operativo.proxima_rotacion }}</strong>
+          </div>
+          <div class="readonly-chip">
+            <span>Estatus vacacional</span>
+            <strong>{{ profile.operativo.estatus_vacacional }}</strong>
+          </div>
+        </div>
+      </section>
 
-      <div class="chips">
-        <div class="chip">
-          <small>Cirugías</small>
-          <strong>{{ kpis.total_cirugias }}</strong>
+      <section class="drawer-section">
+        <h3>Publicaciones</h3>
+        <p>Este bloque forma parte del perfil académico no clínico y se edita directamente desde el perfil del residente.</p>
+        <div class="repeater" data-repeater="publications">
+          {% for item in profile.editor.publicaciones %}
+          <div class="repeater-item">
+            <div class="repeater-top">
+              <span class="repeater-title">Publicación {{ loop.index }}</span>
+              <button type="button" class="icon-btn" data-remove-row>Eliminar</button>
+            </div>
+            <div class="drawer-grid">
+              <div class="drawer-field" style="grid-column: 1 / -1;">
+                <label>Título</label>
+                <input type="text" name="publications_title[]" value="{{ item.titulo }}" placeholder="Título de la publicación">
+              </div>
+              <div class="drawer-field">
+                <label>Revista o medio</label>
+                <input type="text" name="publications_media[]" value="{{ item.revista_o_medio }}" placeholder="Revista, journal o medio">
+              </div>
+              <div class="drawer-field">
+                <label>Año</label>
+                <input type="number" name="publications_year[]" value="{{ item.anio if item.anio else '' }}" placeholder="2026">
+              </div>
+              <div class="drawer-field">
+                <label>Estatus</label>
+                <input type="text" name="publications_status[]" value="{{ item.estatus }}" placeholder="Publicado, enviado, aceptado">
+              </div>
+              <div class="drawer-field" style="grid-column: 1 / -1;">
+                <label>Notas</label>
+                <textarea name="publications_notes[]" rows="3" placeholder="Coautores, DOI, observaciones">{{ item.notas }}</textarea>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
-        <div class="chip">
-          <small>Rol dominante</small>
-          <strong>{{ kpis.rol_mas_frecuente }}</strong>
+        <div class="section-actions">
+          <button type="button" class="icon-btn" data-add-row="publicationTemplate" data-target-repeater="publications">+ Añadir publicación</button>
         </div>
-        <div class="chip">
-          <small>Participación dominante</small>
-          <strong>{{ kpis.participacion_mas_frecuente }}</strong>
+      </section>
+
+      <section class="drawer-section">
+        <h3>Congresos</h3>
+        <div class="repeater" data-repeater="congresses">
+          {% for item in profile.editor.congresos %}
+          <div class="repeater-item">
+            <div class="repeater-top">
+              <span class="repeater-title">Congreso {{ loop.index }}</span>
+              <button type="button" class="icon-btn" data-remove-row>Eliminar</button>
+            </div>
+            <div class="drawer-grid">
+              <div class="drawer-field" style="grid-column: 1 / -1;">
+                <label>Nombre del evento</label>
+                <input type="text" name="congresses_event[]" value="{{ item.nombre_evento }}" placeholder="Nombre del congreso">
+              </div>
+              <div class="drawer-field">
+                <label>Sede</label>
+                <input type="text" name="congresses_location[]" value="{{ item.sede }}" placeholder="Ciudad o institución">
+              </div>
+              <div class="drawer-field">
+                <label>Fecha</label>
+                <input type="date" name="congresses_date[]" value="{{ item.fecha }}">
+              </div>
+              <div class="drawer-field">
+                <label>Rol</label>
+                <input type="text" name="congresses_role[]" value="{{ item.rol }}" placeholder="Ponente, asistente, cartel">
+              </div>
+              <div class="drawer-field" style="grid-column: 1 / -1;">
+                <label>Notas</label>
+                <textarea name="congresses_notes[]" rows="3" placeholder="Tema, participación, observaciones">{{ item.notas }}</textarea>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
         </div>
-        <div class="chip">
-          <small>Abordaje dominante</small>
-          <strong>{{ kpis.abordaje_mas_frecuente }}</strong>
+        <div class="section-actions">
+          <button type="button" class="icon-btn" data-add-row="congressTemplate" data-target-repeater="congresses">+ Añadir congreso</button>
         </div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>Premios</h3>
+        <div class="repeater" data-repeater="awards">
+          {% for item in profile.editor.premios %}
+          <div class="repeater-item">
+            <div class="repeater-top">
+              <span class="repeater-title">Premio {{ loop.index }}</span>
+              <button type="button" class="icon-btn" data-remove-row>Eliminar</button>
+            </div>
+            <div class="drawer-grid">
+              <div class="drawer-field">
+                <label>Nombre</label>
+                <input type="text" name="awards_name[]" value="{{ item.nombre }}" placeholder="Nombre del reconocimiento">
+              </div>
+              <div class="drawer-field">
+                <label>Institución</label>
+                <input type="text" name="awards_institution[]" value="{{ item.institucion }}" placeholder="Institución que otorga">
+              </div>
+              <div class="drawer-field">
+                <label>Fecha</label>
+                <input type="date" name="awards_date[]" value="{{ item.fecha }}">
+              </div>
+              <div class="drawer-field" style="grid-column: 1 / -1;">
+                <label>Descripción</label>
+                <textarea name="awards_description[]" rows="3" placeholder="Motivo o detalle del premio">{{ item.descripcion }}</textarea>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="section-actions">
+          <button type="button" class="icon-btn" data-add-row="awardTemplate" data-target-repeater="awards">+ Añadir premio</button>
+        </div>
+      </section>
+
+      <div class="drawer-foot">
+        <button type="button" class="btn btn-ghost" data-close-drawer>Cerrar</button>
+        <button type="submit" class="btn btn-main">Guardar perfil</button>
       </div>
+    </form>
+  </aside>
+
+  <main class="page-shell">
+    <header class="masthead">
+      <section class="identity-panel">
+        <div class="identity-row">
+          <div class="portrait-shell">
+            <img id="heroPhoto" src="{{ resident.photo_url }}" alt="Foto de perfil de {{ resident.display_name }}">
+            <div class="portrait-badge">{{ resident.grade }} · Urología</div>
+          </div>
+
+          <div>
+            <span class="eyebrow">Plantilla maestra de perfil académico</span>
+            <h1 class="resident-title">{{ resident.display_name }}</h1>
+            <div class="lead">
+              Código {{ resident.code }} · {{ profile.operativo.grado_actual }} · Seguimiento longitudinal quirúrgico y académico con integración desde nota postquirúrgica, Central y programa operativo.
+            </div>
+            <div class="hero-tags" style="margin-top: 16px;">
+              <span class="tag">Rotación actual: {{ profile.operativo.rotacion_actual }}</span>
+              <span class="tag">Próxima rotación: {{ profile.operativo.proxima_rotacion }}</span>
+              <span class="tag">Última actividad: {{ kpis.ultima_actividad_label }}</span>
+              <span class="tag">Ciclo {{ profile.operativo.ciclo_label }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-row">
+          <div class="status-pill tone-{{ profile.operativo.estatus_vacacional_tone }}">{{ profile.operativo.estatus_vacacional }}</div>
+          <div class="status-pill tone-info">{{ profile.operativo.rotacion_actual_label }}</div>
+          <div class="status-pill tone-neutral">Vacaciones del ciclo: {{ profile.operativo.dias_vacacionales_ciclo }} días</div>
+        </div>
+
+        <nav class="masthead-actions" aria-label="Acciones del perfil">
+          <button type="button" class="btn btn-main" data-open-drawer>Editar perfil</button>
+          <a class="btn btn-ghost" href="/jefatura-urologia/programa-academico/residentes">Volver a Residentes</a>
+          <a class="btn btn-soft" href="/jefatura-urologia/central">Ir a Central</a>
+        </nav>
+      </section>
+
+      <section class="header-stats">
+        <article class="hero-stat">
+          <span>Cirugías indexadas</span>
+          <strong>{{ kpis.total_cirugias }}</strong>
+          <small>Eventos quirúrgicos donde se documentó participación del residente.</small>
+        </article>
+        <article class="hero-stat">
+          <span>Procedimientos distintos</span>
+          <strong>{{ kpis.procedimientos_distintos }}</strong>
+          <small>Variedad técnica acumulada en procedimientos reales.</small>
+        </article>
+        <article class="hero-stat">
+          <span>Ponderación por rol</span>
+          <strong>{{ profile.ponderacion.rol.promedio if profile.ponderacion.rol.promedio is not none else 'N/E' }}</strong>
+          <small>Promedio académico 0-100 según responsabilidad quirúrgica registrada.</small>
+        </article>
+        <article class="hero-stat">
+          <span>Ponderación por participación</span>
+          <strong>{{ profile.ponderacion.participacion.promedio if profile.ponderacion.participacion.promedio is not none else 'N/E' }}</strong>
+          <small>Promedio académico 0-100 según grado de ejecución técnica.</small>
+        </article>
+      </section>
     </header>
 
     <section class="content">
-      {% if not profile.has_activity %}
-      <section class="empty">
-        <strong>Sin eventos indexados</strong>
-        Este residente aún no tiene participaciones quirúrgicas analíticas registradas. El perfil se poblará automáticamente cuando se documenten notas postquirúrgicas con su participación.
-      </section>
-      {% else %}
-      <section class="grid-kpis">
-        <article class="kpi">
-          <span>Total de cirugías</span>
-          <strong>{{ kpis.total_cirugias }}</strong>
-          <small>Eventos quirúrgicos en los que el residente tuvo participación registrada.</small>
-        </article>
-        <article class="kpi">
-          <span>Procedimientos distintos</span>
-          <strong>{{ kpis.procedimientos_distintos }}</strong>
-          <small>Base para evaluar exposición técnica y curva de aprendizaje por técnica.</small>
-        </article>
-        <article class="kpi">
-          <span>Abordajes distintos</span>
-          <strong>{{ kpis.abordajes_distintos }}</strong>
-          <small>Variedad de exposición entre abierto, laparoscópico, endoscópico y robótico.</small>
-        </article>
-        <article class="kpi">
-          <span>Sangrado promedio global</span>
-          <strong>{{ kpis.sangrado_promedio_global_residente if kpis.sangrado_promedio_global_residente is not none else 'N/E' }}</strong>
-          <small>Promedio de sangrado en mL de todos los eventos con registro válido de sangrado.</small>
-        </article>
-        <article class="kpi">
-          <span>Rol más frecuente</span>
-          <strong>{{ kpis.rol_mas_frecuente }}</strong>
-          <small>Rol quirúrgico predominante del residente dentro de los casos indexados.</small>
-        </article>
-        <article class="kpi">
-          <span>Participación técnica</span>
-          <strong>{{ kpis.participacion_mas_frecuente }}</strong>
-          <small>Nivel técnico predominante capturado en la nota postquirúrgica.</small>
-        </article>
-      </section>
+      {% if flash %}
+      <div class="flash flash-{{ flash.kind }}">{{ flash.message }}</div>
+      {% endif %}
 
       <section class="panel">
-        <header class="panel-head">
+        <div class="panel-head">
           <div>
-            <h2>Distribución de actividad</h2>
-            <p>Resumen visual del tipo de exposición quirúrgica del residente.</p>
+            <h2>Resumen personal y académico</h2>
+            <p>Identidad, filiación y lectura operativa actual del residente. Los datos personales se editan aquí; la operación y las evaluaciones provienen del sistema.</p>
           </div>
-        </header>
+        </div>
         <div class="panel-body">
-          <div class="viz-grid">
-            <article class="viz-card">
-              <h3>Abordajes</h3>
-              <div class="chart-shell chart-shell-compact">
-                <canvas id="chartAbordajes"></canvas>
-              </div>
-              <div class="mini-list">
-                {% for row in profile.distribucion_abordaje %}
-                <div class="mini-row"><span>{{ row.label }}</span><b>{{ row.cantidad }} · {{ row.porcentaje }}%</b></div>
-                {% endfor %}
+          <div class="panel-grid">
+            <article class="summary-card">
+              <div class="summary-list">
+                <div class="summary-item">
+                  <span>Nombre</span>
+                  <strong>{{ profile.personal.nombre }}</strong>
+                  <small>Identidad visible en la plantilla maestra del residente.</small>
+                </div>
+                <div class="summary-item">
+                  <span>Universidad</span>
+                  <strong>{{ profile.personal.universidad }}</strong>
+                  <small>Institución académica capturada para el residente.</small>
+                </div>
+                <div class="summary-item">
+                  <span>Lugar donde realizó el R1</span>
+                  <strong>{{ profile.personal.sede_r1 }}</strong>
+                  <small>Sede base del primer año de formación.</small>
+                </div>
+                <div class="summary-item">
+                  <span>Sexo e inscripción UNAM</span>
+                  <strong>{{ profile.personal.sexo }} · {{ profile.personal.inscripcion_unam }}</strong>
+                  <small>Campos administrativos persistidos desde el editor del perfil.</small>
+                </div>
               </div>
             </article>
-            <article class="viz-card">
-              <h3>Roles</h3>
-              <div class="chart-shell">
-                <canvas id="chartRoles"></canvas>
-              </div>
-              <div class="mini-list">
-                {% for row in profile.distribucion_roles %}
-                <div class="mini-row"><span>{{ row.label }}</span><b>{{ row.cantidad }} · {{ row.porcentaje }}%</b></div>
-                {% endfor %}
-              </div>
-            </article>
-            <article class="viz-card">
-              <h3>Participación técnica</h3>
-              <div class="chart-shell">
-                <canvas id="chartParticipacion"></canvas>
-              </div>
-              <div class="mini-list">
-                {% for row in profile.distribucion_participacion %}
-                <div class="mini-row"><span>{{ row.label }}</span><b>{{ row.cantidad }} · {{ row.porcentaje }}%</b></div>
-                {% endfor %}
+            <article class="summary-card">
+              <div class="summary-list">
+                <div class="summary-item">
+                  <span>Grado actual</span>
+                  <strong>{{ profile.operativo.grado_actual }}</strong>
+                  <small>Fuente de verdad derivada desde el programa operativo.</small>
+                </div>
+                <div class="summary-item">
+                  <span>Rotación actual</span>
+                  <strong>{{ profile.operativo.rotacion_actual }}</strong>
+                  <small>{{ profile.operativo.rotacion_actual_label }}</small>
+                </div>
+                <div class="summary-item">
+                  <span>Próxima rotación</span>
+                  <strong>{{ profile.operativo.proxima_rotacion }}</strong>
+                  <small>{{ profile.operativo.proxima_rotacion_label }}</small>
+                </div>
+                <div class="summary-item">
+                  <span>Vacaciones</span>
+                  <strong>{{ profile.operativo.estatus_vacacional }}</strong>
+                  <small>Actuales: {{ profile.operativo.vacaciones_actuales_label }} · Próximas: {{ profile.operativo.vacaciones_proximas_label }}</small>
+                </div>
               </div>
             </article>
           </div>
         </div>
       </section>
 
+      <section class="metric-grid">
+        <article class="metric-card">
+          <span>Total de cirugías</span>
+          <strong>{{ kpis.total_cirugias }}</strong>
+          <small>Eventos quirúrgicos indexados para este residente.</small>
+        </article>
+        <article class="metric-card">
+          <span>Procedimientos distintos</span>
+          <strong>{{ kpis.procedimientos_distintos }}</strong>
+          <small>Exposición técnica acumulada por procedimiento.</small>
+        </article>
+        <article class="metric-card">
+          <span>Abordajes distintos</span>
+          <strong>{{ kpis.abordajes_distintos }}</strong>
+          <small>Variedad entre abierto, laparoscópico, endoscópico y robótico.</small>
+        </article>
+        <article class="metric-card">
+          <span>Sangrado promedio global</span>
+          <strong>{{ kpis.sangrado_promedio_global_residente if kpis.sangrado_promedio_global_residente is not none else 'N/E' }}</strong>
+          <small>Promedio de sangrado en mL con registro válido.</small>
+        </article>
+        <article class="metric-card">
+          <span>Rol más frecuente</span>
+          <strong>{{ kpis.rol_mas_frecuente }}</strong>
+          <small>Rol quirúrgico predominante.</small>
+        </article>
+        <article class="metric-card">
+          <span>Participación dominante</span>
+          <strong>{{ kpis.participacion_mas_frecuente }}</strong>
+          <small>Nivel técnico documentado con mayor frecuencia.</small>
+        </article>
+        <article class="metric-card">
+          <span>Actividad 30 días</span>
+          <strong>{{ profile.longitudinal.activity_30_days }}</strong>
+          <small>Cirugías indexadas en la ventana móvil más reciente.</small>
+        </article>
+        <article class="metric-card">
+          <span>Actividad 90 días</span>
+          <strong>{{ profile.longitudinal.activity_90_days }}</strong>
+          <small>Seguimiento longitudinal de actividad quirúrgica reciente.</small>
+        </article>
+      </section>
+
+      <section class="mini-grid">
+        <article class="mini-card">
+          <span>Procedimientos 90 días</span>
+          <strong>{{ profile.longitudinal.procedures_90_days }}</strong>
+          <small>Procedimientos distintos realizados en la ventana de 90 días.</small>
+        </article>
+        <article class="mini-card">
+          <span>Publicaciones</span>
+          <strong>{{ profile.counts.publicaciones }}</strong>
+          <small>Producción académica no clínica cargada al perfil.</small>
+        </article>
+        <article class="mini-card">
+          <span>Casos asociados</span>
+          <strong>{{ profile.counts.casos }}</strong>
+          <small>Casos docentes asignados desde Central.</small>
+        </article>
+      </section>
+
       <section class="panel">
-        <header class="panel-head">
+        <div class="panel-head">
           <div>
-            <h2>Curva de aprendizaje</h2>
-            <p>Progreso del residente frente a metas configuradas por procedimiento.</p>
+            <h2>Última cirugía indexada</h2>
+            <p>Resumen del caso quirúrgico más reciente asociado al residente. Este bloque se alimenta directamente del índice analítico conectado con nota postquirúrgica.</p>
           </div>
-          <span class="eyebrow">{{ profile.meta.procedimientos_activos }} procedimientos activos</span>
-        </header>
+        </div>
         <div class="panel-body">
-          {% if curva_aprendizaje %}
-          <div class="curve-grid">
-            {% for item in curva_aprendizaje %}
-            <article class="curve-card">
-              <h3>{{ item.procedimiento }}</h3>
-              <div class="curve-meta">
-                <div><span>Realizados</span><b>{{ item.realizados }}</b></div>
-                <div><span>Meta</span><b>{{ item.meta }}</b></div>
-                <div><span>Faltantes</span><b>{{ item.faltantes }}</b></div>
+          {% if profile.longitudinal.last_indexed_surgery %}
+          <div class="panel-grid">
+            <article class="summary-card">
+              <div class="summary-list">
+                <div class="summary-item">
+                  <span>Procedimiento</span>
+                  <strong>{{ profile.longitudinal.last_indexed_surgery.procedure_name }}</strong>
+                  <small>Paciente: {{ profile.longitudinal.last_indexed_surgery.patient_name }}</small>
+                </div>
+                <div class="summary-item">
+                  <span>Fecha</span>
+                  <strong>{{ profile.longitudinal.last_indexed_surgery.date_label }}</strong>
+                  <small>Última fecha indexada con participación real.</small>
+                </div>
               </div>
-              <div class="progress-shell">
-                <div class="progress-bar" style="width: {{ item.progreso }}%;"></div>
-              </div>
-              <div class="progress-caption">Progreso {{ item.progreso }}%</div>
             </article>
-            {% endfor %}
+            <article class="summary-card">
+              <div class="summary-list">
+                <div class="summary-item">
+                  <span>Abordaje</span>
+                  <strong>{{ profile.longitudinal.last_indexed_surgery.approach }}</strong>
+                  <small>Tipo de acceso predominante en el caso más reciente.</small>
+                </div>
+                <div class="summary-item">
+                  <span>Rol quirúrgico y participación técnica</span>
+                  <strong>{{ profile.longitudinal.last_indexed_surgery.role }} · {{ profile.longitudinal.last_indexed_surgery.participacion }}</strong>
+                  <small>Sangrado: {{ profile.longitudinal.last_indexed_surgery.blood_loss_ml if profile.longitudinal.last_indexed_surgery.blood_loss_ml is not none else 'N/E' }} mL</small>
+                </div>
+              </div>
+            </article>
           </div>
           {% else %}
-          <div class="empty">
-            <strong>Sin curva calculable</strong>
-            Aún no hay suficiente actividad indexada por procedimiento para construir la curva de aprendizaje.
+          <div class="empty-card">
+            <strong>Sin cirugía indexada</strong>
+            <div class="helper">Este residente todavía no tiene una última cirugía indexada visible en el motor analítico.</div>
+          </div>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="academic-grid">
+        <article class="academic-card">
+          <div class="academic-head">
+            <div>
+              <h3>Publicaciones</h3>
+            </div>
+            <span class="count">{{ profile.counts.publicaciones }}</span>
+          </div>
+          <div class="academic-body">
+            {% if profile.academico_no_clinico.publicaciones %}
+            <div class="record-list">
+              {% for item in profile.academico_no_clinico.publicaciones %}
+              <div class="record-item">
+                <div class="record-top">
+                  <strong>{{ item.titulo }}</strong>
+                  <span>{{ item.anio if item.anio else 'S/A' }}</span>
+                </div>
+                <div class="record-copy">{{ item.revista_o_medio or 'Medio no capturado' }}</div>
+                <div class="record-meta">
+                  <span>Estatus</span>
+                  <small>{{ item.estatus or 'Sin estatus' }}</small>
+                </div>
+                {% if item.notas %}
+                <div class="record-copy">{{ item.notas }}</div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-card">
+              <strong>Sin publicaciones</strong>
+              <div class="helper">Agrega publicaciones desde “Editar perfil”.</div>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+
+        <article class="academic-card">
+          <div class="academic-head">
+            <div>
+              <h3>Congresos</h3>
+            </div>
+            <span class="count">{{ profile.counts.congresos }}</span>
+          </div>
+          <div class="academic-body">
+            {% if profile.academico_no_clinico.congresos %}
+            <div class="record-list">
+              {% for item in profile.academico_no_clinico.congresos %}
+              <div class="record-item">
+                <div class="record-top">
+                  <strong>{{ item.nombre_evento }}</strong>
+                  <span>{{ item.fecha_label }}</span>
+                </div>
+                <div class="record-copy">{{ item.sede or 'Sede no capturada' }}</div>
+                <div class="record-meta">
+                  <span>Rol</span>
+                  <small>{{ item.rol or 'No especificado' }}</small>
+                </div>
+                {% if item.notas %}
+                <div class="record-copy">{{ item.notas }}</div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-card">
+              <strong>Sin congresos</strong>
+              <div class="helper">Agrega congresos y participación desde “Editar perfil”.</div>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+
+        <article class="academic-card">
+          <div class="academic-head">
+            <div>
+              <h3>Premios</h3>
+            </div>
+            <span class="count">{{ profile.counts.premios }}</span>
+          </div>
+          <div class="academic-body">
+            {% if profile.academico_no_clinico.premios %}
+            <div class="record-list">
+              {% for item in profile.academico_no_clinico.premios %}
+              <div class="record-item">
+                <div class="record-top">
+                  <strong>{{ item.nombre }}</strong>
+                  <span>{{ item.fecha_label }}</span>
+                </div>
+                <div class="record-copy">{{ item.institucion or 'Institución no capturada' }}</div>
+                {% if item.descripcion %}
+                <div class="record-copy">{{ item.descripcion }}</div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-card">
+              <strong>Sin premios</strong>
+              <div class="helper">Agrega reconocimientos y distinciones desde “Editar perfil”.</div>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+      </section>
+
+      <section class="record-grid">
+        <article class="record-card">
+          <div class="panel-head">
+            <div>
+              <h2>Evaluaciones semestrales</h2>
+              <p>Exámenes cargados y asignados desde Central. El residente puede entrar a contestarlos una sola vez cuando estén disponibles.</p>
+            </div>
+          </div>
+          <div class="record-body">
+            {% if profile.evaluaciones_semestrales %}
+            <div class="record-list">
+              {% for item in profile.evaluaciones_semestrales %}
+              <div class="record-item">
+                <div class="record-top">
+                  <strong>{{ item.title }}</strong>
+                  <span class="badge {{ item.status_tone }}">{{ item.status_label }}</span>
+                </div>
+                <div class="record-copy">{{ item.periodo_label }}</div>
+                <div class="record-meta">
+                  <span>Ventana</span>
+                  <small>{{ item.available_from_label }} → {{ item.due_on_label }}</small>
+                </div>
+                <div class="record-meta">
+                  <span>Calificación</span>
+                  <small>{% if item.score_pct is not none %}{{ item.score_pct }}% · {{ item.correct_answers }}/{{ item.total_questions }} aciertos{% else %}Sin calificación todavía{% endif %}</small>
+                </div>
+                <div class="section-actions">
+                  {% if item.can_take %}
+                  <a class="link-btn btn-main" href="{{ item.take_href }}">Realizar examen</a>
+                  {% else %}
+                  <a class="link-btn btn-soft" href="{{ item.take_href }}">Ver evaluación</a>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-card">
+              <strong>Sin evaluaciones asignadas</strong>
+              <div class="helper">Las evaluaciones semestrales se cargan desde Central por Jefatura.</div>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+
+        <article class="record-card">
+          <div class="panel-head">
+            <div>
+              <h2>Casos asociados</h2>
+              <p>Casos docentes o de seguimiento asignados por Jefatura desde Central para valoración longitudinal del residente.</p>
+            </div>
+          </div>
+          <div class="record-body">
+            {% if profile.casos_asociados %}
+            <div class="record-list">
+              {% for item in profile.casos_asociados %}
+              <div class="record-item">
+                <div class="record-top">
+                  <strong>{{ item.patient_snapshot }}</strong>
+                  <span class="badge {{ item.status_tone }}">{{ item.status_label }}</span>
+                </div>
+                <div class="record-copy">{{ item.objetivo }}</div>
+                <div class="record-meta">
+                  <span>Prioridad y límite</span>
+                  <small>{{ item.prioridad }} · {{ item.fecha_limite_label }}</small>
+                </div>
+                {% if item.consulta_id %}
+                <div class="record-copy">Consulta vinculada #{{ item.consulta_id }}</div>
+                {% endif %}
+                {% if item.notas %}
+                <div class="record-copy">{{ item.notas }}</div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-card">
+              <strong>Sin casos asociados</strong>
+              <div class="helper">Los casos asociados se crean en Central y se reflejan aquí automáticamente.</div>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+      </section>
+
+      <section class="record-grid">
+        <article class="record-card">
+          <div class="panel-head">
+            <div>
+              <h2>Incidencias</h2>
+              <p>Registro de incidencias académicas y operativas asociadas al residente, cargadas desde Central para seguimiento institucional.</p>
+            </div>
+          </div>
+          <div class="record-body">
+            {% if profile.incidencias %}
+            <div class="record-list">
+              {% for item in profile.incidencias %}
+              <div class="record-item">
+                <div class="record-top">
+                  <strong>{{ item.tipo }}</strong>
+                  <span class="badge {{ item.status_tone }}">{{ item.status_label }}</span>
+                </div>
+                <div class="record-copy">Severidad: {{ item.severidad }} · {{ item.fecha_evento_label }}</div>
+                <div class="record-copy">{{ item.descripcion }}</div>
+                {% if item.consulta_id %}
+                <div class="record-copy">Consulta vinculada #{{ item.consulta_id }}</div>
+                {% endif %}
+                {% if item.resolucion %}
+                <div class="record-meta">
+                  <span>Resolución</span>
+                  <small>{{ item.resolucion }}</small>
+                </div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-card">
+              <strong>Sin incidencias</strong>
+              <div class="helper">Cuando Jefatura cargue incidencias desde Central, aparecerán aquí.</div>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+
+        <article class="record-card">
+          <div class="panel-head">
+            <div>
+              <h2>Seguimiento longitudinal</h2>
+              <p>Lectura rápida para actividad reciente, carga docente y estado general del residente sin salir de su perfil.</p>
+            </div>
+          </div>
+          <div class="record-body">
+            <div class="summary-list">
+              <div class="summary-item">
+                <span>Actividad reciente 30 días</span>
+                <strong>{{ profile.longitudinal.activity_30_days }}</strong>
+                <small>Cirugías indexadas en la ventana móvil de 30 días.</small>
+              </div>
+              <div class="summary-item">
+                <span>Actividad reciente 90 días</span>
+                <strong>{{ profile.longitudinal.activity_90_days }}</strong>
+                <small>Cirugías indexadas en la ventana móvil de 90 días.</small>
+              </div>
+              <div class="summary-item">
+                <span>Procedimientos 90 días</span>
+                <strong>{{ profile.longitudinal.procedures_90_days }}</strong>
+                <small>Procedimientos distintos registrados en ese mismo periodo.</small>
+              </div>
+              <div class="summary-item">
+                <span>Última cirugía indexada</span>
+                <strong>{{ profile.longitudinal.last_indexed_surgery.date_label if profile.longitudinal.last_indexed_surgery else 'Sin fecha' }}</strong>
+                <small>{{ profile.longitudinal.last_indexed_surgery.procedure_name if profile.longitudinal.last_indexed_surgery else 'Sin cirugía indexada' }}</small>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="weight-grid">
+        <article class="weight-card">
+          <div class="weight-head">
+            <div>
+              <span class="pill-label">Ponderación</span>
+              <h3>Rol quirúrgico</h3>
+            </div>
+            <div class="score-stack">
+              <span>Promedio 0-100</span>
+              <strong>{{ profile.ponderacion.rol.promedio if profile.ponderacion.rol.promedio is not none else 'N/E' }}</strong>
+            </div>
+          </div>
+          <div class="weight-body">
+            <p>Escala académica: NA 0, visor 15, 3er ayudante 40, 2do ayudante 70 y 1er ayudante 100.</p>
+            <div class="weight-summary">
+              <div>
+                <span>Ponderación acumulada</span>
+                <b>{{ profile.ponderacion.rol.puntos_acumulados }}</b>
+              </div>
+              <div>
+                <span>Eventos evaluados</span>
+                <b>{{ profile.ponderacion.rol.total_eventos }}</b>
+              </div>
+            </div>
+            <div class="weight-list">
+              {% for item in profile.ponderacion.rol["items"] %}
+              <div class="weight-item">
+                <div class="weight-item-head">
+                  <span>{{ item.label }}</span>
+                  <strong>{{ item.cantidad }} casos · {{ item.puntos }} pts</strong>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: {{ item.porcentaje }}%;"></div>
+                </div>
+                <div class="weight-meta">{{ item.peso }} pts por caso · {{ item.porcentaje }}% del volumen registrado</div>
+              </div>
+              {% endfor %}
+              {% if not profile.ponderacion.rol["items"] %}
+              <div class="empty-card">
+                <strong>Sin ponderación disponible</strong>
+                <div class="helper">Todavía no hay actividad indexada suficiente para calcular ponderación por rol.</div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+
+        <article class="weight-card">
+          <div class="weight-head">
+            <div>
+              <span class="pill-label">Ponderación</span>
+              <h3>Participación técnica</h3>
+            </div>
+            <div class="score-stack">
+              <span>Promedio 0-100</span>
+              <strong>{{ profile.ponderacion.participacion.promedio if profile.ponderacion.participacion.promedio is not none else 'N/E' }}</strong>
+            </div>
+          </div>
+          <div class="weight-body">
+            <p>Escala académica: NA 0, observó 15, asistió 40, parcial 70 y mayoría 100.</p>
+            <div class="weight-summary">
+              <div>
+                <span>Ponderación acumulada</span>
+                <b>{{ profile.ponderacion.participacion.puntos_acumulados }}</b>
+              </div>
+              <div>
+                <span>Eventos evaluados</span>
+                <b>{{ profile.ponderacion.participacion.total_eventos }}</b>
+              </div>
+            </div>
+            <div class="weight-list">
+              {% for item in profile.ponderacion.participacion["items"] %}
+              <div class="weight-item">
+                <div class="weight-item-head">
+                  <span>{{ item.label }}</span>
+                  <strong>{{ item.cantidad }} casos · {{ item.puntos }} pts</strong>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: {{ item.porcentaje }}%;"></div>
+                </div>
+                <div class="weight-meta">{{ item.peso }} pts por caso · {{ item.porcentaje }}% del volumen registrado</div>
+              </div>
+              {% endfor %}
+              {% if not profile.ponderacion.participacion["items"] %}
+              <div class="empty-card">
+                <strong>Sin ponderación disponible</strong>
+                <div class="helper">Todavía no hay actividad indexada suficiente para calcular ponderación por participación técnica.</div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Distribución de actividad</h2>
+            <p>Visualización de la exposición quirúrgica del residente por abordaje, rol y participación técnica, conservando toda la analítica actual con mejor jerarquía y contraste.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          {% if profile.has_activity %}
+          <div class="chart-grid">
+            <article class="chart-card">
+              <div class="chart-head">
+                <div>
+                  <h3>Distribución de actividad</h3>
+                  <p>Abordajes</p>
+                </div>
+              </div>
+              <div class="chart-body">
+                <div class="chart-shell chart-shell-compact">
+                  <canvas id="chartAbordajes"></canvas>
+                </div>
+                <div class="mini-list">
+                  {% for row in profile.distribucion_abordaje %}
+                  <div class="mini-row"><span>{{ row.label }}</span><b>{{ row.cantidad }} · {{ row.porcentaje }}%</b></div>
+                  {% endfor %}
+                </div>
+              </div>
+            </article>
+            <article class="chart-card">
+              <div class="chart-head">
+                <div>
+                  <h3>Rol quirúrgico</h3>
+                  <p>Distribución de actividad</p>
+                </div>
+              </div>
+              <div class="chart-body">
+                <div class="chart-shell">
+                  <canvas id="chartRoles"></canvas>
+                </div>
+                <div class="mini-list">
+                  {% for row in profile.distribucion_roles %}
+                  <div class="mini-row"><span>{{ row.label }}</span><b>{{ row.cantidad }} · {{ row.porcentaje }}%</b></div>
+                  {% endfor %}
+                </div>
+              </div>
+            </article>
+            <article class="chart-card">
+              <div class="chart-head">
+                <div>
+                  <h3>Participación técnica</h3>
+                  <p>Distribución de actividad</p>
+                </div>
+              </div>
+              <div class="chart-body">
+                <div class="chart-shell">
+                  <canvas id="chartParticipacion"></canvas>
+                </div>
+                <div class="mini-list">
+                  {% for row in profile.distribucion_participacion %}
+                  <div class="mini-row"><span>{{ row.label }}</span><b>{{ row.cantidad }} · {{ row.porcentaje }}%</b></div>
+                  {% endfor %}
+                </div>
+              </div>
+            </article>
+          </div>
+          {% else %}
+          <div class="empty-card">
+            <strong>Sin distribución disponible</strong>
+            <div class="helper">La distribución de actividad aparecerá en cuanto se indexen casos postquirúrgicos para este residente.</div>
           </div>
           {% endif %}
         </div>
       </section>
 
       <section class="panel">
-        <header class="panel-head">
+        <div class="panel-head">
+          <div>
+            <h2>Curva de aprendizaje</h2>
+            <p>Seguimiento por procedimiento sobre metas académicas actuales y volumen realmente indexado.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          {% if curva_aprendizaje %}
+          <div class="curve-grid">
+            {% for item in curva_aprendizaje %}
+            <article class="curve-card">
+              <div class="chart-head">
+                <div>
+                  <h3>{{ item.procedimiento }}</h3>
+                  <p>Curva de aprendizaje</p>
+                </div>
+              </div>
+              <div class="curve-body">
+                <div class="curve-meta">
+                  <div>
+                    <span>Realizados</span>
+                    <b>{{ item.realizados }}</b>
+                  </div>
+                  <div>
+                    <span>Meta</span>
+                    <b>{{ item.meta }}</b>
+                  </div>
+                  <div>
+                    <span>Faltantes</span>
+                    <b>{{ item.faltantes }}</b>
+                  </div>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: {{ item.progreso }}%;"></div>
+                </div>
+                <div class="curve-progress-label">{{ item.progreso }}% de avance sobre la meta definida</div>
+              </div>
+            </article>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-card">
+            <strong>Sin curva de aprendizaje</strong>
+            <div class="helper">La curva se activará cuando existan procedimientos indexados para este residente.</div>
+          </div>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
           <div>
             <h2>Analítica de sangrado por procedimiento</h2>
-            <p>Comparación del residente contra el promedio global del servicio por procedimiento.</p>
+            <p>Comparativa entre el promedio del residente y el promedio global del servicio, sin eliminar ninguna de las métricas que ya estaban visibles.</p>
           </div>
-        </header>
+        </div>
         <div class="panel-body">
           {% if sangrado_rows %}
-          <div class="viz-card" style="min-height: 290px; margin-bottom: 18px;">
-            <h3>Residente vs servicio</h3>
-            <div class="chart-shell chart-shell-wide">
-              <canvas id="chartSangrado"></canvas>
-            </div>
+          <div class="chart-shell chart-shell-wide">
+            <canvas id="chartSangrado"></canvas>
           </div>
           <div class="table-wrap">
             <table>
@@ -649,124 +2030,369 @@
                 <tr>
                   <th>Procedimiento</th>
                   <th>Casos</th>
-                  <th>Prom. residente</th>
-                  <th>Prom. servicio</th>
-                  <th>Desv. mL</th>
-                  <th>Desv. %</th>
+                  <th>Rol quirúrgico</th>
+                  <th>Participación técnica</th>
                   <th>Abordaje</th>
-                  <th>Rol</th>
-                  <th>Participación</th>
+                  <th>Sangrado residente</th>
+                  <th>Sangrado servicio</th>
+                  <th>Desviación</th>
                   <th>Semáforo</th>
                 </tr>
               </thead>
               <tbody>
                 {% for row in sangrado_rows %}
                 <tr>
-                  <td>{{ row.procedimiento }}</td>
+                  <td>
+                    <strong>{{ row.procedimiento }}</strong><br>
+                    <span style="font-size:12px;color:#71859a;">{{ row.casos_con_sangrado_residente }} casos con sangrado registrado</span>
+                  </td>
                   <td>{{ row.casos_participados }}</td>
-                  <td>{{ row.sangrado_promedio_residente if row.sangrado_promedio_residente is not none else 'N/E' }}</td>
-                  <td>{{ row.sangrado_promedio_servicio if row.sangrado_promedio_servicio is not none else 'N/E' }}</td>
-                  <td>{{ row.desviacion_ml if row.desviacion_ml is not none else 'N/E' }}</td>
-                  <td>{{ row.desviacion_pct ~ '%' if row.desviacion_pct is not none else 'N/E' }}</td>
-                  <td>{{ row.abordaje_mas_frecuente }}</td>
                   <td>{{ row.rol_mas_frecuente }}</td>
                   <td>{{ row.participacion_mas_frecuente }}</td>
+                  <td>{{ row.abordaje_mas_frecuente }}</td>
+                  <td>{{ row.sangrado_promedio_residente if row.sangrado_promedio_residente is not none else 'N/E' }}</td>
+                  <td>{{ row.sangrado_promedio_servicio if row.sangrado_promedio_servicio is not none else 'N/E' }}</td>
                   <td>
-                    <span class="sem sem-{{ row.semaforo }}">
-                      {% if row.semaforo == 'gris' %}Muestra insuficiente{% elif row.semaforo == 'azul' %}Dentro del rango{% else %}Por arriba del servicio{% endif %}
-                    </span>
+                    {% if row.desviacion_ml is not none %}
+                    {{ row.desviacion_ml }} mL
+                    {% if row.desviacion_pct is not none %}
+                    <br><span style="font-size:12px;color:#71859a;">{{ row.desviacion_pct }}%</span>
+                    {% endif %}
+                    {% else %}
+                    N/E
+                    {% endif %}
                   </td>
+                  <td><span class="badge {{ 'neutral' if row.semaforo == 'gris' else ('info' if row.semaforo == 'azul' else 'error') }}">{{ row.semaforo|upper }}</span></td>
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
           </div>
-          <div class="foot-note">
-            La comparación interpretativa se desactiva cuando el residente o el servicio tienen menos de 3 casos con sangrado capturado para ese procedimiento.
-            En esta fase la métrica es no ponderada por rol o participación técnica; esos datos se muestran para conservar contexto clínico y académico.
-          </div>
           {% else %}
-          <div class="empty">
+          <div class="empty-card">
             <strong>Sin analítica de sangrado</strong>
-            Todavía no hay suficiente información de sangrado capturada para construir comparaciones por procedimiento.
+            <div class="helper">Todavía no existe suficiente información de sangrado por procedimiento para este residente.</div>
           </div>
           {% endif %}
         </div>
       </section>
-      {% endif %}
     </section>
   </main>
 
+  <template id="publicationTemplate">
+    <div class="repeater-item">
+      <div class="repeater-top">
+        <span class="repeater-title">Publicación</span>
+        <button type="button" class="icon-btn" data-remove-row>Eliminar</button>
+      </div>
+      <div class="drawer-grid">
+        <div class="drawer-field" style="grid-column: 1 / -1;">
+          <label>Título</label>
+          <input type="text" name="publications_title[]" placeholder="Título de la publicación">
+        </div>
+        <div class="drawer-field">
+          <label>Revista o medio</label>
+          <input type="text" name="publications_media[]" placeholder="Revista, journal o medio">
+        </div>
+        <div class="drawer-field">
+          <label>Año</label>
+          <input type="number" name="publications_year[]" placeholder="2026">
+        </div>
+        <div class="drawer-field">
+          <label>Estatus</label>
+          <input type="text" name="publications_status[]" placeholder="Publicado, enviado, aceptado">
+        </div>
+        <div class="drawer-field" style="grid-column: 1 / -1;">
+          <label>Notas</label>
+          <textarea name="publications_notes[]" rows="3" placeholder="Coautores, DOI, observaciones"></textarea>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="congressTemplate">
+    <div class="repeater-item">
+      <div class="repeater-top">
+        <span class="repeater-title">Congreso</span>
+        <button type="button" class="icon-btn" data-remove-row>Eliminar</button>
+      </div>
+      <div class="drawer-grid">
+        <div class="drawer-field" style="grid-column: 1 / -1;">
+          <label>Nombre del evento</label>
+          <input type="text" name="congresses_event[]" placeholder="Nombre del congreso">
+        </div>
+        <div class="drawer-field">
+          <label>Sede</label>
+          <input type="text" name="congresses_location[]" placeholder="Ciudad o institución">
+        </div>
+        <div class="drawer-field">
+          <label>Fecha</label>
+          <input type="date" name="congresses_date[]">
+        </div>
+        <div class="drawer-field">
+          <label>Rol</label>
+          <input type="text" name="congresses_role[]" placeholder="Ponente, asistente, cartel">
+        </div>
+        <div class="drawer-field" style="grid-column: 1 / -1;">
+          <label>Notas</label>
+          <textarea name="congresses_notes[]" rows="3" placeholder="Tema, participación, observaciones"></textarea>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="awardTemplate">
+    <div class="repeater-item">
+      <div class="repeater-top">
+        <span class="repeater-title">Premio</span>
+        <button type="button" class="icon-btn" data-remove-row>Eliminar</button>
+      </div>
+      <div class="drawer-grid">
+        <div class="drawer-field">
+          <label>Nombre</label>
+          <input type="text" name="awards_name[]" placeholder="Nombre del reconocimiento">
+        </div>
+        <div class="drawer-field">
+          <label>Institución</label>
+          <input type="text" name="awards_institution[]" placeholder="Institución que otorga">
+        </div>
+        <div class="drawer-field">
+          <label>Fecha</label>
+          <input type="date" name="awards_date[]">
+        </div>
+        <div class="drawer-field" style="grid-column: 1 / -1;">
+          <label>Descripción</label>
+          <textarea name="awards_description[]" rows="3" placeholder="Motivo o detalle del premio"></textarea>
+        </div>
+      </div>
+    </div>
+  </template>
+
   <script>
-    const charts = {{ charts | tojson }};
-    const hasActivity = {{ profile.has_activity | tojson }};
+    const drawerOpen = {{ 'true' if drawer_open else 'false' }};
+    const charts = {{ charts|tojson }};
+    const hasActivity = {{ 'true' if profile.has_activity else 'false' }};
+    const body = document.body;
+    const drawer = document.querySelector('.drawer');
+    const overlay = document.querySelector('.drawer-overlay');
+    const openDrawer = document.querySelector('[data-open-drawer]');
+    const closeTriggers = document.querySelectorAll('[data-close-drawer]');
+    const drawerPreview = document.getElementById('drawerPhotoPreview');
+    const heroPhoto = document.getElementById('heroPhoto');
+    const photoInput = document.getElementById('photo');
+
+    function setDrawer(open) {
+      body.classList.toggle('drawer-open', open);
+      if (drawer) {
+        drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+      }
+    }
+
+    if (drawerOpen) {
+      setDrawer(true);
+    }
+
+    if (openDrawer) {
+      openDrawer.addEventListener('click', () => setDrawer(true));
+    }
+
+    closeTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => setDrawer(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        setDrawer(false);
+      }
+    });
+
+    if (photoInput && drawerPreview && heroPhoto) {
+      photoInput.addEventListener('change', () => {
+        const file = photoInput.files && photoInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            drawerPreview.src = reader.result;
+            heroPhoto.src = reader.result;
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function updateRepeaterTitles(repeater) {
+      if (!repeater) return;
+      repeater.querySelectorAll('.repeater-item').forEach((item, index) => {
+        const title = item.querySelector('.repeater-title');
+        if (!title) return;
+        const text = title.textContent.split(' ')[0];
+        title.textContent = `${text} ${index + 1}`;
+      });
+    }
+
+    function clearRepeaterItem(item) {
+      item.querySelectorAll('input, textarea, select').forEach((field) => {
+        if (field.type === 'checkbox' || field.type === 'radio') {
+          field.checked = false;
+        } else {
+          field.value = '';
+        }
+      });
+    }
+
+    document.querySelectorAll('[data-add-row]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const templateId = button.getAttribute('data-add-row');
+        const targetName = button.getAttribute('data-target-repeater');
+        const template = document.getElementById(templateId);
+        const repeater = document.querySelector(`[data-repeater="${targetName}"]`);
+        if (!template || !repeater) return;
+        const fragment = template.content.cloneNode(true);
+        repeater.appendChild(fragment);
+        updateRepeaterTitles(repeater);
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-remove-row]');
+      if (!button) return;
+      const item = button.closest('.repeater-item');
+      const repeater = button.closest('[data-repeater]');
+      if (!item || !repeater) return;
+      const items = repeater.querySelectorAll('.repeater-item');
+      if (items.length <= 1) {
+        clearRepeaterItem(item);
+      } else {
+        item.remove();
+      }
+      updateRepeaterTitles(repeater);
+    });
+
+    document.querySelectorAll('[data-repeater]').forEach((repeater) => updateRepeaterTitles(repeater));
+
+    function commonChartOptions(extra) {
+      return Object.assign({
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#36506d',
+              font: { family: 'Montserrat, system-ui, sans-serif', size: 12, weight: '700' }
+            }
+          },
+          tooltip: {
+            backgroundColor: '#12253e',
+            titleColor: '#ffffff',
+            bodyColor: '#eef3f8',
+            borderColor: 'rgba(255,255,255,0.10)',
+            borderWidth: 1,
+            padding: 12
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#566a7f', font: { family: 'Montserrat, system-ui, sans-serif', size: 11, weight: '700' } },
+            grid: { display: false, drawBorder: false }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#566a7f', font: { family: 'Montserrat, system-ui, sans-serif', size: 11, weight: '700' }, precision: 0 },
+            grid: { color: 'rgba(20, 38, 62, 0.08)', drawBorder: false }
+          }
+        }
+      }, extra || {});
+    }
 
     function safeChart(id, type, data, options) {
       const canvas = document.getElementById(id);
       if (!canvas || !window.Chart || !data.labels || !data.labels.length) return;
-      new Chart(canvas, { type, data, options });
+      new Chart(canvas, { type, data, options: options || {} });
+    }
+
+    if (window.Chart) {
+      Chart.defaults.font.family = 'Montserrat, system-ui, sans-serif';
+      Chart.defaults.color = '#566a7f';
     }
 
     if (hasActivity) {
-      safeChart("chartAbordajes", "doughnut", {
+      safeChart('chartAbordajes', 'doughnut', {
         labels: charts.abordajes.labels,
         datasets: [{
           data: charts.abordajes.values,
-          backgroundColor: ["#113d84", "#2f62ba", "#5d8dde", "#98baf0"],
-          borderWidth: 0
+          backgroundColor: ['#184f93', '#2d6dbe', '#0f6f7d', '#cf9b47'],
+          borderColor: '#ffffff',
+          borderWidth: 4,
+          hoverOffset: 4
         }]
       }, {
-        plugins: { legend: { position: "bottom" } },
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        cutout: '62%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#36506d',
+              font: { family: 'Montserrat, system-ui, sans-serif', size: 11, weight: '700' }
+            }
+          },
+          tooltip: {
+            backgroundColor: '#12253e',
+            titleColor: '#ffffff',
+            bodyColor: '#eef3f8'
+          }
+        }
       });
 
-      safeChart("chartRoles", "bar", {
+      safeChart('chartRoles', 'bar', {
         labels: charts.roles.labels,
         datasets: [{
           data: charts.roles.values,
-          backgroundColor: "#2f62ba",
-          borderRadius: 8,
+          backgroundColor: '#184f93',
+          borderRadius: 10,
+          maxBarThickness: 42
         }]
-      }, {
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
-        maintainAspectRatio: false
-      });
+      }, commonChartOptions({ plugins: { legend: { display: false } } }));
 
-      safeChart("chartParticipacion", "bar", {
+      safeChart('chartParticipacion', 'bar', {
         labels: charts.participacion.labels,
         datasets: [{
           data: charts.participacion.values,
-          backgroundColor: "#bf2f45",
-          borderRadius: 8,
+          backgroundColor: '#0f6f7d',
+          borderRadius: 10,
+          maxBarThickness: 42
         }]
-      }, {
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
-        maintainAspectRatio: false
-      });
+      }, commonChartOptions({ plugins: { legend: { display: false } } }));
 
-      safeChart("chartSangrado", "bar", {
+      safeChart('chartSangrado', 'bar', {
         labels: charts.sangrado.labels,
         datasets: [
           {
-            label: "Residente",
+            label: 'Residente',
             data: charts.sangrado.resident,
-            backgroundColor: "#2f62ba",
-            borderRadius: 8,
+            backgroundColor: '#184f93',
+            borderRadius: 10,
+            maxBarThickness: 30
           },
           {
-            label: "Servicio",
+            label: 'Servicio',
             data: charts.sangrado.service,
-            backgroundColor: "#bf2f45",
-            borderRadius: 8,
+            backgroundColor: '#a53b4f',
+            borderRadius: 10,
+            maxBarThickness: 30
           }
         ]
-      }, {
-        plugins: { legend: { position: "bottom" } },
-        scales: { y: { beginAtZero: true } },
-        maintainAspectRatio: false
-      });
+      }, commonChartOptions({
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#36506d',
+              font: { family: 'Montserrat, system-ui, sans-serif', size: 12, weight: '700' }
+            }
+          }
+        }
+      }));
     }
   </script>
 </body>

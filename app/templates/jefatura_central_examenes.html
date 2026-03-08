@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exámenes | Central</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root {
+      --navy-900: #0c2d5b;
+      --navy-700: #184f93;
+      --ink-980: #091423;
+      --ink-900: #12253e;
+      --slate-700: #586c81;
+      --line-soft: #dbe5ef;
+      --surface: rgba(255,255,255,0.96);
+      --shadow-lg: 0 28px 64px rgba(12, 28, 52, 0.14);
+      --shadow-md: 0 16px 34px rgba(12, 28, 52, 0.09);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      font-family: 'Montserrat', system-ui, sans-serif;
+      color: var(--ink-900);
+      background:
+        radial-gradient(circle at top left, rgba(24, 79, 147, 0.16), transparent 28%),
+        linear-gradient(180deg, #eef3f8 0%, #f7f9fb 52%, #eef2f7 100%);
+    }
+    .shell {
+      max-width: 1500px;
+      margin: 0 auto;
+      border-radius: 30px;
+      border: 1px solid var(--line-soft);
+      background: var(--surface);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .hero {
+      padding: 26px 30px;
+      background: linear-gradient(135deg, #0c2d5b 0%, #184f93 62%, #103f77 100%);
+      color: #f8fbff;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+    }
+    .hero p {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      font-weight: 600;
+      color: rgba(245, 249, 255, 0.92);
+      max-width: 760px;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 0;
+    }
+    .btn-main { background: #fff; color: var(--navy-900); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.10);
+      color: #f8fbff;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+    .content {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: minmax(420px, 0.95fr) minmax(0, 1.25fr);
+      gap: 20px;
+    }
+    .panel {
+      border-radius: 24px;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #0d3768 0%, #184f93 64%, #14447d 100%);
+      color: #f8fbff;
+    }
+    .panel-head h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+    .panel-head p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: rgba(245,249,255,0.92);
+    }
+    .panel-body {
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+    .flash {
+      grid-column: 1 / -1;
+      border-radius: 18px;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.45;
+      background: #fff0f3;
+      color: #9b3147;
+      border: 1px solid rgba(155,49,71,0.18);
+    }
+    .field,
+    .field-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .field-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .field label {
+      color: var(--ink-900);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid #cfd9e4;
+      background: #fff;
+      color: var(--ink-900);
+      font: inherit;
+      font-size: 14px;
+      padding: 14px;
+      outline: none;
+      resize: vertical;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: rgba(23, 77, 143, 0.48);
+      box-shadow: 0 0 0 3px rgba(23, 77, 143, 0.10);
+    }
+    .composer {
+      border: 1px solid rgba(20,38,62,0.08);
+      border-radius: 18px;
+      background: #f5f8fb;
+      padding: 16px;
+    }
+    .composer summary {
+      cursor: pointer;
+      list-style: none;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink-980);
+    }
+    .composer summary::-webkit-details-marker { display: none; }
+    .question-list {
+      display: grid;
+      gap: 14px;
+    }
+    .question-card,
+    .exam-card {
+      border-radius: 18px;
+      border: 1px solid rgba(20,38,62,0.08);
+      background: #fff;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .question-card h3,
+    .exam-card h3 {
+      margin: 0;
+      color: var(--ink-980);
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+    .question-card p {
+      margin: 0;
+      color: var(--slate-700);
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+    .question-top,
+    .exam-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+    .icon-btn {
+      border: 1px solid rgba(20,38,62,0.12);
+      background: #fff;
+      color: var(--ink-900);
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .answer-list {
+      display: grid;
+      gap: 10px;
+    }
+    .answer-row {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      border-radius: 14px;
+      border: 1px solid rgba(20,38,62,0.08);
+      background: #f5f8fb;
+      padding: 10px 12px;
+    }
+    .answer-key {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8f0fb;
+      color: var(--navy-900);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .answer-correct {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-900);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .answer-correct input {
+      accent-color: var(--navy-700);
+    }
+    .exam-list {
+      display: grid;
+      gap: 14px;
+    }
+    .exam-meta {
+      border-radius: 14px;
+      background: #f5f8fb;
+      border: 1px solid rgba(20,38,62,0.06);
+      padding: 12px;
+      display: grid;
+      gap: 4px;
+    }
+    .exam-meta span {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-700);
+    }
+    .exam-meta strong {
+      font-size: 18px;
+      line-height: 1.1;
+      color: var(--ink-980);
+    }
+    .exam-copy {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--slate-700);
+      font-weight: 600;
+    }
+    .empty-card {
+      border-radius: 18px;
+      border: 1px dashed #c5d2df;
+      background: linear-gradient(180deg, #fbfdff 0%, #f3f7fb 100%);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .empty-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink-980);
+      font-size: 20px;
+    }
+    @media (max-width: 1180px) {
+      .content { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      body { padding: 10px; }
+      .hero, .content { padding: 16px; }
+      .field-grid.two { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <h1>Exámenes</h1>
+        <p>Diseña evaluaciones semestrales de opción múltiple, define preguntas con una sola respuesta correcta y prepara el material para asignarlo desde Central.</p>
+      </div>
+      <nav class="actions">
+        <a class="btn btn-main" href="/jefatura-urologia/central">Volver a Central</a>
+        <a class="btn btn-ghost" href="/jefatura-urologia/programa-academico/residentes">Residentes</a>
+      </nav>
+    </header>
+
+    <section class="content">
+      {% if flash %}
+      <div class="flash">{{ flash.message }}</div>
+      {% endif %}
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Crear examen semestral</h2>
+          <p>Captura el metadato del examen y al menos una pregunta. Cada pregunta usa cuatro opciones y una única respuesta correcta.</p>
+        </div>
+        <div class="panel-body">
+          <details class="composer" {% if create_open %}open{% endif %}>
+            <summary>Nueva plantilla de examen</summary>
+            <form method="post" action="/jefatura-urologia/central/examenes" style="margin-top:16px;display:grid;gap:16px;">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <div class="field">
+                <label for="title">Título</label>
+                <input id="title" type="text" name="title" placeholder="Evaluación semestral de litiasis y endourología" required>
+              </div>
+              <div class="field-grid two">
+                <div class="field">
+                  <label for="period_label">Periodo</label>
+                  <input id="period_label" type="text" name="period_label" placeholder="2026-1">
+                </div>
+                <div class="field">
+                  <label for="is_active">Estado</label>
+                  <select id="is_active" name="is_active">
+                    <option value="1" selected>Activa</option>
+                    <option value="0">Inactiva</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="description">Descripción</label>
+                <textarea id="description" name="description" rows="4" placeholder="Objetivo, enfoque y alcance de la evaluación"></textarea>
+              </div>
+              <div class="exam-copy">
+                Inspirado en patrones actuales de plataformas como Canvas New Quizzes, Moodle Quiz y la interfaz renovada de NBME Self-Assessments: preguntas claras, respuesta correcta definida por Jefatura y experiencia del residente con navegación por pregunta y calificación automática.
+              </div>
+
+              <div class="question-list" id="questionList">
+                <div class="question-card">
+                  <div class="question-top">
+                    <h3>Pregunta 1</h3>
+                    <button type="button" class="icon-btn" data-remove-question>Eliminar</button>
+                  </div>
+                  <p>La pregunta se mostrará al residente en formato interactivo tipo examen en línea, una por vista y con navegación entre reactivos.</p>
+                  <div class="field">
+                    <label>Enunciado</label>
+                    <textarea name="question_prompt[]" rows="3" placeholder="Redacta la pregunta" required></textarea>
+                  </div>
+                  <div class="field">
+                    <label>Explicación</label>
+                    <textarea name="question_explanation[]" rows="2" placeholder="Explicación opcional para revisión posterior"></textarea>
+                  </div>
+                  <input type="hidden" name="question_correct[]" value="0" data-correct-input>
+                  <div class="answer-list">
+                    <div class="answer-row">
+                      <span class="answer-key">A</span>
+                      <input type="text" name="question_option_a[]" placeholder="Opción A" required>
+                      <label class="answer-correct"><input type="radio" name="correct-choice-0" value="0" data-correct-radio checked> Correcta</label>
+                    </div>
+                    <div class="answer-row">
+                      <span class="answer-key">B</span>
+                      <input type="text" name="question_option_b[]" placeholder="Opción B" required>
+                      <label class="answer-correct"><input type="radio" name="correct-choice-0" value="1" data-correct-radio> Correcta</label>
+                    </div>
+                    <div class="answer-row">
+                      <span class="answer-key">C</span>
+                      <input type="text" name="question_option_c[]" placeholder="Opción C" required>
+                      <label class="answer-correct"><input type="radio" name="correct-choice-0" value="2" data-correct-radio> Correcta</label>
+                    </div>
+                    <div class="answer-row">
+                      <span class="answer-key">D</span>
+                      <input type="text" name="question_option_d[]" placeholder="Opción D" required>
+                      <label class="answer-correct"><input type="radio" name="correct-choice-0" value="3" data-correct-radio> Correcta</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button type="button" class="icon-btn" id="addQuestion">+ Añadir pregunta</button>
+                <button type="submit" class="btn btn-main">Guardar examen</button>
+              </div>
+            </form>
+          </details>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Plantillas existentes</h2>
+          <p>Exámenes disponibles para asignación individual o por generación desde Central.</p>
+        </div>
+        <div class="panel-body">
+          {% if exams %}
+          <div class="exam-list">
+            {% for exam in exams %}
+            <article class="exam-card">
+              <div class="exam-top">
+                <h3>{{ exam.title }}</h3>
+                <a class="btn btn-main" href="{{ exam.assign_href }}">Asignar</a>
+              </div>
+              <div class="exam-copy">{{ exam.description or 'Sin descripción ampliada.' }}</div>
+              <div class="field-grid two">
+                <div class="exam-meta">
+                  <span>Periodo</span>
+                  <strong>{{ exam.period_label }}</strong>
+                </div>
+                <div class="exam-meta">
+                  <span>Preguntas</span>
+                  <strong>{{ exam.question_count }}</strong>
+                </div>
+                <div class="exam-meta">
+                  <span>Asignaciones</span>
+                  <strong>{{ exam.assignment_count }}</strong>
+                </div>
+                <div class="exam-meta">
+                  <span>Contestados</span>
+                  <strong>{{ exam.completed_count }}</strong>
+                </div>
+              </div>
+            </article>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-card">
+            <strong>Sin exámenes capturados</strong>
+            <div class="exam-copy">Crea la primera plantilla desde el panel izquierdo para empezar a poblar las evaluaciones semestrales.</div>
+          </div>
+          {% endif %}
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <template id="questionTemplate">
+    <div class="question-card">
+      <div class="question-top">
+        <h3>Pregunta</h3>
+        <button type="button" class="icon-btn" data-remove-question>Eliminar</button>
+      </div>
+      <p>La pregunta se mostrará al residente en formato interactivo tipo examen en línea, una por vista y con navegación entre reactivos.</p>
+      <div class="field">
+        <label>Enunciado</label>
+        <textarea name="question_prompt[]" rows="3" placeholder="Redacta la pregunta" required></textarea>
+      </div>
+      <div class="field">
+        <label>Explicación</label>
+        <textarea name="question_explanation[]" rows="2" placeholder="Explicación opcional para revisión posterior"></textarea>
+      </div>
+      <input type="hidden" name="question_correct[]" value="0" data-correct-input>
+      <div class="answer-list">
+        <div class="answer-row">
+          <span class="answer-key">A</span>
+          <input type="text" name="question_option_a[]" placeholder="Opción A" required>
+          <label class="answer-correct"><input type="radio" value="0" data-correct-radio checked> Correcta</label>
+        </div>
+        <div class="answer-row">
+          <span class="answer-key">B</span>
+          <input type="text" name="question_option_b[]" placeholder="Opción B" required>
+          <label class="answer-correct"><input type="radio" value="1" data-correct-radio> Correcta</label>
+        </div>
+        <div class="answer-row">
+          <span class="answer-key">C</span>
+          <input type="text" name="question_option_c[]" placeholder="Opción C" required>
+          <label class="answer-correct"><input type="radio" value="2" data-correct-radio> Correcta</label>
+        </div>
+        <div class="answer-row">
+          <span class="answer-key">D</span>
+          <input type="text" name="question_option_d[]" placeholder="Opción D" required>
+          <label class="answer-correct"><input type="radio" value="3" data-correct-radio> Correcta</label>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const questionList = document.getElementById('questionList');
+    const questionTemplate = document.getElementById('questionTemplate');
+    const addQuestionButton = document.getElementById('addQuestion');
+
+    function updateQuestionTitles() {
+      if (!questionList) return;
+      questionList.querySelectorAll('.question-card').forEach((card, index) => {
+        const title = card.querySelector('h3');
+        if (title) title.textContent = `Pregunta ${index + 1}`;
+        const hidden = card.querySelector('[data-correct-input]');
+        if (hidden && !hidden.value) hidden.value = '0';
+        card.querySelectorAll('[data-correct-radio]').forEach((radio) => {
+          radio.name = `correct-choice-${index}`;
+          radio.checked = radio.value === (hidden ? hidden.value : '0');
+        });
+      });
+    }
+
+    addQuestionButton?.addEventListener('click', () => {
+      if (!questionTemplate || !questionList) return;
+      questionList.appendChild(questionTemplate.content.cloneNode(true));
+      updateQuestionTitles();
+    });
+
+    document.addEventListener('click', (event) => {
+      const removeButton = event.target.closest('[data-remove-question]');
+      if (!removeButton) return;
+      const card = removeButton.closest('.question-card');
+      if (!card || !questionList) return;
+      if (questionList.querySelectorAll('.question-card').length <= 1) {
+        card.querySelectorAll('input, textarea').forEach((field) => field.value = '');
+        const select = card.querySelector('select');
+        if (select) select.value = '0';
+      } else {
+        card.remove();
+      }
+      updateQuestionTitles();
+    });
+
+    document.addEventListener('change', (event) => {
+      const radio = event.target.closest('[data-correct-radio]');
+      if (!radio) return;
+      const card = radio.closest('.question-card');
+      const hidden = card?.querySelector('[data-correct-input]');
+      if (hidden) hidden.value = radio.value;
+    });
+
+    updateQuestionTitles();
+  </script>
+</body>
+</html>

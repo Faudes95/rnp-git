@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if exam_view %}{{ exam_view.title }} | Evaluación{% else %}Evaluación no disponible{% endif %}</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root {
+      --navy-900: #0c2d5b;
+      --navy-700: #184f93;
+      --navy-500: #3f78bc;
+      --ink-980: #091423;
+      --ink-900: #12253e;
+      --slate-700: #586c81;
+      --slate-600: #6f8296;
+      --line-soft: #dbe5ef;
+      --surface: rgba(255,255,255,0.96);
+      --surface-soft: #f5f8fb;
+      --shadow-lg: 0 28px 64px rgba(12, 28, 52, 0.14);
+      --shadow-md: 0 16px 34px rgba(12, 28, 52, 0.09);
+      --ok-bg: #e7f6ef;
+      --ok-fg: #215d49;
+      --warn-bg: #fff3e0;
+      --warn-fg: #8b5d14;
+      --info-bg: #ebf3ff;
+      --info-fg: #1a4f93;
+      --error-bg: #fff0f3;
+      --error-fg: #9b3147;
+      --neutral-bg: #eff3f7;
+      --neutral-fg: #617385;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      font-family: 'Montserrat', system-ui, sans-serif;
+      color: var(--ink-900);
+      background:
+        radial-gradient(circle at top left, rgba(24, 79, 147, 0.16), transparent 28%),
+        linear-gradient(180deg, #eef3f8 0%, #f7f9fb 52%, #eef2f7 100%);
+    }
+    body.modal-open {
+      overflow: hidden;
+    }
+    .shell {
+      max-width: 1420px;
+      margin: 0 auto;
+      border-radius: 30px;
+      border: 1px solid var(--line-soft);
+      background: var(--surface);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero {
+      padding: 28px 30px;
+      background: linear-gradient(135deg, #0c2d5b 0%, #184f93 62%, #103f77 100%);
+      color: #f8fbff;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 0.98;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+    }
+    .hero p {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 600;
+      color: rgba(245,249,255,0.92);
+      max-width: 860px;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn,
+    .ghost-btn,
+    .palette-btn,
+    .review-jump {
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+    }
+    .btn,
+    .ghost-btn {
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-main {
+      background: #fff;
+      color: var(--navy-900);
+    }
+    .btn-ghost {
+      background: rgba(255,255,255,0.10);
+      color: #f8fbff;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+    .content {
+      padding: 24px;
+      display: grid;
+      gap: 20px;
+    }
+    .panel,
+    .workspace-card,
+    .stage-shell {
+      border-radius: 24px;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .panel-head,
+    .stage-head {
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #0d3768 0%, #184f93 64%, #14447d 100%);
+      color: #f8fbff;
+    }
+    .panel-head h2,
+    .stage-head h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+    .panel-head p,
+    .stage-head p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: rgba(245,249,255,0.92);
+    }
+    .panel-body,
+    .stage-body {
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+    .flash {
+      border-radius: 18px;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.45;
+      border: 1px solid transparent;
+    }
+    .flash-success {
+      background: var(--ok-bg);
+      color: var(--ok-fg);
+      border-color: rgba(33,93,73,0.18);
+    }
+    .flash-error {
+      background: var(--error-bg);
+      color: var(--error-fg);
+      border-color: rgba(155,49,71,0.18);
+    }
+    .flash-info {
+      background: var(--info-bg);
+      color: var(--info-fg);
+      border-color: rgba(26,79,147,0.18);
+    }
+    .hidden {
+      display: none !important;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .badge.info { background: var(--info-bg); color: var(--info-fg); border-color: rgba(26,79,147,0.16); }
+    .badge.ok { background: var(--ok-bg); color: var(--ok-fg); border-color: rgba(33,93,73,0.16); }
+    .badge.neutral { background: var(--neutral-bg); color: var(--neutral-fg); border-color: rgba(97,115,133,0.16); }
+    .badge.error { background: var(--error-bg); color: var(--error-fg); border-color: rgba(155,49,71,0.16); }
+    .badge.warn { background: var(--warn-bg); color: var(--warn-fg); border-color: rgba(139,93,20,0.16); }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .summary-card {
+      border-radius: 16px;
+      border: 1px solid rgba(20,38,62,0.08);
+      background: #fff;
+      padding: 14px;
+      display: grid;
+      gap: 4px;
+    }
+    .summary-card span {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-700);
+    }
+    .summary-card strong {
+      font-size: 18px;
+      line-height: 1.1;
+      color: var(--ink-980);
+    }
+    .helper {
+      color: var(--slate-700);
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 600;
+    }
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(300px, 330px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .workspace-side {
+      display: grid;
+      gap: 16px;
+      position: sticky;
+      top: 16px;
+    }
+    .workspace-card {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #f6f9fc 100%);
+    }
+    .section-tag {
+      display: inline-flex;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(24,79,147,0.10);
+      color: var(--navy-900);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .workspace-card h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: var(--ink-980);
+    }
+    .workspace-card p {
+      margin: 0;
+      color: var(--slate-700);
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 600;
+    }
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .mini-stat {
+      border-radius: 16px;
+      border: 1px solid rgba(20,38,62,0.08);
+      background: #fff;
+      padding: 12px;
+      display: grid;
+      gap: 4px;
+    }
+    .mini-stat span {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-700);
+    }
+    .mini-stat strong {
+      font-size: 20px;
+      line-height: 1;
+      color: var(--ink-980);
+    }
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: #dce5ef;
+      overflow: hidden;
+    }
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0c2d5b 0%, #3f78bc 100%);
+      transition: width 180ms ease;
+    }
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+      gap: 10px;
+    }
+    .palette-btn {
+      min-height: 48px;
+      border-radius: 16px;
+      border: 1px solid rgba(20,38,62,0.10);
+      background: #fff;
+      color: var(--ink-900);
+      font-size: 13px;
+      font-weight: 800;
+      transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+    }
+    .palette-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(24,79,147,0.32);
+      box-shadow: 0 10px 22px rgba(12,28,52,0.08);
+    }
+    .palette-btn.current {
+      background: var(--navy-900);
+      color: #f8fbff;
+      border-color: var(--navy-900);
+      box-shadow: 0 14px 28px rgba(12,45,91,0.24);
+    }
+    .palette-btn.answered:not(.current) {
+      background: var(--ok-bg);
+      color: var(--ok-fg);
+      border-color: rgba(33,93,73,0.18);
+    }
+    .palette-btn.marked:not(.current) {
+      background: var(--warn-bg);
+      color: var(--warn-fg);
+      border-color: rgba(139,93,20,0.18);
+    }
+    .palette-btn.unanswered:not(.current) {
+      background: #fff;
+      color: var(--slate-700);
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-700);
+    }
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #cfd9e4;
+    }
+    .legend-swatch.ok { background: #78c6a4; }
+    .legend-swatch.warn { background: #f0b24d; }
+    .legend-swatch.current { background: var(--navy-900); }
+    .stage-shell {
+      display: grid;
+      gap: 0;
+    }
+    .stage-body {
+      gap: 20px;
+    }
+    .question-panel {
+      display: none;
+      gap: 18px;
+    }
+    .question-panel.active {
+      display: grid;
+    }
+    .question-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .question-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(24,79,147,0.10);
+      color: var(--navy-900);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+    .mark-btn {
+      border: 1px solid rgba(20,38,62,0.10);
+      background: #fff;
+      color: var(--ink-900);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .mark-btn.marked {
+      background: var(--warn-bg);
+      color: var(--warn-fg);
+      border-color: rgba(139,93,20,0.20);
+    }
+    .prompt-card {
+      border-radius: 20px;
+      border: 1px solid rgba(20,38,62,0.08);
+      background: #fff;
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+    }
+    .prompt-card h3 {
+      margin: 0;
+      color: var(--ink-980);
+      font-size: clamp(22px, 3vw, 30px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+    .prompt-copy {
+      margin: 0;
+      color: var(--slate-700);
+      font-size: 15px;
+      line-height: 1.7;
+      font-weight: 600;
+    }
+    .choice-list {
+      display: grid;
+      gap: 12px;
+    }
+    .choice {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: flex-start;
+      border-radius: 18px;
+      border: 1px solid rgba(20,38,62,0.10);
+      background: #fff;
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease, background 150ms ease;
+    }
+    .choice:hover {
+      transform: translateY(-1px);
+      border-color: rgba(24,79,147,0.26);
+      box-shadow: 0 12px 26px rgba(12,28,52,0.07);
+    }
+    .choice-input {
+      margin-top: 2px;
+      accent-color: var(--navy-700);
+      width: 20px;
+      height: 20px;
+    }
+    .choice-body {
+      display: grid;
+      gap: 6px;
+    }
+    .choice-key {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #e8f0fb;
+      color: var(--navy-900);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .choice-copy {
+      color: var(--ink-900);
+      font-size: 15px;
+      line-height: 1.65;
+      font-weight: 600;
+    }
+    .choice.selected {
+      background: #eef5ff;
+      border-color: rgba(26,79,147,0.24);
+      box-shadow: 0 16px 28px rgba(26,79,147,0.10);
+    }
+    .choice.correct {
+      background: var(--ok-bg);
+      border-color: rgba(33,93,73,0.20);
+    }
+    .choice.incorrect {
+      background: var(--error-bg);
+      border-color: rgba(155,49,71,0.20);
+    }
+    .choice.note {
+      cursor: default;
+    }
+    .question-explanation {
+      border-radius: 18px;
+      background: #f5f8fb;
+      border: 1px solid rgba(20,38,62,0.08);
+      padding: 16px;
+      color: var(--slate-700);
+      font-size: 14px;
+      line-height: 1.65;
+      font-weight: 600;
+    }
+    .navigator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .ghost-btn {
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 800;
+      background: #fff;
+      color: var(--ink-900);
+      border: 1px solid rgba(20,38,62,0.10);
+    }
+    .ghost-btn.primary {
+      background: var(--navy-900);
+      color: #f8fbff;
+      border-color: var(--navy-900);
+    }
+    .ghost-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .result-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .review-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(9,20,35,0.58);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 40;
+    }
+    .review-overlay.open {
+      display: flex;
+    }
+    .review-panel {
+      width: min(860px, 100%);
+      max-height: calc(100vh - 36px);
+      overflow: auto;
+      border-radius: 28px;
+      background: #fff;
+      box-shadow: 0 36px 80px rgba(8,20,36,0.30);
+      border: 1px solid rgba(20,38,62,0.10);
+    }
+    .review-head {
+      padding: 22px 24px;
+      background: linear-gradient(135deg, #0c2d5b 0%, #184f93 62%, #103f77 100%);
+      color: #f8fbff;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .review-head h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+    .review-head p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 600;
+      color: rgba(245,249,255,0.92);
+      max-width: 620px;
+    }
+    .review-body {
+      padding: 20px 24px 24px;
+      display: grid;
+      gap: 16px;
+    }
+    .review-list {
+      display: grid;
+      gap: 10px;
+    }
+    .review-row {
+      border-radius: 18px;
+      border: 1px solid rgba(20,38,62,0.08);
+      background: linear-gradient(180deg, #ffffff 0%, #f6f9fc 100%);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+    .review-index {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: #e8f0fb;
+      color: var(--navy-900);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .review-text strong {
+      display: block;
+      font-size: 14px;
+      color: var(--ink-980);
+      margin-bottom: 4px;
+    }
+    .review-text span {
+      display: block;
+      color: var(--slate-700);
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 600;
+    }
+    .review-jump {
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: var(--navy-900);
+      color: #f8fbff;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .review-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .empty-card {
+      border-radius: 18px;
+      border: 1px dashed #c5d2df;
+      background: linear-gradient(180deg, #fbfdff 0%, #f3f7fb 100%);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .empty-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink-980);
+      font-size: 20px;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    @media (max-width: 1100px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      .workspace-side {
+        position: static;
+      }
+    }
+    @media (max-width: 760px) {
+      body { padding: 10px; }
+      .hero, .content { padding: 16px; }
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .mini-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+      .review-row {
+        grid-template-columns: 1fr;
+      }
+      .review-actions {
+        justify-content: stretch;
+      }
+      .review-actions .ghost-btn,
+      .review-actions .btn {
+        width: 100%;
+      }
+    }
+    @media (max-width: 560px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      .mini-stats {
+        grid-template-columns: 1fr;
+      }
+      .palette {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <h1>{% if exam_view %}{{ exam_view.title }}{% else %}Evaluación no disponible{% endif %}</h1>
+        <p>
+          {% if exam_view %}
+          {{ exam_view.resident.name }} · {{ exam_view.resident.grade }} · {{ exam_view.periodo_label }}. Interfaz de respuesta en una sola pantalla clínica con navegación por reactivos, revisión previa al envío y calificación automática al terminar.
+          {% else %}
+          No existe una evaluación válida para este residente.
+          {% endif %}
+        </p>
+      </div>
+      <nav class="actions">
+        {% if exam_view %}
+        <a class="btn btn-main" href="/jefatura-urologia/programa-academico/residentes/{{ exam_view.resident.code }}">Volver al perfil</a>
+        {% else %}
+        <a class="btn btn-main" href="/jefatura-urologia/programa-academico/residentes">Residentes</a>
+        {% endif %}
+        <a class="btn btn-ghost" href="/jefatura-urologia/central">Central</a>
+      </nav>
+    </header>
+
+    <section class="content">
+      {% if flash %}
+      <div class="flash flash-{{ flash.kind }}">{{ flash.message }}</div>
+      {% endif %}
+
+      {% if not exam_view %}
+      <div class="empty-card">
+        <strong>Evaluación no encontrada</strong>
+        <div class="helper">La asignación solicitada no existe o no corresponde a este residente.</div>
+      </div>
+      {% else %}
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Resumen de la evaluación</h2>
+          <p>{{ exam_view.description or 'Sin descripción ampliada.' }}</p>
+        </div>
+        <div class="panel-body">
+          <div class="summary-grid">
+            <div class="summary-card">
+              <span>Estado</span>
+              <strong><span class="badge {{ exam_view.status_tone }}">{{ exam_view.status_label }}</span></strong>
+            </div>
+            <div class="summary-card">
+              <span>Disponible desde</span>
+              <strong>{{ exam_view.available_from or 'Sin fecha' }}</strong>
+            </div>
+            <div class="summary-card">
+              <span>Cierra en</span>
+              <strong>{{ exam_view.due_on or 'Sin fecha' }}</strong>
+            </div>
+            <div class="summary-card">
+              <span>Resultado</span>
+              <strong>{% if exam_view.attempt.score_pct is not none %}{{ exam_view.attempt.score_pct }}%{% else %}Pendiente{% endif %}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {% if exam_view.has_attempt %}
+      <section class="workspace" data-readonly-workspace>
+        <aside class="workspace-side">
+          <section class="workspace-card">
+            <span class="section-tag">Resultado</span>
+            <h3>Intento finalizado</h3>
+            <p>La evaluación quedó cerrada. Se muestra la respuesta registrada, la respuesta correcta y la explicación posterior por reactivo.</p>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <span>Calificación</span>
+                <strong>{{ exam_view.attempt.score_pct }}%</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Aciertos</span>
+                <strong>{{ exam_view.attempt.correct_answers }}/{{ exam_view.attempt.total_questions }}</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Preguntas</span>
+                <strong>{{ exam_view.questions|length }}</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Enviado</span>
+                <strong>{{ exam_view.attempt.submitted_at }}</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="workspace-card">
+            <span class="section-tag">Navegación</span>
+            <h3>Revisión por reactivo</h3>
+            <p>La paleta permite moverte por cada reactivo y revisar con claridad la selección realizada frente a la opción correcta.</p>
+            <div class="palette" data-palette>
+              {% for question in exam_view.questions %}
+              <button type="button" class="palette-btn{% if question.selected_option_id %} answered{% else %} unanswered{% endif %}{% if loop.first %} current{% endif %}" data-jump="{{ loop.index0 }}" aria-label="Ir a la pregunta {{ loop.index }}">P{{ loop.index }}</button>
+              {% endfor %}
+            </div>
+            <div class="legend">
+              <span class="legend-item"><span class="legend-swatch current"></span>Actual</span>
+              <span class="legend-item"><span class="legend-swatch ok"></span>Contestada</span>
+              <span class="legend-item"><span class="legend-swatch"></span>Sin respuesta</span>
+            </div>
+          </section>
+        </aside>
+
+        <section class="stage-shell">
+          <div class="stage-head">
+            <h2>Resultado final</h2>
+            <p>Visualización tipo revisión: un reactivo por vez, con evidencia de la respuesta elegida y retroalimentación posterior al envío.</p>
+          </div>
+          <div class="stage-body">
+            {% for question in exam_view.questions %}
+            <article class="question-panel{% if loop.first %} active{% endif %}" data-question-panel="{{ loop.index0 }}">
+              <div class="question-meta">
+                <span class="question-kicker">Pregunta {{ loop.index }} de {{ exam_view.questions|length }}</span>
+                <div class="result-line">
+                  {% set selected = question.selected_option_id %}
+                  {% set selection = namespace(correct=false) %}
+                  {% for option in question.options %}
+                    {% if option.id == selected and option.is_correct %}
+                      {% set selection.correct = true %}
+                    {% endif %}
+                  {% endfor %}
+                  <span class="badge {% if selection.correct %}ok{% else %}error{% endif %}">
+                    {% if selection.correct %}Respuesta correcta{% else %}Respuesta incorrecta{% endif %}
+                  </span>
+                </div>
+              </div>
+
+              <div class="prompt-card">
+                <h3>{{ question.prompt }}</h3>
+                <div class="choice-list">
+                  {% for option in question.options %}
+                  <div class="choice note{% if option.is_correct %} correct{% endif %}{% if question.selected_option_id == option.id and not option.is_correct %} incorrect{% endif %}{% if question.selected_option_id == option.id %} selected{% endif %}">
+                    <input class="choice-input" type="radio" disabled {% if question.selected_option_id == option.id %}checked{% endif %}>
+                    <div class="choice-body">
+                      <span class="choice-key">{{ ['A', 'B', 'C', 'D'][loop.index0] }}</span>
+                      <div class="choice-copy">{{ option.text }}</div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% if question.explanation %}
+                <div class="question-explanation">{{ question.explanation }}</div>
+                {% endif %}
+              </div>
+            </article>
+            {% endfor %}
+
+            <div class="navigator">
+              <button type="button" class="ghost-btn" data-prev>Pregunta anterior</button>
+              <button type="button" class="ghost-btn primary" data-next>Pregunta siguiente</button>
+            </div>
+          </div>
+        </section>
+      </section>
+      {% elif exam_view.status == 'DISPONIBLE' %}
+      <form method="post" action="/jefatura-urologia/programa-academico/residentes/{{ exam_view.resident.code }}/examenes/{{ exam_view.assignment_id }}/responder" data-exam-form>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <section class="workspace" data-exam-workspace data-storage-key="resident-exam-draft-{{ exam_view.resident.code }}-{{ exam_view.assignment_id }}">
+          <aside class="workspace-side">
+            <section class="workspace-card">
+              <span class="section-tag">Modo examen</span>
+              <h3>Resolución interactiva</h3>
+              <p>Flujo inspirado en evaluaciones profesionales en línea: una pregunta por vista, paleta de navegación, marcado para revisión y revisión final antes de enviar.</p>
+              <div class="mini-stats">
+                <div class="mini-stat">
+                  <span>Contestadas</span>
+                  <strong data-answered-count>0</strong>
+                </div>
+                <div class="mini-stat">
+                  <span>Pendientes</span>
+                  <strong data-unanswered-count>{{ exam_view.questions|length }}</strong>
+                </div>
+                <div class="mini-stat">
+                  <span>Marcadas</span>
+                  <strong data-marked-count>0</strong>
+                </div>
+                <div class="mini-stat">
+                  <span>Total</span>
+                  <strong>{{ exam_view.questions|length }}</strong>
+                </div>
+              </div>
+              <div>
+                <div class="helper" style="margin-bottom:8px;">Avance global</div>
+                <div class="progress-track">
+                  <div class="progress-fill" data-progress-fill></div>
+                </div>
+              </div>
+              <div class="flash flash-info hidden" data-form-alert></div>
+            </section>
+
+            <section class="workspace-card">
+              <span class="section-tag">Reactivos</span>
+              <h3>Navegador del examen</h3>
+              <p>La numeración funciona como tablero de control. Puedes saltar entre preguntas y dejar marcadas las que quieras revisar antes del envío final.</p>
+              <div class="palette" data-palette>
+                {% for question in exam_view.questions %}
+                <button type="button" class="palette-btn unanswered{% if loop.first %} current{% endif %}" data-jump="{{ loop.index0 }}" aria-label="Ir a la pregunta {{ loop.index }}">P{{ loop.index }}</button>
+                {% endfor %}
+              </div>
+              <div class="legend">
+                <span class="legend-item"><span class="legend-swatch current"></span>Actual</span>
+                <span class="legend-item"><span class="legend-swatch ok"></span>Contestada</span>
+                <span class="legend-item"><span class="legend-swatch warn"></span>Marcada</span>
+                <span class="legend-item"><span class="legend-swatch"></span>Pendiente</span>
+              </div>
+              <p>Borrador local automático en este navegador. Si regresas antes de enviar, las respuestas capturadas se restauran.</p>
+            </section>
+
+            <section class="workspace-card">
+              <span class="section-tag">Cierre</span>
+              <h3>Revisión final</h3>
+              <p>El envío es único. Antes de cerrar el examen, abre la pantalla de revisión para confirmar pendientes o preguntas marcadas.</p>
+              <button type="button" class="ghost-btn primary" data-open-review>Revisar y enviar examen</button>
+            </section>
+          </aside>
+
+          <section class="stage-shell">
+            <div class="stage-head">
+              <h2>Realizar examen</h2>
+              <p>Responde cada reactivo con una sola opción. La explicación de la pregunta solo se mostrará al terminar y quedar calificada automáticamente.</p>
+            </div>
+            <div class="stage-body">
+              {% for question in exam_view.questions %}
+              <article class="question-panel{% if loop.first %} active{% endif %}" data-question-panel="{{ loop.index0 }}">
+                <div class="question-meta">
+                  <span class="question-kicker">Pregunta {{ loop.index }} de {{ exam_view.questions|length }}</span>
+                  <button type="button" class="mark-btn" data-mark-toggle="{{ loop.index0 }}">Marcar para revisión</button>
+                </div>
+
+                <div class="prompt-card">
+                  <h3>{{ question.prompt }}</h3>
+                  <p class="prompt-copy">Selecciona la opción que mejor responde el enunciado. Puedes moverte libremente entre reactivos desde el panel lateral.</p>
+                  <div class="choice-list">
+                    {% set question_index = loop.index0 %}
+                    {% for option in question.options %}
+                    <label class="choice" data-choice>
+                      <input class="choice-input" type="radio" name="answer_{{ question.id }}" value="{{ option.id }}" data-question-index="{{ question_index }}">
+                      <div class="choice-body">
+                        <span class="choice-key">{{ ['A', 'B', 'C', 'D'][loop.index0] }}</span>
+                        <div class="choice-copy">{{ option.text }}</div>
+                      </div>
+                    </label>
+                    {% endfor %}
+                  </div>
+                </div>
+              </article>
+              {% endfor %}
+
+              <div class="navigator">
+                <button type="button" class="ghost-btn" data-prev>Pregunta anterior</button>
+                <button type="button" class="ghost-btn primary" data-next>Pregunta siguiente</button>
+              </div>
+            </div>
+          </section>
+        </section>
+      </form>
+
+      <div class="review-overlay" data-review-modal>
+        <div class="review-panel">
+          <div class="review-head">
+            <div>
+              <h2>Revisión final antes de enviar</h2>
+              <p>Señalización previa al cierre del examen. Si todo está listo, el sistema enviará el intento, autocalificará y cargará el resultado al perfil del residente.</p>
+            </div>
+            <button type="button" class="ghost-btn" data-close-review>Cerrar</button>
+          </div>
+          <div class="review-body">
+            <div class="summary-grid">
+              <div class="summary-card">
+                <span>Contestadas</span>
+                <strong data-review-answered>0</strong>
+              </div>
+              <div class="summary-card">
+                <span>Pendientes</span>
+                <strong data-review-pending>{{ exam_view.questions|length }}</strong>
+              </div>
+              <div class="summary-card">
+                <span>Marcadas</span>
+                <strong data-review-marked>0</strong>
+              </div>
+              <div class="summary-card">
+                <span>Total</span>
+                <strong>{{ exam_view.questions|length }}</strong>
+              </div>
+            </div>
+            <div class="review-list" data-review-list></div>
+            <div class="review-actions">
+              <button type="button" class="ghost-btn" data-close-review>Seguir revisando</button>
+              <button type="button" class="ghost-btn primary" data-confirm-submit>Enviar examen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="empty-card">
+        <strong>Examen no disponible para responder</strong>
+        <div class="helper">
+          {% if exam_view.status == 'PENDIENTE' %}
+          La evaluación todavía no entra en ventana de respuesta.
+          {% elif exam_view.status == 'VENCIDA' %}
+          La ventana de respuesta ya venció.
+          {% else %}
+          No hay una acción disponible para esta evaluación.
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+    </section>
+  </main>
+
+  {% if exam_view %}
+  <script>
+    (function () {
+      const readonlyWorkspace = document.querySelector('[data-readonly-workspace]');
+      if (readonlyWorkspace) {
+        const panels = Array.from(readonlyWorkspace.querySelectorAll('[data-question-panel]'));
+        const paletteButtons = Array.from(readonlyWorkspace.querySelectorAll('[data-jump]'));
+        const prevButton = readonlyWorkspace.querySelector('[data-prev]');
+        const nextButton = readonlyWorkspace.querySelector('[data-next]');
+        let currentIndex = 0;
+
+        function renderReadonly() {
+          panels.forEach((panel, index) => {
+            panel.classList.toggle('active', index === currentIndex);
+          });
+          paletteButtons.forEach((button, index) => {
+            button.classList.toggle('current', index === currentIndex);
+          });
+          if (prevButton) prevButton.disabled = currentIndex === 0;
+          if (nextButton) nextButton.disabled = currentIndex === panels.length - 1;
+        }
+
+        paletteButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            currentIndex = Number(button.dataset.jump || 0);
+            renderReadonly();
+          });
+        });
+        if (prevButton) {
+          prevButton.addEventListener('click', () => {
+            currentIndex = Math.max(0, currentIndex - 1);
+            renderReadonly();
+          });
+        }
+        if (nextButton) {
+          nextButton.addEventListener('click', () => {
+            currentIndex = Math.min(panels.length - 1, currentIndex + 1);
+            renderReadonly();
+          });
+        }
+        renderReadonly();
+        return;
+      }
+
+      const workspace = document.querySelector('[data-exam-workspace]');
+      const form = document.querySelector('[data-exam-form]');
+      if (!workspace || !form) {
+        return;
+      }
+
+      const storageKey = workspace.dataset.storageKey || '';
+      const panels = Array.from(workspace.querySelectorAll('[data-question-panel]'));
+      const paletteButtons = Array.from(workspace.querySelectorAll('[data-jump]'));
+      const markButtons = Array.from(workspace.querySelectorAll('[data-mark-toggle]'));
+      const prevButton = workspace.querySelector('[data-prev]');
+      const nextButton = workspace.querySelector('[data-next]');
+      const openReviewButton = workspace.querySelector('[data-open-review]');
+      const alertBox = workspace.querySelector('[data-form-alert]');
+      const answeredCountNode = workspace.querySelector('[data-answered-count]');
+      const unansweredCountNode = workspace.querySelector('[data-unanswered-count]');
+      const markedCountNode = workspace.querySelector('[data-marked-count]');
+      const progressFill = workspace.querySelector('[data-progress-fill]');
+      const reviewModal = document.querySelector('[data-review-modal]');
+      const reviewList = document.querySelector('[data-review-list]');
+      const reviewAnsweredNode = document.querySelector('[data-review-answered]');
+      const reviewPendingNode = document.querySelector('[data-review-pending]');
+      const reviewMarkedNode = document.querySelector('[data-review-marked]');
+      const closeButtons = Array.from(document.querySelectorAll('[data-close-review]'));
+      const confirmSubmitButton = document.querySelector('[data-confirm-submit]');
+      const radioInputs = Array.from(form.querySelectorAll('input[type="radio"]'));
+      const markedSet = new Set();
+      let currentIndex = 0;
+
+      function getState() {
+        return panels.map((panel, index) => {
+          const checked = panel.querySelector('input[type="radio"]:checked');
+          return {
+            index,
+            answered: Boolean(checked),
+            value: checked ? checked.value : null,
+            marked: markedSet.has(index)
+          };
+        });
+      }
+
+      function saveDraft() {
+        if (!storageKey || !window.sessionStorage) {
+          return;
+        }
+        const draft = {
+          currentIndex,
+          marked: Array.from(markedSet),
+          answers: getState().map((item) => item.value)
+        };
+        sessionStorage.setItem(storageKey, JSON.stringify(draft));
+      }
+
+      function clearAlert() {
+        if (!alertBox) return;
+        alertBox.textContent = '';
+        alertBox.classList.add('hidden');
+      }
+
+      function showAlert(message) {
+        if (!alertBox) return;
+        alertBox.textContent = message;
+        alertBox.classList.remove('hidden');
+      }
+
+      function restoreDraft() {
+        if (!storageKey || !window.sessionStorage) {
+          return;
+        }
+        try {
+          const raw = sessionStorage.getItem(storageKey);
+          if (!raw) {
+            return;
+          }
+          const draft = JSON.parse(raw);
+          if (Array.isArray(draft.answers)) {
+            draft.answers.forEach((value, index) => {
+              if (!value) return;
+              const panel = panels[index];
+              if (!panel) return;
+              const input = panel.querySelector(`input[type="radio"][value="${value}"]`);
+              if (input) {
+                input.checked = true;
+              }
+            });
+          }
+          if (Array.isArray(draft.marked)) {
+            draft.marked.forEach((value) => {
+              if (Number.isInteger(value)) {
+                markedSet.add(value);
+              }
+            });
+          }
+          if (Number.isInteger(draft.currentIndex)) {
+            currentIndex = Math.max(0, Math.min(panels.length - 1, draft.currentIndex));
+          }
+        } catch (error) {
+          sessionStorage.removeItem(storageKey);
+        }
+      }
+
+      function updateChoiceStyles() {
+        panels.forEach((panel) => {
+          const choices = Array.from(panel.querySelectorAll('[data-choice]'));
+          choices.forEach((choice) => {
+            const input = choice.querySelector('input[type="radio"]');
+            choice.classList.toggle('selected', Boolean(input && input.checked));
+          });
+        });
+      }
+
+      function renderCounts() {
+        const state = getState();
+        const answered = state.filter((item) => item.answered).length;
+        const pending = state.length - answered;
+        const marked = state.filter((item) => item.marked).length;
+        if (answeredCountNode) answeredCountNode.textContent = String(answered);
+        if (unansweredCountNode) unansweredCountNode.textContent = String(pending);
+        if (markedCountNode) markedCountNode.textContent = String(marked);
+        if (reviewAnsweredNode) reviewAnsweredNode.textContent = String(answered);
+        if (reviewPendingNode) reviewPendingNode.textContent = String(pending);
+        if (reviewMarkedNode) reviewMarkedNode.textContent = String(marked);
+        if (progressFill) {
+          const pct = state.length ? Math.round((answered / state.length) * 100) : 0;
+          progressFill.style.width = `${pct}%`;
+        }
+      }
+
+      function renderPalette() {
+        const state = getState();
+        paletteButtons.forEach((button, index) => {
+          button.classList.remove('current', 'answered', 'marked', 'unanswered');
+          if (index === currentIndex) {
+            button.classList.add('current');
+          } else if (state[index] && state[index].marked) {
+            button.classList.add('marked');
+          } else if (state[index] && state[index].answered) {
+            button.classList.add('answered');
+          } else {
+            button.classList.add('unanswered');
+          }
+        });
+      }
+
+      function renderPanels() {
+        panels.forEach((panel, index) => {
+          panel.classList.toggle('active', index === currentIndex);
+        });
+        markButtons.forEach((button, index) => {
+          const marked = markedSet.has(index);
+          button.classList.toggle('marked', marked);
+          button.textContent = marked ? 'Marcada para revisión' : 'Marcar para revisión';
+        });
+        if (prevButton) prevButton.disabled = currentIndex === 0;
+        if (nextButton) nextButton.disabled = currentIndex === panels.length - 1;
+      }
+
+      function render() {
+        updateChoiceStyles();
+        renderCounts();
+        renderPalette();
+        renderPanels();
+      }
+
+      function validateBeforeSubmit() {
+        const firstPending = getState().find((item) => !item.answered);
+        if (firstPending) {
+          currentIndex = firstPending.index;
+          render();
+          showAlert('Debes responder todas las preguntas antes de enviar el examen.');
+          if (reviewModal) {
+            reviewModal.classList.remove('open');
+            document.body.classList.remove('modal-open');
+          }
+          return false;
+        }
+        clearAlert();
+        return true;
+      }
+
+      function buildReviewList() {
+        if (!reviewList) {
+          return;
+        }
+        const state = getState();
+        reviewList.innerHTML = '';
+        state.forEach((item) => {
+          const row = document.createElement('div');
+          row.className = 'review-row';
+
+          const indexNode = document.createElement('div');
+          indexNode.className = 'review-index';
+          indexNode.textContent = String(item.index + 1);
+          row.appendChild(indexNode);
+
+          const textNode = document.createElement('div');
+          textNode.className = 'review-text';
+          const heading = document.createElement('strong');
+          heading.textContent = `Pregunta ${item.index + 1}`;
+          const detail = document.createElement('span');
+          if (item.answered && item.marked) {
+            detail.textContent = 'Contestada y marcada para revisión.';
+          } else if (item.answered) {
+            detail.textContent = 'Contestada.';
+          } else if (item.marked) {
+            detail.textContent = 'Pendiente y marcada para revisión.';
+          } else {
+            detail.textContent = 'Pendiente.';
+          }
+          textNode.appendChild(heading);
+          textNode.appendChild(detail);
+          row.appendChild(textNode);
+
+          const jumpButton = document.createElement('button');
+          jumpButton.type = 'button';
+          jumpButton.className = 'review-jump';
+          jumpButton.textContent = 'Ir a reactivo';
+          jumpButton.addEventListener('click', () => {
+            currentIndex = item.index;
+            render();
+            if (reviewModal) {
+              reviewModal.classList.remove('open');
+              document.body.classList.remove('modal-open');
+            }
+          });
+          row.appendChild(jumpButton);
+          reviewList.appendChild(row);
+        });
+      }
+
+      function openReview() {
+        buildReviewList();
+        renderCounts();
+        if (reviewModal) {
+          reviewModal.classList.add('open');
+          document.body.classList.add('modal-open');
+        }
+      }
+
+      function closeReview() {
+        if (reviewModal) {
+          reviewModal.classList.remove('open');
+          document.body.classList.remove('modal-open');
+        }
+      }
+
+      restoreDraft();
+      render();
+
+      radioInputs.forEach((input) => {
+        input.addEventListener('change', () => {
+          clearAlert();
+          saveDraft();
+          render();
+        });
+      });
+
+      paletteButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          currentIndex = Number(button.dataset.jump || 0);
+          saveDraft();
+          render();
+        });
+      });
+
+      markButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+          if (markedSet.has(index)) {
+            markedSet.delete(index);
+          } else {
+            markedSet.add(index);
+          }
+          saveDraft();
+          render();
+        });
+      });
+
+      if (prevButton) {
+        prevButton.addEventListener('click', () => {
+          currentIndex = Math.max(0, currentIndex - 1);
+          saveDraft();
+          render();
+        });
+      }
+
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          currentIndex = Math.min(panels.length - 1, currentIndex + 1);
+          saveDraft();
+          render();
+        });
+      }
+
+      if (openReviewButton) {
+        openReviewButton.addEventListener('click', openReview);
+      }
+
+      closeButtons.forEach((button) => {
+        button.addEventListener('click', closeReview);
+      });
+
+      if (reviewModal) {
+        reviewModal.addEventListener('click', (event) => {
+          if (event.target === reviewModal) {
+            closeReview();
+          }
+        });
+      }
+
+      if (confirmSubmitButton) {
+        confirmSubmitButton.addEventListener('click', () => {
+          if (!validateBeforeSubmit()) {
+            return;
+          }
+          if (storageKey && window.sessionStorage) {
+            sessionStorage.removeItem(storageKey);
+          }
+          form.submit();
+        });
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (reviewModal && reviewModal.classList.contains('open')) {
+          if (event.key === 'Escape') {
+            closeReview();
+          }
+          return;
+        }
+        if (event.key === 'ArrowLeft') {
+          currentIndex = Math.max(0, currentIndex - 1);
+          saveDraft();
+          render();
+        }
+        if (event.key === 'ArrowRight') {
+          currentIndex = Math.min(panels.length - 1, currentIndex + 1);
+          saveDraft();
+          render();
+        }
+      });
+    })();
+  </script>
+  {% endif %}
+</body>
+</html>

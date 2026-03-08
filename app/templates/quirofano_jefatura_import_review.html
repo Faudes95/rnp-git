@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Conciliación de Importación | Jefatura de Quirófano</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root{--bg:#f4f7fb;--card:#fff;--ink:#17314a;--muted:#67788b;--line:#d6e0ea;--primary:#0d4b7a;--good:#156a44;--warn:#a06307;--bad:#9a2233}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--ink)}
+    .shell{max-width:1500px;margin:0 auto;padding:20px}
+    .head{background:linear-gradient(135deg,#102d4a,#0d4b7a);color:#fff;border-radius:20px;padding:24px}
+    .head h1{margin:0 0 8px;font-size:30px}.head p{margin:0;color:rgba(245,249,255,.9);line-height:1.5}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 14px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid transparent;background:#fff;color:var(--primary)}
+    .btn.alt{background:transparent;color:#fff;border-color:rgba(255,255,255,.25)} .btn.warn{background:#fff2dc;color:var(--warn)} .btn.good{background:#e7f6ee;color:var(--good)}
+    .flash{margin:16px 0;padding:14px 16px;border-radius:14px;font-weight:700}.flash.success{background:#e7f6ee;color:var(--good);border:1px solid #c1e5ce}.flash.error{background:#fdecef;color:var(--bad);border:1px solid #f0c1cb}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 12px 26px rgba(15,39,64,.06);margin-top:18px}
+    .meta{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:16px}
+    .meta .box{border:1px solid var(--line);border-radius:14px;padding:12px;background:#f9fbfd}
+    .k{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.v{font-size:18px;font-weight:900;margin-top:6px}
+    .tone{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase}
+    .tone.green{background:#e6f6ed;color:var(--good)} .tone.red{background:#fdecef;color:var(--bad)} .tone.amber{background:#fff2dc;color:var(--warn)} .tone.slate{background:#edf1f5;color:#5f7182}
+    .sub{font-size:13px;color:var(--muted);line-height:1.5}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .list{display:grid;gap:10px}
+    .issue{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff8eb}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse;min-width:1500px}
+    th,td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:12px}
+    th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#f7fafc;position:sticky;top:0}
+    input[type=text],input[type=number],select{width:100%;padding:9px 10px;border-radius:9px;border:1px solid #cad6e2;background:#fff;font:inherit}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    @media (max-width:1100px){.split,.meta{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="head">
+      <h1>Conciliación del lote #{{ batch.id }}</h1>
+      <p>La extracción ya leyó el PDF y creó filas normalizadas. Desde aquí corriges sala, turno o campos clínicos antes de confirmar y convertir el lote en programación diaria real.</p>
+      <div class="nav">
+        <a class="btn" href="/quirofano/jefatura/importaciones">Volver a importaciones</a>
+        {% if batch.file_date %}<a class="btn alt" href="/quirofano/jefatura/programacion/{{ batch.file_date.isoformat() }}">Abrir día {{ batch.file_date.strftime('%d/%m/%Y') }}</a>{% endif %}
+      </div>
+      <div class="meta">
+        <div class="box"><div class="k">Archivo</div><div class="v">{{ batch.original_filename }}</div></div>
+        <div class="box"><div class="k">Fecha detectada</div><div class="v">{{ batch.file_date.strftime('%d/%m/%Y') if batch.file_date else 'No detectada' }}</div></div>
+        <div class="box"><div class="k">Páginas</div><div class="v">{{ batch.page_count }}</div></div>
+        <div class="box"><div class="k">Filas</div><div class="v">{{ batch.extracted_rows_count }}</div></div>
+        <div class="box"><div class="k">Estatus</div><div class="v"><span class="tone {{ batch_badge.tone }}">{{ batch_badge.label }}</span></div></div>
+      </div>
+    </section>
+
+    {% if flash %}
+      <div class="flash {{ flash.kind }}">{{ flash.message }}</div>
+    {% endif %}
+
+    <section class="card">
+      <div class="split">
+        <div>
+          <h2>Advertencias</h2>
+          <div class="list">
+            {% for item in batch.warnings_json or [] %}
+              <div class="issue">{{ item }}</div>
+            {% else %}
+              <div class="sub">Sin advertencias estructurales en el parser.</div>
+            {% endfor %}
+          </div>
+        </div>
+        <div>
+          <h2>Errores estructurales</h2>
+          <div class="list">
+            {% for item in batch.errors_json or [] %}
+              <div class="issue" style="background:#fdecef">{{ item }}</div>
+            {% else %}
+              <div class="sub">Sin errores de parsing. Si aún hay discrepancias, se resuelven fila por fila en la tabla inferior.</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Filas conciliables</h2>
+      <div class="sub">La línea de servicio la toma el sistema desde la plantilla semanal activa. Si una combinación sala/turno no existe para la fecha del lote, la fila seguirá marcada con discrepancia hasta corregirse.</div>
+      <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pág/Fila</th><th>Estado</th><th>Sala</th><th>Turno</th><th>Hora</th><th>Cama</th><th>Paciente</th><th>NSS</th><th>Agregado</th><th>Edad</th><th>Dx</th><th>Operación</th><th>Cirujano</th><th>Anestesiólogo</th><th>Anestesia</th><th>Enfermera</th><th>Guess</th><th>Discrepancias</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in rows %}
+                <tr>
+                  <td>{{ row.page_number }}/{{ row.row_number }}</td>
+                  <td>
+                    {% set badge = {'label': row.review_status.title(), 'tone': 'slate'} %}
+                    {% if row.review_status == 'READY' %}{% set badge = {'label': 'Lista', 'tone': 'green'} %}{% endif %}
+                    {% if row.review_status == 'REVIEW' %}{% set badge = {'label': 'Revisión', 'tone': 'amber'} %}{% endif %}
+                    {% if row.review_status == 'CONFIRMED' %}{% set badge = {'label': 'Confirmada', 'tone': 'green'} %}{% endif %}
+                    <span class="tone {{ badge.tone }}">{{ badge.label }}</span>
+                  </td>
+                  <td><input type="text" name="room_code__{{ row.id }}" value="{{ row.room_code or '' }}"></td>
+                  <td>
+                    <select name="turno__{{ row.id }}">
+                      <option value="">Sin turno</option>
+                      <option value="MATUTINO" {% if row.turno == 'MATUTINO' %}selected{% endif %}>MATUTINO</option>
+                      <option value="VESPERTINO" {% if row.turno == 'VESPERTINO' %}selected{% endif %}>VESPERTINO</option>
+                    </select>
+                  </td>
+                  <td><input type="text" name="hora_programada__{{ row.id }}" value="{{ row.hora_programada or '' }}"></td>
+                  <td><input type="text" name="cama__{{ row.id }}" value="{{ row.cama or '' }}"></td>
+                  <td><input type="text" name="paciente_nombre__{{ row.id }}" value="{{ row.paciente_nombre or '' }}"></td>
+                  <td><input type="text" name="nss__{{ row.id }}" value="{{ row.nss or '' }}"></td>
+                  <td><input type="text" name="agregado_medico__{{ row.id }}" value="{{ row.agregado_medico or '' }}"></td>
+                  <td><input type="number" name="edad__{{ row.id }}" value="{{ row.edad if row.edad is not none else '' }}"></td>
+                  <td><input type="text" name="diagnostico_preoperatorio__{{ row.id }}" value="{{ row.diagnostico_preoperatorio or '' }}"></td>
+                  <td><input type="text" name="operacion_proyectada__{{ row.id }}" value="{{ row.operacion_proyectada or '' }}"></td>
+                  <td><input type="text" name="cirujano__{{ row.id }}" value="{{ row.cirujano or '' }}"></td>
+                  <td><input type="text" name="anestesiologo__{{ row.id }}" value="{{ row.anestesiologo or '' }}"></td>
+                  <td><input type="text" name="tipo_anestesia__{{ row.id }}" value="{{ row.tipo_anestesia or '' }}"></td>
+                  <td><input type="text" name="enfermera_especialista__{{ row.id }}" value="{{ row.enfermera_especialista or '' }}"></td>
+                  <td>{{ row.specialty_guess or '—' }}</td>
+                  <td>
+                    {% if row.discrepancy_json %}
+                      {% for key, value in row.discrepancy_json.items() %}
+                        <div class="sub"><strong>{{ key }}:</strong> {{ value }}</div>
+                      {% endfor %}
+                    {% else %}
+                      <span class="tone green">Sin discrepancias</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="actions">
+          <button class="btn warn" type="submit" formaction="/quirofano/jefatura/importaciones/{{ batch.id }}/guardar">Guardar conciliación</button>
+          <button class="btn good" type="submit" formaction="/quirofano/jefatura/importaciones/{{ batch.id }}/confirmar">Confirmar importación</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

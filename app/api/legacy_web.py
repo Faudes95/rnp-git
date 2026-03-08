@@ -21,12 +21,6 @@ from app.services.fhir_flow import (
     fhir_procedure_search_flow,
 )
 from app.services.interconexion_flow import interconexion_consulta_flow
-from app.services.jefatura_urologia_flow import (
-    render_jefatura_urologia_home_flow,
-    render_jefatura_urologia_module_flow,
-    render_jefatura_urologia_residente_profile_flow,
-    render_jefatura_urologia_programa_submodule_flow,
-)
 from app.services.quirofano_flow import (
     cancelar_programacion_flow,
     guardar_postquirurgica_flow,
@@ -35,7 +29,6 @@ from app.services.quirofano_flow import (
     render_postquirurgica_flow,
 )
 from app.services.quirofano_waitlist_flow import render_waitlist_lista_flow
-from app.services.quirofano_jefatura_flow import render_jefatura_quirofano_waiting_flow
 
 router = APIRouter(tags=["legacy-web"])
 
@@ -51,34 +44,6 @@ def _get_surgical_db():
 @router.get("/quirofano", response_class=HTMLResponse)
 async def quirofano_home(request: Request):
     return m.render_template(m.QUIROFANO_HOME_TEMPLATE, request=request)
-
-
-@router.get("/jefatura-urologia", response_class=HTMLResponse)
-async def jefatura_urologia_home(request: Request):
-    return await render_jefatura_urologia_home_flow(request)
-
-
-@router.get("/jefatura-urologia/{slug}", response_class=HTMLResponse)
-async def jefatura_urologia_modulo(request: Request, slug: str):
-    return await render_jefatura_urologia_module_flow(request, slug)
-
-
-@router.get("/jefatura-urologia/programa-academico/{section_slug}", response_class=HTMLResponse)
-async def jefatura_urologia_programa_submodulo(
-    request: Request,
-    section_slug: str,
-    sdb: Session = Depends(_get_surgical_db),
-):
-    return await render_jefatura_urologia_programa_submodule_flow(request, section_slug, sdb)
-
-
-@router.get("/jefatura-urologia/programa-academico/residentes/{resident_code}", response_class=HTMLResponse)
-async def jefatura_urologia_programa_residente_perfil(
-    request: Request,
-    resident_code: str,
-    sdb: Session = Depends(_get_surgical_db),
-):
-    return await render_jefatura_urologia_residente_profile_flow(request, sdb, resident_code)
 
 
 @router.get("/quirofano/programada", response_class=HTMLResponse)
@@ -117,11 +82,6 @@ async def listar_espera_programacion_quirurgica(
 async def quirofano_lista_espera_legacy_alias():
     # Compatibilidad con enlaces legacy: mantener navegación estable.
     return RedirectResponse(url="/quirofano/lista-espera-programacion", status_code=307)
-
-
-@router.get("/quirofano/jefatura", response_class=HTMLResponse)
-async def jefatura_quirofano_placeholder(request: Request):
-    return await render_jefatura_quirofano_waiting_flow(request)
 
 
 @router.get("/quirofano/programada/postquirurgica", response_class=HTMLResponse)

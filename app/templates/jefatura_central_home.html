@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ module.nombre }} | Jefatura de Urología</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root {
+      --navy-900: #0c2d5b;
+      --navy-700: #184f93;
+      --cyan-700: #0f6f7d;
+      --rose-700: #a53b4f;
+      --amber-700: #98661a;
+      --ink-980: #091423;
+      --ink-900: #12253e;
+      --slate-700: #576b80;
+      --line-soft: #dbe5ef;
+      --surface: rgba(255, 255, 255, 0.96);
+      --shadow-lg: 0 28px 64px rgba(12, 28, 52, 0.14);
+      --shadow-md: 0 16px 34px rgba(12, 28, 52, 0.09);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      font-family: 'Montserrat', system-ui, sans-serif;
+      color: var(--ink-900);
+      background:
+        radial-gradient(circle at top left, rgba(24, 79, 147, 0.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(15, 111, 125, 0.16), transparent 24%),
+        linear-gradient(180deg, #eef3f8 0%, #f7f9fb 52%, #eef2f7 100%);
+    }
+    .shell {
+      max-width: 1420px;
+      margin: 0 auto;
+      border-radius: 32px;
+      border: 1px solid var(--line-soft);
+      background: var(--surface);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .hero {
+      padding: 28px 30px;
+      background:
+        radial-gradient(circle at top right, rgba(113, 163, 232, 0.20), transparent 24%),
+        linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 62%, #103f77 100%);
+      color: #f8fbff;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.85fr);
+      gap: 20px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.16);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .hero h1 {
+      margin: 12px 0 0;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 0.96;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+    }
+    .hero p {
+      margin: 14px 0 0;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.6;
+      font-weight: 600;
+      color: rgba(245, 249, 255, 0.92);
+    }
+    .hero-actions,
+    .kpi-grid,
+    .section-grid,
+    .feed-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .hero-actions {
+      grid-template-columns: repeat(3, max-content);
+      margin-top: 20px;
+    }
+    .btn {
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-main {
+      background: linear-gradient(135deg, #163a68 0%, #1d5ea7 100%);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(23, 77, 143, 0.18);
+    }
+    .btn-ghost {
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #f8fbff;
+    }
+    .kpi-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-content: start;
+    }
+    .kpi-card,
+    .section-card,
+    .feed-card {
+      border-radius: 22px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid var(--line-soft);
+      box-shadow: var(--shadow-md);
+    }
+    .kpi-card {
+      padding: 18px;
+      display: grid;
+      gap: 10px;
+      min-height: 144px;
+    }
+    .kpi-card span,
+    .feed-meta span {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-700);
+    }
+    .kpi-card strong {
+      font-size: 36px;
+      line-height: 1;
+      color: var(--ink-980);
+    }
+    .kpi-card small,
+    .feed-copy {
+      color: var(--slate-700);
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+    .content {
+      padding: 24px;
+      display: grid;
+      gap: 20px;
+    }
+    .flash {
+      border-radius: 18px;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      background: #e7f6ef;
+      color: #215d49;
+      border: 1px solid rgba(33, 93, 73, 0.16);
+    }
+    .section-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .section-card {
+      text-decoration: none;
+      color: inherit;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+    .section-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 22px 32px rgba(14, 53, 109, 0.12);
+    }
+    .icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      border: 1px solid rgba(20, 38, 62, 0.08);
+      background: linear-gradient(145deg, #eef4fb, #f7fafc);
+    }
+    .section-card h2 {
+      margin: 0;
+      color: var(--ink-980);
+      font-size: 22px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .section-card p {
+      margin: 0;
+      color: var(--slate-700);
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+    .feed-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .feed-card {
+      overflow: hidden;
+    }
+    .feed-head {
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #0d3768 0%, #184f93 64%, #14447d 100%);
+      color: #f8fbff;
+    }
+    .feed-head h3 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+    .feed-head p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: rgba(245, 249, 255, 0.92);
+    }
+    .feed-body {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .feed-item {
+      padding: 14px;
+      border-radius: 16px;
+      background: #f5f8fb;
+      border: 1px solid rgba(20, 38, 62, 0.06);
+      display: grid;
+      gap: 8px;
+    }
+    .feed-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .feed-top strong {
+      color: var(--ink-900);
+      font-size: 14px;
+      line-height: 1.25;
+    }
+    .feed-meta {
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid rgba(20, 38, 62, 0.07);
+      padding: 10px 12px;
+      display: grid;
+      gap: 4px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .badge.blue { background: #ebf3ff; color: #1a4f93; border-color: rgba(26, 79, 147, 0.16); }
+    .badge.green { background: #e7f6ef; color: #215d49; border-color: rgba(33, 93, 73, 0.16); }
+    .badge.red { background: #fff0f3; color: #9b3147; border-color: rgba(155, 49, 71, 0.16); }
+    .badge.amber { background: #fff3e0; color: #8b5d14; border-color: rgba(139, 93, 20, 0.16); }
+    .badge.slate { background: #eff3f7; color: #617385; border-color: rgba(97, 115, 133, 0.16); }
+    .empty-card {
+      border-radius: 18px;
+      border: 1px dashed #c5d2df;
+      background: linear-gradient(180deg, #fbfdff 0%, #f3f7fb 100%);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .empty-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink-980);
+      font-size: 20px;
+    }
+    @media (max-width: 1180px) {
+      .hero { grid-template-columns: 1fr; }
+      .section-grid, .feed-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      body { padding: 10px; }
+      .hero, .content { padding: 16px; }
+      .hero-actions, .kpi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <section>
+        <span class="eyebrow">{{ module.icono }} Comando académico institucional</span>
+        <h1>{{ module.nombre }}</h1>
+        <p>{{ module.descripcion }} Este espacio centraliza la gestión de exámenes semestrales, casos asociados, incidencias e insumos sin tocar el comando clínico centrado en pacientes.</p>
+        <div class="hero-actions">
+          <a class="btn btn-main" href="/jefatura-urologia/central/examenes">Gestionar exámenes</a>
+          <a class="btn btn-ghost" href="/jefatura-urologia/programa-academico/residentes">Ver residentes</a>
+          <a class="btn btn-ghost" href="/jefatura-urologia">Volver a Jefatura</a>
+        </div>
+      </section>
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <span>Exámenes activos</span>
+          <strong>{{ overview.kpis.active_templates }}</strong>
+          <small>Plantillas de evaluación semestral listas para asignarse o reutilizarse.</small>
+        </article>
+        <article class="kpi-card">
+          <span>Asignaciones pendientes</span>
+          <strong>{{ overview.kpis.pending_assignments }}</strong>
+          <small>Evaluaciones aún sin respuesta final por parte de los residentes.</small>
+        </article>
+        <article class="kpi-card">
+          <span>Casos abiertos</span>
+          <strong>{{ overview.kpis.active_cases }}</strong>
+          <small>Casos asociados con seguimiento docente todavía activo.</small>
+        </article>
+        <article class="kpi-card">
+          <span>Incidencias activas</span>
+          <strong>{{ overview.kpis.active_incidences }}</strong>
+          <small>Incidencias académicas y operativas que siguen abiertas o en revisión.</small>
+        </article>
+      </section>
+    </header>
+
+    <section class="content">
+      {% if flash %}
+      <div class="flash">{{ flash.message }}</div>
+      {% endif %}
+
+      <section class="section-grid">
+        {% for section in sections %}
+        <a class="section-card" href="{{ section.href }}">
+          <span class="icon">{{ section.icono }}</span>
+          <h2>{{ section.nombre }}</h2>
+          <p>{{ section.descripcion }}</p>
+        </a>
+        {% endfor %}
+      </section>
+
+      <section class="feed-grid">
+        <article class="feed-card">
+          <div class="feed-head">
+            <h3>Últimas evaluaciones</h3>
+            <p>Asignaciones recientes con visibilidad inmediata del estado y la calificación.</p>
+          </div>
+          <div class="feed-body">
+            {% if overview.latest_assignments %}
+            {% for item in overview.latest_assignments %}
+            <div class="feed-item">
+              <div class="feed-top">
+                <strong>{{ item.exam_title }}</strong>
+                <span class="badge {{ item.status_tone }}">{{ item.status_label }}</span>
+              </div>
+              <div class="feed-copy">{{ item.resident_name }} · {{ item.resident_grade }} · {{ item.periodo_label }}</div>
+              <div class="feed-meta">
+                <span>Resultado</span>
+                <small>{% if item.score_pct is not none %}{{ item.score_pct }}%{% else %}Sin respuesta todavía{% endif %}</small>
+              </div>
+              <a class="btn btn-main" href="{{ item.take_href }}">Abrir evaluación</a>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-card">
+              <strong>Sin evaluaciones recientes</strong>
+              <div class="feed-copy">Crea un examen y asígnalo para empezar a poblar el seguimiento académico.</div>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+
+        <article class="feed-card">
+          <div class="feed-head">
+            <h3>Casos asociados</h3>
+            <p>Casos docentes cargados por Jefatura para seguimiento por residente.</p>
+          </div>
+          <div class="feed-body">
+            {% if overview.latest_cases %}
+            {% for item in overview.latest_cases %}
+            <div class="feed-item">
+              <div class="feed-top">
+                <strong>{{ item.patient_snapshot }}</strong>
+                <span class="badge {{ item.status_tone }}">{{ item.status_label }}</span>
+              </div>
+              <div class="feed-copy">{{ item.resident_name }} · {{ item.prioridad }}</div>
+              <div class="feed-meta">
+                <span>Objetivo</span>
+                <small>{{ item.objetivo }}</small>
+              </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-card">
+              <strong>Sin casos asociados</strong>
+              <div class="feed-copy">Los casos asignados desde Central aparecerán aquí para vigilancia rápida.</div>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+
+        <article class="feed-card">
+          <div class="feed-head">
+            <h3>Incidencias</h3>
+            <p>Lectura rápida de incidencias activas y recientes vinculadas a residentes.</p>
+          </div>
+          <div class="feed-body">
+            {% if overview.latest_incidences %}
+            {% for item in overview.latest_incidences %}
+            <div class="feed-item">
+              <div class="feed-top">
+                <strong>{{ item.tipo }}</strong>
+                <span class="badge {{ item.status_tone }}">{{ item.status_label }}</span>
+              </div>
+              <div class="feed-copy">{{ item.resident_name }} · {{ item.severidad }} · {{ item.fecha_evento }}</div>
+              <div class="feed-meta">
+                <span>Descripción</span>
+                <small>{{ item.descripcion }}</small>
+              </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-card">
+              <strong>Sin incidencias recientes</strong>
+              <div class="feed-copy">Cuando se registren incidencias desde Central quedarán visibles aquí.</div>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

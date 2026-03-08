@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Caso #{{ case.id }} | Jefatura de Quirófano</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root{--bg:#f4f7fb;--card:#fff;--ink:#163149;--muted:#66788b;--line:#d6e0ea;--primary:#0d4b7a;--good:#146943;--warn:#a16408;--bad:#9a2133}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--ink)}
+    .shell{max-width:1440px;margin:0 auto;padding:20px}
+    .head{background:linear-gradient(135deg,#102d4a,#0d4b7a);color:#fff;border-radius:20px;padding:24px}
+    .head h1{margin:0 0 8px;font-size:30px}.head p{margin:0;color:rgba(245,249,255,.9);line-height:1.5}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 14px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid transparent;background:#fff;color:var(--primary)}
+    .btn.alt{background:transparent;color:#fff;border-color:rgba(255,255,255,.28)}
+    .flash{margin:16px 0;padding:14px 16px;border-radius:14px;font-weight:700}.flash.success{background:#e7f6ee;color:var(--good);border:1px solid #c2e6cf}.flash.error{background:#fdecef;color:var(--bad);border:1px solid #f0c1cb}
+    .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px;margin-top:18px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 12px 26px rgba(15,39,64,.06)}
+    .sub{font-size:13px;color:var(--muted);line-height:1.5}
+    .info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+    .info .box{border:1px solid var(--line);border-radius:14px;padding:12px;background:#f9fbfd}
+    .k{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.v{font-size:16px;font-weight:900;margin-top:6px}
+    h2{margin:0 0 12px;font-size:24px}
+    .list{display:grid;gap:12px}.item{border:1px solid var(--line);border-radius:14px;padding:12px;background:#f9fbfd}
+    input[type=text],input[type=datetime-local],select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #cad6e2;background:#fff;font:inherit}
+    textarea{min-height:92px;resize:vertical}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .tone{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase}
+    .tone.green{background:#e6f6ed;color:var(--good)} .tone.red{background:#fdecef;color:var(--bad)} .tone.amber{background:#fff2dc;color:var(--warn)} .tone.blue{background:#e6f0fb;color:var(--primary)} .tone.slate{background:#edf1f5;color:#617283}
+    @media (max-width:1100px){.grid,.split,.info{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="head">
+      <h1>Caso #{{ case.id }}</h1>
+      <p>{{ case.patient_name }} · {{ case.operacion_proyectada }}</p>
+      <div class="nav">
+        <a class="btn" href="/quirofano/jefatura/programacion/{{ target_date.isoformat() if target_date else '' }}">Volver al día</a>
+        <a class="btn alt" href="/quirofano/jefatura/publicacion/{{ target_date.isoformat() if target_date else '' }}">Pantalla interna</a>
+      </div>
+      <div class="info">
+        <div class="box"><div class="k">Bloque</div><div class="v">{{ case.room_code }} · {{ case.turno }} · {{ case.service_line_code }}</div></div>
+        <div class="box"><div class="k">Estatus</div><div class="v"><span class="tone {{ case.status_badge.tone }}">{{ case.status_badge.label }}</span></div></div>
+        <div class="box"><div class="k">Hora programada</div><div class="v">{{ case.scheduled_time }} · {{ case.duracion_estimada_min }} min</div></div>
+        <div class="box"><div class="k">Fecha</div><div class="v">{{ target_date_label }}</div></div>
+      </div>
+    </section>
+
+    {% if flash %}
+      <div class="flash {{ flash.kind }}">{{ flash.message }}</div>
+    {% endif %}
+
+    <section class="grid">
+      <article class="card">
+        <h2>Ficha del caso</h2>
+        <div class="list">
+          <div class="item"><strong>Diagnóstico</strong><div class="sub">{{ case.diagnostico_preoperatorio or 'Sin diagnóstico' }}</div></div>
+          <div class="item"><strong>Staff primario</strong><div class="sub">Cirujano: {{ case.cirujano or 'No capturado' }}<br>Anestesiólogo: {{ case.anestesiologo or 'No capturado' }}<br>Enfermera: {{ case.enfermera_especialista or 'No capturada' }}</div></div>
+          <div class="item"><strong>Contexto</strong><div class="sub">NSS: {{ case.nss or 'Sin NSS' }} · Agregado médico: {{ case.agregado_medico or 'N/E' }} · Cama: {{ case.cama or 'N/E' }} · Fuente: {{ case.source_type }}</div></div>
+          <div class="item"><strong>Notas</strong><div class="sub">{{ case.notes or 'Sin notas capturadas.' }}</div></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Registrar actividad</h2>
+        <div class="split">
+          <form method="post" action="/quirofano/jefatura/casos/{{ case.id }}/staff" class="item">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <strong>Personal asociado</strong>
+            <div class="split" style="margin-top:12px">
+              <div><label>Nombre</label><input type="text" name="staff_name" required></div>
+              <div><label>Rol</label><select name="staff_role">{% for item in staff_role_options %}<option value="{{ item }}">{{ item }}</option>{% endfor %}</select></div>
+            </div>
+            <div style="margin-top:12px"><label>Notas</label><textarea name="notes"></textarea></div>
+            <div class="actions"><button class="btn" type="submit">Agregar personal</button></div>
+          </form>
+
+          <form method="post" action="/quirofano/jefatura/casos/{{ case.id }}/eventos" class="item">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <strong>Evento de timeline</strong>
+            <div class="split" style="margin-top:12px">
+              <div><label>Evento</label><select name="event_type">{% for item in event_type_options %}<option value="{{ item }}">{{ item }}</option>{% endfor %}</select></div>
+              <div><label>Fecha/hora</label><input type="datetime-local" name="event_at" value="{{ now_local }}" required></div>
+            </div>
+            <div style="margin-top:12px"><label>Notas</label><textarea name="notes"></textarea></div>
+            <div class="actions"><button class="btn" type="submit">Registrar evento</button></div>
+          </form>
+        </div>
+
+        <form method="post" action="/quirofano/jefatura/casos/{{ case.id }}/incidencias" class="item" style="margin-top:14px">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <strong>Incidencia</strong>
+          <div class="split" style="margin-top:12px">
+            <div><label>Tipo</label><select name="incidence_type">{% for item in incidence_type_options %}<option value="{{ item }}">{{ item }}</option>{% endfor %}</select></div>
+            <div><label>Fecha/hora</label><input type="datetime-local" name="event_at" value="{{ now_local }}"></div>
+          </div>
+          <div style="margin-top:12px"><label>Descripción</label><textarea name="description" required></textarea></div>
+          <div class="actions"><button class="btn" type="submit">Registrar incidencia</button></div>
+        </form>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Timeline real</h2>
+        <div class="list">
+          {% for event in case.events %}
+            <div class="item">
+              <strong>{{ event.event_type }}</strong>
+              <div class="sub">{{ event.event_at }}</div>
+              {% if event.notes %}<div class="sub">{{ event.notes }}</div>{% endif %}
+            </div>
+          {% else %}
+            <div class="item"><div class="sub">Todavía no hay eventos reales registrados para este caso.</div></div>
+          {% endfor %}
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Personal e incidencias</h2>
+        <div class="list">
+          <div class="item">
+            <strong>Personal asociado</strong>
+            {% for item in case.staff_assignments %}
+              <div class="sub">{{ item.staff_role }} · {{ item.staff_name }}{% if item.notes %} · {{ item.notes }}{% endif %}</div>
+            {% else %}
+              <div class="sub">Sin staff adicional capturado.</div>
+            {% endfor %}
+          </div>
+          <div class="item">
+            <strong>Incidencias</strong>
+            {% for item in case.incidencias %}
+              <div class="sub">{{ item.event_at }} · <span class="tone {{ item.status_badge.tone }}">{{ item.status_badge.label }}</span> · {{ item.incidence_type }} · {{ item.description }}</div>
+            {% else %}
+              <div class="sub">Sin incidencias registradas.</div>
+            {% endfor %}
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

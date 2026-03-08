@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Plantilla Semanal | Jefatura de Quirófano</title>
+  <link href="/static/css/fonts_offline.css" rel="stylesheet">
+  <style>
+    :root{--bg:#f3f7fb;--card:#fff;--ink:#17314a;--muted:#647589;--line:#d6e0ea;--primary:#0e4b7f;--accent:#b22e3d}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--ink)}
+    .shell{max-width:1440px;margin:0 auto;padding:20px}
+    .head{background:linear-gradient(135deg,#102d4a,#0e4b7f);color:#fff;border-radius:20px;padding:24px}
+    .head h1{margin:0 0 8px;font-size:30px}.head p{margin:0;color:rgba(245,250,255,.9);max-width:1000px;line-height:1.55}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 14px;border-radius:12px;text-decoration:none;font-weight:800;border:1px solid transparent}
+    .btn.primary{background:#fff;color:var(--primary)} .btn.alt{background:transparent;color:#fff;border-color:rgba(255,255,255,.28)}
+    .flash{margin:16px 0;padding:14px 16px;border-radius:14px;font-weight:700}.flash.success{background:#e7f6ee;color:#146b45;border:1px solid #bfdfcb}.flash.error{background:#fdecef;color:#9b2234;border:1px solid #f4c7d0}
+    .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px;margin-top:18px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 14px 28px rgba(15,39,64,.06)}
+    h2{margin:0 0 12px;font-size:24px}
+    .sub{font-size:13px;color:var(--muted);line-height:1.5}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13px}
+    th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:left}
+    input[type=text], select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #cdd8e3;background:#fff;font:inherit}
+    .catalog-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .section{margin-top:18px}
+    .day-block{margin-top:16px;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .day-title{padding:12px 14px;background:#eef4fa;font-weight:900}
+    .shift-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
+    .shift{padding:14px;border-top:1px solid var(--line)}
+    .shift + .shift{border-left:1px solid var(--line)}
+    .slot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+    .slot{border:1px solid var(--line);border-radius:12px;padding:10px;background:#f9fbfd}
+    .slot label{display:block;font-size:11px;font-weight:900;color:var(--muted);margin-bottom:6px}
+    .sticky{position:sticky;top:12px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    @media (max-width:1180px){.grid{grid-template-columns:1fr}.sticky{position:static}.catalog-grid,.slot-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="head">
+      <h1>Plantilla Semanal de Salas</h1>
+      <p>La plantilla semanal es la fuente de verdad para línea de servicio por sala, día y turno. Cuando jefatura la modifica no reescribe historial: genera una nueva versión activa para fechas futuras.</p>
+      <div class="nav">
+        <a class="btn primary" href="/quirofano/jefatura">Tablero</a>
+        <a class="btn alt" href="/quirofano/jefatura/programacion">Programación diaria</a>
+      </div>
+    </section>
+
+    {% if flash %}
+      <div class="flash {{ flash.kind }}">{{ flash.message }}</div>
+    {% endif %}
+
+    <section class="grid">
+      <article class="card sticky">
+        <h2>Catálogo de líneas</h2>
+        <div class="sub">Puedes ajustar nombre, tipo y activación. Los códigos seeded permanecen como ancla operativa; la distribución diaria se edita desde la plantilla y los bloques del día.</div>
+        <form method="post" action="/quirofano/jefatura/plantillas/catalogo" class="section">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <table>
+            <thead>
+              <tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Activa</th></tr>
+            </thead>
+            <tbody>
+            {% for line in service_lines %}
+              <tr>
+                <td><strong>{{ line.code }}</strong></td>
+                <td><input type="text" name="line_name__{{ line.code }}" value="{{ line.nombre }}"></td>
+                <td>
+                  <select name="line_type__{{ line.code }}">
+                    <option value="CLINICO" {% if line.line_type == 'CLINICO' %}selected{% endif %}>Clínico</option>
+                    <option value="OPERATIVO" {% if line.line_type == 'OPERATIVO' %}selected{% endif %}>Operativo</option>
+                  </select>
+                </td>
+                <td><input type="checkbox" name="line_active__{{ line.code }}" {% if line.activo %}checked{% endif %}></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          <div class="section">
+            <h3>Nueva línea</h3>
+            <div class="catalog-grid">
+              <div><label>Código</label><input type="text" name="new_line_code" placeholder="ENDOCRINO"></div>
+              <div><label>Nombre</label><input type="text" name="new_line_name" placeholder="Endocrinología"></div>
+              <div>
+                <label>Tipo</label>
+                <select name="new_line_type">
+                  <option value="CLINICO">Clínico</option>
+                  <option value="OPERATIVO">Operativo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="actions"><button class="btn primary" type="submit">Guardar catálogo</button></div>
+        </form>
+      </article>
+
+      <article class="card">
+        <h2>Versión activa</h2>
+        <div class="sub">Versión: {{ current_version.version_label if current_version else 'Sin versión' }} · Creada por {{ current_version.created_by if current_version else 'N/E' }} · {{ current_version.created_at.strftime('%d/%m/%Y %H:%M') if current_version else '' }}</div>
+        <form method="post" action="/quirofano/jefatura/plantillas" class="section">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <div class="catalog-grid">
+            <div><label>Nueva etiqueta de versión</label><input type="text" name="version_label" placeholder="Reasignación abril 2026"></div>
+          </div>
+          {% for day in day_options %}
+            <div class="day-block">
+              <div class="day-title">{{ day.label }}</div>
+              <div class="shift-grid">
+                {% for shift in shift_options %}
+                  <div class="shift">
+                    <strong>{{ shift.label }}</strong>
+                    <div class="slot-grid">
+                      {% for slot in matrix if slot.day_of_week == day.value and slot.shift == shift.code %}
+                        <div class="slot">
+                          <label>{{ slot.room_code }}</label>
+                          <select name="slot__{{ day.value }}__{{ shift.code }}__{{ slot.room_number }}">
+                            <option value="">Sin bloque</option>
+                            {% for line in service_lines %}
+                              <option value="{{ line.code }}" {% if slot.service_line_code == line.code %}selected{% endif %}>{{ line.code }} · {{ line.nombre }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+          <div class="actions"><button class="btn primary" type="submit">Crear nueva versión activa</button></div>
+        </form>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

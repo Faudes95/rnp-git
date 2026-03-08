@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib
+import os
 from functools import lru_cache
 from types import ModuleType
 
@@ -10,12 +11,13 @@ from app.core.errors import InfrastructureDomainError
 @lru_cache(maxsize=1)
 def get_main_module() -> ModuleType:
     """Acceso centralizado y cacheado al módulo principal legacy."""
+    module_name = (os.getenv("RNP_APP_CONTEXT_MODULE", "main") or "main").strip() or "main"
     try:
-        return importlib.import_module("main")
+        return importlib.import_module(module_name)
     except Exception as exc:
         raise InfrastructureDomainError(
             "No se pudo cargar el módulo principal",
-            details={"module": "main", "error": str(exc)},
+            details={"module": module_name, "error": str(exc)},
         ) from exc
 
 
@@ -32,4 +34,3 @@ class _MainModuleProxy:
 
 
 main_proxy = _MainModuleProxy()
-
