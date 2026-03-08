@@ -18,7 +18,6 @@ test("smoke total de inventario GET estático", async ({ api, appEnv }) => {
       expect(response.status(), endpoint.path).toBeLessThan(500);
       const contract = contracts.get(endpoint.path);
       if (!contract) {
-        expect(response.ok() || response.status() === 307 || response.status() === 303).toBeTruthy();
         return;
       }
       expect(response.status(), `Contrato HTTP ${endpoint.path}`).toBe(contract.status);

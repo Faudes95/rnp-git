@@ -1,7 +1,12 @@
 import { expect, type Page } from "@playwright/test";
 
 import type { TestPatient } from "./patients.js";
-import { fillIfEmpty, getHrefByContains, listSelectOptions, selectFirstMeaningfulOption, selectOptionContaining } from "./ui.js";
+import {
+  fillIfEmpty,
+  listSelectOptions,
+  selectFirstMeaningfulOption,
+  trySelectFirstMeaningfulOption,
+} from "./ui.js";
 
 export interface SurgicalSuccessLinks {
   expedienteHref?: string;
@@ -12,6 +17,95 @@ export interface SurgicalSuccessLinks {
 
 export interface UrgenciaResult extends SurgicalSuccessLinks {
   consultaId?: number;
+}
+
+async function collectInvalidFields(page: Page): Promise<Array<{ id: string; name: string; message: string }>> {
+  return await page.locator("input:invalid, select:invalid, textarea:invalid").evaluateAll((elements) =>
+    elements.map((element) => {
+      const field = element as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+      return {
+        id: field.id || "",
+        name: field.getAttribute("name") || "",
+        message: field.validationMessage || "",
+      };
+    }),
+  );
+}
+
+async function selectStableProcedure(page: Page, selector: string): Promise<string> {
+  const options = await listSelectOptions(page, selector);
+  const candidateOptions = options.filter(
+    (option) =>
+      option.value &&
+      !option.label.toUpperCase().includes("SELECCIONAR") &&
+      !option.label.toUpperCase().includes("SUCCION"),
+  );
+  for (const option of candidateOptions) {
+    await page.locator(selector).selectOption(option.value);
+    await page.waitForTimeout(100);
+    const abordajeVisible = await page.locator("#abordaje_wrap").isVisible().catch(() => false);
+    const succionVisible = await page.locator("#sistema_succion_wrap").isVisible().catch(() => false);
+    if (!abordajeVisible && !succionVisible) {
+      return option.label;
+    }
+  }
+  await selectFirstMeaningfulOption(page, selector, { forbiddenSubstrings: ["SUCCION"] });
+  return page.locator(selector).inputValue();
+}
+
+async function assertSubmitReachedSuccess(page: Page, successSelector: string, contextLabel: string): Promise<void> {
+  const success = page.locator(successSelector).first();
+  try {
+    await expect(success).toBeVisible({ timeout: 8_000 });
+    return;
+  } catch {
+    const invalidFields = await collectInvalidFields(page);
+    if (invalidFields.length > 0) {
+      const details = invalidFields
+        .map((field) => `${field.name || field.id || "<sin-id>"}: ${field.message || "campo inválido"}`)
+        .join("; ");
+      throw new Error(
+        `${contextLabel} no avanzó porque el navegador mantiene campos inválidos: ${details}. URL actual: ${page.url()}`,
+      );
+    }
+    const heading = (await page.locator("h1").first().textContent().catch(() => null))?.trim();
+    if (heading) {
+      throw new Error(`${contextLabel} devolvió una respuesta no exitosa: ${heading}. URL actual: ${page.url()}`);
+    }
+    throw new Error(
+      `${contextLabel} no mostró el marcador de éxito esperado (${successSelector}). URL actual: ${page.url()}`,
+    );
+  }
+}
+
+async function assertPostQxSaved(page: Page): Promise<void> {
+  const successSignals = page.locator(".msg.ok").first();
+  try {
+    await expect(successSignals).toBeVisible({ timeout: 15_000 });
+    return;
+  } catch {
+    const invalidFields = await collectInvalidFields(page);
+    if (invalidFields.length > 0) {
+      const details = invalidFields
+        .map((field) => `${field.name || field.id || "<sin-id>"}: ${field.message || "campo inválido"}`)
+        .join("; ");
+      throw new Error(`La nota postquirúrgica no avanzó por validación HTML: ${details}. URL actual: ${page.url()}`);
+    }
+    const explicitError = (await page.locator(".msg.err").first().textContent().catch(() => null))?.trim();
+    if (explicitError) {
+      throw new Error(`El backend rechazó la nota postquirúrgica: ${explicitError}. URL actual: ${page.url()}`);
+    }
+    throw new Error(`La nota postquirúrgica no mostró confirmación ni enlaces de continuación. URL actual: ${page.url()}`);
+  }
+}
+
+async function findHrefMaybe(page: Page, selector: string): Promise<string | undefined> {
+  const locator = page.locator(selector).first();
+  const count = await locator.count();
+  if (!count) {
+    return undefined;
+  }
+  return (await locator.getAttribute("href")) ?? undefined;
 }
 
 export async function createUrgenciaSolicitud(page: Page, patient: TestPatient): Promise<UrgenciaResult> {
@@ -26,20 +120,28 @@ export async function createUrgenciaSolicitud(page: Page, patient: TestPatient):
   await selectFirstMeaningfulOption(page, "#patologia", {
     forbiddenSubstrings: ["CANCER", "CALCULO", "TUMOR", "LITIASIS"],
   });
-  await selectFirstMeaningfulOption(page, "#procedimiento_programado", {
-    forbiddenSubstrings: ["SUCCION"],
-  });
+  await selectStableProcedure(page, "#procedimiento_programado");
   if (await page.locator('select[name="sistema_succion"]').count()) {
-    await selectFirstMeaningfulOption(page, 'select[name="sistema_succion"]');
+    await trySelectFirstMeaningfulOption(page, 'select[name="sistema_succion"]', { timeoutMs: 1_500 });
   }
   if (await page.locator('#abordaje').count()) {
-    await selectFirstMeaningfulOption(page, "#abordaje");
+    await trySelectFirstMeaningfulOption(page, "#abordaje", { timeoutMs: 5_000 });
+  }
+  if (await page.locator('.insumo-check').count()) {
+    await page.locator('.insumo-check').first().check();
   }
   if (await page.locator('#solicita_hemoderivados').count()) {
     await page.locator("#solicita_hemoderivados").selectOption("NO");
   }
-  await page.getByRole("button", { name: /Guardar|Solicitar|Registrar/i }).first().click();
-  await expect(page.locator('a[href*="/quirofano/urgencias/"][href*="/postquirurgica"]')).toBeVisible();
+  const submitButton = page.getByRole("button", {
+    name: /Ingresar a lista de pacientes programados por cirugía de urgencia|Ingresar a lista de pacientes programados/i,
+  });
+  await submitButton.first().click();
+  await assertSubmitReachedSuccess(
+    page,
+    'a[href*="/quirofano/urgencias/"][href*="/postquirurgica"]',
+    "La solicitud de cirugía de urgencia",
+  );
   const expedienteHref = await page.locator('a[href*="/expediente"]').first().getAttribute("href");
   const postqxHref = await page.locator('a[href*="/quirofano/urgencias/"][href*="/postquirurgica"]').first().getAttribute("href");
   const consultaHref = expedienteHref ?? "";
@@ -70,20 +172,26 @@ export async function createCirugiaProgramada(
   await selectFirstMeaningfulOption(page, "#patologia", {
     forbiddenSubstrings: ["CANCER", "CALCULO", "TUMOR", "LITIASIS"],
   });
-  await selectFirstMeaningfulOption(page, "#procedimiento_programado", {
-    forbiddenSubstrings: ["SUCCION"],
-  });
+  await selectStableProcedure(page, "#procedimiento_programado");
   if (await page.locator('select[name="sistema_succion"]').count()) {
-    await selectFirstMeaningfulOption(page, 'select[name="sistema_succion"]');
+    await trySelectFirstMeaningfulOption(page, 'select[name="sistema_succion"]', { timeoutMs: 1_500 });
   }
   if (await page.locator('#abordaje').count()) {
-    await selectFirstMeaningfulOption(page, "#abordaje");
+    await trySelectFirstMeaningfulOption(page, "#abordaje", { timeoutMs: 5_000 });
+  }
+  if (await page.locator('.insumo-check').count()) {
+    await page.locator('.insumo-check').first().check();
   }
   if (await page.locator('#solicita_hemoderivados').count()) {
     await page.locator("#solicita_hemoderivados").selectOption("NO");
   }
-  await page.getByRole("button", { name: /Guardar|Programar|Registrar/i }).first().click();
-  await expect(page.locator('a[href*="/quirofano/programada/"][href*="/postquirurgica"]')).toBeVisible();
+  const submitButton = page.getByRole("button", { name: /Ingresar a lista de pacientes programados/i });
+  await submitButton.first().click();
+  await assertSubmitReachedSuccess(
+    page,
+    'a[href*="/quirofano/programada/"][href*="/postquirurgica"]',
+    "La cirugía programada",
+  );
   return {
     expedienteHref: (await page.locator('a[href*="/expediente?consulta_id="]').first().getAttribute("href")) ?? undefined,
     postqxHref: (await page.locator('a[href*="/quirofano/programada/"][href*="/postquirurgica"]').first().getAttribute("href")) ?? undefined,
@@ -91,24 +199,19 @@ export async function createCirugiaProgramada(
 }
 
 export async function addPacienteToWaitlist(page: Page, patient: TestPatient, consultaId: number): Promise<void> {
-  await page.goto(`/quirofano/lista-espera/ingresar?consulta_id=${consultaId}`);
+  const response = await page.goto(`/quirofano/lista-espera/ingresar?consulta_id=${consultaId}`);
+  if (response?.status() === 404) {
+    throw new Error("La ruta /quirofano/lista-espera/ingresar devuelve 404 en el perfil full; el flujo de lista de espera no está montado.");
+  }
   await fillIfEmpty(page, 'input[name="nss"]', patient.nss);
   await fillIfEmpty(page, 'input[name="nombre"]', patient.nombre);
   await fillIfEmpty(page, 'input[name="edad"]', String(patient.edad));
   await page.locator('select[name="sexo"]').selectOption({ label: patient.sexo });
-  await selectFirstMeaningfulOption(page, '#patologia, select[name="patologia"]', {
-    forbiddenSubstrings: ["CANCER", "CALCULO", "TUMOR", "LITIASIS"],
-  }).catch(async () => {
-    await selectFirstMeaningfulOption(page, 'select[name="patologia"]', {
-      forbiddenSubstrings: ["CANCER", "CALCULO", "TUMOR", "LITIASIS"],
-    });
-  });
-  await selectFirstMeaningfulOption(page, 'select[name="procedimiento_programado"]', {
-    forbiddenSubstrings: ["SUCCION"],
-  });
+  await page.locator('select[name="patologia"]').selectOption("CRECIMIENTO PROSTATICO OBSTRUCTIVO");
+  await page.locator('select[name="procedimiento_programado"]').selectOption("RESECCION TRANSURETRAL DE VEJIGA");
   await fillIfEmpty(page, 'input[name="hgz"]', patient.hgz);
   await fillIfEmpty(page, 'input[name="agregado_medico"]', patient.agregadoMedico);
-  await page.getByRole("button", { name: /Guardar|Agregar|Registrar/i }).first().click();
+  await page.getByRole("button", { name: /Ingresar al paciente a la lista de espera/i }).click();
   await expect(page).toHaveURL(/saved=/);
 }
 
@@ -159,16 +262,18 @@ export async function submitPostQx(
   await fillIfEmpty(page, 'input[name="procedimiento_realizado"]', "PROCEDIMIENTO E2E");
   await page.locator('textarea[name="nota_postquirurgica"]').fill("Nota E2E postquirúrgica con validación longitudinal.");
   await page.locator('input[name="tiempo_quirurgico_min"]').fill("95");
-  if (await page.locator('select[name="stone_free"]').count()) {
+  if ((await page.locator('select[name="stone_free"]').count()) && (await page.locator('select[name="stone_free"]').isVisible().catch(() => false))) {
     await page.locator('select[name="stone_free"]').selectOption("SI");
   }
   const residentDisplay = await selectResidentIfAvailable(page, residentNeedle);
-  await page.getByRole("button", { name: /Guardar|Registrar/i }).first().click();
-  await expect(page.getByText("Nota postquirúrgica guardada", { exact: false })).toBeVisible();
+  await page.getByRole("button", { name: /Guardar nota postquirúrgica/i }).click();
+  await assertPostQxSaved(page);
   return {
     residentDisplay,
-    expedienteHref: (await page.locator('a[href*="/expediente"]').first().getAttribute("href")) ?? undefined,
-    hospitalizacionHref: (await page.locator('a[href*="/hospitalizacion/nuevo"]').first().getAttribute("href").catch(() => null)) ?? undefined,
-    altaHref: (await page.locator('a[href*="/hospitalizacion/alta"]').first().getAttribute("href").catch(() => null)) ?? undefined,
+    expedienteHref:
+      (await findHrefMaybe(page, '.actions a.btn-gold[href*="/expediente?consulta_id="]')) ??
+      (await findHrefMaybe(page, '.actions a.btn-gold[href*="/expediente?nss="]')),
+    hospitalizacionHref: await findHrefMaybe(page, '.actions a.btn-gold[href*="/hospitalizacion/nuevo?"]'),
+    altaHref: await findHrefMaybe(page, '.actions a.btn-gold[href*="/hospitalizacion/alta?"]'),
   };
 }

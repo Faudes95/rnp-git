@@ -14,5 +14,9 @@ test("hospitalización desde contexto de urgencias guarda y detecta episodio act
   const saved = await saveHospitalizacion(page, { mode: "urgencias" });
   expect(saved.hospitalizacionId).toBeGreaterThan(0);
   const precheck = (await precheckIngreso(api, consulta.consultaId)) as Record<string, unknown>;
-  expect(precheck).toHaveProperty("active_exists");
+  expect(precheck).toMatchObject({
+    ok: true,
+    has_active_episode: true,
+  });
+  expect(Number(precheck["active_count"] ?? 0)).toBeGreaterThan(0);
 });

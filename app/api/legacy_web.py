@@ -28,7 +28,11 @@ from app.services.quirofano_flow import (
     listar_quirofanos_flow,
     render_postquirurgica_flow,
 )
-from app.services.quirofano_waitlist_flow import render_waitlist_lista_flow
+from app.services.quirofano_waitlist_flow import (
+    render_waitlist_ingreso_flow,
+    render_waitlist_lista_flow,
+    save_waitlist_ingreso_flow,
+)
 
 router = APIRouter(tags=["legacy-web"])
 
@@ -82,6 +86,36 @@ async def listar_espera_programacion_quirurgica(
 async def quirofano_lista_espera_legacy_alias():
     # Compatibilidad con enlaces legacy: mantener navegación estable.
     return RedirectResponse(url="/quirofano/lista-espera-programacion", status_code=307)
+
+
+@router.get("/quirofano/lista-espera/ingresar", response_class=HTMLResponse)
+async def quirofano_lista_espera_ingresar(
+    request: Request,
+    consulta_id: Optional[int] = None,
+    nss: Optional[str] = None,
+    saved: Optional[str] = None,
+    error: Optional[str] = None,
+    db: Session = Depends(_get_db),
+    sdb: Session = Depends(_get_surgical_db),
+):
+    return await render_waitlist_ingreso_flow(
+        request,
+        db,
+        sdb,
+        consulta_id=consulta_id,
+        nss=nss,
+        saved=saved or "",
+        error=error or "",
+    )
+
+
+@router.post("/quirofano/lista-espera/ingresar", response_class=HTMLResponse)
+async def guardar_quirofano_lista_espera_ingresar(
+    request: Request,
+    db: Session = Depends(_get_db),
+    sdb: Session = Depends(_get_surgical_db),
+):
+    return await save_waitlist_ingreso_flow(request, db, sdb)
 
 
 @router.get("/quirofano/programada/postquirurgica", response_class=HTMLResponse)

@@ -12,6 +12,18 @@ export interface HospitalizacionSaveResult {
   idempotent: boolean;
 }
 
+async function setSelectValue(page: Page, selector: string, value: string): Promise<void> {
+  await page.waitForSelector(selector, { state: "attached" });
+  await page.locator(selector).evaluate((node, nextValue) => {
+    if (!(node instanceof HTMLSelectElement)) {
+      throw new Error(`El selector ${node?.nodeName ?? "desconocido"} no apunta a un <select>.`);
+    }
+    node.value = String(nextValue);
+    node.dispatchEvent(new Event("input", { bubbles: true }));
+    node.dispatchEvent(new Event("change", { bubbles: true }));
+  }, value);
+}
+
 export async function verifyHospitalizacionPrefill(page: Page, expected: { nombre: string; nss: string; diagnostico?: string }): Promise<void> {
   await expect(page.locator('input[name="nombre_completo"]')).toHaveValue(expected.nombre);
   await expect(page.locator('input[name="nss"]')).toHaveValue(expected.nss);
@@ -32,26 +44,34 @@ export async function saveHospitalizacion(
   await page.locator('input[name="agregado_medico"]').fill("E2E UROMED");
   await page.locator('input[name="medico_a_cargo"]').fill("DR E2E UROMED");
   await page.locator('input[name="edad"]').fill("35");
-  await page.locator('select[name="estatus_detalle"]').selectOption({ index: 1 });
+  await setSelectValue(page, 'select[name="estatus_detalle"]', "DELICADO");
   await page.locator('input[name="dias_hospitalizacion"]').fill("1");
   await page.locator('input[name="dias_postquirurgicos"]').fill("0");
-  await page.locator('select[name="incapacidad"]').selectOption("NO").catch(async () => {});
+  await setSelectValue(page, 'select[name="incapacidad"]', "NO");
   if (await page.locator('select[name="incapacidad_emitida"]').count()) {
-    await page.locator('select[name="incapacidad_emitida"]').selectOption("NO").catch(async () => {});
+    await setSelectValue(page, 'select[name="incapacidad_emitida"]', "NO");
   }
-  if (await page.locator('select[name="programado"]').count()) {
-    await page.locator('select[name="programado"]').selectOption(mode === "programado" ? "SI" : "NO").catch(async () => {});
-  }
-  if (await page.locator('select[name="urgencia"]').count()) {
-    await page.locator('select[name="urgencia"]').selectOption(mode === "urgencias" ? "SI" : "NO").catch(async () => {});
-  }
+  await setSelectValue(page, 'select[name="programado"]', mode === "programado" ? "SI" : "NO");
+  await setSelectValue(page, 'select[name="urgencia"]', mode === "urgencias" ? "SI" : "NO");
   if (await page.locator('select[name="uci"]').count()) {
-    await page.locator('select[name="uci"]').selectOption("NO").catch(async () => {});
+    await setSelectValue(page, 'select[name="uci"]', "NO");
   }
   if (await page.locator('select[name="estatus"]').count()) {
-    await page.locator('select[name="estatus"]').selectOption("ACTIVO").catch(async () => {});
+    await setSelectValue(page, 'select[name="estatus"]', "ACTIVO");
   }
-  await page.getByRole("button", { name: /Guardar ingreso|Guardar/i }).first().click();
+  await expect(page.locator('select[name="programado"]')).toHaveValue(mode === "programado" ? "SI" : "NO");
+  await expect(page.locator('select[name="urgencia"]')).toHaveValue(mode === "urgencias" ? "SI" : "NO");
+  if (mode === "programado") {
+    await page.locator('input[name="medico_programado"]').fill("DR E2E PROGRAMADO");
+  }
+  if (mode === "urgencias") {
+    await page.waitForSelector('select[name="urgencia_tipo"]', { state: "attached" });
+    await page.locator('select[name="urgencia_tipo"]').selectOption({ index: 1 });
+  }
+  const submitButton = page.getByRole("button", { name: /Guardar ingreso hospitalario/i });
+  await submitButton.scrollIntoViewIfNeeded();
+  await submitButton.click();
+  await page.waitForLoadState("domcontentloaded");
   const heading = page.getByRole("heading").first();
   await expect(heading).toContainText(/Ingreso hospitalario/i);
   const altaHref = await page.locator('a[href*="/hospitalizacion/alta?hospitalizacion_id="]').first().getAttribute("href");
@@ -87,12 +107,12 @@ export async function saveGuardia(page: Page): Promise<void> {
   await page.locator('input[name="guardia_r3"]').fill("JAUREGUI DIAZ J.");
   await page.locator('input[name="guardia_r2"]').fill("BENITEZ ALDAY P.");
   await page.getByRole("button", { name: /\+ Guardar guardia/i }).click();
-  await expect(page).toHaveURL(/saved=1|ok=1|fecha=/);
+  await expect(page.getByText(/Guardia registrada correctamente/i)).toBeVisible();
 }
 
 export async function saveCenso(page: Page): Promise<void> {
   await page.getByRole("button", { name: /Guardar cambios de censo/i }).click();
-  await expect(page).toHaveURL(/saved=1|fecha=/);
+  await expect(page.getByText(/Cambios del censo guardados correctamente/i)).toBeVisible();
 }
 
 async function readDownloadBuffer(download: Download): Promise<Buffer> {

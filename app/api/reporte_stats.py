@@ -4,6 +4,7 @@ from datetime import date, datetime
 from typing import Any, Dict, Optional, Tuple
 
 from fastapi import APIRouter, Depends, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.orm import Session
 
@@ -255,7 +256,7 @@ def api_stats_pendientes_programar_desglose(
 
     safe_limit = max(1, min(int(limit), 5000))
     filas = m._build_pending_programar_dataset(db, sdb=sdb, limit=safe_limit)
-    return JSONResponse(content={"total": len(filas), "rows": filas})
+    return JSONResponse(content=jsonable_encoder({"total": len(filas), "rows": filas}))
 
 
 @router.get("/api/stats/cirugias-realizadas/resumen", response_class=JSONResponse)
@@ -317,7 +318,7 @@ def api_stats_cirugias_realizadas_desglose(
 
     safe_limit = max(1, min(int(limit), 5000))
     filas = m._build_realizadas_dataset(sdb=sdb, limit=safe_limit)
-    return JSONResponse(content={"total": len(filas), "rows": filas})
+    return JSONResponse(content=jsonable_encoder({"total": len(filas), "rows": filas}))
 
 
 @router.get("/api/stats/sangrado/resumen", response_class=JSONResponse)
@@ -773,4 +774,4 @@ def api_stats_cola_preventiva_desglose(
 
     filas = m._build_pending_programar_dataset(db, sdb=sdb, limit=5000)
     ranked = m._rank_preventive_rows(filas, limit=limit)
-    return JSONResponse(content={"total": len(filas), "rows": ranked})
+    return JSONResponse(content=jsonable_encoder({"total": len(filas), "rows": ranked}))

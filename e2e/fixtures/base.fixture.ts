@@ -31,12 +31,16 @@ export const test = base.extend<Fixtures>({
   },
 
   context: async ({ browser, appEnv }, use, testInfo) => {
-    const harPath = makeArtifactPath(
-      appEnv.artifactsDir,
-      "har",
-      `${sanitizeSlug(`${path.basename(testInfo.file)}-${testInfo.title}`)}.har`
-    );
-    await ensureDir(path.dirname(harPath));
+    const harPath = appEnv.recordHar
+      ? makeArtifactPath(
+          appEnv.artifactsDir,
+          "har",
+          `${sanitizeSlug(`${path.basename(testInfo.file)}-${testInfo.title}`)}.har`
+        )
+      : undefined;
+    if (harPath) {
+      await ensureDir(path.dirname(harPath));
+    }
     const context = await browser.newContext(buildBrowserContextOptions(appEnv, harPath));
     await use(context);
     await context.close();
@@ -56,6 +60,9 @@ export const test = base.extend<Fixtures>({
     await fs.writeFile(consolePath, redactText(logs.join("\n")), "utf8");
     if (testInfo.status !== testInfo.expectedStatus) {
       await page.screenshot({ path: path.join(artifactDir, "failure.png"), fullPage: true });
+    }
+    if (!page.isClosed()) {
+      await page.close().catch(() => undefined);
     }
   },
 

@@ -98,7 +98,7 @@
  <div class="card">
  <label>Buscar paciente por CURP / NSS / Nombre</label>
  <div class="busqueda">
- <input type="text" name="busqueda" placeholder="CURP, NSS o nombre" required>
+          <input type="text" name="busqueda" placeholder="CURP, NSS o nombre">
  <button type="submit" formaction="/hospitalizacion/buscar" class="btn btn-dorado">Buscar</button>
  </div>
  <div class="row-actions" style="margin-top:8px;">
@@ -160,7 +160,7 @@
  </div>
  <div>
  <label>NSS</label>
- <input type="text" name="nss" value="{{ prefill.nss }}" required maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 dígitos">
+ <input type="text" name="nss" value="{{ prefill.nss }}" required maxlength="10" pattern="[0-9]{10}" inputmode="numeric" placeholder="10 dígitos">
  </div>
  <div>
  <label>Agregado médico</label>

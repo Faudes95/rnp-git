@@ -1,0 +1,39 @@
+{
+  "profile": "full",
+  "samples": [
+    {
+      "endpoint": "/status",
+      "ms": 59
+    },
+    {
+      "endpoint": "/",
+      "ms": 17
+    },
+    {
+      "endpoint": "/admin/database/status",
+      "ms": 15
+    },
+    {
+      "endpoint": "/api/forms/consulta_externa/schema",
+      "ms": 62
+    },
+    {
+      "endpoint": "/api/forms/hospitalizacion_ingreso/schema",
+      "ms": 52
+    },
+    {
+      "endpoint": "/api/quirofano/jefatura/dashboard",
+      "ms": 456
+    },
+    {
+      "endpoint": "/jefatura-urologia/central",
+      "ms": 23
+    }
+  ],
+  "concurrent_endpoint": "/status",
+  "concurrent_count": 10,
+  "p50_ms": 89,
+  "p95_ms": 456,
+  "threshold_p50_ms": 1500,
+  "threshold_p95_ms": 4000
+}

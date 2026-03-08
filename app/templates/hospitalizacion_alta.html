@@ -82,7 +82,7 @@
  <h2>Formato de egreso hospitalario</h2>
  <div class="grid">
  <div><label>Fecha de egreso</label><input type="date" name="fecha_egreso" value="{{ prefill.fecha_egreso }}" required></div>
- <div><label>NSS</label><input type="text" name="nss" value="{{ prefill.nss }}" required maxlength="10" pattern="\\d{10}" inputmode="numeric" placeholder="10 dígitos"></div>
+ <div><label>NSS</label><input type="text" name="nss" value="{{ prefill.nss }}" required maxlength="10" pattern="[0-9]{10}" inputmode="numeric" placeholder="10 dígitos"></div>
  <div class="w2"><label>Nombre completo</label><input type="text" name="nombre_completo" value="{{ prefill.nombre_completo }}" required></div>
  <div><label>Sexo</label><input type="text" name="sexo" value="{{ prefill.sexo }}" required></div>
  <div><label>Edad</label><input type="number" name="edad" value="{{ prefill.edad }}" min="0" max="120"></div>

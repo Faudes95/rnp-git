@@ -5,6 +5,58 @@ from typing import Any, Callable
 from fastapi.responses import HTMLResponse, JSONResponse
 
 
+def _map_unavailable_page(title: str, detail: str) -> HTMLResponse:
+    return HTMLResponse(
+        f"""
+        <html lang="es">
+          <head>
+            <meta charset="utf-8" />
+            <title>{title}</title>
+            <style>
+              body {{
+                margin: 0;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                background: #f4f7fb;
+                color: #12304a;
+              }}
+              .wrap {{
+                max-width: 760px;
+                margin: 64px auto;
+                padding: 32px;
+              }}
+              .card {{
+                background: #ffffff;
+                border: 1px solid #d5dfeb;
+                border-radius: 24px;
+                padding: 32px;
+                box-shadow: 0 20px 40px rgba(18, 48, 74, 0.08);
+              }}
+              h1 {{
+                margin: 0 0 12px;
+                font-size: 2rem;
+                color: #103b78;
+              }}
+              p {{
+                margin: 0;
+                font-size: 1.05rem;
+                line-height: 1.6;
+              }}
+            </style>
+          </head>
+          <body>
+            <div class="wrap">
+              <div class="card">
+                <h1>{title}</h1>
+                <p>{detail}</p>
+              </div>
+            </div>
+          </body>
+        </html>
+        """,
+        status_code=200,
+    )
+
+
 def admin_geocodificar_flow(
     *,
     limite: int,
@@ -43,7 +95,11 @@ def mapa_epidemiologico_geojson_flow(
     build_geojson_pacientes_programados_fn: Callable[..., dict],
 ) -> HTMLResponse:
     if folium_module is None:
-        return HTMLResponse("<h1>Mapa no disponible</h1><p>Instale folium para habilitar este módulo.</p>", status_code=503)
+        return _map_unavailable_page(
+            "Mapa epidemiológico en modo básico",
+            "El visor interactivo no está disponible en este entorno porque falta el componente de mapas. "
+            "La ruta sigue operativa para validación y puede habilitarse instalando folium.",
+        )
 
     geojson_data = build_geojson_pacientes_programados_fn(sdb=sdb, limit=2000)
     mapa = folium_module.Map(location=[19.4326, -99.1332], zoom_start=10)
@@ -65,7 +121,11 @@ def mapa_epidemiologico_flow(
     sql_func: Any,
 ) -> HTMLResponse:
     if folium_module is None or marker_cluster_cls is None:
-        return HTMLResponse("<h1>Mapa no disponible</h1><p>Instale folium para habilitar este módulo.</p>", status_code=503)
+        return _map_unavailable_page(
+            "Mapa epidemiológico en modo básico",
+            "El visor interactivo no está disponible en este entorno porque falta el componente de mapas. "
+            "La ruta sigue operativa para validación y puede habilitarse instalando folium.",
+        )
     mapa = folium_module.Map(location=[19.4326, -99.1332], zoom_start=10)
     marker_cluster = marker_cluster_cls().add_to(mapa)
     hgz_coords = {

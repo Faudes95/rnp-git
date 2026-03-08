@@ -1,4 +1,12 @@
-{
-  "status": "pending",
-  "message": "Se llenará con la corrida E2E de recaptura."
-}
+[
+  {
+    "flow": "postquirurgica_to_hospitalizacion",
+    "status": "ya evita recaptura",
+    "evidence": "nombre, NSS y diagnóstico llegan precargados al ingreso hospitalario desde postqx"
+  },
+  {
+    "flow": "patient_context_to_forms",
+    "status": "evita parcialmente",
+    "evidence": "existen botones de autocompletar desde Consulta, pero aún persisten campos que requieren confirmación manual"
+  }
+]

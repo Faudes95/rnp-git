@@ -1,4 +1,10 @@
 {
-  "status": "pending",
-  "message": "Se llenará con la corrida E2E de censo."
+  "generated_at": "2026-03-08T22:14:33.074Z",
+  "ui_row_count": 117,
+  "exported_row_count": 73,
+  "expected_patient_names": [
+    "CENSO CENSO20260308221423NDF9Y9 PACIENTE"
+  ],
+  "missing_from_ui": [],
+  "missing_from_export": []
 }

@@ -13,7 +13,16 @@ export type ModuleName =
   | "admin"
   | "general";
 
-export const PUBLIC_ROUTE_ALLOWLIST = ["/", "/status"];
+export const PUBLIC_ROUTE_ALLOWLIST = [
+  "/",
+  "/status",
+  "/api/menu/kpis",
+  "/menu-principal",
+  "/openapi.json",
+  "/docs",
+  "/docs/oauth2-redirect",
+  "/redoc",
+];
 
 export function inferModuleFromPath(pathname: string, tags: string[] = []): ModuleName {
   const normalized = pathname.toLowerCase();

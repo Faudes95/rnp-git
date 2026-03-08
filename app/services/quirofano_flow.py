@@ -4,6 +4,7 @@ from __future__ import annotations
 from app.core.time_utils import utcnow
 
 import json
+import logging
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional
 from urllib.parse import quote_plus
@@ -55,6 +56,8 @@ _QUIROFANO_CANCELACION_BY_CONCEPTO = {
     str(item["concepto"]).strip().upper(): item for item in QUIROFANO_CANCELACION_CATALOG
 }
 
+logger = logging.getLogger(__name__)
+
 
 def _resolve_cancelacion_concepto(raw_value: Any) -> Optional[Dict[str, str]]:
     value = str(raw_value or "").strip().upper()
@@ -68,6 +71,17 @@ def _resolve_cancelacion_concepto(raw_value: Any) -> Optional[Dict[str, str]]:
 
 def _cancelacion_catalogo_ui() -> List[Dict[str, str]]:
     return list(QUIROFANO_CANCELACION_CATALOG)
+
+
+def _next_urgencia_quirofano_id(m: Any, sdb: Session) -> int:
+    row = (
+        sdb.query(m.SurgicalProgramacionDB.quirofano_id)
+        .filter(m.SurgicalProgramacionDB.quirofano_id < 0)
+        .order_by(m.SurgicalProgramacionDB.quirofano_id.asc())
+        .first()
+    )
+    current_min = int(row[0]) if row and row[0] is not None else 0
+    return current_min - 1 if current_min < 0 else -1
 
 
 def _find_consulta_for_urgencia(m: Any, db: Session, nss: str, nombre_completo: str):
@@ -399,7 +413,7 @@ async def guardar_quirofano_urgencia_flow(request: Request, db: Session, sdb: Se
 
         mirrored_consulta_id = consulta_row.id if consulta_row is not None else (2000000000 + int(urg_row.id))
         mirrored = m.SurgicalProgramacionDB(
-            quirofano_id=-(int(urg_row.id)),
+            quirofano_id=_next_urgencia_quirofano_id(m, sdb),
             consulta_id=int(mirrored_consulta_id),
             curp=curp_val,
             nss=payload["nss"],
@@ -489,54 +503,73 @@ async def guardar_quirofano_urgencia_flow(request: Request, db: Session, sdb: Se
         except Exception:
             db.rollback()
 
-        m.push_module_feedback(
-            consulta_id=int(mirrored_consulta_id),
-            modulo="quirofano_urgencias",
-            referencia_id=f"urgencias:{urg_row.id}",
-            payload={
-                "nss": payload["nss"],
-                "sexo": payload["sexo"],
-                "patologia": payload["patologia"],
-                "patologia_cie10": urg_row.patologia_cie10,
-                "procedimiento_programado": payload["procedimiento_programado"],
-                "grupo_patologia": grupo_patologia,
-                "grupo_procedimiento": grupo_procedimiento,
-                "hgz": payload["hgz"],
-                "requiere_intermed": requiere_intermed,
-                "solicita_hemoderivados": payload["solicita_hemoderivados"],
-                "hemoderivados_pg_solicitados": payload["hemoderivados_pg_solicitados"],
-                "hemoderivados_pfc_solicitados": payload["hemoderivados_pfc_solicitados"],
-                "hemoderivados_cp_solicitados": payload["hemoderivados_cp_solicitados"],
-                "estatus": "PROGRAMADA",
-                "modulo_origen": "QUIROFANO_URGENCIA",
-            },
-        )
-        m.registrar_evento_flujo_quirurgico(
-            consulta_id=int(mirrored_consulta_id),
-            evento="URG_PROGRAMADA",
-            estatus="PROGRAMADA",
-            surgical_programacion_id=mirrored.id,
-            quirofano_id=mirrored.quirofano_id,
-            edad=payload["edad"],
-            sexo=payload["sexo"],
-            nss=payload["nss"],
-            hgz=payload["hgz"],
-            diagnostico=payload["patologia"],
-            procedimiento=payload["procedimiento_programado"],
-            ecog=ecog_final,
-            metadata_json={
-                "origen": "URG",
-                "urgencia_programacion_id": urg_row.id,
-                "consulta_vinculada_real": "SI" if consulta_vinculada_real else "NO",
-                "patologia_cie10": urg_row.patologia_cie10,
-                "solicita_hemoderivados": payload["solicita_hemoderivados"],
-                "hemoderivados_pg_solicitados": payload["hemoderivados_pg_solicitados"],
-                "hemoderivados_pfc_solicitados": payload["hemoderivados_pfc_solicitados"],
-                "hemoderivados_cp_solicitados": payload["hemoderivados_cp_solicitados"],
-            },
-        )
+        try:
+            m.push_module_feedback(
+                consulta_id=int(mirrored_consulta_id),
+                modulo="quirofano_urgencias",
+                referencia_id=f"urgencias:{urg_row.id}",
+                payload={
+                    "nss": payload["nss"],
+                    "sexo": payload["sexo"],
+                    "patologia": payload["patologia"],
+                    "patologia_cie10": urg_row.patologia_cie10,
+                    "procedimiento_programado": payload["procedimiento_programado"],
+                    "grupo_patologia": grupo_patologia,
+                    "grupo_procedimiento": grupo_procedimiento,
+                    "hgz": payload["hgz"],
+                    "requiere_intermed": requiere_intermed,
+                    "solicita_hemoderivados": payload["solicita_hemoderivados"],
+                    "hemoderivados_pg_solicitados": payload["hemoderivados_pg_solicitados"],
+                    "hemoderivados_pfc_solicitados": payload["hemoderivados_pfc_solicitados"],
+                    "hemoderivados_cp_solicitados": payload["hemoderivados_cp_solicitados"],
+                    "estatus": "PROGRAMADA",
+                    "modulo_origen": "QUIROFANO_URGENCIA",
+                },
+            )
+        except Exception:
+            logger.exception(
+                "push_module_feedback falló en cirugía de urgencia nss=%s urgencia_id=%s",
+                payload.get("nss"),
+                getattr(urg_row, "id", None),
+            )
+        try:
+            m.registrar_evento_flujo_quirurgico(
+                consulta_id=int(mirrored_consulta_id),
+                evento="URG_PROGRAMADA",
+                estatus="PROGRAMADA",
+                surgical_programacion_id=mirrored.id,
+                quirofano_id=mirrored.quirofano_id,
+                edad=payload["edad"],
+                sexo=payload["sexo"],
+                nss=payload["nss"],
+                hgz=payload["hgz"],
+                diagnostico=payload["patologia"],
+                procedimiento=payload["procedimiento_programado"],
+                ecog=ecog_final,
+                metadata_json={
+                    "origen": "URG",
+                    "urgencia_programacion_id": urg_row.id,
+                    "consulta_vinculada_real": "SI" if consulta_vinculada_real else "NO",
+                    "patologia_cie10": urg_row.patologia_cie10,
+                    "solicita_hemoderivados": payload["solicita_hemoderivados"],
+                    "hemoderivados_pg_solicitados": payload["hemoderivados_pg_solicitados"],
+                    "hemoderivados_pfc_solicitados": payload["hemoderivados_pfc_solicitados"],
+                    "hemoderivados_cp_solicitados": payload["hemoderivados_cp_solicitados"],
+                },
+            )
+        except Exception:
+            logger.exception(
+                "registrar_evento_flujo_quirurgico falló en cirugía de urgencia nss=%s urgencia_id=%s",
+                payload.get("nss"),
+                getattr(urg_row, "id", None),
+            )
     except Exception:
         sdb.rollback()
+        logger.exception(
+            "guardar_quirofano_urgencia_flow falló para nss=%s nombre=%s",
+            payload.get("nss"),
+            payload.get("nombre_completo"),
+        )
         return HTMLResponse(content=f"<h1>Error al guardar cirugía de urgencia</h1><a href='{back_href}'>Volver</a>", status_code=500)
 
     try:

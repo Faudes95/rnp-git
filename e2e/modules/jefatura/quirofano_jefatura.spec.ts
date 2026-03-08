@@ -19,9 +19,10 @@ function lateUniqueTime(seed: string, offset = 0): string {
 }
 
 function uniqueOperationalDate(seed: string, offset = 0): string {
-  const numeric = Number(seed.slice(-4) || "0") + offset * 17;
-  const day = 10 + (numeric % 18);
-  return `2026-04-${String(day).padStart(2, "0")}`;
+  const numeric = Number(seed.slice(-6) || "0") + offset * 97;
+  const month = 1 + (numeric % 12);
+  const day = 1 + (Math.floor(numeric / 12) % 28);
+  return `2027-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
 test.describe("jefatura de quirófano profunda", () => {

@@ -8,6 +8,7 @@ export interface AppEnv {
   authEnabled: boolean;
   authUser: string;
   authPass: string;
+  recordHar: boolean;
   bootProfile: BootProfile;
   startupInterconexionMode: string;
   aiWarmupMode: string;
@@ -58,6 +59,7 @@ export function loadEnv(): AppEnv {
     authEnabled,
     authUser,
     authPass,
+    recordHar: parseBool(process.env["RECORD_HAR"], Boolean(process.env["CI"])),
     bootProfile,
     startupInterconexionMode: process.env["STARTUP_INTERCONEXION_MODE"] ?? "off",
     aiWarmupMode: process.env["AI_WARMUP_MODE"] ?? "off",

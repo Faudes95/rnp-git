@@ -78,7 +78,6 @@ export async function createConsultaViaMetadata(
         nombre: patient.nombre,
         sexo: patient.sexo,
         edad: patient.edad,
-        fecha_nacimiento: patient.fechaNacimiento,
         agregado_medico: patient.agregadoMedico,
       },
     },

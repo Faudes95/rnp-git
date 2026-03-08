@@ -11,7 +11,13 @@ from app.core.errors import InfrastructureDomainError
 @lru_cache(maxsize=1)
 def get_main_module() -> ModuleType:
     """Acceso centralizado y cacheado al módulo principal legacy."""
-    module_name = (os.getenv("RNP_APP_CONTEXT_MODULE", "main") or "main").strip() or "main"
+    module_name = (os.getenv("RNP_APP_CONTEXT_MODULE", "") or "").strip()
+    if not module_name:
+        boot_profile = (os.getenv("APP_BOOT_PROFILE", "full") or "full").strip().lower()
+        if boot_profile == "minimal_jefatura":
+            module_name = "app.entrypoints.minimal_jefatura_main"
+        else:
+            module_name = "main_full"
     try:
         return importlib.import_module(module_name)
     except Exception as exc:

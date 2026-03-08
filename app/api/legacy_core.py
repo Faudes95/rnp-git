@@ -12,6 +12,9 @@ from sqlalchemy.sql import func
 from sqlalchemy import desc
 
 from app.core.app_context import main_proxy as m
+from app.services import admin_ml_flow as admin_ml_flow_service
+from app.services import forecast_geo_extracted, geospatial_flow
+from app.services import files_flow
 from app.services.connectivity_flow import build_connectivity_payload
 
 try:
@@ -373,7 +376,7 @@ async def qx_catalogos_cached(_db: Session = Depends(_get_db)):
 
 @router.get("/admin/actualizar_data_mart", response_class=JSONResponse)
 def admin_actualizar_data_mart(sdb: Session = Depends(_get_surgical_db)):
-    status_code, payload = m.svc_admin_ml_flow.actualizar_data_mart_payload(
+    status_code, payload = admin_ml_flow_service.actualizar_data_mart_payload(
         sdb=sdb,
         actualizar_data_mart_fn=m.actualizar_data_mart,
     )
@@ -396,7 +399,7 @@ def admin_actualizar_data_mart_async():
 
 @router.get("/admin/calidad_datos", response_class=JSONResponse)
 def admin_calidad_datos(sdb: Session = Depends(_get_surgical_db)):
-    status_code, payload = m.svc_admin_ml_flow.calidad_datos_payload(
+    status_code, payload = admin_ml_flow_service.calidad_datos_payload(
         sdb=sdb,
         check_data_quality_fn=m.check_data_quality,
     )
@@ -638,12 +641,12 @@ def admin_geocodificar(
     db: Session = Depends(_get_db),
     sdb: Session = Depends(_get_surgical_db),
 ):
-    return m.svc_admin_geocodificar_flow(
+    return geospatial_flow.admin_geocodificar_flow(
         limite=limite,
         sleep_seconds=sleep_seconds,
         db=db,
         sdb=sdb,
-        geocodificar_pacientes_pendientes_fn=m.svc_forecast_geo_extracted.geocodificar_pacientes_pendientes,
+        geocodificar_pacientes_pendientes_fn=forecast_geo_extracted.geocodificar_pacientes_pendientes,
     )
 
 
@@ -688,7 +691,7 @@ async def analisis_cargar_archivos_form(
     curp: Optional[str] = None,
     db: Session = Depends(_get_db),
 ):
-    return await m.svc_files_flow.analisis_cargar_archivos_form_flow(request, consulta_id, curp, db)
+    return await files_flow.analisis_cargar_archivos_form_flow(request, consulta_id, curp, db)
 
 
 @router.post("/analisis/cargar-archivos", response_class=HTMLResponse)
@@ -701,7 +704,7 @@ async def analisis_cargar_archivos_submit(
     files: List[UploadFile] = File(...),
     db: Session = Depends(_get_db),
 ):
-    return await m.svc_files_flow.analisis_cargar_archivos_submit_flow(
+    return await files_flow.analisis_cargar_archivos_submit_flow(
         request,
         csrf_token=csrf_token,
         consulta_id=consulta_id,
@@ -714,7 +717,7 @@ async def analisis_cargar_archivos_submit(
 
 @router.get("/archivos_paciente/{archivo_id}")
 async def descargar_archivo_paciente(archivo_id: int, db: Session = Depends(_get_db)):
-    return await m.svc_files_flow.descargar_archivo_paciente_flow(archivo_id, db)
+    return await files_flow.descargar_archivo_paciente_flow(archivo_id, db)
 
 
 @router.post("/carga_masiva_excel", response_class=JSONResponse)

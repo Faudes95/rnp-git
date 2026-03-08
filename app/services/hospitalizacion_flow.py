@@ -835,6 +835,21 @@ def _write_censo_excel(target_date: date, hospitalizados: List[Dict[str, Any]], 
     for idx, h in enumerate(headers, start=1):
         ws.cell(row=3, column=idx, value=h)
 
+    # Algunas plantillas traen celdas combinadas en la zona de datos. Si no se
+    # descombinan antes de escribir, openpyxl devuelve MergedCell read-only.
+    ranges_to_unmerge: List[str] = []
+    for rng in list(ws.merged_cells.ranges):
+        if rng.max_row < 4:
+            continue
+        if rng.max_col < 1 or rng.min_col > 15:
+            continue
+        ranges_to_unmerge.append(str(rng))
+    for merge_ref in ranges_to_unmerge:
+        try:
+            ws.unmerge_cells(merge_ref)
+        except Exception:
+            logger.debug("No se pudo descombinar %s en exportación de censo", merge_ref, exc_info=True)
+
     # Limpieza total de valores previos en plantilla (sin perder formato base).
     # Nota: ws.cell(..., value=None) en openpyxl no garantiza sobreescritura, por eso se usa cell.value = None.
     clear_until = max(ws.max_row + 120, 500)
