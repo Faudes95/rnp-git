@@ -16,8 +16,14 @@ class PilotUrologiaProfileManifestTest(unittest.TestCase):
             "urgencias",
             "jefatura_quirofano",
             "jefaturas",
+            "hospitalizacion",
+            "consulta",
+            "expediente_plus",
+            "perfil_clinico",
+            "ehr_integrado",
             "forms_metadata",
             "master_identity",
+            "patient_autofill",
             "api_v1",
             "urology_devices_events",
             "auth_login",
@@ -29,11 +35,8 @@ class PilotUrologiaProfileManifestTest(unittest.TestCase):
     def test_pilot_urologia_profile_excludes_non_target_domains(self):
         manifest = get_profile_manifest("pilot_urologia")
         forbidden = {
-            "hospitalizacion",
-            "inpatient_notes",
-            "consulta",
             "consulta_externa",
-            "expediente_plus",
+            "interconsultas",
             "fhir",
             "ai_fau_bot",
             "ai_fau_bot_core",

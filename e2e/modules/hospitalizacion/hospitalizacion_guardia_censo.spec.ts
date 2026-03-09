@@ -4,7 +4,7 @@ import { createCirugiaProgramada, submitPostQx } from "../../helpers/quirofano.j
 import { captureCensoUiRows, exportCensoRows, saveCenso, saveGuardia, saveHospitalizacion, verifyHospitalizacionPrefill, writeCensoDiff } from "../../helpers/hospitalizacion.js";
 
 test("guardia y censo exportado permanecen alineados con la UI del censo", async ({ api, page, appEnv }) => {
-  test.skip(appEnv.bootProfile !== "full", "Censo solo aplica al perfil full.");
+  test.skip(!["full", "pilot_urologia"].includes(appEnv.bootProfile), "Censo solo aplica a full y pilot_urologia.");
   const patient = buildTestPatient("CENSO");
   const consulta = await createConsultaViaMetadata(api, patient);
   const programada = await createCirugiaProgramada(page, patient, consulta.consultaId);

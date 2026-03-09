@@ -3,7 +3,7 @@ import { buildTestPatient, createConsultaViaMetadata } from "../../helpers/patie
 import { createUrgenciaSolicitud, submitPostQx } from "../../helpers/quirofano.js";
 
 test("quirofano urgencias -> postquirúrgica -> hospitalización prefill", async ({ api, page, appEnv }) => {
-  test.skip(appEnv.bootProfile !== "full", "Urgencias solo aplica al perfil full.");
+  test.skip(!["full", "quirofano", "pilot_urologia"].includes(appEnv.bootProfile), "Urgencias solo aplica a full, quirofano y pilot_urologia.");
   const patient = buildTestPatient("URG");
   await createConsultaViaMetadata(api, patient);
   const urgencia = await createUrgenciaSolicitud(page, patient);

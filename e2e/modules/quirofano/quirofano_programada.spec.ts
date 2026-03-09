@@ -3,7 +3,7 @@ import { buildTestPatient, createConsultaViaMetadata } from "../../helpers/patie
 import { createCirugiaProgramada, submitPostQx } from "../../helpers/quirofano.js";
 
 test("cirugía programada -> postqx -> enlaces clínicos longitudinales", async ({ api, page, appEnv }) => {
-  test.skip(appEnv.bootProfile !== "full", "Quirófano programado solo aplica al perfil full.");
+  test.skip(!["full", "quirofano", "pilot_urologia"].includes(appEnv.bootProfile), "Quirófano programado solo aplica a full, quirofano y pilot_urologia.");
   const patient = buildTestPatient("PROG");
   const consulta = await createConsultaViaMetadata(api, patient);
   const programada = await createCirugiaProgramada(page, patient, consulta.consultaId);

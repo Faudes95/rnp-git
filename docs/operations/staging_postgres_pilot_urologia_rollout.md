@@ -2,7 +2,7 @@
 
 ## Objetivo
 - Validar el primer perfil operativo compuesto para el piloto urológico supervisado.
-- Probar juntos `quirofano`, `jefatura_quirofano`, `jefatura_urologia`, `Central` y `perfiles de residentes` sobre PostgreSQL real, sin cargar dominios ajenos.
+- Probar juntos `quirofano`, `jefatura_quirofano`, `jefatura_urologia`, `Central`, `perfiles de residentes`, el corredor mínimo de `hospitalizacion` y la continuidad en `expediente` sobre PostgreSQL real.
 
 ## Variables de entorno
 ```bash
@@ -30,6 +30,11 @@ export BASE_URL=http://127.0.0.1:8000
    - `urgencias`
    - `jefatura_quirofano`
    - `jefaturas`
+   - `hospitalizacion`
+   - `consulta`
+   - `expediente_plus`
+   - `perfil_clinico`
+   - `ehr_integrado`
    - `shell`
    - `auth_login`
    - `api_v1`
@@ -45,6 +50,8 @@ export BASE_URL=http://127.0.0.1:8000
   - `e2e/modules/jefatura/jefatura_central.spec.ts`
   - `e2e/modules/jefatura/jefatura_urologia_residentes.spec.ts`
   - `e2e/modules/jefatura/jefatura_urologia_crossflow.spec.ts`
+  - `e2e/modules/hospitalizacion/*`
+  - `e2e/modules/expediente/expediente_clinico_unico.spec.ts`
 
 ## Alcance del perfil
 - Incluye:
@@ -55,14 +62,14 @@ export BASE_URL=http://127.0.0.1:8000
   - jefatura urología
   - central
   - perfiles longitudinales de residentes
+  - ingreso hospitalario, guardia y censo
+  - núcleo mínimo de consulta para sembrar contexto (`consulta` + `patient_autofill`)
+  - expediente clínico único y continuidad de nota diaria inpatient
   - auth, shell, `api_v1`, validación clínica y gobernanza
 - Excluye:
-  - hospitalización
-  - consulta
-  - expediente
   - FHIR
   - IA
   - dashboard y reportes generales
 
 ## Siguiente corte natural
-- Si `pilot_urologia` queda verde en PostgreSQL staging, el siguiente paso recomendado es integrar `hospitalizacion` como corredor longitudinal siguiente para un piloto clínico más completo.
+- Si `pilot_urologia` queda verde en PostgreSQL staging con hospitalización y expediente integrados, el siguiente paso recomendado es consolidar un piloto supervisado real o decidir si se abre una ola equivalente para `consulta`/`hospitalizacion` fuera del corredor urológico.

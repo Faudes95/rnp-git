@@ -4,7 +4,7 @@ import { createUrgenciaSolicitud, submitPostQx } from "../../helpers/quirofano.j
 import { precheckIngreso, saveHospitalizacion, verifyHospitalizacionPrefill } from "../../helpers/hospitalizacion.js";
 
 test("hospitalización desde contexto de urgencias guarda y detecta episodio activo", async ({ api, page, appEnv }) => {
-  test.skip(appEnv.bootProfile !== "full", "Hospitalización profunda solo aplica al perfil full.");
+  test.skip(!["full", "pilot_urologia"].includes(appEnv.bootProfile), "Hospitalización profunda solo aplica a full y pilot_urologia.");
   const patient = buildTestPatient("HURG");
   const consulta = await createConsultaViaMetadata(api, patient);
   const urgencia = await createUrgenciaSolicitud(page, patient);

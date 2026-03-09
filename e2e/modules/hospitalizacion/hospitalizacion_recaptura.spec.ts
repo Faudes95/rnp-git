@@ -7,7 +7,7 @@ import { verifyHospitalizacionPrefill } from "../../helpers/hospitalizacion.js";
 import { writeJsonFile, writeMarkdownFile } from "../../helpers/artifacts.js";
 
 test("audita recaptura evitada y oportunidades restantes", async ({ api, page, appEnv }) => {
-  test.skip(appEnv.bootProfile !== "full", "Recaptura longitudinal solo aplica al perfil full.");
+  test.skip(!["full", "pilot_urologia"].includes(appEnv.bootProfile), "Recaptura longitudinal solo aplica a full y pilot_urologia.");
   const patient = buildTestPatient("RECAP");
   const consulta = await createConsultaViaMetadata(api, patient);
   const programada = await createCirugiaProgramada(page, patient, consulta.consultaId);

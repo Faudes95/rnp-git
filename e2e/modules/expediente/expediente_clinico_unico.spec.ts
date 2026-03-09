@@ -5,7 +5,7 @@ import { saveHospitalizacion, verifyHospitalizacionPrefill } from "../../helpers
 import { openExpediente, saveExpedienteFase1, saveInpatientDailyNote } from "../../helpers/expediente.js";
 
 test("expediente clínico único conserva continuidad con hospitalización y nota diaria", async ({ api, page, appEnv }) => {
-  test.skip(appEnv.bootProfile !== "full", "Expediente clínico único solo aplica al perfil full.");
+  test.skip(!["full", "pilot_urologia"].includes(appEnv.bootProfile), "Expediente clínico único solo aplica a full y pilot_urologia.");
   const patient = buildTestPatient("EXP");
   const consulta = await createConsultaViaMetadata(api, patient);
   const programada = await createCirugiaProgramada(page, patient, consulta.consultaId);

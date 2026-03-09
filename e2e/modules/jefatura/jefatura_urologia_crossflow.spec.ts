@@ -4,7 +4,7 @@ import { createCirugiaProgramada, submitPostQx } from "../../helpers/quirofano.j
 import { assertResidentLongitudinalMetrics, openResidentProfile } from "../../helpers/urologia.js";
 
 test("nota postquirúrgica indexa actividad en perfil de residente", async ({ api, page, appEnv }) => {
-  test.skip(appEnv.bootProfile !== "full", "Perfiles de residentes solo aplican al perfil full.");
+  test.skip(!["full", "jefatura_urologia", "residentes_urologia", "pilot_urologia"].includes(appEnv.bootProfile), "Perfiles de residentes solo aplican a full, jefatura_urologia, residentes_urologia y pilot_urologia.");
   const patient = buildTestPatient("RESI");
   const consulta = await createConsultaViaMetadata(api, patient);
   const programada = await createCirugiaProgramada(page, patient, consulta.consultaId);

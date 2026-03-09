@@ -4,7 +4,7 @@ import { createCirugiaProgramada, submitPostQx } from "../../helpers/quirofano.j
 import { saveHospitalizacion, verifyHospitalizacionPrefill } from "../../helpers/hospitalizacion.js";
 
 test("hospitalización programada reutiliza contexto de cirugía programada", async ({ api, page, appEnv }) => {
-  test.skip(appEnv.bootProfile !== "full", "Hospitalización programada solo aplica al perfil full.");
+  test.skip(!["full", "pilot_urologia"].includes(appEnv.bootProfile), "Hospitalización programada solo aplica a full y pilot_urologia.");
   const patient = buildTestPatient("HPROG");
   const consulta = await createConsultaViaMetadata(api, patient);
   const programada = await createCirugiaProgramada(page, patient, consulta.consultaId);
