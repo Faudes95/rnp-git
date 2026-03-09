@@ -1,0 +1,117 @@
+name: pilot-urologia-preflight
+
+on:
+  workflow_dispatch:
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      BASE_URL: http://127.0.0.1:8000
+      AUTH_ENABLED: "true"
+      AUTH_USER: Faudes
+      AUTH_PASS: "1995"
+      IMSS_USER: Faudes
+      IMSS_PASS: "1995"
+      APP_BOOT_PROFILE: pilot_urologia
+      DATABASE_PLATFORM_TARGET: postgres
+      STARTUP_INTERCONEXION_MODE: off
+      AI_WARMUP_MODE: off
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/uromed_clinical
+      SURGICAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/uromed_surgical
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Node dependencies
+        run: npm install --no-fund --no-audit
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Prepare PostgreSQL databases
+        run: |
+          python - <<'PY'
+          import psycopg2
+          admin = psycopg2.connect("postgresql://postgres:postgres@127.0.0.1:5432/postgres")
+          admin.autocommit = True
+          with admin.cursor() as cur:
+              cur.execute("DROP DATABASE IF EXISTS uromed_clinical")
+              cur.execute("DROP DATABASE IF EXISTS uromed_surgical")
+              cur.execute("CREATE DATABASE uromed_clinical")
+              cur.execute("CREATE DATABASE uromed_surgical")
+          admin.close()
+          PY
+
+      - name: Start pilot_urologia
+        run: |
+          mkdir -p artifacts
+          nohup python -m uvicorn main:app --host 127.0.0.1 --port 8000 > artifacts/pilot-urologia-preflight.log 2>&1 &
+          python - <<'PY'
+          import time
+          import urllib.request
+          url = "http://127.0.0.1:8000/status"
+          for _ in range(180):
+              try:
+                  with urllib.request.urlopen(url, timeout=2) as resp:
+                      if resp.status == 200:
+                          raise SystemExit(0)
+              except Exception:
+                  time.sleep(1)
+          raise SystemExit("App no respondió en /status")
+          PY
+
+      - name: Assert database status
+        run: |
+          python - <<'PY'
+          import base64
+          import json
+          import os
+          import urllib.request
+
+          creds = f"{os.environ['AUTH_USER']}:{os.environ['AUTH_PASS']}".encode()
+          headers = {"Authorization": "Basic " + base64.b64encode(creds).decode()}
+          req = urllib.request.Request("http://127.0.0.1:8000/api/v1/database/status", headers=headers)
+          with urllib.request.urlopen(req, timeout=10) as resp:
+              payload = json.load(resp)
+          assert payload["target_mode"] == "postgres", payload
+          assert payload["clinical"]["mode"] == "postgres", payload
+          assert payload["surgical"]["mode"] == "postgres", payload
+          PY
+
+      - name: Run pilot preflight
+        run: npm run pilot:preflight:urologia
+
+      - name: Upload pilot reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pilot-urologia-preflight
+          path: |
+            playwright-report
+            artifacts
+            docs
+            test-results
