@@ -1,6 +1,4 @@
-"""Servicios auxiliares FHIR para extracción progresiva."""
-
-from app.integrations.fhir.capability import (
+from .capability import (
     build_capability_statement,
     build_fhir_boundary_status,
     collect_fhir_legacy_paths,

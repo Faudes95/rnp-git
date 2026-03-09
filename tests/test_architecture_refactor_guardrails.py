@@ -122,6 +122,18 @@ class ArchitectureRefactorGuardrailsTest(unittest.TestCase):
             ROUTER_MODULE_INDEX["patient_autofill"].specs[0].module_name,
             "app.routers.expediente",
         )
+        self.assertEqual(
+            ROUTER_MODULE_INDEX["fhir"].specs[0].module_name,
+            "app.routers.fhir",
+        )
+        self.assertEqual(
+            ROUTER_MODULE_INDEX["ai_fau_bot"].specs[0].module_name,
+            "app.routers.ia",
+        )
+        self.assertEqual(
+            ROUTER_MODULE_INDEX["ai_fau_bot_core"].specs[0].module_name,
+            "app.routers.ia",
+        )
 
     def test_legacy_composition_imports_do_not_grow(self):
         expected = json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))

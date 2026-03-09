@@ -9,6 +9,7 @@
 | `app/api/expediente_plus.py` | `expediente` | `main_proxy`, búsqueda, identidad maestra | Alta |
 | `app/api/consulta.py` + `consulta_externa.py` | `consulta` | `main_proxy`, validaciones clínicas, autofill | Alta |
 | `app/api/reporte.py` + `reporte_stats.py` | `analytics` | datasets, data mart, materialized views | Media |
+| `app/services/db_platform_flow.py` + SQL root scripts | `infra/db` | readiness de Postgres, pgvector, assets SQL, health checks | Alta |
 | `app/api/fhir.py` | `fhir` | contratos externos, health, capability | Media |
 | `app/api/fau_bot.py` + `fau_bot_core.py` | `ia` | boundary con `fau_bot_core`, acceso a DB | Media |
 | `app/services/quirofano_flow.py` | `domain/quirofano` + `services/quirofano` | `main_proxy`, modelos quirúrgicos, waits | Alta |

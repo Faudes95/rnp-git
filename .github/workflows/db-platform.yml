@@ -1,0 +1,105 @@
+name: db-platform
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  postgres-assets:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      CLINICAL_DSN: postgresql://postgres:postgres@127.0.0.1:5432/uromed_clinical
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Prepare fixture databases
+        run: |
+          python - <<'PY'
+          import psycopg2
+          admin = psycopg2.connect("postgresql://postgres:postgres@127.0.0.1:5432/postgres")
+          admin.autocommit = True
+          with admin.cursor() as cur:
+              cur.execute("DROP DATABASE IF EXISTS uromed_clinical")
+              cur.execute("CREATE DATABASE uromed_clinical")
+          admin.close()
+
+          db = psycopg2.connect("postgresql://postgres:postgres@127.0.0.1:5432/uromed_clinical")
+          db.autocommit = True
+          with db.cursor() as cur:
+              cur.execute(
+                  '''
+                  CREATE TABLE vitals (
+                    patient_id integer,
+                    timestamp timestamp without time zone,
+                    hr double precision
+                  )
+                  '''
+              )
+              cur.execute(
+                  '''
+                  CREATE TABLE clinical_notes (
+                    id serial PRIMARY KEY
+                  )
+                  '''
+              )
+          db.close()
+          PY
+
+      - name: Review assets before apply
+        run: |
+          mkdir -p artifacts
+          python scripts/db_platform_pipeline.py review --dsn "$CLINICAL_DSN" --json > artifacts/db-platform-review-before.json
+
+      - name: Apply safe assets
+        run: |
+          python scripts/db_platform_pipeline.py apply \
+            --dsn "$CLINICAL_DSN" \
+            --asset materialized_views \
+            --asset migration_vector \
+            --json > artifacts/db-platform-apply.json
+
+      - name: Review assets after apply
+        run: |
+          python scripts/db_platform_pipeline.py review --dsn "$CLINICAL_DSN" --json > artifacts/db-platform-review-after.json
+
+      - name: Assert safe assets are healthy
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          payload = json.loads(Path("artifacts/db-platform-review-after.json").read_text())
+          items = {item["asset_id"]: item for item in payload["items"]}
+          assert items["materialized_views"]["status"] == "healthy", items["materialized_views"]
+          assert items["migration_vector"]["status"] == "healthy", items["migration_vector"]
+          assert items["partition_vitals"]["status"] in {"manual_review", "pending", "blocked"}, items["partition_vitals"]
+          PY
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-platform
+          path: artifacts

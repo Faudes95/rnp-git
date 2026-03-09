@@ -1,68 +1,28 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict
 
-from sqlalchemy import text
-
-
-def _engine_mode(url: str) -> str:
-    u = str(url or "").lower()
-    if u.startswith("postgres"):
-        return "postgres"
-    if u.startswith("sqlite"):
-        return "sqlite"
-    if not u:
-        return "unknown"
-    return "other"
-
-
-def _safe_scalar(bind: Any, sql: str) -> Optional[Any]:
-    try:
-        with bind.connect() as conn:
-            return conn.execute(text(sql)).scalar()
-    except Exception:
-        return None
-
-
-def _pgvector_enabled(bind: Any) -> bool:
-    value = _safe_scalar(
-        bind,
-        "SELECT 1 FROM pg_extension WHERE extname='vector' LIMIT 1",
-    )
-    return bool(value)
+from app.infra.db.health import collect_sql_asset_health, engine_mode, mask_url, pgvector_enabled, safe_scalar
 
 
 def _db_status(label: str, *, url: str, bind: Any) -> Dict[str, Any]:
-    mode = _engine_mode(url)
+    mode = engine_mode(url)
     status: Dict[str, Any] = {
         "label": label,
         "mode": mode,
-        "url_masked": _mask_url(url),
+        "url_masked": mask_url(url),
         "ok": False,
         "pgvector_enabled": False,
+        "platform_assets": collect_sql_asset_health(database_scope=label, url=url, bind=bind),
     }
     if bind is None:
         return status
 
-    ping = _safe_scalar(bind, "SELECT 1")
+    ping = safe_scalar(bind, "SELECT 1")
     status["ok"] = bool(ping == 1)
     if mode == "postgres":
-        status["pgvector_enabled"] = _pgvector_enabled(bind)
+        status["pgvector_enabled"] = pgvector_enabled(bind)
     return status
-
-
-def _mask_url(url: str) -> str:
-    txt = str(url or "")
-    if "@" not in txt:
-        return txt
-    prefix, suffix = txt.split("@", 1)
-    if "://" in prefix:
-        scheme, rest = prefix.split("://", 1)
-        if ":" in rest:
-            user = rest.split(":", 1)[0]
-            return f"{scheme}://{user}:***@{suffix}"
-        return f"{scheme}://***@{suffix}"
-    return txt
 
 
 def get_database_platform_status() -> Dict[str, Any]:
@@ -80,14 +40,17 @@ def get_database_platform_status() -> Dict[str, Any]:
     desired_pgvector = True
     if desired_mode == "postgres":
         desired_pgvector = bool(clinical["pgvector_enabled"])
+    clinical_assets_ready = bool(clinical.get("platform_assets", {}).get("ready"))
+    surgical_assets_ready = bool(surgical.get("platform_assets", {}).get("ready", True))
 
     return {
         "target_mode": desired_mode,
         "ready_for_target": bool(desired_ok and desired_pgvector and clinical["ok"] and surgical["ok"]),
+        "platform_assets_ready": bool(desired_ok and clinical_assets_ready and surgical_assets_ready),
         "clinical": clinical,
         "surgical": surgical,
         "notes": [
-            "ready_for_target=true implica motores en modo objetivo, ping OK y pgvector operativo (si aplica)."
+            "ready_for_target=true implica motores en modo objetivo, ping OK y pgvector operativo (si aplica).",
+            "platform_assets_ready=true implica assets SQL de la plataforma revisados o ya activos para el modo objetivo.",
         ],
     }
-

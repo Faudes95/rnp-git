@@ -5,6 +5,7 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
+from app.integrations.fau_bot_core.boundary import build_fau_bot_core_boundary_status
 from fau_bot_core.service import SERVICE
 
 
@@ -80,7 +81,7 @@ def SERVICE_PANEL_HTML() -> str:
 
 @router.get("/api/ai/fau-bot-core/status", response_class=JSONResponse)
 def fau_bot_core_status():
-    return JSONResponse(content=SERVICE.status())
+    return JSONResponse(content=build_fau_bot_core_boundary_status(SERVICE.status()))
 
 
 @router.post("/api/ai/fau-bot-core/run", response_class=JSONResponse)
