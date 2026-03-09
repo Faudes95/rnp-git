@@ -144,13 +144,13 @@ PROFILE_MANIFESTS: Dict[str, ProfileManifest] = {
     BOOT_PROFILE_JEFATURA_UROLOGIA: ProfileManifest(
         profile=BOOT_PROFILE_JEFATURA_UROLOGIA,
         entrypoint_module=FULL_ENTRYPOINT_MODULE,
-        active_modules=frozenset({"shell", *JEFATURAS_ROUTER_MODULE_IDS, "auth_login"}),
+        active_modules=frozenset({"shell", *JEFATURAS_ROUTER_MODULE_IDS, "auth_login", "api_v1"}),
         description="Perfil interno para la gobernanza de Jefatura de Urología.",
     ),
     BOOT_PROFILE_RESIDENTES_UROLOGIA: ProfileManifest(
         profile=BOOT_PROFILE_RESIDENTES_UROLOGIA,
         entrypoint_module=FULL_ENTRYPOINT_MODULE,
-        active_modules=frozenset({"shell", *JEFATURAS_ROUTER_MODULE_IDS, "auth_login"}),
+        active_modules=frozenset({"shell", *JEFATURAS_ROUTER_MODULE_IDS, "auth_login", "api_v1"}),
         description="Perfil interno para perfiles longitudinales de residentes.",
     ),
 }

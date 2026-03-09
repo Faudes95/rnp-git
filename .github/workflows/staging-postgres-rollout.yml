@@ -16,6 +16,7 @@ jobs:
         profile:
           - full
           - quirofano
+          - jefatura_urologia
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -126,6 +127,10 @@ jobs:
       - name: Run quirofano staging validation
         if: matrix.profile == 'quirofano'
         run: npm run e2e:staging:quirofano
+
+      - name: Run jefatura urologia staging validation
+        if: matrix.profile == 'jefatura_urologia'
+        run: npm run e2e:staging:jefatura_urologia
 
       - name: Upload reports
         if: always()
