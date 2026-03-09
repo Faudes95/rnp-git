@@ -27,7 +27,7 @@ from app.core.boot_profile import (
 )
 APP_BOOT_PROFILE = normalize_app_boot_profile(os.getenv("APP_BOOT_PROFILE", BOOT_PROFILE_FULL))
 MINIMAL_JEFATURA_BOOT = is_minimal_jefatura_profile(APP_BOOT_PROFILE)
-from app.core.composition_root import create_app_instance, attach_lifespan
+from app.infra.boot import attach_lifespan, create_app_instance
 from app.core.logging import configure_structured_logging
 from app.core.time_utils import utcnow
 from app.core.startup_performance import (

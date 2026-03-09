@@ -24,7 +24,7 @@ from app.models.ehr_models import (
     EHR_ALERT_LIFECYCLE,
     ensure_ehr_schema,
 )
-from app.services.ehr_indexer import reindex_patient, reindex_last_days
+from app.services.expediente import reindex_last_days, reindex_patient
 
 logger = logging.getLogger("rnp.ehr_integrado")
 

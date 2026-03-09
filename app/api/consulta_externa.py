@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-from app.services.consulta_externa_flow import (
+from app.services.consulta_domain import (
     api_consulta_externa_recetas_ingest_flow,
     api_consulta_externa_servicios_stats_flow,
     consulta_externa_home_flow,

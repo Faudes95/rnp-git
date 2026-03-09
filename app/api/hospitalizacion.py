@@ -6,7 +6,33 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.orm import Session
 
-from app.services.hospital_guardia_flow import (
+from app.services.hospitalizacion.clinical import (
+    api_ingresos_hospitalizacion_flow,
+    buscar_paciente_hospitalizacion_flow,
+    cerrar_hospitalizacion_activa_flow,
+    guardar_censo_cambios_flow,
+    guardar_guardia_flow,
+    guardar_hospitalizacion_flow,
+    hospitalizacion_incapacidades_flow,
+    hospitalizacion_ingresar_entry_flow,
+    hospitalizacion_ingreso_preop_imprimir_docx_flow,
+    hospitalizacion_urgencias_finalizar_draft_flow,
+    imprimir_censo_excel_flow,
+    listar_hospitalizaciones_flow,
+    nuevo_hospitalizacion_form_flow,
+    precheck_hospitalizacion_ingreso_flow,
+    reporte_estadistico_hospitalizacion_flow,
+    ver_censo_diario_flow,
+)
+from app.services.hospitalizacion.egreso import (
+    api_hospitalizacion_egresos_flow,
+    hospitalizacion_alta_form_flow,
+    hospitalizacion_alta_guardar_flow,
+    hospitalizacion_alta_imprimir_docx_flow,
+    hospitalizacion_egresos_reporte_flow,
+)
+from app.services.hospitalizacion.guardia import (
+    DATASET_SPECS,
     eliminar_hospitalizacion_guardia_dataset_flow,
     hospitalizacion_guardia_dataset_export_docx_flow,
     guardar_hospitalizacion_guardia_dataset_flow,
@@ -17,36 +43,9 @@ from app.services.hospital_guardia_flow import (
     hospitalizacion_guardia_importar_submit_flow,
     hospitalizacion_guardia_reporte_flow,
     hospitalizacion_guardia_reporte_json_flow,
-)
-from app.services.hospitalizacion_flow import (
-    cerrar_hospitalizacion_activa_flow,
-    api_ingresos_hospitalizacion_flow,
-    buscar_paciente_hospitalizacion_flow,
-    guardar_censo_cambios_flow,
-    guardar_guardia_flow,
-    guardar_hospitalizacion_flow,
-    hospitalizacion_ingresar_entry_flow,
-    hospitalizacion_ingreso_preop_imprimir_docx_flow,
-    hospitalizacion_incapacidades_flow,
-    hospitalizacion_urgencias_finalizar_draft_flow,
-    imprimir_censo_excel_flow,
-    listar_hospitalizaciones_flow,
-    nuevo_hospitalizacion_form_flow,
-    precheck_hospitalizacion_ingreso_flow,
-    reporte_estadistico_hospitalizacion_flow,
-    ver_censo_diario_flow,
-)
-from app.services.guardia_template_flow import (
     get_guardia_template,
     list_guardia_templates,
     upsert_guardia_template,
-)
-from app.services.hospitalizacion_egreso_flow import (
-    api_hospitalizacion_egresos_flow,
-    hospitalizacion_alta_form_flow,
-    hospitalizacion_alta_guardar_flow,
-    hospitalizacion_alta_imprimir_docx_flow,
-    hospitalizacion_egresos_reporte_flow,
 )
 
 router = APIRouter(tags=["hospitalizacion"])
@@ -59,8 +58,6 @@ def _get_db():
 
 
 def _base_guardia_specs():
-    from app.services.hospital_guardia_flow import DATASET_SPECS
-
     return DATASET_SPECS
 
 

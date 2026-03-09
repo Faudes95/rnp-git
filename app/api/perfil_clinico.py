@@ -13,7 +13,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
-from app.services.consulta_externa_flow import (
+from app.services.consulta_domain import (
     CONSULTA_EXTERNA_ATENCIONES,
     ensure_consulta_externa_schema,
 )

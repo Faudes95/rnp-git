@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
+import importlib
 import os
 
 from app.core.boot_profile import (
     BOOT_PROFILE_FULL,
-    is_minimal_jefatura_profile,
     normalize_app_boot_profile,
 )
+from app.core.profile_manifest import get_profile_manifest
 
 
 APP_BOOT_PROFILE = normalize_app_boot_profile(os.getenv("APP_BOOT_PROFILE", BOOT_PROFILE_FULL))
+_profile_manifest = get_profile_manifest(APP_BOOT_PROFILE)
+os.environ.setdefault("RNP_APP_CONTEXT_MODULE", _profile_manifest.entrypoint_module)
+_entrypoint_module = importlib.import_module(_profile_manifest.entrypoint_module)
 
-if is_minimal_jefatura_profile(APP_BOOT_PROFILE):
-    os.environ.setdefault("RNP_APP_CONTEXT_MODULE", "app.entrypoints.minimal_jefatura_main")
-    import app.entrypoints.minimal_jefatura_main as _entrypoint_module
-    from app.entrypoints.minimal_jefatura_main import *  # noqa: F401,F403
-else:
-    os.environ.setdefault("RNP_APP_CONTEXT_MODULE", "main_full")
-    import main_full as _entrypoint_module
-    from main_full import *  # noqa: F401,F403
+for _symbol in dir(_entrypoint_module):
+    if _symbol.startswith("_"):
+        continue
+    globals()[_symbol] = getattr(_entrypoint_module, _symbol)
 
 
 def __getattr__(name: str):

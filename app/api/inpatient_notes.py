@@ -12,7 +12,7 @@ from app.schemas.inpatient_notes import (
     EpisodeCreate,
     InpatientDailyNoteCreate,
 )
-from app.services.hospitalization_notes_flow import (
+from app.services.hospitalizacion.notes import (
     close_episode,
     create_or_get_active_episode,
     get_active_episode_by_patient,

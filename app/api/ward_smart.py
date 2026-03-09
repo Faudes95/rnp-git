@@ -10,16 +10,12 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.orm import Session
 
-from app.services.ward_round_flow import (
+from app.services.hospitalizacion.ward import (
+    command_center_flow,
+    smart_expediente_flow,
     ward_round_autofill_vitals_flow,
     ward_round_dashboard_flow,
     ward_round_save_inline_note_flow,
-)
-from app.services.smart_expediente_flow import (
-    smart_expediente_flow,
-)
-from app.services.command_center_flow import (
-    command_center_flow,
 )
 
 router = APIRouter(tags=["ward-smart"])

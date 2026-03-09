@@ -5,7 +5,9 @@ import os
 from functools import lru_cache
 from types import ModuleType
 
+from app.core.boot_profile import BOOT_PROFILE_FULL, normalize_app_boot_profile
 from app.core.errors import InfrastructureDomainError
+from app.core.profile_manifest import get_profile_manifest
 
 
 @lru_cache(maxsize=1)
@@ -13,11 +15,8 @@ def get_main_module() -> ModuleType:
     """Acceso centralizado y cacheado al módulo principal legacy."""
     module_name = (os.getenv("RNP_APP_CONTEXT_MODULE", "") or "").strip()
     if not module_name:
-        boot_profile = (os.getenv("APP_BOOT_PROFILE", "full") or "full").strip().lower()
-        if boot_profile == "minimal_jefatura":
-            module_name = "app.entrypoints.minimal_jefatura_main"
-        else:
-            module_name = "main_full"
+        boot_profile = normalize_app_boot_profile(os.getenv("APP_BOOT_PROFILE", BOOT_PROFILE_FULL))
+        module_name = get_profile_manifest(boot_profile).entrypoint_module
     try:
         return importlib.import_module(module_name)
     except Exception as exc:

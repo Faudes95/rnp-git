@@ -21,14 +21,12 @@ from app.services.fhir_flow import (
     fhir_procedure_search_flow,
 )
 from app.services.interconexion_flow import interconexion_consulta_flow
-from app.services.quirofano_flow import (
+from app.services.quirofano.clinical import (
     cancelar_programacion_flow,
     guardar_postquirurgica_flow,
     guardar_quirofano_flow,
     listar_quirofanos_flow,
     render_postquirurgica_flow,
-)
-from app.services.quirofano_waitlist_flow import (
     render_waitlist_ingreso_flow,
     render_waitlist_lista_flow,
     save_waitlist_ingreso_flow,

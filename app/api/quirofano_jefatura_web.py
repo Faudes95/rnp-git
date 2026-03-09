@@ -8,19 +8,18 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
 from app.core.app_context import main_proxy as m
-from app.services.quirofano_jefatura_flow import render_jefatura_quirofano_waiting_flow
-from app.services.quirofano_jefatura_import_flow import (
-    confirm_import_batch_from_request,
-    create_import_batch_from_upload,
-    render_jefatura_quirofano_import_review_flow,
-    render_jefatura_quirofano_imports_flow,
-    save_import_review_from_request,
-)
-from app.services.quirofano_jefatura_programacion_flow import (
+from app.services.quirofano.jefatura import (
     add_case_event_from_request,
     add_case_incidence_from_request,
     add_case_staff_from_request,
     build_dashboard_payload,
+    build_day_overview,
+    confirm_import_batch_from_request,
+    create_import_batch_from_upload,
+    render_jefatura_quirofano_import_review_flow,
+    render_jefatura_quirofano_imports_flow,
+    render_jefatura_quirofano_waiting_flow,
+    save_import_review_from_request,
     render_jefatura_quirofano_case_detail_flow,
     render_jefatura_quirofano_day_flow,
     render_jefatura_quirofano_programacion_index_flow,
@@ -28,10 +27,11 @@ from app.services.quirofano_jefatura_programacion_flow import (
     render_jefatura_quirofano_template_flow,
     save_service_lines_from_request,
     save_template_version_from_request,
+    serialize_case,
+    serialize_daily_block,
     update_daily_blocks_from_request,
     upsert_daily_case_from_request,
 )
-from app.services.quirofano_jefatura_shared import build_day_overview, serialize_case, serialize_daily_block
 
 
 router = APIRouter(tags=["quirofano-jefatura-web"])
@@ -357,4 +357,3 @@ async def api_quirofano_jefatura_programacion(
             "cases": [serialize_case(row) for row in overview["cases"]],
         }
     )
-

@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 
-from app.services.quirofano_flow import (
+from app.services.quirofano.clinical import (
     cancelar_programacion_flow,
     guardar_postquirurgica_flow,
     guardar_quirofano_urgencia_flow,

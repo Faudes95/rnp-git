@@ -7,31 +7,30 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
 from app.core.app_context import main_proxy as m
-from app.services.jefatura_central_flow import (
+from app.services.jefaturas.central import (
     assign_central_exam_from_request,
     create_central_exam_template_from_request,
-    render_jefatura_central_exam_assignment_flow,
-    render_jefatura_central_exams_flow,
-    render_jefatura_central_home_flow,
-    render_resident_exam_flow,
-    submit_resident_exam_response,
-)
-from app.services.jefatura_central_insumos_flow import render_jefatura_central_insumos_flow
-from app.services.jefatura_central_records_flow import (
     create_central_case_from_request,
     create_central_incidence_from_request,
     render_jefatura_central_cases_flow,
+    render_jefatura_central_exam_assignment_flow,
+    render_jefatura_central_exams_flow,
+    render_jefatura_central_home_flow,
     render_jefatura_central_incidences_flow,
+    render_jefatura_central_insumos_flow,
+    render_resident_exam_flow,
+    submit_resident_exam_response,
     update_central_case_from_request,
     update_central_incidence_from_request,
 )
-from app.services.jefatura_urologia_flow import (
+from app.services.jefaturas.urologia import (
+    resident_profile_photo_response,
     render_jefatura_urologia_home_flow,
     render_jefatura_urologia_module_flow,
     render_jefatura_urologia_programa_submodule_flow,
     render_jefatura_urologia_residente_profile_flow,
+    update_resident_profile_from_request,
 )
-from app.services.resident_profiles_flow import resident_profile_photo_response, update_resident_profile_from_request
 
 router = APIRouter(tags=["jefatura-web"])
 
