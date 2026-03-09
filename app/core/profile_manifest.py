@@ -11,6 +11,7 @@ from app.core.boot_profile import (
     BOOT_PROFILE_INVESTIGACION,
     BOOT_PROFILE_JEFATURA_UROLOGIA,
     BOOT_PROFILE_MINIMAL_JEFATURA,
+    BOOT_PROFILE_PILOT_UROLOGIA,
     BOOT_PROFILE_QUIROFANO,
     BOOT_PROFILE_RESIDENTES_UROLOGIA,
     normalize_app_boot_profile,
@@ -152,6 +153,27 @@ PROFILE_MANIFESTS: Dict[str, ProfileManifest] = {
         entrypoint_module=FULL_ENTRYPOINT_MODULE,
         active_modules=frozenset({"shell", *JEFATURAS_ROUTER_MODULE_IDS, "auth_login", "api_v1"}),
         description="Perfil interno para perfiles longitudinales de residentes.",
+    ),
+    BOOT_PROFILE_PILOT_UROLOGIA: ProfileManifest(
+        profile=BOOT_PROFILE_PILOT_UROLOGIA,
+        entrypoint_module=FULL_ENTRYPOINT_MODULE,
+        active_modules=frozenset(
+            {
+                "compat",
+                "legacy_core",
+                "shell",
+                *QUIROFANO_ROUTER_MODULE_IDS,
+                *JEFATURAS_ROUTER_MODULE_IDS,
+                "forms_metadata",
+                "master_identity",
+                "api_v1",
+                "urology_devices_events",
+                "auth_login",
+                "governance",
+                "clinical_validation",
+            }
+        ),
+        description="Perfil interno compuesto para el piloto urológico supervisado.",
     ),
 }
 

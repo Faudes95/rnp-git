@@ -18,6 +18,7 @@ jobs:
           - quirofano
           - jefatura_urologia
           - residentes_urologia
+          - pilot_urologia
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -136,6 +137,10 @@ jobs:
       - name: Run residentes urologia staging validation
         if: matrix.profile == 'residentes_urologia'
         run: npm run e2e:staging:residentes_urologia
+
+      - name: Run pilot urologia staging validation
+        if: matrix.profile == 'pilot_urologia'
+        run: npm run e2e:staging:pilot_urologia
 
       - name: Upload reports
         if: always()

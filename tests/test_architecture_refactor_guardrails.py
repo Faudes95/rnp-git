@@ -69,6 +69,7 @@ class ArchitectureRefactorGuardrailsTest(unittest.TestCase):
             "investigacion",
             "jefatura_urologia",
             "residentes_urologia",
+            "pilot_urologia",
         ):
             manifest = get_profile_manifest(profile)
             self.assertEqual(manifest.entrypoint_module, "main_full")

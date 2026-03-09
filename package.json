@@ -13,6 +13,7 @@
     "e2e:modules:quirofano": "playwright test e2e/modules/quirofano e2e/modules/jefatura/quirofano_jefatura.spec.ts",
     "e2e:modules:jefatura_urologia": "playwright test e2e/modules/jefatura/jefatura_central.spec.ts e2e/modules/jefatura/jefatura_urologia_residentes.spec.ts e2e/modules/jefatura/jefatura_urologia_crossflow.spec.ts",
     "e2e:modules:residentes_urologia": "playwright test e2e/modules/jefatura/jefatura_urologia_residentes.spec.ts e2e/modules/jefatura/jefatura_urologia_crossflow.spec.ts",
+    "e2e:modules:pilot_urologia": "playwright test e2e/modules/quirofano e2e/modules/jefatura/quirofano_jefatura.spec.ts e2e/modules/jefatura/jefatura_central.spec.ts e2e/modules/jefatura/jefatura_urologia_residentes.spec.ts e2e/modules/jefatura/jefatura_urologia_crossflow.spec.ts",
     "e2e:security": "playwright test e2e/security",
     "e2e:perf": "playwright test e2e/perf",
     "e2e:report": "tsx e2e/helpers/generate_reports.ts",
@@ -20,7 +21,8 @@
     "e2e:staging:full": "npm run e2e:discovery && npm run e2e:all",
     "e2e:staging:quirofano": "npm run e2e:modules:quirofano && npm run e2e:report",
     "e2e:staging:jefatura_urologia": "npm run e2e:modules:jefatura_urologia && npm run e2e:report",
-    "e2e:staging:residentes_urologia": "npm run e2e:modules:residentes_urologia && npm run e2e:report"
+    "e2e:staging:residentes_urologia": "npm run e2e:modules:residentes_urologia && npm run e2e:report",
+    "e2e:staging:pilot_urologia": "npm run e2e:modules:pilot_urologia && npm run e2e:report"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
