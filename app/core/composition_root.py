@@ -4,6 +4,7 @@ import os
 from typing import Any, Callable, Iterable
 
 from fastapi import Depends, FastAPI
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 
@@ -27,6 +28,11 @@ def create_app_instance(
     )
     if os.path.isdir(app_static_dir):
         app.mount("/static", StaticFiles(directory=app_static_dir), name="static")
+        favicon_target = os.path.join(app_static_dir, "img", "logooficial_brand.png")
+        if os.path.isfile(favicon_target):
+            @app.get("/favicon.ico", include_in_schema=False)
+            async def favicon() -> RedirectResponse:
+                return RedirectResponse(url="/static/img/logooficial_brand.png", status_code=307)
     for router in routers:
         app.include_router(router)
     register_security_middlewares(

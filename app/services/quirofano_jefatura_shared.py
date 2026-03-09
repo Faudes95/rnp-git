@@ -1143,6 +1143,29 @@ def recent_import_batches(session: Session, *, limit: int = 10) -> List[Any]:
     )
 
 
+def recent_import_batches_for_dashboard(session: Session, *, limit: int = 10) -> List[Any]:
+    """Reduce ruido visual en portada agrupando reintentos del mismo PDF/fecha.
+
+    El historial completo sigue disponible en la pantalla de importaciones.
+    """
+    batches = recent_import_batches(session, limit=max(limit * 4, 20))
+    selected: List[Any] = []
+    seen_keys = set()
+    for batch in batches:
+        file_date = getattr(batch, "file_date", None)
+        key = (
+            str(getattr(batch, "original_filename", "") or "").strip().lower(),
+            file_date.isoformat() if isinstance(file_date, date) else "",
+        )
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        selected.append(batch)
+        if len(selected) >= max(1, min(int(limit or 10), 20)):
+            break
+    return selected
+
+
 def publication_rows_for_date(session: Session, target_date: date, *, actor: str = "SYSTEM") -> List[Dict[str, Any]]:
     overview = build_day_overview(session, target_date, actor=actor)
     rows: List[Dict[str, Any]] = []

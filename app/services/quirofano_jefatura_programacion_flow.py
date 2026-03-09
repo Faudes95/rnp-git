@@ -31,6 +31,7 @@ from app.services.quirofano_jefatura_shared import (
     log_audit,
     publication_rows_for_date,
     recent_import_batches,
+    recent_import_batches_for_dashboard,
     request_actor,
     room_code_from_number,
     safe_date,
@@ -313,7 +314,7 @@ def build_dashboard_payload(session: Session, target_date: Optional[date] = None
     ensure_jefatura_quirofano_seed(session, actor=actor)
     overview = build_day_overview(session, selected_date, actor=actor)
     active_version = active_template_version(session)
-    imports = recent_import_batches(session, limit=6)
+    imports = recent_import_batches_for_dashboard(session, limit=6)
     service_lines = _service_line_choices(session)
     return {
         "selected_date": selected_date,
