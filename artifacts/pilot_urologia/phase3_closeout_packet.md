@@ -1,8 +1,8 @@
 # Paquete de Fase 3: Cierre y Decisión
 
-- Generado: 2026-03-09T03:53:41.215Z
-- Commit base: `c861172`
-- Perfil: `full`
+- Generado: 2026-03-09T04:49:18.730Z
+- Commit base: `231bc5b`
+- Perfil: `pilot_urologia`
 
 ## Objetivo
 
@@ -22,6 +22,7 @@
 
 ## Commit seguro de referencia
 - Perfil compuesto listo: `c2ee4554fce2afae6938272869eed0f9f2ea2ba7`
+- Paquete operativo vigente: `231bc5b0c539220ea70d7d1d404d42c264632b45`
 
 ## Alcance del piloto
 - Incluido:
@@ -53,7 +54,7 @@ export AUTH_USER=Faudes
 export AUTH_PASS=1995
 export IMSS_USER=Faudes
 export IMSS_PASS=1995
-export BASE_URL=http://127.0.0.1:8000
+export BASE_URL=http://127.0.0.1:8012
 ```
 
 ## Preflight obligatorio antes de abrir
