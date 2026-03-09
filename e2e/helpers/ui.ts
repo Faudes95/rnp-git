@@ -93,6 +93,26 @@ export async function selectOptionContaining(
   return found;
 }
 
+export async function selectOptionContainingOrValue(
+  page: Page,
+  selector: string,
+  needle: string,
+  fallbackValues: string[],
+): Promise<SelectOptionRow> {
+  const options = await listSelectOptions(page, selector);
+  const normalizedNeedle = needle.toUpperCase();
+  const found =
+    options.find((row) => row.label.toUpperCase().includes(normalizedNeedle) && row.value) ??
+    options.find((row) => row.value && fallbackValues.includes(row.value));
+  if (!found) {
+    throw new Error(
+      `No se encontró opción que contenga "${needle}" ni valor alterno (${fallbackValues.join(", ")}) en ${selector}`,
+    );
+  }
+  await page.locator(selector).selectOption(found.value);
+  return found;
+}
+
 export async function fillIfEmpty(page: Page, selector: string, value: string): Promise<void> {
   const locator = page.locator(selector);
   const current = await locator.inputValue().catch(() => "");

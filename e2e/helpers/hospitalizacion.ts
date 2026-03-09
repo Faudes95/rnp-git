@@ -12,6 +12,19 @@ export interface HospitalizacionSaveResult {
   idempotent: boolean;
 }
 
+async function collectInvalidFields(page: Page): Promise<Array<{ id: string; name: string; message: string }>> {
+  return await page.locator("input:invalid, select:invalid, textarea:invalid").evaluateAll((elements) =>
+    elements.map((element) => {
+      const field = element as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+      return {
+        id: field.id || "",
+        name: field.getAttribute("name") || "",
+        message: field.validationMessage || "",
+      };
+    }),
+  );
+}
+
 async function setSelectValue(page: Page, selector: string, value: string): Promise<void> {
   await page.waitForSelector(selector, { state: "attached" });
   await page.locator(selector).evaluate((node, nextValue) => {
@@ -41,9 +54,27 @@ export async function saveHospitalizacion(
   const { mode } = options;
   await page.locator('input[name="fecha_ingreso"]').fill(new Date().toISOString().slice(0, 10));
   await page.locator('input[name="cama"]').fill(mode === "urgencias" ? "C-URG-E2E" : "C-PROG-E2E");
+  if (await page.locator('input[name="diagnostico"]').count()) {
+    const diagnostico = (await page.locator('input[name="diagnostico"]').inputValue()).trim();
+    if (!diagnostico) {
+      await page.locator('input[name="diagnostico"]').fill("DIAGNOSTICO E2E UROMED");
+    }
+  }
+  if (await page.locator('input[name="hgz_envio"]').count()) {
+    const hgzEnvio = (await page.locator('input[name="hgz_envio"]').inputValue()).trim();
+    if (!hgzEnvio) {
+      await page.locator('input[name="hgz_envio"]').fill("HGZ E2E");
+    }
+  }
   await page.locator('input[name="agregado_medico"]').fill("E2E UROMED");
   await page.locator('input[name="medico_a_cargo"]').fill("DR E2E UROMED");
   await page.locator('input[name="edad"]').fill("35");
+  if (await page.locator('select[name="sexo"]').count()) {
+    const sexo = await page.locator('select[name="sexo"]').inputValue();
+    if (!sexo) {
+      await setSelectValue(page, 'select[name="sexo"]', "MASCULINO");
+    }
+  }
   await setSelectValue(page, 'select[name="estatus_detalle"]', "DELICADO");
   await page.locator('input[name="dias_hospitalizacion"]').fill("1");
   await page.locator('input[name="dias_postquirurgicos"]').fill("0");
@@ -73,15 +104,36 @@ export async function saveHospitalizacion(
   await submitButton.click();
   await page.waitForLoadState("domcontentloaded");
   const heading = page.getByRole("heading").first();
-  await expect(heading).toContainText(/Ingreso hospitalario/i);
-  const altaHref = await page.locator('a[href*="/hospitalizacion/alta?hospitalizacion_id="]').first().getAttribute("href");
+  const altaLink = page.locator('a[href*="/hospitalizacion/alta?hospitalizacion_id="]').first();
+  let altaHref: string | null = null;
+  try {
+    await expect(altaLink).toBeVisible({ timeout: 8_000 });
+    altaHref = await altaLink.getAttribute("href");
+  } catch {
+    const invalidFields = await collectInvalidFields(page);
+    if (invalidFields.length > 0) {
+      const details = invalidFields
+        .map((field) => `${field.name || field.id || "<sin-id>"}: ${field.message || "campo inválido"}`)
+        .join("; ");
+      throw new Error(`El ingreso hospitalario no avanzó por validación HTML: ${details}. URL actual: ${page.url()}`);
+    }
+    const explicitError = (await page.locator(".alert.error, .error").first().textContent().catch(() => null))?.trim();
+    if (explicitError) {
+      throw new Error(`El backend rechazó el ingreso hospitalario: ${explicitError}. URL actual: ${page.url()}`);
+    }
+    const heading = (await page.getByRole("heading").first().textContent().catch(() => null))?.trim();
+    throw new Error(
+      `El ingreso hospitalario no mostró el enlace de alta esperado. Encabezado actual: ${heading || "N/D"}. URL actual: ${page.url()}`,
+    );
+  }
   if (!altaHref) {
     throw new Error("No se encontró enlace a alta hospitalaria tras guardar ingreso.");
   }
   const hospitalizacionId = Number(new URL(altaHref, "http://127.0.0.1").searchParams.get("hospitalizacion_id"));
+  const headingText = (await heading.textContent().catch(() => null))?.toLowerCase() ?? "";
   return {
     hospitalizacionId,
-    idempotent: (await heading.textContent())?.toLowerCase().includes("idempotencia") ?? false,
+    idempotent: headingText.includes("idempotencia"),
   };
 }
 
@@ -92,7 +144,7 @@ export async function precheckIngreso(api: APIRequestContext, consultaId: number
 }
 
 export async function captureCensoUiRows(page: Page): Promise<string[]> {
-  const rows = page.locator("table tbody tr");
+  const rows = page.locator('form[action="/hospitalizacion/censo/guardar"] table tr:has(input[name^="cama_"])');
   const count = await rows.count();
   const values: string[] = [];
   for (let index = 0; index < count; index += 1) {

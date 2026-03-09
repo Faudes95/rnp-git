@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from sqlalchemy import Column, Date, DateTime, Float, Integer, MetaData, String, Table, Text, and_, desc, func, insert, or_, select
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import ProgrammingError
 
 from app.services.hospital_guardia_flow import HOSP_GUARDIA_REGISTROS, ensure_hospital_guardia_schema
 
@@ -641,7 +642,11 @@ def list_profile_alertas(
         )
 
     # Alertas centrales FAU_BOT con payload ligado a consulta/paciente.
-    rows_central = db.execute(select(FAU_CENTRAL_ALERTS).order_by(desc(FAU_CENTRAL_ALERTS.c.id)).limit(1500)).mappings().all()
+    try:
+        rows_central = db.execute(select(FAU_CENTRAL_ALERTS).order_by(desc(FAU_CENTRAL_ALERTS.c.id)).limit(1500)).mappings().all()
+    except ProgrammingError:
+        db.rollback()
+        rows_central = []
     wanted_ids = {int(x) for x in consulta_ids}
     for r in rows_central:
         payload = _fau_load(r.get("payload_json"), {})

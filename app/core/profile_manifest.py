@@ -40,7 +40,9 @@ PROFILE_MANIFESTS: Dict[str, ProfileManifest] = {
     BOOT_PROFILE_FULL: ProfileManifest(
         profile=BOOT_PROFILE_FULL,
         entrypoint_module=FULL_ENTRYPOINT_MODULE,
-        active_modules=frozenset(ALL_ROUTER_MODULE_IDS),
+        active_modules=frozenset(
+            module_id for module_id in ALL_ROUTER_MODULE_IDS if module_id not in {"quirofano_web", "expediente_web"}
+        ),
         internal_only=False,
         description="Perfil integral de la plataforma UROMED.",
     ),

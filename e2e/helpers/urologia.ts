@@ -1,7 +1,15 @@
 import { expect, type Page } from "@playwright/test";
 
 import { uniqueSuffix } from "./ids.js";
-import { selectOptionContaining } from "./ui.js";
+import { selectOptionContaining, selectOptionContainingOrValue } from "./ui.js";
+
+function localDateIso(offsetDays = 0): string {
+  const now = new Date();
+  now.setHours(12, 0, 0, 0);
+  now.setDate(now.getDate() + offsetDays);
+  const tzAdjusted = new Date(now.getTime() - now.getTimezoneOffset() * 60_000);
+  return tzAdjusted.toISOString().slice(0, 10);
+}
 
 export async function openResidentProfile(page: Page, residentCode: string): Promise<void> {
   await page.goto(`/jefatura-urologia/programa-academico/residentes/${residentCode}`);
@@ -31,9 +39,14 @@ export async function createCentralExamAndAssign(page: Page, residentNeedle = "A
   await createForm.getByRole("button", { name: /Guardar examen/i }).click();
   await expect(page).toHaveURL(/\/jefatura-urologia\/central\/examenes\/\d+\/asignar/);
   const assignForm = page.locator(`form[action$="/asignar"]`);
-  await selectOptionContaining(page, 'form[action$="/asignar"] select[name="resident_code"]', residentNeedle);
-  await assignForm.locator('input[name="disponible_desde"]').fill(new Date().toISOString().slice(0, 10));
-  await assignForm.locator('input[name="cierra_en"]').fill(new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10));
+  await selectOptionContainingOrValue(
+    page,
+    'form[action$="/asignar"] select[name="resident_code"]',
+    residentNeedle,
+    ["R5U_AVILA_CONTRERAS_O"],
+  );
+  await assignForm.locator('input[name="disponible_desde"]').fill(localDateIso(-1));
+  await assignForm.locator('input[name="cierra_en"]').fill(localDateIso(7));
   await assignForm.getByRole("button", { name: /Guardar asignación/i }).click();
   await expect(page).toHaveURL(/saved=1/);
   return page.url();
@@ -52,7 +65,12 @@ export async function answerResidentExamFromProfile(page: Page, residentCode: st
 export async function createCentralCase(page: Page, residentNeedle: string, patientSnapshot: string): Promise<void> {
   await page.goto("/jefatura-urologia/central/casos");
   const createForm = page.locator('form[action="/jefatura-urologia/central/casos"]');
-  await selectOptionContaining(page, 'form[action="/jefatura-urologia/central/casos"] select[name="resident_code"]', residentNeedle);
+  await selectOptionContainingOrValue(
+    page,
+    'form[action="/jefatura-urologia/central/casos"] select[name="resident_code"]',
+    residentNeedle,
+    ["R5U_AVILA_CONTRERAS_O"],
+  );
   await createForm.locator('input[name="fecha_limite"]').fill(new Date(Date.now() + 3 * 86_400_000).toISOString().slice(0, 10));
   await createForm.locator('input[name="patient_snapshot"]').fill(patientSnapshot);
   await createForm.locator('textarea[name="objetivo"]').fill("Valorar evolución clínica y plan de seguimiento E2E.");
@@ -64,7 +82,12 @@ export async function createCentralCase(page: Page, residentNeedle: string, pati
 export async function createCentralIncidence(page: Page, residentNeedle: string, description: string): Promise<void> {
   await page.goto("/jefatura-urologia/central/incidencias");
   const createForm = page.locator('form[action="/jefatura-urologia/central/incidencias"]');
-  await selectOptionContaining(page, 'form[action="/jefatura-urologia/central/incidencias"] select[name="resident_code"]', residentNeedle);
+  await selectOptionContainingOrValue(
+    page,
+    'form[action="/jefatura-urologia/central/incidencias"] select[name="resident_code"]',
+    residentNeedle,
+    ["R5U_AVILA_CONTRERAS_O"],
+  );
   await createForm.locator('input[name="fecha_evento"]').fill(new Date().toISOString().slice(0, 10));
   await createForm.locator('input[name="tipo"]').fill("Evento operativo E2E");
   await createForm.locator('textarea[name="descripcion"]').fill(description);

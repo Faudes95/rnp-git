@@ -13,7 +13,8 @@ test("hospitalización desde contexto de urgencias guarda y detecta episodio act
   await verifyHospitalizacionPrefill(page, { nombre: patient.nombre, nss: patient.nss, diagnostico: "SI" });
   const saved = await saveHospitalizacion(page, { mode: "urgencias" });
   expect(saved.hospitalizacionId).toBeGreaterThan(0);
-  const precheck = (await precheckIngreso(api, consulta.consultaId)) as Record<string, unknown>;
+  const linkedConsultaId = urgencia.consultaId ?? consulta.consultaId;
+  const precheck = (await precheckIngreso(api, linkedConsultaId)) as Record<string, unknown>;
   expect(precheck).toMatchObject({
     ok: true,
     has_active_episode: true,
