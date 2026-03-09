@@ -1,6 +1,16 @@
 import path from "node:path";
 
-export type BootProfile = "full" | "minimal_jefatura";
+export type BootProfile =
+  | "full"
+  | "minimal_jefatura"
+  | "consulta"
+  | "hospitalizacion"
+  | "quirofano"
+  | "expediente"
+  | "investigacion"
+  | "jefatura_urologia"
+  | "residentes_urologia"
+  | "pilot_urologia";
 export type ProfileAvailability = BootProfile | "both";
 
 export interface AppEnv {

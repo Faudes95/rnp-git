@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-03-09T02:53:38.479Z",
-  "ui_row_count": 16,
-  "exported_row_count": 19,
+  "generated_at": "2026-03-09T04:00:50.434Z",
+  "ui_row_count": 28,
+  "exported_row_count": 31,
   "expected_patient_names": [
-    "CENSO CENSO20260309025334UPXX7S PACIENTE"
+    "CENSO CENSO20260309040046ESSF4E PACIENTE"
   ],
   "missing_from_ui": [],
   "missing_from_export": []
