@@ -98,6 +98,7 @@ PROFILE_MANIFESTS: Dict[str, ProfileManifest] = {
                 *QUIROFANO_ROUTER_MODULE_IDS,
                 "forms_metadata",
                 "master_identity",
+                "api_v1",
                 "urology_devices_events",
                 "auth_login",
                 "governance",
